@@ -94,7 +94,7 @@ LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 //				NULL, NULL, 0);
 //			break;
 //		case IDC_WEBPAGEBTN:
-//			ShellExecute(dlg, "open", "https://github.com/chironb/",
+//			ShellExecute(dlg, "open", "https://github.com/chironb/ADFOpus2025",
 //				NULL, NULL, 0);
 //			break;
 //		case IDC_LICENCEPAGEBTN:
@@ -144,7 +144,7 @@ LRESULT CALLBACK AboutChildDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 		case IDC_WEBPAGEBTN:
 			ShellExecute(dlg, "open",
-				"https://github.com/chironb/",
+				"https://github.com/chironb/ADFOpus2025",
 				NULL, NULL, SW_SHOWNORMAL);
 			break;
 
