@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ADFOpusSrc\About.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adflib.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_bitm.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_blk.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_cache.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_defs.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_dir.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_disk.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_dump.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_env.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_err.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_file.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_hd.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_link.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_raw.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_salv.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_str.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\adf_util.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\hd_blk.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\prefix.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\Win32\adf_nativ.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\Win32\defendian.h" />
+    <ClInclude Include="ADFOpusSrc\ADFLib\Lib\Win32\nt4_dev.h" />
+    <ClInclude Include="ADFOpusSrc\ADFOpus.h" />
+    <ClInclude Include="ADFOpusSrc\BatchConvert.h" />
+    <ClInclude Include="ADFOpusSrc\Bootblock.h" />
+    <ClInclude Include="ADFOpusSrc\ChildCommon.h" />
+    <ClInclude Include="ADFOpusSrc\fdi.h" />
+    <ClInclude Include="ADFOpusSrc\fdi2raw.h" />
+    <ClInclude Include="ADFOpusSrc\Init.h" />
+    <ClInclude Include="ADFOpusSrc\Install.h" />
+    <ClInclude Include="ADFOpusSrc\ListView.h" />
+    <ClInclude Include="ADFOpusSrc\New.h" />
+    <ClInclude Include="ADFOpusSrc\Options.h" />
+    <ClInclude Include="ADFOpusSrc\Pch.h" />
+    <ClInclude Include="ADFOpusSrc\Properties.h" />
+    <ClInclude Include="ADFOpusSrc\resource.h" />
+    <ClInclude Include="ADFOpusSrc\ShellOpen.h" />
+    <ClInclude Include="ADFOpusSrc\TextViewer.h" />
+    <ClInclude Include="ADFOpusSrc\types.h" />
+    <ClInclude Include="ADFOpusSrc\Utils.h" />
+    <ClInclude Include="ADFOpusSrc\VolInfo.h" />
+    <ClInclude Include="ADFOpusSrc\VolSelect.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ADFOpusSrc\About.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_bitm.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_cache.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_dir.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_disk.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_dump.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_env.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_file.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_hd.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_link.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_raw.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_salv.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\adf_util.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\Win32\adfvolinfo.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\Win32\adf_nativ.c" />
+    <ClCompile Include="ADFOpusSrc\ADFLib\Lib\Win32\nt4_dev.c" />
+    <ClCompile Include="ADFOpusSrc\ADFOpus.c" />
+    <ClCompile Include="ADFOpusSrc\BatchConvert.c" />
+    <ClCompile Include="ADFOpusSrc\Bootblock.c" />
+    <ClCompile Include="ADFOpusSrc\ChildCommon.c" />
+    <ClCompile Include="ADFOpusSrc\fdi.c" />
+    <ClCompile Include="ADFOpusSrc\fdi2raw.c" />
+    <ClCompile Include="ADFOpusSrc\Init.c" />
+    <ClCompile Include="ADFOpusSrc\Install.c" />
+    <ClCompile Include="ADFOpusSrc\ListView.c" />
+    <ClCompile Include="ADFOpusSrc\New.c" />
+    <ClCompile Include="ADFOpusSrc\Options.c" />
+    <ClCompile Include="ADFOpusSrc\Pch.c" />
+    <ClCompile Include="ADFOpusSrc\Properties.c" />
+    <ClCompile Include="ADFOpusSrc\ShellOpen.c" />
+    <ClCompile Include="ADFOpusSrc\TextViewer.c" />
+    <ClCompile Include="ADFOpusSrc\Utils.c" />
+    <ClCompile Include="ADFOpusSrc\VolInfo.c" />
+    <ClCompile Include="ADFOpusSrc\VolSelect.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\crc_csum.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\getbits.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\maketbl.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\Pfile.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\tables.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\u_deep.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\u_heavy.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\u_init.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\u_medium.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\u_quick.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\u_rle.c" />
+    <ClCompile Include="ADFOpusSrc\xdms\Xdms.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\adler32.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\compress.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\crc32.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\deflate.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\gzio.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\infblock.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\infcodes.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\inffast.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\inflate.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\inftrees.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\infutil.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\trees.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\uncompr.c" />
+    <ClCompile Include="ADFOpusSrc\Zlib\zutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ADFOpusSrc\ADFOpus.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="ADFOpusSrc\images\about.bmp" />
+    <Image Include="ADFOpusSrc\Images\adf.ico" />
+    <Image Include="ADFOpusSrc\Images\ADFOpus.ico" />
+    <Image Include="ADFOpusSrc\Images\adz.ico" />
+    <Image Include="ADFOpusSrc\Images\AmiDir.ico" />
+    <Image Include="ADFOpusSrc\Images\AmiFile.ico" />
+    <Image Include="ADFOpusSrc\Images\AmiLister.ico" />
+    <Image Include="ADFOpusSrc\images\batch.bmp" />
+    <Image Include="ADFOpusSrc\images\cascade.bmp" />
+    <Image Include="ADFOpusSrc\images\close.bmp" />
+    <Image Include="ADFOpusSrc\images\createdir.bmp" />
+    <Image Include="ADFOpusSrc\images\delete.bmp" />
+    <Image Include="ADFOpusSrc\images\disk2fdi.bmp" />
+    <Image Include="ADFOpusSrc\images\display.bmp" />
+    <Image Include="ADFOpusSrc\Images\dmp.ico" />
+    <Image Include="ADFOpusSrc\Images\dms.ico" />
+    <Image Include="ADFOpusSrc\Images\DriveCDROM.ico" />
+    <Image Include="ADFOpusSrc\Images\DriveFloppy35.ico" />
+    <Image Include="ADFOpusSrc\Images\DriveFloppy525.ico" />
+    <Image Include="ADFOpusSrc\Images\DriveHD.ico" />
+    <Image Include="ADFOpusSrc\Images\DriveNet.ico" />
+    <Image Include="ADFOpusSrc\Images\hdf.ico" />
+    <Image Include="ADFOpusSrc\images\help.bmp" />
+    <Image Include="ADFOpusSrc\images\info.bmp" />
+    <Image Include="ADFOpusSrc\images\install.bmp" />
+    <Image Include="ADFOpusSrc\Images\Logo.bmp" />
+    <Image Include="ADFOpusSrc\images\new.bmp" />
+    <Image Include="ADFOpusSrc\images\open.bmp" />
+    <Image Include="ADFOpusSrc\images\options.bmp" />
+    <Image Include="ADFOpusSrc\images\properti.bmp" />
+    <Image Include="ADFOpusSrc\images\rename.bmp" />
+    <Image Include="ADFOpusSrc\images\showundel.bmp" />
+    <Image Include="ADFOpusSrc\images\textviewer.bmp" />
+    <Image Include="ADFOpusSrc\images\tilehor.bmp" />
+    <Image Include="ADFOpusSrc\images\tilever.bmp" />
+    <Image Include="ADFOpusSrc\Images\Toolbar.bmp" />
+    <Image Include="ADFOpusSrc\Images\toolbar_large.bmp" />
+    <Image Include="ADFOpusSrc\images\undelete.bmp" />
+    <Image Include="ADFOpusSrc\images\uponelev.bmp" />
+    <Image Include="ADFOpusSrc\Images\WinDir.ico" />
+    <Image Include="ADFOpusSrc\Images\WinFile.ico" />
+    <Image Include="ADFOpusSrc\Images\WinLister.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ADFOpusSrc\images\ArrowCop.cur" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{e97a1c99-a5ce-414e-ba6a-937dae106c03}</ProjectGuid>
+    <RootNamespace>ADFOpus2025</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\ADFLib;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\xdms;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\Zlib;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\Installers;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\ADFLib\Lib\Win32;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\ADFLib\Lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>dbghelp.lib;comctl32.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\ADFLib;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\xdms;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\Zlib;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\Installers;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\ADFLib\Lib\Win32;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc;C:\Users\micro\Dropbox\Dropbox Home\Personal\Creations\Software\ADFOpus2025_win32\ADFOpus2025\ADFOpus2025\ADFOpusSrc\ADFLib\Lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>dbghelp.lib;comctl32.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

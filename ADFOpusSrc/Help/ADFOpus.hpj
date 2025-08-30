@@ -1,0 +1,40 @@
+; This file is maintained by HCW. Do not modify this file directly.
+
+[OPTIONS]
+COMPRESS=12 Hall Zeck
+LCID=0xc09 0x0 0x0 ; English (Australian)
+REPORT=Yes
+CONTENTS=IDH_INTRODUCTION
+TITLE=ADF Opus help
+CNT=AdfOpus.cnt
+COPYRIGHT=ADF Opus                                                                  by Dan Sutherland and Gary Harris.                            Help file by Gary Harris. %date
+HLP=AdfOpus.hlp
+
+[FILES]
+adfopus.rtf
+license.rtf
+history.rtf
+
+[ALIAS]
+IDH_ACTION_UNDELETE=IDH_UNDELETE_BUTTON
+IDH_BOOTBLOCK_HELP_BUTTON=IDH_CREATE_HELP_BUTTON
+IDH_CREATE_CLOSE=IDH_CREATE_CANCEL_BUTTON         ; Close mapped to cancel to reduce file size and avoid repitition.
+IDH_DISK2FDI_HELP_BUTTON=IDH_CREATE_HELP_BUTTON
+IDH_INFO_HELP_BUTTON=IDH_CREATE_HELP_BUTTON
+IDH_OPTIONS_HELP_BUTTON=IDH_CREATE_HELP_BUTTON
+IDH_PROPERTIES_AMI_CANCEL_BUTTON=IDH_PROPERTIES_WIN_CANCEL_BUTTON
+IDH_PROPERTIES_AMI_HELP_BUTTON=IDH_CREATE_HELP_BUTTON
+IDH_PROPERTIES_AMI_OK_BUTTON=IDH_PROPERTIES_WIN_OK_BUTTON
+IDH_PROPERTIES_WIN_HELP_BUTTON=IDH_CREATE_HELP_BUTTON
+IDH_TEXTVIEWER_BUTTON_HELP=IDH_CREATE_HELP_BUTTON
+IDH_VIEW_UNDELETABLE=IDH_SHOW_UNDELETABLE_BUTTON
+IDH_VOLSEL_HELP_BUTTON=IDH_CREATE_HELP_BUTTON
+
+[MAP]
+#include AdfOpusHlp.h
+
+[WINDOWS]
+Opus_win="ADF Opus Help",(84,3,837,1015),28420,(r14876671),(r12632256); by Gary Harris
+
+[CONFIG-Opus_win]
+CreateButton(AdfOpusVersion, Version, About())              ; Add a version  button.
