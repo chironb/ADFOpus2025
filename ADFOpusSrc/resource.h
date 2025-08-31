@@ -2,6 +2,8 @@
 // Microsoft Visual C++ generated include file.
 // Used by ADFOpus.rc
 //
+#define IDC_STATIC (-1)
+
 #define IDS_VERSION                     1
 #define IDD_ABOUT                       101
 #define IDR_MAINMENU                    102
@@ -251,8 +253,12 @@
 #define IDB_TBBUTTONS_LARGE             40128
 #define IDC_BUILDINFO					40129
 #define IDB_TBBUTTONS_TRUECOLOR			40130
-
-
+#define IDB_TILECLO			            40131
+#define IDB_REFRESH			            40132
+#define ID_VIEW_REFRESH                 40133
+#define IDB_SELECTALL			    	40134	
+#define IDB_SELECTNONE				    40135
+#define IDB_INVERTSELECTION			    40136
 
 // Next default values for new objects
 // 

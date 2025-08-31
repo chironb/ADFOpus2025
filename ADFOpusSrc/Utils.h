@@ -15,7 +15,7 @@ BOOL OpenDlg(HWND);
 void SizeToStr(const long, char *);
 void AddCommas(char *);
 void ResizeMDIClientWin();
-void SetMenuBitmaps(HINSTANCE, HMENU);
+// void SetMenuBitmaps(HINSTANCE, HMENU);   // Chiron 2025
 void UpdateMenuItems(HMENU);
 void UpdateToolbar();
 int  CountOFNFiles(char *, int);

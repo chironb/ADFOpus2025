@@ -51,6 +51,7 @@
     <ClInclude Include="ADFOpusSrc\Init.h" />
     <ClInclude Include="ADFOpusSrc\Install.h" />
     <ClInclude Include="ADFOpusSrc\ListView.h" />
+    <ClInclude Include="ADFOpusSrc\MenuIcons.h" />
     <ClInclude Include="ADFOpusSrc\New.h" />
     <ClInclude Include="ADFOpusSrc\Options.h" />
     <ClInclude Include="ADFOpusSrc\Pch.h" />
@@ -89,6 +90,7 @@
     <ClCompile Include="ADFOpusSrc\Init.c" />
     <ClCompile Include="ADFOpusSrc\Install.c" />
     <ClCompile Include="ADFOpusSrc\ListView.c" />
+    <ClCompile Include="ADFOpusSrc\MenuIcons.c" />
     <ClCompile Include="ADFOpusSrc\New.c" />
     <ClCompile Include="ADFOpusSrc\Options.c" />
     <ClCompile Include="ADFOpusSrc\Pch.c" />

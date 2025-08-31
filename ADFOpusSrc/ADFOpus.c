@@ -1,9 +1,9 @@
-/*! \file ADFOpus.c
+﻿/*! \file ADFOpus.c
  *  \brief Main programme functions.
  *
  * ADF Opus Copyright 1998-2002 by 
  * Dan Sutherland and Gary Harris <gharris@zip.com.au>.	
- *
+ *	
  * Uses ADFlib Copyright 1997-2002 by Laurent Clevy <lclevy@club-internet.fr>
  *
  * Uses xDMS by Andre R. de la Rocha (Public Domain)
@@ -60,6 +60,141 @@
 #include <windows.h>
 #include <commctrl.h>
 #pragma comment(lib, "comctl32.lib")
+// tell this .c file that ghwndFrame exists somewhere else
+extern HWND ghwndFrame;
+#include "MenuIcons.h"
+extern HINSTANCE instance;    // or however you name your HINSTANCE
+extern HWND      ghwndFrame;  // your main window handle
+extern BOOL      bDirClicked;
+extern BOOL      bFileClicked;
+
+
+
+
+// -----------------------------------------------------------------------------
+// At top of ADFOpus.c (after your #includes)
+//
+// resource.h must declare all the ID_* and IDB_* macros below
+#include <windows.h>
+#include "resource.h"
+
+//typedef struct {
+//	UINT cmdID;    // menu command from your .rc
+//	UINT bmpRes;   // bitmap resource (IDB_*)
+//} MenuIconEntry;
+
+//static const MenuIconEntry menuIconMap[] = {
+//	// File menu
+//	{ ID_FIL_NEW,                   IDB_NEW },
+//	{ ID_ACTION_NEWDIRECTORY,       IDB_CREATEDIR },
+//	{ ID_VIEW_NEWWINDOWSLISTER,     IDB_TEXTVIEWER },
+//	{ ID_FIL_OPEN,                  IDB_OPEN },
+//	{ ID_FIL_CLOSE,                 IDB_CLOSE },
+//	{ ID_FIL_EXIT,                  IDB_CLOSE },              // reuse “close” icon
+//
+//	// Edit menu
+//	{ ID_ACTION_DELETE,             IDB_DELETE },
+//	{ ID_ACTION_UNDELETE,           IDB_UNDELETE },
+//	{ ID_ACTION_RENAME,             IDB_RENAME },
+//	{ ID_TOOLS_OPTIONS,             IDB_OPTIONS },            // Preferences
+//
+//	// Action menu
+//	{ ID_ACTION_UPONELEVEL,         IDB_UPONELEVEL },
+//	{ ID_FIL_INFORMATION,           IDB_INFO },
+//	{ ID_ACTION_PROPERTIES,         IDB_PROPERTIES },
+//
+//	// Tools menu
+//	{ ID_TOOLS_TEXT_VIEWER,         IDB_TEXTVIEWER },
+//	{ ID_TOOLS_BATCHCONVERTER,      IDB_BATCH },
+//	{ ID_TOOLS_DISK2FDI,            IDB_DISK2FDI },
+//	{ ID_TOOLS_INSTALL,             IDB_INSTALL },
+//	{ ID_TOOLS_DISPLAYBOOTBLOCK,    IDB_DISPLAY },
+//
+//	// View menu
+//	{ ID_VIEW_SHOWUNDELETABLEFILES, IDB_SHOWUNDELETABLE },
+//
+//	// Window menu
+//	{ ID_WIN_CASCADE,               IDB_CASCADE },
+//	{ ID_WIN_TILEHORIZONTAL,        IDB_TILEHOR },
+//	{ ID_WIN_TILEVERTICAL,          IDB_TILEVER },
+//
+//	// Help menu
+//	{ ID_HELP_ABOUT,                IDB_ABOUT },
+//};
+
+//static const size_t menuIconCount =
+//sizeof(menuIconMap) / sizeof(menuIconMap[0]);
+
+//// Forward‐declare our helper
+//void SetMenuBitmaps(HINSTANCE hInst, HMENU hMenu);
+
+
+// Chiron 2025
+// 
+// -----------------------------------------------------------------------------
+// SetMenuBitmaps: load each bitmap and attach it by command ID
+// Call this after your main window (and its menu) has been created.
+//void SetMenuBitmaps(HINSTANCE hInst, HMENU hMenu)
+//{
+//	size_t i;
+//	for (i = 0; i < menuIconCount; ++i) {
+//		HBITMAP hBmp = (HBITMAP)LoadImage(
+//			hInst,
+//			MAKEINTRESOURCE(menuIconMap[i].bmpRes),
+//			IMAGE_BITMAP,
+//			0, 0,
+//			LR_DEFAULTSIZE | LR_CREATEDIBSECTION
+//		);
+//		if (hBmp) {
+//			// MF_BYCOMMAND pins the icon to the correct command ID,
+//			// regardless of its position in the menu.
+//			SetMenuItemBitmaps(
+//				hMenu,
+//				menuIconMap[i].cmdID,
+//				MF_BYCOMMAND,
+//				hBmp,    // normal state
+//				hBmp     // disabled state (reuse if no separate bmp)
+//			);
+//			DeleteObject(hBmp);
+//		}
+//	}
+//	DrawMenuBar(GetActiveWindow());
+//}
+//void SetMenuBitmaps(HINSTANCE hInst, HMENU hMenu)
+//{
+//	size_t i;
+//	char buf[128];
+//	for (i = 0; i < menuIconCount; ++i) {
+//		HBITMAP hBmp = (HBITMAP)LoadImage(
+//			hInst,
+//			MAKEINTRESOURCE(menuIconMap[i].bmpRes),
+//			IMAGE_BITMAP, 0, 0,
+//			LR_DEFAULTSIZE | LR_CREATEDIBSECTION
+//		);
+//		if (!hBmp) {
+//			// DEBUG: resource failed to load
+//			wsprintf(buf, "DEBUG: LoadImage failed for bmpRes=%u", menuIconMap[i].bmpRes);
+//			MessageBox(NULL, buf, "DEBUG", MB_OK);
+//			continue;
+//		}
+//
+//		// DEBUG: we’re about to attach this bitmap
+//		//wsprintf(buf, "Attaching bmpRes=%u to cmdID=%u",
+//		//	menuIconMap[i].bmpRes, menuIconMap[i].cmdID);
+//		//MessageBox(NULL, buf, "DEBUG", MB_OK);
+//
+//		SetMenuItemBitmaps(
+//			hMenu,
+//			menuIconMap[i].cmdID,
+//			MF_BYCOMMAND,
+//			hBmp, hBmp
+//		);
+//		DeleteObject(hBmp);
+//	}
+//
+//	// Use your frame’s HWND here, not GetActiveWindow()
+//	DrawMenuBar(ghwndFrame);
+//}
 
 
 
@@ -115,107 +250,198 @@ BOOL			ReadOnly;
 BOOL			bCmdLineArgs = FALSE;
 char			gstrCmdLineArgs[MAX_PATH * 2];			// Command line argument string.
 
-
+// Chiron 2025
+// 
+//int PASCAL WinMain(HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show)
+///* windows entry point function - initialises everything and enters the
+// * message loop
+// */
+//{
+//	MSG msg;
+//
+//	instance = inst;
+//	if (! RegisterAppClass(inst))
+//		return 1;
+//
+//	// Chiron 2025
+//	///* load the common control dll */
+//	//InitCommonControls();
+//	/* load common-controls v6 (so ListView_SetAutoScrollMargin is honored) */
+//	{
+//		INITCOMMONCONTROLSEX icex;
+//		icex.dwSize = sizeof(icex);
+//		icex.dwICC = ICC_LISTVIEW_CLASSES;    // just the ListView (and header) classes
+//		InitCommonControlsEx(&icex);
+//	}
+//
+//
+//
+//	/* load cursors */
+//	ghcurNormal = LoadCursor(NULL, IDC_ARROW);
+//	ghcurNo = LoadCursor(NULL, IDC_NO);
+//	ghcurDrag = LoadCursor(instance, MAKEINTRESOURCE(IDC_POINTER_COPY));
+//
+//	/* get user options */
+//	ReadOptions();
+//
+//	/* initialise ADFLib */
+//	adfEnvInitDefault();
+//	adfSetEnvFct(ADFError, ADFWarning, ADFVerbose);
+//
+//	adfEnv.rwhAccess = ADFAccess;
+//	adfEnv.progressBar = ADFProgress;
+//	adfEnv.useRWAccess = TRUE;
+//	adfEnv.useProgressBar = TRUE;
+//	adfEnv.useDirCache = Options.useDirCache;
+//
+//
+//
+//	// Chiron 2025
+//	//
+//	//// Create path to temp directory in Opus root directory.
+//	//(void)getcwd(dirTemp, 100);
+//	//strcpy(dirOpus, dirTemp);
+//	//strcat(dirTemp, "\\opustemp\\");
+//	// 
+//	// Get full path to the executable
+//	GetModuleFileName(NULL, dirOpus, MAX_PATH);
+//	//
+//	// Strip off the executable name to get the folder
+//	char* lastSlash = strrchr(dirOpus, '\\');
+//	if (lastSlash) *lastSlash = '\0';
+//	//
+//	// Set working directory to the EXE folder
+//	SetCurrentDirectory(dirOpus);
+//	//
+//	// Create path to temp directory in Opus root directory
+//	strcpy(dirTemp, dirOpus);
+//	strcat(dirTemp, "\\opustemp\\");
+//
+//
+//
+//	/* the main loop */
+//	msg.wParam = 1;
+//
+//	// Store command line arguments for processing in WM_CREATE.
+//	strcpy(gstrCmdLineArgs, cmdLine);
+//
+//	ghwndFrame = CreateAppWindow(inst);
+//	if (ghwndFrame)
+//	{
+//		ShowWindow(ghwndFrame, show);
+//		UpdateWindow(ghwndFrame);
+//
+//		/* standard message loop for MDI apps */
+//		while(GetMessage(&msg, NULL, 0, 0))
+//		{
+//			if(! TranslateMDISysAccel(ghwndMDIClient, &msg)) {
+//				TranslateMessage(&msg);
+//				DispatchMessage(&msg);
+//			}
+//		}
+//	}
+//
+//	/* clean up ADFLib */
+//	adfEnvCleanUp();
+//
+//	/* save options */
+//	WriteOptions();
+//
+//	/* unregister all the classes we registered (not really needed but...) */
+//	UnregisterAllClasses(inst);
+//
+//	return msg.wParam;
+//}
 int PASCAL WinMain(HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show)
-/* windows entry point function - initialises everything and enters the
- * message loop
- */
 {
 	MSG msg;
 
 	instance = inst;
-	if (! RegisterAppClass(inst))
+	if (!RegisterAppClass(inst))
 		return 1;
 
-	// Chiron 2025
-	///* load the common control dll */
-	//InitCommonControls();
-	/* load common-controls v6 (so ListView_SetAutoScrollMargin is honored) */
+	// Initialize common controls v6 for ListView, etc.
 	{
 		INITCOMMONCONTROLSEX icex;
 		icex.dwSize = sizeof(icex);
-		icex.dwICC = ICC_LISTVIEW_CLASSES;    // just the ListView (and header) classes
+		icex.dwICC = ICC_LISTVIEW_CLASSES;
 		InitCommonControlsEx(&icex);
 	}
 
-
-
-	/* load cursors */
+	// Load cursors
 	ghcurNormal = LoadCursor(NULL, IDC_ARROW);
 	ghcurNo = LoadCursor(NULL, IDC_NO);
-	ghcurDrag = LoadCursor(instance, MAKEINTRESOURCE(IDC_POINTER_COPY));
+	ghcurDrag = LoadCursor(inst, MAKEINTRESOURCE(IDC_POINTER_COPY));
 
-	/* get user options */
+	// Read saved options, init ADFLib, set up directories…
 	ReadOptions();
-
-	/* initialise ADFLib */
 	adfEnvInitDefault();
 	adfSetEnvFct(ADFError, ADFWarning, ADFVerbose);
-
 	adfEnv.rwhAccess = ADFAccess;
 	adfEnv.progressBar = ADFProgress;
 	adfEnv.useRWAccess = TRUE;
 	adfEnv.useProgressBar = TRUE;
 	adfEnv.useDirCache = Options.useDirCache;
 
-
+	GetModuleFileName(NULL, dirOpus, MAX_PATH);
 
 	// Chiron 2025
-	//
-	//// Create path to temp directory in Opus root directory.
-	//(void)getcwd(dirTemp, 100);
-	//strcpy(dirOpus, dirTemp);
-	//strcat(dirTemp, "\\opustemp\\");
 	// 
-	// Get full path to the executable
-	GetModuleFileName(NULL, dirOpus, MAX_PATH);
-	//
-	// Strip off the executable name to get the folder
-	char* lastSlash = strrchr(dirOpus, '\\');
-	if (lastSlash) *lastSlash = '\0';
-	//
-	// Set working directory to the EXE folder
+	//if (char* lastSlash = strrchr(dirOpus, '\\')) *lastSlash = '\0';
+	// at the top of your block (C89 style you can even group all your declarations)
+	char* lastSlash;
+
+	// later …
+	lastSlash = strrchr(dirOpus, '\\');
+	if (lastSlash) {
+		*lastSlash = '\0';
+	}
+
+
+
 	SetCurrentDirectory(dirOpus);
-	//
-	// Create path to temp directory in Opus root directory
 	strcpy(dirTemp, dirOpus);
 	strcat(dirTemp, "\\opustemp\\");
 
-
-
-	/* the main loop */
-	msg.wParam = 1;
-
-	// Store command line arguments for processing in WM_CREATE.
+	// Save command line args for WM_CREATE handlers
 	strcpy(gstrCmdLineArgs, cmdLine);
 
+	// Create the main frame window
 	ghwndFrame = CreateAppWindow(inst);
 	if (ghwndFrame)
 	{
+		// ←——— Add this block to attach your menu icons ———→
+		{
+			// attach to the top‐level menu bar:
+			HMENU hMain = GetMenu(ghwndFrame);
+			if (hMain)
+				SetMenuBitmaps(instance, hMain);
+		}
+
 		ShowWindow(ghwndFrame, show);
 		UpdateWindow(ghwndFrame);
 
-		/* standard message loop for MDI apps */
-		while(GetMessage(&msg, NULL, 0, 0))
+		// Standard MDI/Message loop
+		msg.wParam = 1;
+		while (GetMessage(&msg, NULL, 0, 0))
 		{
-			if(! TranslateMDISysAccel(ghwndMDIClient, &msg)) {
+			if (!TranslateMDISysAccel(ghwndMDIClient, &msg))
+			{
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 			}
 		}
 	}
 
-	/* clean up ADFLib */
+	// Cleanup
 	adfEnvCleanUp();
-
-	/* save options */
 	WriteOptions();
-
-	/* unregister all the classes we registered (not really needed but...) */
 	UnregisterAllClasses(inst);
 
 	return msg.wParam;
 }
+
+
 
 LRESULT CALLBACK MainWinProc(HWND hwndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam)
 /* handles all messages for the main window and passes messages on to the
@@ -243,7 +469,7 @@ LRESULT CALLBACK MainWinProc(HWND hwndFrame, UINT wMsg, WPARAM wParam, LPARAM lP
 	//		0, 0,                      // keep current x/y 
 	//		800,                      // new width 
 	//		600,                       // new height
-	//		SWP_NOZORDER | SWP_NOMOVE  // don�t move, just size
+	//		SWP_NOZORDER | SWP_NOMOVE  // don’t move, just size
 	//	);
 	//
 
@@ -282,7 +508,7 @@ LRESULT CALLBACK MainWinProc(HWND hwndFrame, UINT wMsg, WPARAM wParam, LPARAM lP
 	case WM_CREATE:
 		CreateProc(hwndFrame);
 
-		// Set the outer window to 800�600
+		// Set the outer window to 800×600
 		SetWindowPos(
 			hwndFrame,
 			NULL,
@@ -308,7 +534,7 @@ LRESULT CALLBACK MainWinProc(HWND hwndFrame, UINT wMsg, WPARAM wParam, LPARAM lP
 			{
 				if (*p == '"')
 				{
-					// Toggle quote state, but don�t copy the quote itself
+					// Toggle quote state, but don’t copy the quote itself
 					inQuote = !inQuote;
 				}
 				else if (*p == ' ' && !inQuote)
