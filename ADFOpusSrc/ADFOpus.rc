@@ -1,5 +1,7 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
+#pragma code_page(65001)
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -7,15 +9,8 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-// Chiron 2025
-// 
-// #include "afxres.h"
-#include <windows.h>
-#include <commctrl.h>            // for common‐control constants
-#ifndef IDC_STATIC
-#define IDC_STATIC    -1
-#endif
-
+// #include "afxres.h" // Chiron 2025
+#include <winres.h>
 
 
 
@@ -27,7 +22,6 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -63,7 +57,6 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
-#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -76,7 +69,9 @@ CAPTION "Disk Image Information"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         "Tab1",IDC_VOLINFOTABCTRL,"SysTabControl32",0x0,5,5,235,185
-    DEFPUSHBUTTON   "Close",IDCANCEL,190,195,50,14
+    // DEFPUSHBUTTON   "Close",IDCANCEL,190,195,50,14 // Chiron 2025
+    DEFPUSHBUTTON   "OK", IDOK, 182, 211, 70, 15
+    PUSHBUTTON      "Cancel", IDCANCEL, 182, 231, 70, 15
 END
 
 IDD_BATCHCONVERTER DIALOGEX 0, 0, 257, 218
@@ -148,10 +143,6 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,155,100,50,15
 END
 
-// Chiron 2025
-#define BUILDINFO  "Built on " __DATE__ " at " __TIME__
-
-
 IDD_ABOUTPAGE1 DIALOGEX 0, 0, 245, 190
 STYLE DS_SETFONT | WS_CHILD
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -166,8 +157,7 @@ BEGIN
     LTEXT           "This is Free Software! Licence:",IDC_STATIC,49,113,146,8
     PUSHBUTTON      "GNU GPL v2",IDC_LICENCEPAGEBTN,150,110,50,15
     PUSHBUTTON      "Original 2003 Homepage",IDC_WEBPAGEBTN2,63,150,116,15
-    LTEXT           "", IDC_BUILDINFO, 63, 167, 116, 15
-
+    LTEXT           "",IDC_BUILDINFO,63,167,116,15
 END
 
 IDD_ABOUTPAGE2 DIALOG 0, 0, 237, 189
@@ -177,11 +167,11 @@ BEGIN
     CTEXT           "The Credits (in order of appearance)",IDC_STATIC,5,5,225,10
     LTEXT           "Dan Sutherland",IDC_STATIC,7,21,225,8
     RTEXT           "Idea, design, code",IDC_STATIC,5,30,225,8
-    LTEXT           "Laurent Clévy",IDC_STATIC,5,44,225,8
+    LTEXT           "Laurent ClÃ©vy",IDC_STATIC,5,44,225,8
     RTEXT           "Amiga filesystem code (ADFLib), ideas and help",IDC_STATIC,5,58,225,8
     LTEXT           "Gary Harris",IDC_STATIC,5,72,225,8
     RTEXT           "Help file, bug reports, ideas, more help and more code",IDC_STATIC,5,86,225,8
-    LTEXT           "André R. de la Rocha",IDC_STATIC,5,100,225,8
+    LTEXT           "AndrÃ© R. de la Rocha",IDC_STATIC,5,100,225,8
     RTEXT           "DMS conversion routines (xDMS)",IDC_STATIC,5,114,225,8
     LTEXT           "James Thomas",IDC_STATIC,7,128,225,8
     RTEXT           "The ADF Opus logo",IDC_STATIC,7,142,225,8
@@ -306,7 +296,7 @@ STYLE DS_SETFONT | WS_CHILD
 FONT 8, "MS Sans Serif"
 BEGIN
     PUSHBUTTON      "http://perso.club-internet.fr/lclevy/adflib/",IDC_ADFLIBBTN,48,75,140,15
-    CTEXT           "ADFlib is a portable, GPLed implementation of the Amiga filesystem written by Laurent Clévy. For more information visit the ADFlib homepage:",IDC_STATIC,5,40,225,25
+    CTEXT           "ADFlib is a portable, GPLed implementation of the Amiga filesystem written by Laurent ClÃ©vy. For more information visit the ADFlib homepage:",IDC_STATIC,5,40,225,25
     CTEXT           "[]",IDC_ADFLIBVER,5,100,225,8
     CTEXT           "[]",IDC_ADFLIBDATE,5,110,225,8
 END
@@ -346,7 +336,7 @@ BEGIN
     CTEXT           "xDMS is a public domain decompression utility for Diskmasher,",IDC_STATIC,18,27,199,8
     CTEXT           "a disk cruncher popular on the Amiga computer, written by",IDC_STATIC,18,39,199,8
     CTEXT           "ADF Opus uses xDMS 1.3 for its DMS decompression facility.",IDC_STATIC,18,15,199,8
-    CTEXT           "André de la Rocha",IDC_STATIC,18,51,199,8
+    CTEXT           "AndrÃ© de la Rocha",IDC_STATIC,18,51,199,8
     CTEXT           "xDMS uses source code fragments or informations from the following",IDC_STATIC,7,73,222,8
     CTEXT           "public domain or freeware programs:",IDC_STATIC,7,84,222,8
     CTEXT           "Unix  LHA  by Masaru Oki",IDC_STATIC,7,95,222,8
@@ -583,7 +573,6 @@ BEGIN
         MENUITEM "New &Directory",              ID_ACTION_NEWDIRECTORY
         MENUITEM "New &Windows Lister",         ID_VIEW_NEWWINDOWSLISTER
         MENUITEM "&Open...",                    ID_FIL_OPEN
-        // MENUITEM "Open De&vice",                ID_FIL_OPENDEVICE // Chiron 2025
         MENUITEM "&Close",                      ID_FIL_CLOSE
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_FIL_EXIT
@@ -630,7 +619,6 @@ BEGIN
         MENUITEM "&Cascade",                    ID_WIN_CASCADE
         MENUITEM "Tile &Horizontally",          ID_WIN_TILEHORIZONTAL
         MENUITEM "Tile &Vertically",            ID_WIN_TILEVERTICAL
-        //MENUITEM "&Arrange Icons",              ID_WIN_ARRANGEICONS
         MENUITEM "Close &All",                  ID_WIN_CLOSEALL
     END
     POPUP "&Help"
@@ -794,7 +782,6 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
-#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -895,7 +882,6 @@ IDB_SHOWUNDELETABLE     BITMAP                  "images\\showundel.bmp"
 
 IDB_TEXTVIEWER          BITMAP                  "images\\textviewer.bmp"
 
-
 IDB_TBBUTTONS_TRUECOLOR BITMAP                  "images\\toolbar_truecolor.bmp"
 
 
@@ -926,7 +912,7 @@ BEGIN
             VALUE "FileDescription", "ADF Opus"
             VALUE "FileVersion", "1, 2, 0, 0"
             VALUE "InternalName", "ADFOpus"
-            VALUE "LegalCopyright", "Copyright © 1998-2003 Gary Harris, Dan Sutherland."
+            VALUE "LegalCopyright", "Copyright Â© 1998-2003 Gary Harris, Dan Sutherland."
             VALUE "OriginalFilename", "ADFOpus.exe"
             VALUE "ProductName", "ADF Opus"
             VALUE "ProductVersion", "1, 2, 0, 0"

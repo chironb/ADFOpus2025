@@ -9,6 +9,119 @@
  * ChildCommon.c - Routines common to both types of child window
  */
 
+//// Chiron 2025 
+// // Tell the headers which minimum OS/IE features you need:
+//#ifndef WINVER
+//#  define WINVER    0x0501    // Windows XP+
+//#endif
+//#ifndef _WIN32_IE
+//#  define _WIN32_IE 0x0400    // IE4+ / Common Controls v6
+//#endif
+//
+//#include <windows.h>    // MUST come before any commctrl.h!
+//#include <commctrl.h>   // now pulls in listview styles, LVM_*, etc.
+//#pragma comment(lib, "comctl32.lib")
+//
+//
+//
+//
+//// Fallback definitions if your SDK is too old to define these:
+//#ifndef LVM_SETAUTOSCROLLINFO
+//#  define LVM_FIRST                0x1000
+//#  define LVM_SETAUTOSCROLLINFO    (LVM_FIRST + 239)
+//#endif
+//
+//#ifndef LVS_AUTOSCROLL_MARGIN
+//#  define LVS_AUTOSCROLL_MARGIN    0x0002
+//#endif
+
+
+
+//// Tell the headers to expose the v6+ ListView message
+//#ifndef WINVER
+//#  define WINVER      0x0501   // Windows XP+
+//#endif
+//#ifndef _WIN32_IE
+//#  define _WIN32_IE   0x0600   // IE6+ / ListView v6+ messages
+//#endif
+//
+//#include <windows.h>
+//#include <commctrl.h>            // for SendMessage, LVM_*
+//#pragma comment(lib, "comctl32.lib")
+//
+//// If your commctrl.h is too old, define the message yourself:
+//#ifndef LVM_SETAUTOSCROLLINFO
+//#  define LVM_FIRST               0x1000
+//#  define LVM_SETAUTOSCROLLINFO   (LVM_FIRST + 239)
+//#endif
+
+
+
+
+
+// at the top of your .c/.cpp
+#ifndef WINVER
+#  define WINVER    0x0501    // XP+
+#endif
+#ifndef _WIN32_IE
+#  define _WIN32_IE 0x0400    // ComCtl32 v6 APIs
+#endif
+
+#include <windows.h>
+#include <commctrl.h>           // for SetWindowSubclass
+#pragma comment(lib, "comctl32.lib")
+
+// Subclass callback – clamps the cursor after every WM_MOUSEMOVE
+static LRESULT CALLBACK ListViewClampProc(
+	HWND      hwnd,
+	UINT      uMsg,
+	WPARAM    wParam,
+	LPARAM    lParam,
+	UINT_PTR  uIdSubclass,
+	DWORD_PTR dwRefData
+)
+{
+	if (uMsg == WM_MOUSEMOVE)
+	{
+		// 1) Let the ListView scroll/drag‐select as usual
+		LRESULT lr = DefSubclassProc(hwnd, uMsg, wParam, lParam);
+
+		// 2) Clamp the cursor into the client rectangle
+		POINT pt;
+		GetCursorPos(&pt);
+		ScreenToClient(hwnd, &pt);
+
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		pt.x = pt.x < rc.left ? rc.left : (pt.x >= rc.right ? rc.right - 1 : pt.x);
+		pt.y = pt.y < rc.top ? rc.top : (pt.y >= rc.bottom ? rc.bottom - 1 : pt.y);
+
+		ClientToScreen(hwnd, &pt);
+		SetCursorPos(pt.x, pt.y);
+
+		return lr;
+	}
+
+	// For all other messages, just chain to default
+	return DefSubclassProc(hwnd, uMsg, wParam, lParam);
+}
+
+
+
+//// And define the struct if it isn’t in your headers:
+//#ifndef LVAUTOSCROLLINFO
+//typedef struct tagLVAUTOSCROLLINFO {
+//	UINT  cbSize;
+//	DWORD dwFlags;
+//	int   iMaxHorz;
+//	int   iMaxVert;
+//} LVAUTOSCROLLINFO, * LPLVAUTOSCROLLINFO;
+//#endif
+
+
+
+
+
 #include "Pch.h"
 
 #include "ADFOpus.h"
@@ -715,43 +828,112 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 }
 
 
+//HWND CreateListView(HWND win)
+//{
+//	HWND lv;
+//
+//	/* Create the control */
+//	lv = CreateWindowEx(
+//		WS_EX_CLIENTEDGE,
+//		WC_LISTVIEW,
+//		"",
+//		WS_CHILD | LVS_REPORT | LVS_EDITLABELS | WS_VISIBLE | 
+//			LVS_SHAREIMAGELISTS | LVS_NOSORTHEADER,
+//		0, 0,
+//		300, 100,
+//		win,
+//		NULL,
+//		instance,
+//		NULL
+//	);
+//
+//	if (lv == NULL)
+//		return NULL;
+//
+//	/* add the columns */
+//	LVAddColumn(lv, "Name", 200, 0);
+//	LVAddColumn(lv, "Size", 70, 1);
+//	LVAddColumn(lv, "Flags", 75, 2);
+//	// Create a Comment column in Amiga listers.
+//	if(GetWindowLong(win, GWL_USERDATA) != CHILD_WINLISTER)
+//		LVAddColumn(lv, "Comment", 605, 3);
+//
+//	/* assign the image list */
+//	ListView_SetImageList(lv, ghwndImageList, LVSIL_SMALL);
+//	// Set full row selection.
+//	ListView_SetExtendedListViewStyle(lv, LVS_EX_FULLROWSELECT);
+//	// Chiron 2025
+//	/* disable drag-auto-scroll (and the accompanying cursor warp) */
+//	// ListView_SetAutoScrollMargin(lv, 0, 0); // disable both horizontal & vertical auto-scroll
+//	// inside CreateListView after lv is created …
+//	//SendMessage(
+//	//	lv,
+//	//	LVM_SETAUTOSCROLLINFO,
+//	//	MAKEWPARAM(0, 0),               // cx=0, cy=0
+//	//	(LPARAM)LVS_AUTOSCROLL_MARGIN
+//	//);
+//	// 
+//	// Properly disable ListView auto-scroll (both axes)
+//	//LVAUTOSCROLLINFO asi;
+//	//asi.cbSize = sizeof(asi);
+//	//asi.dwFlags = 0;        // 0 = disable horizontal & vertical auto-scroll
+//	//asi.iMaxHorz = 0;       // unused when dwFlags==0
+//	//asi.iMaxVert = 0;       // unused when dwFlags==0
+//	//SendMessage(lv, LVM_SETAUTOSCROLLINFO, 0, (LPARAM)&asi);
+//
+//	// build the struct to turn OFF auto-scroll in both axes
+//	LVAUTOSCROLLINFO asi;
+//	ZeroMemory(&asi, sizeof(asi));
+//
+//	asi.cbSize = sizeof(asi);
+//	asi.dwFlags = 0;    // 0 = disable horizontal & vertical auto-scroll
+//	asi.iMaxHorz = 0;
+//	asi.iMaxVert = 0;
+//
+//	// this tells a v6 ListView to never call SetCursorPos behind your back
+//	SendMessage(lv, LVM_SETAUTOSCROLLINFO, 0, (LPARAM)&asi);
+//
+//	return lv;
+//} 
 HWND CreateListView(HWND win)
 {
-	HWND lv;
-
-	/* Create the control */
-	lv = CreateWindowEx(
+	HWND lv = CreateWindowEx(
 		WS_EX_CLIENTEDGE,
 		WC_LISTVIEW,
 		"",
-		WS_CHILD | LVS_REPORT | LVS_EDITLABELS | WS_VISIBLE | 
-			LVS_SHAREIMAGELISTS | LVS_NOSORTHEADER,
-		0, 0,
-		300, 100,
+		WS_CHILD | LVS_REPORT | LVS_EDITLABELS | WS_VISIBLE |
+		LVS_SHAREIMAGELISTS | LVS_NOSORTHEADER,
+		0, 0, 300, 100,
 		win,
 		NULL,
 		instance,
 		NULL
 	);
-
-	if (lv == NULL)
+	if (!lv)
 		return NULL;
 
-	/* add the columns */
+	// Add your columns
 	LVAddColumn(lv, "Name", 200, 0);
 	LVAddColumn(lv, "Size", 70, 1);
 	LVAddColumn(lv, "Flags", 75, 2);
-	// Create a Comment column in Amiga listers.
-	if(GetWindowLong(win, GWL_USERDATA) != CHILD_WINLISTER)
+	if (GetWindowLong(win, GWL_USERDATA) != CHILD_WINLISTER)
 		LVAddColumn(lv, "Comment", 605, 3);
 
-	/* assign the image list */
+	// Image list + full-row selection
 	ListView_SetImageList(lv, ghwndImageList, LVSIL_SMALL);
-	// Set full row selection.
 	ListView_SetExtendedListViewStyle(lv, LVS_EX_FULLROWSELECT);
 
+	// Install our subclass so the cursor never flies off
+	SetWindowSubclass(lv,
+		ListViewClampProc,
+		/* uIdSubclass */ 1,
+		/* dwRefData    */ 0);
+
 	return lv;
-} 
+}
+
+
+
 
 void ChildUpdate(HWND win)
 /* fills the list view control with the directory content */

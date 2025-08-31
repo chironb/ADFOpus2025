@@ -15,9 +15,16 @@
 #include "VolSelect.h"
 #include "ListView.h"
 #include "ADFlib.h"
-#include <imagehlp.h>			// For MakeSureDirectoryPathExists().
+//#include <imagehlp.h>			// For MakeSureDirectoryPathExists(). "dbghelp.h")
 #include "Help\AdfOpusHlp.h"
 #include "ChildCommon.h"		// For access to buf for filename storage.
+
+#pragma comment(lib, "Dbghelp.lib")
+#include <windows.h>
+#include <dbghelp.h>
+////
+//#include <shlwapi.h>                // declares MakeSureDirectoryPathExists
+//#pragma comment(lib, "Shlwapi.lib") // link Shlwapi.lib automatically
 
 
 // For conversions.

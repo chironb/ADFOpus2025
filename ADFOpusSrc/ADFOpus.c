@@ -56,6 +56,13 @@
 #include "ADFLib.h"
 #include "Help\AdfOpusHlp.h"
 
+// Chiron 2025
+#include <windows.h>
+#include <commctrl.h>
+#pragma comment(lib, "comctl32.lib")
+
+
+
 extern char* adfGetVersionNumber(); /* this shouldn't be here */
 
 ENV_DECLARATION;
@@ -120,8 +127,18 @@ int PASCAL WinMain(HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show)
 	if (! RegisterAppClass(inst))
 		return 1;
 
-	/* load the common control dll */
-	InitCommonControls();
+	// Chiron 2025
+	///* load the common control dll */
+	//InitCommonControls();
+	/* load common-controls v6 (so ListView_SetAutoScrollMargin is honored) */
+	{
+		INITCOMMONCONTROLSEX icex;
+		icex.dwSize = sizeof(icex);
+		icex.dwICC = ICC_LISTVIEW_CLASSES;    // just the ListView (and header) classes
+		InitCommonControlsEx(&icex);
+	}
+
+
 
 	/* load cursors */
 	ghcurNormal = LoadCursor(NULL, IDC_ARROW);
