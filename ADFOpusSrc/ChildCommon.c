@@ -56,6 +56,24 @@
 //#endif
 
 
+#include <windows.h>
+
+
+// Chiron 2025
+//
+//#include "MenuIcons.h"
+//// these must be declared or extern’d here:
+//extern HINSTANCE instance;
+//extern BOOL bDirClicked;
+//extern BOOL bFileClicked;
+//extern HWND   ghwndFrame;   // if you TrackPopup on that
+//
+#include "MenuIcons.h"
+extern HINSTANCE instance;    // or however you name your HINSTANCE
+extern HWND      ghwndFrame;  // your main window handle
+extern BOOL      bDirClicked;
+extern BOOL      bFileClicked;
+
 
 
 
@@ -493,9 +511,24 @@ LRESULT ChildOnCreate(HWND win)
 
 
 BOOL ChildOnCommand(HWND win, WPARAM wp, LPARAM lp)
-/* WM_COMMAND messages, mostly passed on from frame window */
 {
-	CHILDINFO *ci;
+    CHILDINFO *ci;
+
+    // Forward these commands to the main frame window so right-click/context menu items work
+    switch (wp)
+    {
+    case ID_TOOLS_TEXT_VIEWER:
+    case ID_TOOLS_DISPLAYBOOTBLOCK:
+    case ID_TOOLS_INSTALL:
+    case ID_FIL_INFORMATION:
+    case ID_ACTION_PROPERTIES:
+    case ID_TOOLS_BATCHCONVERTER:
+    case ID_TOOLS_DISK2FDI:
+    case ID_TOOLS_OPTIONS:
+    case ID_HELP_ABOUT:
+        SendMessage(ghwndFrame, WM_COMMAND, wp, lp);
+        return TRUE;
+    }
 
 	switch(wp)
 	{
@@ -1325,37 +1358,137 @@ BOOL ChildOnContextMenu(HWND win, int x, int y)
 	return FALSE;
 }
 
+// Chiron 2025
+// 
+//void DisplayContextMenu(HWND win, POINT pt)
+///* bring up the context menu
+// */
+//{
+//	HMENU	menu, popup;
+//	HBITMAP	bmpMenu;
+//
+//	menu = LoadMenu(instance, MAKEINTRESOURCE(IDR_LISTERMENU));
+//	if (menu == NULL)
+//		return;
+// 	popup = GetSubMenu(menu, 0);
+//	// Load and display menu bitmaps.
+//	bmpMenu =  (HBITMAP)LoadImage(instance, MAKEINTRESOURCE(IDB_UPONELEVEL), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE|LR_DEFAULTCOLOR);
+//	SetMenuItemBitmaps(popup, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
+//	bmpMenu =  (HBITMAP)LoadImage(instance, MAKEINTRESOURCE(IDB_PROPERTIES), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE|LR_DEFAULTCOLOR);
+//	SetMenuItemBitmaps(popup, 6, MF_BYPOSITION, bmpMenu, bmpMenu);
+//	// Chiron 2025 - If I enable this then the Text Viewer icon is loaded in the right click menu for UNSELECT ALL and that's wrong. 
+//	//bmpMenu =  (HBITMAP)LoadImage(instance, MAKEINTRESOURCE(IDB_TEXTVIEWER), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE|LR_DEFAULTCOLOR);
+//	//SetMenuItemBitmaps(popup, 8, MF_BYPOSITION, bmpMenu, bmpMenu);
+//
+//	// Activate the Properties item if a file has been clicked.
+////	if(bClicked == TRUE)
+//	if(bDirClicked || bFileClicked)
+//		EnableMenuItem(popup, ID_ACTION_PROPERTIES, MF_ENABLED);
+//	if(bFileClicked)
+//		EnableMenuItem(popup, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
+//
+//	TrackPopupMenuEx(popup, 0, pt.x, pt.y, ghwndFrame, NULL);
+//	DestroyMenu(menu);
+//	DeleteObject(bmpMenu);
+//}
+
+// Make sure you’ve got this prototype visible:
+//void SetMenuBitmaps(HINSTANCE hInst, HWND hWnd, HMENU hMenu);
+//void SetMenuBitmaps(HINSTANCE hInst, HMENU hMenu);
+
+//void DisplayContextMenu(HWND win, POINT pt)
+//{
+//	// 1) Load the menu resource
+//	HMENU menu = LoadMenu(instance, MAKEINTRESOURCE(IDR_LISTERMENU));
+//	if (!menu)
+//		return;
+//
+//	// 2) Grab the submenu you’re about to show
+//	HMENU popup = GetSubMenu(menu, 0);
+//	if (!popup) {
+//		DestroyMenu(menu);
+//		return;
+//	}
+//
+//	// 3) Tell Windows this popup can show bitmaps
+//	{
+//		MENUINFO mi = { sizeof(mi) };
+//		// get existing style bits
+//		GetMenuInfo(popup, &mi);
+//
+//		// OR in the CHECKORBMP flag (preserve other bits!)
+//		mi.fMask = MIM_STYLE;
+//		mi.dwStyle = mi.dwStyle | MNS_CHECKORBMP;
+//		SetMenuInfo(popup, &mi);
+//	}
+//
+//	// 4) Apply your global mapping helper
+//	SetMenuBitmaps(instance, popup);
+//
+//	// 5) Enable/disable your items
+//	if (bDirClicked || bFileClicked)
+//		EnableMenuItem(popup, ID_ACTION_PROPERTIES, MF_ENABLED);
+//	if (bFileClicked)
+//		EnableMenuItem(popup, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
+//
+//	// 6) Show it
+//	TrackPopupMenuEx(
+//		popup,
+//		TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+//		pt.x,
+//		pt.y,
+//		win,
+//		NULL
+//	);
+//
+//	// 7) Cleanup
+//	DestroyMenu(menu);
+//}
+
 void DisplayContextMenu(HWND win, POINT pt)
-/* bring up the context menu
- */
 {
-	HMENU	menu, popup;
-	HBITMAP	bmpMenu;
+	HMENU menu = LoadMenu(instance,
+		MAKEINTRESOURCE(IDR_LISTERMENU));
+	if (!menu) return;
 
-	menu = LoadMenu(instance, MAKEINTRESOURCE(IDR_LISTERMENU));
-	if (menu == NULL)
-		return;
- 	popup = GetSubMenu(menu, 0);
-	// Load and display menu bitmaps.
-	bmpMenu =  (HBITMAP)LoadImage(instance, MAKEINTRESOURCE(IDB_UPONELEVEL), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE|LR_DEFAULTCOLOR);
-	SetMenuItemBitmaps(popup, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
-	bmpMenu =  (HBITMAP)LoadImage(instance, MAKEINTRESOURCE(IDB_PROPERTIES), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE|LR_DEFAULTCOLOR);
-	SetMenuItemBitmaps(popup, 6, MF_BYPOSITION, bmpMenu, bmpMenu);
-	// Chiron 2025 - If I enable this then the Text Viewer icon is loaded in the right click menu for UNSELECT ALL and that's wrong. 
-	//bmpMenu =  (HBITMAP)LoadImage(instance, MAKEINTRESOURCE(IDB_TEXTVIEWER), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE|LR_DEFAULTCOLOR);
-	//SetMenuItemBitmaps(popup, 8, MF_BYPOSITION, bmpMenu, bmpMenu);
+	// Decorate the root so popups get a gutter
+	MENUINFO mi = { sizeof(mi) };
+	GetMenuInfo(menu, &mi);
+	mi.fMask = MIM_STYLE;
+	mi.dwStyle = mi.dwStyle | MNS_CHECKORBMP;
+	SetMenuInfo(menu, &mi);
 
-	// Activate the Properties item if a file has been clicked.
-//	if(bClicked == TRUE)
-	if(bDirClicked || bFileClicked)
-		EnableMenuItem(popup, ID_ACTION_PROPERTIES, MF_ENABLED);
-	if(bFileClicked)
-		EnableMenuItem(popup, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
+	// Grab and decorate the actual popup you’ll display
+	HMENU popup = GetSubMenu(menu, 0);
+	if (popup) {
+		SetMenuBitmaps(instance, popup);
 
-	TrackPopupMenuEx(popup, 0, pt.x, pt.y, ghwndFrame, NULL);
+		// your enable/disable logic
+		if (bDirClicked || bFileClicked)
+			EnableMenuItem(popup,
+				ID_ACTION_PROPERTIES, MF_ENABLED);
+		if (bFileClicked)
+			EnableMenuItem(popup,
+				ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
+
+		// FIX: Enable/disable Write Bootblock
+		if (ci && ci->isAmi && (ci->vol->bootCode != 1))
+			EnableMenuItem(popup, ID_TOOLS_INSTALL, MF_ENABLED);
+		else
+			EnableMenuItem(popup, ID_TOOLS_INSTALL, MF_GRAYED);
+
+		TrackPopupMenuEx(
+			popup,
+			TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+			pt.x, pt.y,
+			win,
+			NULL
+		);
+	}
 	DestroyMenu(menu);
-	DeleteObject(bmpMenu);
 }
+
+
 
 void ChildDelete(HWND win)
 /* delete selected files

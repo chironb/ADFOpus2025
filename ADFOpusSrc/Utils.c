@@ -129,108 +129,109 @@ void ResizeMDIClientWin()
 	MoveWindow(ghwndMDIClient, rFrm.left, rFrm.top, rFrm.right - rFrm.left, lNewHeight, TRUE);
 }
 
-
-void SetMenuBitmaps(HINSTANCE hInst, HMENU hmenuMain)
-// Set the menu item bitmaps.
-{
-	HBITMAP	bmpMenu;
-	HMENU	hsubmenuFile, hsubmenuView, hsubmenuAction, hsubmenuTools, hsubmenuWindow, hsubmenuHelp;
-	int		iBitmap;
-	
-	hsubmenuFile	= GetSubMenu(hmenuMain, 0);
-	hsubmenuView	= GetSubMenu(hmenuMain, 2);
-	hsubmenuAction	= GetSubMenu(hmenuMain, 3);
-	hsubmenuTools	= GetSubMenu(hmenuMain, 4);
-	hsubmenuWindow	= GetSubMenu(hmenuMain, 5);
-	hsubmenuHelp	= GetSubMenu(hmenuMain, 6);
-
-	// Load menu bitmaps. Bitmap IDs range from IDB_NEW (206) to IDB_TEXTVIEWER (227).
-	// Cycling to IDB_TEXTVIEWER + 1 prevents final bitmap being corrupted when bmpMenu
-	// is released.
-	for(iBitmap = IDB_NEW;iBitmap <= IDB_TEXTVIEWER + 1;iBitmap++){
-
-		bmpMenu =  (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(iBitmap), IMAGE_BITMAP, 0, 0, 
-									  LR_DEFAULTSIZE|LR_DEFAULTCOLOR);//LR_LOADTRANSPARENT);
-
-		switch(iBitmap){
-		// File menu.
-		case IDB_NEW:
-			SetMenuItemBitmaps(hsubmenuFile, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_OPEN:
-			SetMenuItemBitmaps(hsubmenuFile, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_CLOSE:
-			SetMenuItemBitmaps(hsubmenuFile, 3, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_INFO:
-			SetMenuItemBitmaps(hsubmenuFile, 5, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		// View menu.
-		case IDB_SHOWUNDELETABLE:
-			SetMenuItemBitmaps(hsubmenuView, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		// Action menu.
-		case IDB_UPONELEVEL:
-			SetMenuItemBitmaps(hsubmenuAction, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_CREATEDIR:
-			SetMenuItemBitmaps(hsubmenuAction, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_DELETE:
-			SetMenuItemBitmaps(hsubmenuAction, 3, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_UNDELETE:
-			SetMenuItemBitmaps(hsubmenuAction, 4, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_RENAME:
-			SetMenuItemBitmaps(hsubmenuAction, 5, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_PROPERTIES:
-			SetMenuItemBitmaps(hsubmenuAction, 6, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		// Tools menu.
-		case IDB_TEXTVIEWER:
-			SetMenuItemBitmaps(hsubmenuTools, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_BATCH:
-			SetMenuItemBitmaps(hsubmenuTools, 2, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_DISK2FDI:
-			SetMenuItemBitmaps(hsubmenuTools, 3, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_INSTALL:
-			SetMenuItemBitmaps(hsubmenuTools, 5, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_DISPLAY:
-			SetMenuItemBitmaps(hsubmenuTools, 6, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_OPTIONS:
-			SetMenuItemBitmaps(hsubmenuTools, 8, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		// Window menu.
-		case IDB_CASCADE:
-			SetMenuItemBitmaps(hsubmenuWindow, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_TILEHOR:
-			SetMenuItemBitmaps(hsubmenuWindow, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_TILEVER:
-			SetMenuItemBitmaps(hsubmenuWindow, 2, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		// Help menu.
-		case IDB_HELP:
-			SetMenuItemBitmaps(hsubmenuHelp, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
-			SetMenuItemBitmaps(hsubmenuHelp, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		case IDB_ABOUT:
-			SetMenuItemBitmaps(hsubmenuHelp, 3, MF_BYPOSITION, bmpMenu, bmpMenu);
-			break;
-		}
-		
-	}
-	DeleteObject(bmpMenu);
-}
+// Chiron 2025
+// 
+//void SetMenuBitmaps(HINSTANCE hInst, HMENU hmenuMain)
+//// Set the menu item bitmaps.
+//{
+//	HBITMAP	bmpMenu;
+//	HMENU	hsubmenuFile, hsubmenuView, hsubmenuAction, hsubmenuTools, hsubmenuWindow, hsubmenuHelp;
+//	int		iBitmap;
+//	
+//	hsubmenuFile	= GetSubMenu(hmenuMain, 0);
+//	hsubmenuView	= GetSubMenu(hmenuMain, 2);
+//	hsubmenuAction	= GetSubMenu(hmenuMain, 3);
+//	hsubmenuTools	= GetSubMenu(hmenuMain, 4);
+//	hsubmenuWindow	= GetSubMenu(hmenuMain, 5);
+//	hsubmenuHelp	= GetSubMenu(hmenuMain, 6);
+//
+//	// Load menu bitmaps. Bitmap IDs range from IDB_NEW (206) to IDB_TEXTVIEWER (227).
+//	// Cycling to IDB_TEXTVIEWER + 1 prevents final bitmap being corrupted when bmpMenu
+//	// is released.
+//	for(iBitmap = IDB_NEW;iBitmap <= IDB_TEXTVIEWER + 1;iBitmap++){
+//
+//		bmpMenu =  (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(iBitmap), IMAGE_BITMAP, 0, 0, 
+//									  LR_DEFAULTSIZE|LR_DEFAULTCOLOR);//LR_LOADTRANSPARENT);
+//
+//		switch(iBitmap){
+//		// File menu.
+//		case IDB_NEW:
+//			SetMenuItemBitmaps(hsubmenuFile, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_OPEN:
+//			SetMenuItemBitmaps(hsubmenuFile, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_CLOSE:
+//			SetMenuItemBitmaps(hsubmenuFile, 3, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_INFO:
+//			SetMenuItemBitmaps(hsubmenuFile, 5, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		// View menu.
+//		case IDB_SHOWUNDELETABLE:
+//			SetMenuItemBitmaps(hsubmenuView, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		// Action menu.
+//		case IDB_UPONELEVEL:
+//			SetMenuItemBitmaps(hsubmenuAction, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_CREATEDIR:
+//			SetMenuItemBitmaps(hsubmenuAction, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_DELETE:
+//			SetMenuItemBitmaps(hsubmenuAction, 3, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_UNDELETE:
+//			SetMenuItemBitmaps(hsubmenuAction, 4, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_RENAME:
+//			SetMenuItemBitmaps(hsubmenuAction, 5, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_PROPERTIES:
+//			SetMenuItemBitmaps(hsubmenuAction, 6, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		// Tools menu.
+//		case IDB_TEXTVIEWER:
+//			SetMenuItemBitmaps(hsubmenuTools, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_BATCH:
+//			SetMenuItemBitmaps(hsubmenuTools, 2, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_DISK2FDI:
+//			SetMenuItemBitmaps(hsubmenuTools, 3, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_INSTALL:
+//			SetMenuItemBitmaps(hsubmenuTools, 5, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_DISPLAY:
+//			SetMenuItemBitmaps(hsubmenuTools, 6, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_OPTIONS:
+//			SetMenuItemBitmaps(hsubmenuTools, 8, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		// Window menu.
+//		case IDB_CASCADE:
+//			SetMenuItemBitmaps(hsubmenuWindow, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_TILEHOR:
+//			SetMenuItemBitmaps(hsubmenuWindow, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_TILEVER:
+//			SetMenuItemBitmaps(hsubmenuWindow, 2, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		// Help menu.
+//		case IDB_HELP:
+//			SetMenuItemBitmaps(hsubmenuHelp, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			SetMenuItemBitmaps(hsubmenuHelp, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		case IDB_ABOUT:
+//			SetMenuItemBitmaps(hsubmenuHelp, 3, MF_BYPOSITION, bmpMenu, bmpMenu);
+//			break;
+//		}
+//		
+//	}
+//	DeleteObject(bmpMenu);
+//}
 
 
 void UpdateMenuItems(HMENU menu)
