@@ -28,6 +28,105 @@ extern char gstrFileName[MAX_PATH * 2];
 extern HWND	ghwndMDIClient;
 
 
+LRESULT CALLBACK GreaseweazleProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
+{
+	/* Placeholder until I can create the Greaseweazle functionality to replace DISK2FDI. */
+
+	//static DWORD aIds[] = {
+	//	IDCANCEL,				IDCANCEL,
+	//	0,0
+	//};
+
+	switch (msg) {
+
+		case WM_INITDIALOG:
+
+			// Filename - Set Default Filename for Greaseweazle Imaged Disk
+			SetDlgItemText(
+				dlg,                   // dialog HWND
+				IDC_GW_EDIT_FILENAME,          // your control’s ID
+				TEXT("ADFOpus_Greaseweazle.adf")
+			);
+
+
+			// Open in ADF Opus after creation
+			CheckDlgButton(
+				dlg,                // HWND of the dialog
+				IDC_GW_CHECK_OPEN,    // control ID
+				BST_CHECKED         // set it checked
+			);
+
+
+			// Radio Pair #1 - Image Type
+			CheckRadioButton(dlg,
+				IDC_GW_RADIO_ADF,  // first ID in group
+				IDC_GW_RADIO_ADZ,  // last ID in group
+				IDC_GW_RADIO_ADF   // ID to select
+			);
+
+			// Radio Pair #2 - Source Drive
+			CheckRadioButton(dlg,
+				IDC_GW_RADIO_DRIVE_0,  // first ID in group
+				IDC_GW_RADIO_DRIVE_1,  // last ID in group
+				IDC_GW_RADIO_DRIVE_0   // ID to select
+			);
+
+			// Radio Pair #3 - Disk Density
+			CheckRadioButton(dlg,
+				IDC_GW_RADIO_DOUBLEDENSITY,  // first ID in group
+				IDC_GW_RADIO_HIGHDENSITY,  // last ID in group
+				IDC_GW_RADIO_DOUBLEDENSITY   // ID to select
+			);
+
+			// Radio Pair #4 - Read / Write Image
+			CheckRadioButton(dlg,
+				IDC_GW_RADIO_READ_IMAGE,  // first ID in group
+				IDC_GW_RADIO_WRITE_IMAGE,  // last ID in group
+				IDC_GW_RADIO_READ_IMAGE   // ID to select
+			);
+
+			return TRUE;
+
+		break;
+
+		case WM_COMMAND:
+			switch ((int)LOWORD(wp)) {
+
+				case IDCANCEL:
+					EndDialog(dlg, TRUE);
+					return TRUE;
+				break;
+
+				case IDGWSTART:
+					//RunDisk2FDI(dlg);
+					MessageBox(
+						dlg,
+						TEXT("This feature, launching Greaseweazle from within\n")
+						TEXT("ADF Opus 2025, is not yet implemented.\n\n")
+						TEXT("Thanks for your patience!"),
+						TEXT("Not Implemented"),
+						MB_OK | MB_ICONINFORMATION
+					);
+					return TRUE;
+				break;
+
+			}/*end-switch*/
+		break;
+		
+		//IDGWSTART
+
+
+		case WM_CLOSE:
+			EndDialog(dlg, TRUE);
+			return TRUE;
+		break;
+
+	}/*end-switch*/
+
+	return FALSE;
+
+}		
+
 
 LRESULT CALLBACK Disk2FDIProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 {

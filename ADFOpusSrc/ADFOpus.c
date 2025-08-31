@@ -646,8 +646,8 @@ LRESULT CALLBACK MainWinProc(HWND hwndFrame, UINT wMsg, WPARAM wParam, LPARAM lP
 
 		// Chiron 2025 NOTE: I have no intention of maintaining backward compatibility with Windows 9x era OSes. 
 		// High order bit is 1 (0x80000000) for Windows NT, 2K or XP. If less, we have 95, 98 or ME.
-		if(dwVersion < 0x80000000)                
-			EnableMenuItem(ghmenuMain, ID_TOOLS_DISK2FDI, MF_GRAYED);
+		//if(dwVersion < 0x80000000)                
+		//	EnableMenuItem(ghmenuMain, ID_TOOLS_GREASEWEAZLE, MF_GRAYED);
 
 		SetMenuBitmaps(instance, ghmenuMain);
 		break;
@@ -798,8 +798,8 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 
 		break;
 
-	case ID_TOOLS_DISK2FDI:
-		DialogBox(instance, MAKEINTRESOURCE(IDD_DISK2FDI), win, (DLGPROC)Disk2FDIProc);
+	case ID_TOOLS_GREASEWEAZLE:
+		DialogBox(instance, MAKEINTRESOURCE(IDD_GREASEWEAZLE), win, (DLGPROC)GreaseweazleProc);
 		break;
 
 	case ID_TOOLS_OPTIONS:
@@ -1306,8 +1306,8 @@ void GetTooltipText(char *buf, int cmd)
 	case ID_TOOLS_BATCHCONVERTER:
 		strcpy(buf, "Batch Converter");
 		break;
-	case ID_TOOLS_DISK2FDI:
-		strcpy(buf, "Disk2FDI");
+	case ID_TOOLS_GREASEWEAZLE:
+		strcpy(buf, "Greaseweazle");
 		break;
 	case ID_TOOLS_INSTALL:
 		strcpy(buf, "Install Bootblock");

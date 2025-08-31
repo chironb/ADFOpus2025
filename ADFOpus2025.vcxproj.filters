@@ -780,6 +780,21 @@
     <Image Include="ADFOpusSrc\images\toolbar_truecolor.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="ADFOpusSrc\images\closeallwindows.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\refresh.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\selectall.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\selectnone.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\selectinvert.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="ADFOpusSrc\images\ArrowCop.cur">

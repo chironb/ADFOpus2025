@@ -523,7 +523,7 @@ BOOL ChildOnCommand(HWND win, WPARAM wp, LPARAM lp)
     case ID_FIL_INFORMATION:
     case ID_ACTION_PROPERTIES:
     case ID_TOOLS_BATCHCONVERTER:
-    case ID_TOOLS_DISK2FDI:
+    case ID_TOOLS_GREASEWEAZLE:
     case ID_TOOLS_OPTIONS:
     case ID_HELP_ABOUT:
         SendMessage(ghwndFrame, WM_COMMAND, wp, lp);

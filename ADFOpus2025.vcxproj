@@ -141,6 +141,7 @@
     <Image Include="ADFOpusSrc\images\batch.bmp" />
     <Image Include="ADFOpusSrc\images\cascade.bmp" />
     <Image Include="ADFOpusSrc\images\close.bmp" />
+    <Image Include="ADFOpusSrc\images\closeallwindows.bmp" />
     <Image Include="ADFOpusSrc\images\createdir.bmp" />
     <Image Include="ADFOpusSrc\images\delete.bmp" />
     <Image Include="ADFOpusSrc\images\disk2fdi.bmp" />
@@ -161,7 +162,11 @@
     <Image Include="ADFOpusSrc\images\open.bmp" />
     <Image Include="ADFOpusSrc\images\options.bmp" />
     <Image Include="ADFOpusSrc\images\properti.bmp" />
+    <Image Include="ADFOpusSrc\images\refresh.bmp" />
     <Image Include="ADFOpusSrc\images\rename.bmp" />
+    <Image Include="ADFOpusSrc\images\selectall.bmp" />
+    <Image Include="ADFOpusSrc\images\selectinvert.bmp" />
+    <Image Include="ADFOpusSrc\images\selectnone.bmp" />
     <Image Include="ADFOpusSrc\images\showundel.bmp" />
     <Image Include="ADFOpusSrc\images\textviewer.bmp" />
     <Image Include="ADFOpusSrc\images\tilehor.bmp" />
