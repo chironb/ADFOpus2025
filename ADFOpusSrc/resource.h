@@ -2,8 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by ADFOpus.rc
 //
-#define IDC_STATIC (-1)
-
 #define IDS_VERSION                     1
 #define IDD_ABOUT                       101
 #define IDR_MAINMENU                    102
@@ -71,6 +69,7 @@
 #define IDB_SHOWUNDELETABLE             226
 #define IDB_TEXTVIEWER                  227
 #define IDD_TEXT_VIEWER                 228
+#define IDD_GREASEWEAZLE                229
 #define IDC_NEWPATH                     1004
 #define IDC_NEWADF                      1005
 #define IDC_NEWHARDFILE                 1006
@@ -194,6 +193,31 @@
 #define IDC_TEXTVIEWER_HELP             1139
 #define IDC_HOTKEY1                     1140
 #define IDC_WEBPAGEBTN2                 1141
+#define IDGWSTART                       1141
+#define IDC_GW_EDIT_FILENAME            1142
+#define IDC_GW_CHECK_OPEN               1143
+#define IDC_GW_RADIO_ADF                1144
+#define IDC_GW_CHECK_USE_DRIVE_0        1145
+#define IDC_STATIC_GW_DENSITY           1146
+#define IDC_GW_RADIO_DOUBLEDENSITY      1147
+#define IDC_GW_RADIO_HIGHDENSITY        1148
+#define IDC_GW_CHECK_USE_DRIVE_1        1149
+#define IDC_GW_RADIO_HIGHDENSITY2       1149
+#define IDC_GW_STATIC_READWRITE         1150
+#define IDC_GW_SELECTED_READ            1151
+#define IDC_GW_SELECTED_WRITE           1152
+#define IDC_GW_RADIO_ADF2               1153
+#define IDC_RADIO1                      1154
+#define IDC_GW_RADIO_DRIVE_0            1154
+#define IDC_RADIO2                      1155
+#define IDC_GW_RADIO_DRIVE_1            1155
+#define IDC_RADIO3                      1156
+#define IDC_GW_RADIO_READ_IMAGE         1156
+#define IDC_RADIO4                      1157
+#define IDC_GW_RADIO_WRITE_IMAGE        1157
+#define IDC_RADIO5                      1158
+#define IDC_RADIO6                      1159
+#define IDC_GW_RADIO_ADZ                1159
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -251,22 +275,24 @@
 #define ID_TOOLS_TEXT_VIEWER            40126
 #define IDC_LICENCEPAGEBTN              40127
 #define IDB_TBBUTTONS_LARGE             40128
-#define IDC_BUILDINFO					40129
-#define IDB_TBBUTTONS_TRUECOLOR			40130
-#define IDB_TILECLO			            40131
-#define IDB_REFRESH			            40132
-#define ID_VIEW_REFRESH                 40133
-#define IDB_SELECTALL			    	40134	
-#define IDB_SELECTNONE				    40135
-#define IDB_INVERTSELECTION			    40136
+#define IDC_BUILDINFO                   40129
+#define IDB_TBBUTTONS_TRUECOLOR         40130
+#define IDB_TILECLO                     40131
+#define IDB_REFRESH                     40132
+#define IDB_SELECTALL                   40134
+#define IDB_SELECTNONE                  40135
+#define IDB_INVERTSELECTION             40136
+#define ID_TOOLS_GREASEWEAZLE           40137
+#define IDB_GREASEWEAZLE                40138
+#define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        230
+#define _APS_NEXT_RESOURCE_VALUE        231
 #define _APS_NEXT_COMMAND_VALUE         40127
-#define _APS_NEXT_CONTROL_VALUE         1141
+#define _APS_NEXT_CONTROL_VALUE         1160
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

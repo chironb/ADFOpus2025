@@ -37,7 +37,7 @@ static const MenuIconEntry menuIconMap[] = {
     // Tools menu
     { ID_TOOLS_TEXT_VIEWER,         IDB_TEXTVIEWER },
     { ID_TOOLS_BATCHCONVERTER,      IDB_BATCH },
-    { ID_TOOLS_DISK2FDI,            IDB_DISK2FDI },
+    { ID_TOOLS_GREASEWEAZLE,        IDB_GREASEWEAZLE },
     { ID_TOOLS_INSTALL,             IDB_INSTALL },
     { ID_TOOLS_DISPLAYBOOTBLOCK,    IDB_DISPLAY },
 

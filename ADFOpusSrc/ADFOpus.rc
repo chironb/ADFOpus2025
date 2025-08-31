@@ -33,7 +33,7 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include ""windows.h""\r\n"
     "\0"
 END
 
@@ -66,7 +66,7 @@ CAPTION "Disk Image Information"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         "Tab1",IDC_VOLINFOTABCTRL,"SysTabControl32",0x0,5,5,235,185
-    DEFPUSHBUTTON   "OK", IDCANCEL,170,193,70,15
+    DEFPUSHBUTTON   "OK",IDCANCEL,170,193,70,15
 END
 
 IDD_BATCHCONVERTER DIALOGEX 0, 0, 257, 218
@@ -391,6 +391,32 @@ BEGIN
     GROUPBOX        "Tracks And Sectors",IDC_STATIC,7,149,158,47
 END
 
+IDD_GREASEWEAZLE DIALOGEX 0, 0, 172, 228
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Greaseweazle"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_GW_EDIT_FILENAME,15,17,141,14,ES_AUTOHSCROLL
+    CONTROL         "Open in ADF Opus after creation",IDC_GW_CHECK_OPEN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,36,141,10
+    CONTROL         "DD 880 KB",IDC_GW_RADIO_DOUBLEDENSITY,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,130,66,10
+    CONTROL         "HD 1.76 MB",IDC_GW_RADIO_HIGHDENSITY,"Button",BS_AUTORADIOBUTTON,86,130,55,10
+    DEFPUSHBUTTON   "Start",IDGWSTART,7,207,51,14
+    PUSHBUTTON      "Cancel",IDCANCEL,114,207,51,14
+    GROUPBOX        "Filename:",IDC_STATIC,7,7,158,44
+    GROUPBOX        "Image Type",IDC_STATIC,7,54,158,30
+    GROUPBOX        "Source Drive",IDC_STATIC,7,87,158,28
+    GROUPBOX        "Disk Density",IDC_STATIC_GW_DENSITY,7,118,158,28
+    GROUPBOX        "Read / Write Image",IDC_GW_STATIC_READWRITE,7,153,158,27
+    CONTROL         "Drive 0",IDC_GW_RADIO_DRIVE_0,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,18,99,39,10
+    CONTROL         "Drive 1",IDC_GW_RADIO_DRIVE_1,"Button",BS_AUTORADIOBUTTON,89,98,39,10
+    CONTROL         "Read",IDC_GW_RADIO_READ_IMAGE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,164,33,10
+    CONTROL         "Write",IDC_GW_RADIO_WRITE_IMAGE,"Button",BS_AUTORADIOBUTTON,89,164,33,10
+    CONTROL         "ADF",IDC_GW_RADIO_ADF,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,17,69,30,10
+    CONTROL         "ADZ",IDC_GW_RADIO_ADZ,"Button",BS_AUTORADIOBUTTON,88,68,31,10
+    LTEXT           "Click ""Start"" to run Greaseweazle to image or create a floppy disk!",IDC_STATIC,14,186,138,17
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -551,6 +577,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 221
     END
+
+    IDD_GREASEWEAZLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 165
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 221
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -597,7 +631,7 @@ BEGIN
         MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER
         MENUITEM SEPARATOR
         MENUITEM "&Batch Converter",            ID_TOOLS_BATCHCONVERTER
-        MENUITEM "&Disk2FDI",                   ID_TOOLS_DISK2FDI
+        MENUITEM "&Greaseweazle Imager",        ID_TOOLS_GREASEWEAZLE
         MENUITEM SEPARATOR
         MENUITEM "&Write Bootblock",            ID_TOOLS_INSTALL, GRAYED
         MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
@@ -756,6 +790,11 @@ BEGIN
     0
 END
 
+IDD_GREASEWEAZLE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -867,6 +906,8 @@ IDB_BATCH               BITMAP                  "images\\batch.bmp"
 
 IDB_DISK2FDI            BITMAP                  "images\\disk2fdi.bmp"
 
+IDB_GREASEWEAZLE        BITMAP                  "images\\disk2fdi.bmp"
+
 IDB_INSTALL             BITMAP                  "images\\install.bmp"
 
 IDB_DISPLAY             BITMAP                  "images\\display.bmp"
@@ -898,6 +939,7 @@ IDB_SELECTALL           BITMAP                  "images\\selectall.bmp"
 IDB_SELECTNONE          BITMAP                  "images\\selectnone.bmp"
 
 IDB_INVERTSELECTION     BITMAP                  "images\\selectinvert.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

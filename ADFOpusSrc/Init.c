@@ -452,7 +452,7 @@ HWND CreateToolBar(HWND hwndParent)
 	tbb[16].iBitmap = 11;  tbb[16].idCommand = ID_TOOLS_TEXT_VIEWER;      tbb[16].fsState = TBSTATE_ENABLED; tbb[16].fsStyle = TBSTYLE_BUTTON;
 	tbb[17].iBitmap = 0;  tbb[17].idCommand = 0;                          tbb[17].fsState = 0;            tbb[17].fsStyle = TBSTYLE_SEP;
 	tbb[18].iBitmap = 12;  tbb[18].idCommand = ID_TOOLS_BATCHCONVERTER;   tbb[18].fsState = TBSTATE_ENABLED; tbb[18].fsStyle = TBSTYLE_BUTTON;
-	tbb[19].iBitmap = 13;  tbb[19].idCommand = ID_TOOLS_DISK2FDI;         tbb[19].fsState = TBSTATE_ENABLED; tbb[19].fsStyle = TBSTYLE_BUTTON;
+	tbb[19].iBitmap = 13;  tbb[19].idCommand = ID_TOOLS_GREASEWEAZLE;         tbb[19].fsState = TBSTATE_ENABLED; tbb[19].fsStyle = TBSTYLE_BUTTON;
 	tbb[20].iBitmap = 0;  tbb[20].idCommand = 0;                         tbb[20].fsState = 0;            tbb[20].fsStyle = TBSTYLE_SEP;
 	tbb[21].iBitmap = 14;  tbb[21].idCommand = ID_TOOLS_INSTALL;         tbb[21].fsState = TBSTATE_ENABLED; tbb[21].fsStyle = TBSTYLE_BUTTON;
 	tbb[22].iBitmap = 15;  tbb[22].idCommand = ID_TOOLS_DISPLAYBOOTBLOCK; tbb[22].fsState = TBSTATE_ENABLED; tbb[22].fsStyle = TBSTYLE_BUTTON;
