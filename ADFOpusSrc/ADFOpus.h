@@ -1,4 +1,4 @@
-/* ADF Opus Copyright 1998-2002 by 
+﻿/* ADF Opus Copyright 1998-2002 by 
  * Dan Sutherland <dan@chromerhino.demon.co.uk> and Gary Harris <gharris@zip.com.au>.	
  *
  * ADFOpus.h - global #defines and prototypes
@@ -40,6 +40,20 @@
 #define ID_TOOLBAR		45000
 #define ID_STATUSBAR	45001
 #define IDM_WINDOWCHILD 700
+
+
+#pragma once
+#include <windows.h>
+
+// 3) extern‐declare the same name/type for every other .c
+// Global variable that stores the default local filesystem path that the Windows lister will open to when you open a new Windows lister window.
+#pragma once
+#include <windows.h>
+
+#define CMDLINE_BUFFER (MAX_PATH*2)
+extern char gstrCmdLineArgs[CMDLINE_BUFFER];
+extern char g_defaultLocalPath[MAX_PATH];
+
 
 LONG APIENTRY MainWinProc(HWND, UINT, WPARAM, LPARAM);
 

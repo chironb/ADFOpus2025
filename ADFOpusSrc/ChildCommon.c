@@ -397,65 +397,153 @@ LRESULT CALLBACK ChildWinProc(HWND win, UINT msg, WPARAM wp, LPARAM lp)
 //
 //	return 0;
 //}
+
+//LRESULT ChildOnCreate(HWND win)
+//{
+//	CHILDINFO* ci;
+//
+//	// mark this child’s type
+//	SetWindowLong(win, GWL_USERDATA, newWinType);
+//
+//	// allocate our per-window state
+//	ci = malloc(sizeof(*ci));
+//	if (!ci)
+//		return -1;
+//	SetWindowLong(win, 0, (LONG)ci);
+//
+//	if (newWinType == CHILD_WINLISTER)
+//	{
+//		//// 1) grab %USERPROFILE%
+//		//char homePath[MAX_PATH];
+//		//DWORD n = GetEnvironmentVariableA(
+//		//	"USERPROFILE",
+//		//	homePath,
+//		//	ARRAYSIZE(homePath)
+//		//);
+//
+//		//if (n > 0 && n < ARRAYSIZE(homePath))
+//		//{
+//		//	// copy it in
+//		//	strncpy_s(ci->curDir,
+//		//		sizeof(ci->curDir),
+//		//		homePath,
+//		//		_TRUNCATE);
+//
+//		//	// 2) make sure it ends with a backslash
+//		//	size_t len = strlen(ci->curDir);
+//		//	if (len > 0 && ci->curDir[len - 1] != '\\')
+//		//	{
+//		//		if (len + 1 < sizeof(ci->curDir))
+//		//		{
+//		//			ci->curDir[len] = '\\';
+//		//			ci->curDir[len + 1] = '\0';
+//		//		}
+//		//	}
+//		//}
+//		//else
+//		//{
+//		//	// fallback if USERPROFILE is missing or too long
+//		//	strcpy_s(ci->curDir,
+//		//		sizeof(ci->curDir),
+//		//		"C:\\");
+//		//}
+//
+//		//MessageBox(NULL, g_defaultPath, "DEBUG: Should show default path!", MB_OK | MB_ICONINFORMATION);
+//
+//		// Set the path using the global var we created for this and determine in ADFOpus when we deal with the command line. 
+//		/*strcpy_s(ci->curDir, sizeof(ci->curDir), "C:\\");*/
+//		//MessageBox(NULL, "WTF?!?!?", "ChildCOmmon.c --> if (newWinType == CHILD_WINLISTER) : g_defaultPath", MB_OK | MB_ICONINFORMATION);
+//		// Set the current path to the global path we figured out when we started the program and processed teh command line arguments. 
+//		strcpy_s(ci->curDir, sizeof(ci->curDir), g_defaultPath);
+//
+//		ci->atRoot = FALSE;
+//
+//		// optional: update CWD if other code depends on it
+//		SetCurrentDirectory(g_defaultPath);
+//	}
+//	else
+//	{
+//		// your existing ADF-lister init
+//		strcpy(ci->curDir, "/");
+//		ci->dfDisk = dfDisk;
+//		ci->compSize = comp_size;
+//
+//		ci->dev = adfMountDev(gstrFileName, ReadOnly);
+//		if (!ci->dev) return -1;
+//
+//		ci->vol = adfMount(ci->dev, volToOpen, FALSE);
+//		if (!ci->vol) return -1;
+//
+//		ci->atRoot = TRUE;
+//	}
+//
+//	ci->readOnly = ReadOnly;
+//
+//	// create listview
+//	ci->lv = CreateListView(win);
+//
+//	// create status bar
+//	ci->sb = CreateWindow(
+//		STATUSCLASSNAME, "",
+//		WS_CHILD | WS_VISIBLE | CCS_TOP,
+//		CW_USEDEFAULT, CW_USEDEFAULT,
+//		CW_USEDEFAULT, CW_USEDEFAULT,
+//		win, NULL, instance, NULL
+//	);
+//
+//	// init entries
+//	ci->content = NULL;
+//	ci->isAmi = (newWinType == CHILD_AMILISTER);
+//
+//	// stash original paths
+//	strcpy(ci->orig_path, buf);
+//	if (ci->dfDisk != (enum DiskFormat)ADF)
+//		strcpy(ci->temp_path, gstrFileName);
+//
+//	// disable Properties button until a selection
+//	hMenu = GetMenu(ghwndFrame);
+//	EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
+//	SendMessage(ghwndTB,
+//		TB_ENABLEBUTTON,
+//		ID_ACTION_PROPERTIES,
+//		MAKELONG(FALSE, 0));
+//
+//	// populate the view
+//	ChildUpdate(win);
+//
+//	return 0;
+//}
+
+
+#include "ADFOpus.h"    // for g_defaultLocalPath, newWinType, CHILD_WINLISTER
+#include <windows.h>
+
 LRESULT ChildOnCreate(HWND win)
 {
 	CHILDINFO* ci;
 
-	// mark this child’s type
-	SetWindowLong(win, GWL_USERDATA, newWinType);
+	// 1) remember which child‐type this is
+	SetWindowLongPtr(win, GWLP_USERDATA, (LONG_PTR)newWinType);
 
-	// allocate our per-window state
-	ci = malloc(sizeof(*ci));
+	// 2) allocate per‐window state
+	ci = malloc(sizeof * ci);
 	if (!ci)
 		return -1;
-	SetWindowLong(win, 0, (LONG)ci);
+	SetWindowLongPtr(win, 0, (LONG_PTR)ci);
 
+	// 3) initialize based on type
 	if (newWinType == CHILD_WINLISTER)
 	{
-		// 1) grab %USERPROFILE%
-		char homePath[MAX_PATH];
-		DWORD n = GetEnvironmentVariableA(
-			"USERPROFILE",
-			homePath,
-			ARRAYSIZE(homePath)
-		);
-
-		if (n > 0 && n < ARRAYSIZE(homePath))
-		{
-			// copy it in
-			strncpy_s(ci->curDir,
-				sizeof(ci->curDir),
-				homePath,
-				_TRUNCATE);
-
-			// 2) make sure it ends with a backslash
-			size_t len = strlen(ci->curDir);
-			if (len > 0 && ci->curDir[len - 1] != '\\')
-			{
-				if (len + 1 < sizeof(ci->curDir))
-				{
-					ci->curDir[len] = '\\';
-					ci->curDir[len + 1] = '\0';
-				}
-			}
-		}
-		else
-		{
-			// fallback if USERPROFILE is missing or too long
-			strcpy_s(ci->curDir,
-				sizeof(ci->curDir),
-				"C:\\");
-		}
-
+		// Use the folder we computed in WinMain (or %USERPROFILE%\ if no args).
+		strcpy_s(ci->curDir, sizeof ci->curDir, g_defaultLocalPath);
 		ci->atRoot = FALSE;
 
-		// optional: update CWD if other code depends on it
+		// If other code assumes the process CWD matches, update it:
 		SetCurrentDirectory(ci->curDir);
 	}
-	else
+	else  // CHILD_AMILISTER (your ADF‐lister)
 	{
-		// your existing ADF-lister init
-		strcpy(ci->curDir, "/");
+		strcpy_s(ci->curDir, sizeof ci->curDir, "/");
 		ci->dfDisk = dfDisk;
 		ci->compSize = comp_size;
 
@@ -468,12 +556,13 @@ LRESULT ChildOnCreate(HWND win)
 		ci->atRoot = TRUE;
 	}
 
+	// 4) common post‐init
 	ci->readOnly = ReadOnly;
 
-	// create listview
+	// create the ListView inside this child
 	ci->lv = CreateListView(win);
 
-	// create status bar
+	// create the status bar at top of the child
 	ci->sb = CreateWindow(
 		STATUSCLASSNAME, "",
 		WS_CHILD | WS_VISIBLE | CCS_TOP,
@@ -482,31 +571,32 @@ LRESULT ChildOnCreate(HWND win)
 		win, NULL, instance, NULL
 	);
 
-	// init entries
+	// initialize other fields
 	ci->content = NULL;
 	ci->isAmi = (newWinType == CHILD_AMILISTER);
 
-	// stash original paths
-	strcpy(ci->orig_path, buf);
+	// stash original path buffer if you use buf/gstrFileName later
+	strcpy_s(ci->orig_path, sizeof ci->orig_path, buf);
 	if (ci->dfDisk != (enum DiskFormat)ADF)
-		strcpy(ci->temp_path, gstrFileName);
+		strcpy_s(ci->temp_path, sizeof ci->temp_path, gstrFileName);
 
-	// disable Properties button until a selection
-	hMenu = GetMenu(ghwndFrame);
-	EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
-	SendMessage(ghwndTB,
-		TB_ENABLEBUTTON,
-		ID_ACTION_PROPERTIES,
-		MAKELONG(FALSE, 0));
+	// disable the Properties button until a selection is made
+	{
+		HMENU hMenu = GetMenu(ghwndFrame);
+		EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
+		SendMessage(
+			ghwndTB,
+			TB_ENABLEBUTTON,
+			ID_ACTION_PROPERTIES,
+			MAKELONG(FALSE, 0)
+		);
+	}
 
-	// populate the view
+	// finally, populate the view
 	ChildUpdate(win);
 
 	return 0;
 }
-
-
-
 
 
 

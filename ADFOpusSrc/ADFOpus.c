@@ -69,6 +69,16 @@ extern BOOL      bDirClicked;
 extern BOOL      bFileClicked;
 
 
+// 1) include your shared header
+// #include "ADFOpus.h" already did this above del this later. my code is messy like my brain! Messy.... like a fox!
+
+// 2) define the variable here (no extern)
+// This is the default local filesystem path that the Windows lister will open to when you open a new Windows lister window.
+#include <shlwapi.h>      // for PathRemoveFileSpecA, PathAddBackslashA
+#pragma comment(lib, "Shlwapi.lib")  // link shlwapi
+
+char gstrCmdLineArgs[CMDLINE_BUFFER] = { 0 };
+char g_defaultLocalPath[MAX_PATH] = { 0 };
 
 
 // -----------------------------------------------------------------------------
@@ -352,28 +362,400 @@ char			gstrCmdLineArgs[MAX_PATH * 2];			// Command line argument string.
 //
 //	return msg.wParam;
 //}
-int PASCAL WinMain(HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show)
-{
-	MSG msg;
 
+//int PASCAL WinMain(HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show)
+//{
+//
+//
+//
+//	// MessageBox(NULL, g_defaultPath, "DEBUG: Should show default path!", MB_OK | MB_ICONINFORMATION);
+//
+//	MSG msg;
+//
+//
+//
+//	char dbg[256];
+//	snprintf(dbg, sizeof dbg, "WinMain: [%s]", cmdLine);
+//	MessageBox(NULL, dbg, "ENTRY DEBUG", MB_OK);
+//
+//
+//
+//	// stash raw cmd‐line
+//	strcpy_s(gstrCmdLineArgs, sizeof gstrCmdLineArgs, cmdLine);
+//
+//	// if you got one or more files on the command line...
+//	if (gstrCmdLineArgs[0] != '\0')
+//	{
+//		// parse into tokens just like you already do
+//		char ArgArray[20][MAX_PATH];
+//		int  argCount = 0;
+//		// … your existing loop that fills ArgArray and increments argCount …
+//
+//		// Take the last filename, strip off the name
+//		strcpy_s(g_defaultLocalPath,
+//			sizeof g_defaultLocalPath,
+//			ArgArray[argCount - 1]);
+//
+//		// remove the file component, leaving its folder
+//		PathRemoveFileSpecA(g_defaultLocalPath);
+//
+//		// ensure it ends with “\”
+//		PathAddBackslashA(g_defaultLocalPath);
+//	}
+//	else
+//	{
+//		// no files → fallback to %USERPROFILE%
+//		DWORD n = GetEnvironmentVariableA(
+//			"USERPROFILE",
+//			g_defaultLocalPath,
+//			MAX_PATH
+//		);
+//		if (n == 0 || n >= MAX_PATH)
+//			strcpy_s(g_defaultLocalPath, MAX_PATH, "C:\\");
+//		else
+//			PathAddBackslashA(g_defaultLocalPath);
+//	}
+//
+//	// DEBUG: show us what we computed
+//	MessageBox(
+//		NULL,
+//		g_defaultLocalPath,
+//		"DEBUG: g_defaultLocalPath",
+//		MB_OK | MB_ICONINFORMATION
+//	);
+//
+//
+//
+//
+//
+//
+//
+//	instance = inst;
+//	if (!RegisterAppClass(inst))
+//		return 1;
+//
+//	// Initialize common controls v6 for ListView, etc.
+//	{
+//		INITCOMMONCONTROLSEX icex;
+//		icex.dwSize = sizeof(icex);
+//		icex.dwICC = ICC_LISTVIEW_CLASSES;
+//		InitCommonControlsEx(&icex);
+//	}
+//
+//	// Load cursors
+//	ghcurNormal = LoadCursor(NULL, IDC_ARROW);
+//	ghcurNo = LoadCursor(NULL, IDC_NO);
+//	ghcurDrag = LoadCursor(inst, MAKEINTRESOURCE(IDC_POINTER_COPY));
+//
+//	// Read saved options, init ADFLib, set up directories…
+//	ReadOptions();
+//	adfEnvInitDefault();
+//	adfSetEnvFct(ADFError, ADFWarning, ADFVerbose);
+//	adfEnv.rwhAccess = ADFAccess;
+//	adfEnv.progressBar = ADFProgress;
+//	adfEnv.useRWAccess = TRUE;
+//	adfEnv.useProgressBar = TRUE;
+//	adfEnv.useDirCache = Options.useDirCache;
+//
+//	GetModuleFileName(NULL, dirOpus, MAX_PATH);
+//
+//	// Chiron 2025
+//	// 
+//	//if (char* lastSlash = strrchr(dirOpus, '\\')) *lastSlash = '\0';
+//	// at the top of your block (C89 style you can even group all your declarations)
+//	char* lastSlash;
+//
+//	// later …
+//	lastSlash = strrchr(dirOpus, '\\');
+//	if (lastSlash) {
+//		*lastSlash = '\0';
+//	}
+//
+//
+//
+//	SetCurrentDirectory(dirOpus);
+//	strcpy(dirTemp, dirOpus);
+//	strcat(dirTemp, "\\opustemp\\");
+//
+//	// Save command line args for WM_CREATE handlers
+//	strcpy(gstrCmdLineArgs, cmdLine);
+//
+//
+//
+//
+//
+//
+//
+//
+//	MessageBox(NULL, gstrCmdLineArgs[0], "DEBUG: ADFOpus.c gstrCmdLineArgs[0]", MB_OK | MB_ICONINFORMATION);
+//
+//
+//
+//	// We need this something... I can't remember what. 
+//	// Used for command line processing.
+//	int				iCountArgs;
+//
+//	// Open files given on the command line
+//	if (gstrCmdLineArgs[0] != '\0')
+//	{
+//		char ArgArray[20][MAX_PATH];
+//		int  argCount = 0;
+//		int  inQuote = 0;
+//		char* p = gstrCmdLineArgs;
+//		char  token[MAX_PATH];
+//		int   ti = 0;
+//
+//		bCmdLineArgs = TRUE;
+//
+//		MessageBox(NULL, "Do we get here?", "DEBUG: gstrCmdLineArgs[0] != '\\0'", MB_OK | MB_ICONINFORMATION);
+//
+//		// Walk the entire gstrCmdLineArgs buffer
+//		while (*p && argCount < _countof(ArgArray))
+//		{
+//			if (*p == '"')
+//			{
+//				// Toggle quote state, but don’t copy the quote itself
+//				inQuote = !inQuote;
+//			}
+//			else if (*p == ' ' && !inQuote)
+//			{
+//				// end of one token
+//				if (ti > 0)
+//				{
+//					token[ti] = '\0';
+//					strcpy_s(ArgArray[argCount++], MAX_PATH, token);
+//					ti = 0;
+//				}
+//			}
+//			else
+//			{
+//				// normal character
+//				token[ti++] = *p;
+//			}
+//			p++;
+//		}
+//
+//		// final token (if any)
+//		if (ti > 0 && argCount < _countof(ArgArray))
+//		{
+//			token[ti] = '\0';
+//			strcpy_s(ArgArray[argCount++], MAX_PATH, token);
+//		}
+//
+//		// launch a child for each full path
+//		for (iCountArgs = 0; iCountArgs < argCount; iCountArgs++)
+//		{
+//			// ArgArray[iCountArgs] now contains a clean path without quotes
+//			strcpy_s(gstrFileName, sizeof(gstrFileName), ArgArray[iCountArgs]);
+//			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+//		}
+//
+//
+//		// testing
+//		strcpy_s(g_defaultPath, sizeof(g_defaultPath), "D:\\");
+//
+//
+//		// DEBUG: show last path processed - this is the path we want to use for the default local filesystem path.
+//		MessageBox(NULL, ArgArray[argCount - 1], "DEBUG: show last path processed", MB_OK | MB_ICONINFORMATION);
+//
+//	}
+//	else { // ELSE no command line arguments were given, so here we set a default local filesystem path for the user's home folder as the default.
+//		// DEBUG: show last path processed - this is the path we want to use for the default local filesystem path.
+//		//strcpy_s(g_defaultPath, sizeof(g_defaultPath), "C:\\");
+//		//MessageBox(NULL, "So like... there were no files on the command line. Cool bro.", "DEBUG:", MB_OK | MB_ICONINFORMATION);
+//		//MessageBox(NULL, "Do EVER we get here?", "DEBUG:", MB_OK | MB_ICONINFORMATION);
+//
+//		// 1) grab %USERPROFILE%
+//		char homePath[MAX_PATH];
+//		DWORD n = GetEnvironmentVariableA(
+//			"USERPROFILE",
+//			homePath,
+//			ARRAYSIZE(homePath)
+//		);
+//
+//		if (n > 0 && n < ARRAYSIZE(homePath))
+//		{
+//
+//			//MessageBox(NULL, "Do we get here?", "DEBUG:", MB_OK | MB_ICONINFORMATION);	
+//
+//			// copy it in
+//			strncpy_s(g_defaultPath,
+//				sizeof(g_defaultPath),
+//				homePath,
+//				_TRUNCATE);
+//
+//			// 2) make sure it ends with a backslash
+//			size_t len = strlen(g_defaultPath);
+//			if (len > 0 && g_defaultPath[len - 1] != '\\')
+//			{
+//				if (len + 1 < sizeof(g_defaultPath))
+//				{
+//					g_defaultPath[len] = '\\';
+//					g_defaultPath[len + 1] = '\0';
+//				}
+//			}
+//
+//			MessageBox(NULL, g_defaultPath, "ADFOpus.c: g_defaultPath", MB_OK | MB_ICONINFORMATION);
+//
+//
+//		}
+//		else
+//		{
+//			// fallback if USERPROFILE is missing or too long
+//			strcpy_s(g_defaultPath,
+//				sizeof(g_defaultPath),
+//				"C:\\");
+//		}
+//
+//
+//	}
+//
+//
+//
+//
+//	// Create the main frame window
+//	ghwndFrame = CreateAppWindow(inst);
+//	if (ghwndFrame)
+//	{
+//		// ←——— Add this block to attach your menu icons ———→
+//		{
+//			// attach to the top‐level menu bar:
+//			HMENU hMain = GetMenu(ghwndFrame);
+//			if (hMain)
+//				SetMenuBitmaps(instance, hMain);
+//		}
+//
+//		ShowWindow(ghwndFrame, show);
+//		UpdateWindow(ghwndFrame);
+//
+//		// Standard MDI/Message loop
+//		msg.wParam = 1;
+//		while (GetMessage(&msg, NULL, 0, 0))
+//		{
+//			if (!TranslateMDISysAccel(ghwndMDIClient, &msg))
+//			{
+//				TranslateMessage(&msg);
+//				DispatchMessage(&msg);
+//			}
+//		}
+//	}
+//
+//	// Cleanup
+//	adfEnvCleanUp();
+//	WriteOptions();
+//	UnregisterAllClasses(inst);
+//
+//
+//	return msg.wParam;
+//}
+
+
+
+
+
+
+
+
+
+
+
+int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show )
+{
+	MSG   msg;
+	DWORD envLen;
+	char  ArgArray[20][MAX_PATH];
+	char  token[MAX_PATH];
+	char* p;
+	char* last;
+	int   argCount;
+	int   inQuote;
+	int   ti;
+	int   i;
+
+	// 1) stash raw command line
+	strcpy_s(gstrCmdLineArgs,
+		sizeof gstrCmdLineArgs,
+		cmdLine);
+
+	// 2) parse filenames out into ArgArray
+	argCount = 0;
+	inQuote = 0;
+	ti = 0;
+	p = gstrCmdLineArgs;
+
+	if (gstrCmdLineArgs[0] != '\0')
+	{
+		// tokenize on spaces, respecting quotes
+		while (*p && argCount < _countof(ArgArray))
+		{
+			if (*p == '"')
+			{
+				inQuote = !inQuote;
+			}
+			else if (*p == ' ' && !inQuote && ti > 0)
+			{
+				token[ti] = '\0';
+				strcpy_s(ArgArray[argCount++], MAX_PATH, token);
+				ti = 0;
+			}
+			else if (*p != ' ' || inQuote)
+			{
+				token[ti++] = *p;
+			}
+			p++;
+		}
+		// final token
+		if (ti > 0 && argCount < _countof(ArgArray))
+		{
+			token[ti] = '\0';
+			strcpy_s(ArgArray[argCount++], MAX_PATH, token);
+		}
+
+		// last token → default path
+		strcpy_s(g_defaultLocalPath,
+			sizeof g_defaultLocalPath,
+			ArgArray[argCount - 1]);
+		PathRemoveFileSpecA(g_defaultLocalPath);
+		PathAddBackslashA(g_defaultLocalPath);
+	}
+	else
+	{
+		// no args → use %USERPROFILE%
+        envLen = GetEnvironmentVariableA(
+		"USERPROFILE",
+			g_defaultLocalPath,
+			MAX_PATH
+			);
+			if (envLen == 0 || envLen >= MAX_PATH)
+			{
+				strcpy_s(g_defaultLocalPath,
+					sizeof g_defaultLocalPath,
+					"C:\\");
+			}
+			else
+			{
+				PathAddBackslashA(g_defaultLocalPath);
+			}
+	}
+
+	// 3) standard initialization
 	instance = inst;
 	if (!RegisterAppClass(inst))
 		return 1;
 
-	// Initialize common controls v6 for ListView, etc.
 	{
-		INITCOMMONCONTROLSEX icex;
-		icex.dwSize = sizeof(icex);
-		icex.dwICC = ICC_LISTVIEW_CLASSES;
+		INITCOMMONCONTROLSEX icex = {
+			sizeof(icex),
+			ICC_LISTVIEW_CLASSES
+		};
 		InitCommonControlsEx(&icex);
 	}
 
-	// Load cursors
 	ghcurNormal = LoadCursor(NULL, IDC_ARROW);
 	ghcurNo = LoadCursor(NULL, IDC_NO);
-	ghcurDrag = LoadCursor(inst, MAKEINTRESOURCE(IDC_POINTER_COPY));
+	ghcurDrag = LoadCursor(inst,
+		MAKEINTRESOURCE(IDC_POINTER_COPY));
 
-	// Read saved options, init ADFLib, set up directories…
 	ReadOptions();
 	adfEnvInitDefault();
 	adfSetEnvFct(ADFError, ADFWarning, ADFVerbose);
@@ -384,297 +766,299 @@ int PASCAL WinMain(HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show)
 	adfEnv.useDirCache = Options.useDirCache;
 
 	GetModuleFileName(NULL, dirOpus, MAX_PATH);
-
-	// Chiron 2025
-	// 
-	//if (char* lastSlash = strrchr(dirOpus, '\\')) *lastSlash = '\0';
-	// at the top of your block (C89 style you can even group all your declarations)
-	char* lastSlash;
-
-	// later …
-	lastSlash = strrchr(dirOpus, '\\');
-	if (lastSlash) {
-		*lastSlash = '\0';
-	}
-
-
-
+	last = strrchr(dirOpus, '\\');
+	if (last)
+		*last = '\0';
 	SetCurrentDirectory(dirOpus);
-	strcpy(dirTemp, dirOpus);
-	strcat(dirTemp, "\\opustemp\\");
 
-	// Save command line args for WM_CREATE handlers
-	strcpy(gstrCmdLineArgs, cmdLine);
+	strcpy_s(dirTemp, sizeof dirTemp, dirOpus);
+	strcat_s(dirTemp, sizeof dirTemp, "\\opustemp\\");
 
-	// Create the main frame window
+	// 4) create main frame & MDI client
 	ghwndFrame = CreateAppWindow(inst);
-	if (ghwndFrame)
+	if (!ghwndFrame)
+		goto CLEANUP;
+
+	ShowWindow(ghwndFrame, show);
+	UpdateWindow(ghwndFrame);
+	// … after ShowWindow/UpdateWindow …
+
+	//if (argCount > 0)
+	//{
+	//	// 1) Always open the local FS lister first
+	//	CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
+
+	//	// 2) Then open one ADF child per file
+	//	for (i = 0; i < argCount; i++)
+	//	{
+	//		strcpy_s(gstrFileName, sizeof gstrFileName, ArgArray[i]);
+	//		CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+	//	}
+	//}
+	//else
+	//{
+	//	// no args → just the one local FS lister
+	//	CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
+	//}
+
+
+
+	// 5) spawn initial child windows
+	if (argCount > 0)
 	{
-		// ←——— Add this block to attach your menu icons ———→
+		for (i = 0; i < argCount; i++)
 		{
-			// attach to the top‐level menu bar:
-			HMENU hMain = GetMenu(ghwndFrame);
-			if (hMain)
-				SetMenuBitmaps(instance, hMain);
+			strcpy_s(gstrFileName,
+				sizeof gstrFileName,
+				ArgArray[i]);
+			//CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
 		}
+	}
+	else
+	{
+		//CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
+	}
 
-		ShowWindow(ghwndFrame, show);
-		UpdateWindow(ghwndFrame);
-
-		// Standard MDI/Message loop
-		msg.wParam = 1;
-		while (GetMessage(&msg, NULL, 0, 0))
+	// 6) message loop
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (!TranslateMDISysAccel(ghwndMDIClient, &msg))
 		{
-			if (!TranslateMDISysAccel(ghwndMDIClient, &msg))
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		}
 	}
 
-	// Cleanup
+CLEANUP:
 	adfEnvCleanUp();
 	WriteOptions();
 	UnregisterAllClasses(inst);
-
-	return msg.wParam;
+	return (int)msg.wParam;
 }
 
 
 
-LRESULT CALLBACK MainWinProc(HWND hwndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam)
-/* handles all messages for the main window and passes messages on to the
- * MDI child windows where applicable
- */
+
+
+
+LRESULT CALLBACK MainWinProc(
+	HWND   hwndFrame,
+	UINT   wMsg,
+	WPARAM wParam,
+	LPARAM lParam
+)
 {
-	HANDLE			hDrop;
-	int				i, iCount;
-	NMHDR			*nmhdr = (NMHDR *) lParam;
-	LPTOOLTIPTEXT	lpTTT;
-	
-	// Chiron 2025
-	// No cap bro just commenting this out gets rid of a compiler warning. 
-	// It's clearly not used? Maybe? I dunno...
-	//DWORD			dwVersion;							// OS version.
+	HANDLE          hDrop;
+	int             i, iCount;
+	NMHDR* nmhdr = (NMHDR*)lParam;
+	LPTOOLTIPTEXT   lpTTT;
 
-		//case WM_CREATE: // Chiron 2025 
-	//	CreateProc(hwndFrame);
-	//	
-	//	// Chiron 2025
-	//	// Set the outer window to 800x600
-	//	SetWindowPos(
-	//		hwndFrame,                 // handle of the frame window 
-	//		NULL,                      // no change to z-order 
-	//		0, 0,                      // keep current x/y 
-	//		800,                      // new width 
-	//		600,                       // new height
-	//		SWP_NOZORDER | SWP_NOMOVE  // don’t move, just size
-	//	);
-	//
-
-
-
-	//	// Open files given on the command line.
-	//	if(strcmp(gstrCmdLineArgs, "") != 0){
-
-	//		char sep[] = " ";
-	//		char *token;
-	//		char ArgArray[20][MAX_PATH * 2];
-	//	
-	//		bCmdLineArgs = TRUE;
-
-	//		// Get argument sub-strings as disk file names.
-	//		i = 0;
-	//		token = strtok(gstrCmdLineArgs, sep);   
-	//		while(token != NULL){
-	//			/* While there are tokens in "string" */      
-	//			strcpy(ArgArray[i], token);
-	//			/* Get next token: */      
-	//			token = strtok(NULL, sep);
-	//			i++;
-	//		}
-
-	//		/* open an Amiga lister child window for each file */
-	//		for(iCount = 0;iCount < i;iCount++){
-	//			strcpy(gstrFileName, ArgArray[iCount]);
-	//			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
-	//		}
-	//	}
-	//	break;
-
-	switch(wMsg)
+	switch (wMsg)
 	{
 	case WM_CREATE:
+		// 1) Usual frame init
 		CreateProc(hwndFrame);
-
-		// Set the outer window to 800×600
 		SetWindowPos(
-			hwndFrame,
-			NULL,
-			0, 0,
-			800, 600,
+			hwndFrame, NULL,
+			0, 0, 800, 600,
 			SWP_NOZORDER | SWP_NOMOVE
 		);
 
-		// Open files given on the command line
-		if (gstrCmdLineArgs[0] != '\0')
+		// 2) Spawn your children exactly once here:
+		if (!gbFirstTime)
 		{
-			char ArgArray[20][MAX_PATH];
-			int  argCount = 0;
-			int  inQuote = 0;
-			char* p = gstrCmdLineArgs;
-			char  token[MAX_PATH];
-			int   ti = 0;
-
-			bCmdLineArgs = TRUE;
-
-			// Walk the entire gstrCmdLineArgs buffer
-			while (*p && argCount < _countof(ArgArray))
+			// If a file was passed on the command line…
+			if (gstrCmdLineArgs[0] != '\0')
 			{
-				if (*p == '"')
+				// a) first open the Local‐FS lister
+				CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
+
+				// b) then parse gstrCmdLineArgs into tokens
 				{
-					// Toggle quote state, but don’t copy the quote itself
-					inQuote = !inQuote;
-				}
-				else if (*p == ' ' && !inQuote)
-				{
-					// end of one token
-					if (ti > 0)
+					char ArgArray[20][MAX_PATH];
+					char token[MAX_PATH];
+					int  argCount = 0, inQuote = 0, ti = 0;
+					char* p = gstrCmdLineArgs;
+
+					while (*p && argCount < _countof(ArgArray))
+					{
+						if (*p == '"')
+						{
+							inQuote = !inQuote;
+						}
+						else if (*p == ' ' && !inQuote && ti > 0)
+						{
+							token[ti] = '\0';
+							strcpy_s(ArgArray[argCount++], MAX_PATH, token);
+							ti = 0;
+						}
+						else if (*p != ' ' || inQuote)
+						{
+							token[ti++] = *p;
+						}
+						p++;
+					}
+					if (ti > 0 && argCount < _countof(ArgArray))
 					{
 						token[ti] = '\0';
 						strcpy_s(ArgArray[argCount++], MAX_PATH, token);
-						ti = 0;
 					}
+
+					// c) spawn one ADF‐lister per file
+					for (i = 0; i < argCount; i++)
+					{
+						strcpy_s(gstrFileName,
+							sizeof gstrFileName,
+							ArgArray[i]);
+						CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+					}
+
+					// d) allow your WM_PAINT cascade to run once
+					bCmdLineArgs = TRUE;
 				}
-				else
-				{
-					// normal character
-					token[ti++] = *p;
-				}
-				p++;
+			}
+			else
+			{
+				// No files → one Local‐FS lister only
+				CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
 			}
 
-			// final token (if any)
-			if (ti > 0 && argCount < _countof(ArgArray))
-			{
-				token[ti] = '\0';
-				strcpy_s(ArgArray[argCount++], MAX_PATH, token);
-			}
-
-			// launch a child for each full path
-			for (iCount = 0; iCount < argCount; iCount++)
-			{
-				// ArgArray[iCount] now contains a clean path without quotes
-				strcpy_s(gstrFileName, sizeof(gstrFileName), ArgArray[iCount]);
-				CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
-			}
+			gbFirstTime = TRUE;
 		}
 		break;
 
 	case WM_PAINT:
-
-		// Push the Windows lister to the back and cascade the open windows if file names have been given on the
-		// command line. Reset flag afterwards as this is a once-only event.
-		if(bCmdLineArgs){
-			HWND hwndActiveChild;
-			hwndActiveChild = (HWND) SendMessage(ghwndMDIClient, WM_MDIGETACTIVE, 0, (LPARAM) NULL);
-			SendMessage(ghwndMDIClient, WM_MDINEXT, (WPARAM)hwndActiveChild, 0l);
-			SendMessage(ghwndMDIClient, WM_MDICASCADE, 0, 0l);
+		// your one‐time cascade if needed
+		if (bCmdLineArgs)
+		{
+			HWND hwndActiveChild =
+				(HWND)SendMessage(ghwndMDIClient,
+					WM_MDIGETACTIVE,
+					0, 0);
+			SendMessage(ghwndMDIClient,
+				WM_MDINEXT,
+				(WPARAM)hwndActiveChild,
+				0);
+			SendMessage(ghwndMDIClient,
+				WM_MDICASCADE,
+				0, 0);
 			bCmdLineArgs = FALSE;
 		}
 
 		PaintProc(hwndFrame);
-		
-		// Chiron 2025 - This starts the App in Vertically Tiled mode. I did this because when you double click on a file in Windows Explorer and it opens in ADF Opus it would draw that inner window behind the default Windows Directory window. Maybe there's a better way but I liked this and it's clear.
-		SendMessage(ghwndMDIClient, WM_MDITILE, MDITILE_VERTICAL, 0l);
 
+		// vertical‐tile tweak
+		SendMessage(ghwndMDIClient,
+			WM_MDITILE,
+			MDITILE_VERTICAL,
+			0);
 		break;
-	case WM_DESTROY:
-		DestroyProc(hwndFrame);
-		break;
-	case WM_QUIT:
-		(void)_chdir(dirOpus);
-		(void)_rmdir(dirTemp);
+
+	case WM_SIZE:
+		// just resize the tool/status bars & MDI client
+		SendMessage(ghwndTB, WM_SIZE, 0, 0);
+		SendMessage(ghwndSB, WM_SIZE, 0, 0);
+		ResizeMDIClientWin(hwndFrame, ghwndMDIClient);
 		break;
 
 	case WM_COMMAND:
-		if (! CommandProc(hwndFrame, wParam, lParam))
-			return(DefFrameProc(hwndFrame, ghwndMDIClient, wMsg, wParam, lParam));
+		if (!CommandProc(hwndFrame, wParam, lParam))
+			return DefFrameProc(
+				hwndFrame,
+				ghwndMDIClient,
+				wMsg, wParam, lParam
+			);
 		break;
+
 	case WM_DROPFILES:
-		/* file(s) dropped from explorer */
-		hDrop = (HANDLE) wParam;
-
-		/* find out how many files were dropped */
-		iCount = DragQueryFile(hDrop, 0xFFFFFFFF, gstrFileName, sizeof(gstrFileName));
-
-		/* open an Amiga lister child window for each file */
-		// Chiron 2025 TODO: This is where I should only do this for files that end in ".adf"!
-		// Chiron 2025 TODO: For other files it would be cool if it would add those files to the Amiga lister child window beneth where the file was dragged and dropped to!
-		for (i = 0 ; i < iCount ; i++) {
-			DragQueryFile(hDrop, i, gstrFileName, sizeof(gstrFileName));
-			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);			
+		// drag‐&‐drop -> spawn ADF‐listers
+		hDrop = (HANDLE)wParam;
+		iCount = DragQueryFile(
+			hDrop,
+			0xFFFFFFFF,
+			gstrFileName,
+			sizeof gstrFileName
+		);
+		for (i = 0; i < iCount; i++)
+		{
+			DragQueryFile(
+				hDrop,
+				i,
+				gstrFileName,
+				sizeof gstrFileName
+			);
+			CreateChildWin(ghwndMDIClient,
+				CHILD_AMILISTER);
 		}
+		DragFinish(hDrop);
 		break;
-	case WM_SIZE:
-		/* resize toolbar and status bar */
-		SendMessage(ghwndTB, WM_SIZE, 0, 0);
-		SendMessage(ghwndSB, WM_SIZE, 0, 0);
 
-		ResizeMDIClientWin(hwndFrame, ghwndMDIClient);
-
-		if (! gbFirstTime) {
-			CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
-			gbFirstTime = TRUE;
-		}
-		break;
 	case WM_INITMENU:
 		ghmenuMain = (HMENU)wParam;
 		UpdateMenuItems(ghmenuMain);
-		CheckMenuItem(ghmenuMain, ID_VIEW_TOOL_BAR, gbToolbarVisible ? MF_CHECKED : MF_UNCHECKED);
-		CheckMenuItem(ghmenuMain, ID_VIEW_THE_STATUSBAR, gbStatusBarVisible ?MF_CHECKED : MF_UNCHECKED);
-
-
-		// Chiron 2025 (I commented this original call of GetVersion() out because it didn't seem necessary, didn't break anything, and it was throwing a warning. 
-		// Disable the Disk2FDI interface for NT, 2K and XP.
-		//dwVersion = GetVersion();
-		#pragma warning(push)
-		#pragma warning(disable:4996)   // silence deprecation of GetVersion
-		DWORD dwVersion = GetVersion();
-		#pragma warning(pop)
-
-		// Chiron 2025 NOTE: I have no intention of maintaining backward compatibility with Windows 9x era OSes. 
-		// High order bit is 1 (0x80000000) for Windows NT, 2K or XP. If less, we have 95, 98 or ME.
-		//if(dwVersion < 0x80000000)                
-		//	EnableMenuItem(ghmenuMain, ID_TOOLS_GREASEWEAZLE, MF_GRAYED);
-
+		CheckMenuItem(ghmenuMain,
+			ID_VIEW_TOOL_BAR,
+			gbToolbarVisible
+			? MF_CHECKED
+			: MF_UNCHECKED);
+		CheckMenuItem(ghmenuMain,
+			ID_VIEW_THE_STATUSBAR,
+			gbStatusBarVisible
+			? MF_CHECKED
+			: MF_UNCHECKED);
 		SetMenuBitmaps(instance, ghmenuMain);
 		break;
-	case WM_LBUTTONUP:
-		if (gbIsDragging)
-			MainWinOnDrop();
+
+	case WM_DESTROY:
+		DestroyProc(hwndFrame);
 		break;
+
+	case WM_QUIT:
+		_chdir(dirOpus);
+		_rmdir(dirTemp);
+		break;
+
+	case WM_LBUTTONUP:
+		if (gbIsDragging) MainWinOnDrop();
+		break;
+
 	case WM_MOUSEMOVE:
 		if (gbIsDragging)
-			MainWinOnDragOver(LOWORD(lParam), HIWORD(lParam));
+			MainWinOnDragOver(
+				LOWORD(lParam),
+				HIWORD(lParam)
+			);
 		break;
+
 	case WM_KEYDOWN:
-		if (gbIsDragging)
-			MainWinOnDrop();
+		if (gbIsDragging) MainWinOnDrop();
 		break;
+
 	case WM_NOTIFY:
-		switch (nmhdr->code) {
-		case TTN_NEEDTEXT:
+		if (nmhdr->code == TTN_NEEDTEXT)
+		{
 			lpTTT = (LPTOOLTIPTEXT)lParam;
 			GetTooltipText(lpTTT->szText, wParam);
 		}
 		break;
+
 	default:
-		return(DefFrameProc(hwndFrame, ghwndMDIClient, wMsg, wParam, lParam));
+		return DefFrameProc(
+			hwndFrame,
+			ghwndMDIClient,
+			wMsg, wParam, lParam
+		);
 	}
-	return(0l);
+
+	return 0;
 }
+
+
+
+
+
+
+
 
 
 BOOL CreateProc(HWND hwndFrame)
