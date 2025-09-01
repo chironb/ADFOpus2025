@@ -11,6 +11,7 @@
 #define AMILISTERCLASSNAME "ADFOpusAmigaFileList"
 
 #include "adflib.h"
+#include "ADFOpus.h"
 
 typedef struct _DIRENTRY {
 	char	name[MAX_PATH];
