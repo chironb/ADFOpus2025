@@ -209,8 +209,10 @@
 #define IDC_GW_RADIO_ADF2               1153
 #define IDC_RADIO1                      1154
 #define IDC_GW_RADIO_DRIVE_0            1154
+#define IDC_GW_RADIO_DRIVE_A            1154
 #define IDC_RADIO2                      1155
 #define IDC_GW_RADIO_DRIVE_1            1155
+#define IDC_GW_RADIO_DRIVE_B            1155
 #define IDC_RADIO3                      1156
 #define IDC_GW_RADIO_READ_IMAGE         1156
 #define IDC_RADIO4                      1157
@@ -218,6 +220,9 @@
 #define IDC_RADIO5                      1158
 #define IDC_RADIO6                      1159
 #define IDC_GW_RADIO_ADZ                1159
+#define IDC_GW_EDIT_PATH                1160
+#define IDC_GW_NEWBROWSE                1161
+#define IDC_GW_BTN_BROWSE               1161
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -290,9 +295,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        231
+#define _APS_NEXT_RESOURCE_VALUE        232
 #define _APS_NEXT_COMMAND_VALUE         40127
-#define _APS_NEXT_CONTROL_VALUE         1160
+#define _APS_NEXT_CONTROL_VALUE         1162
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
