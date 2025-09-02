@@ -37,6 +37,102 @@
 extern char gstrFileName[MAX_PATH * 2];
 extern HWND	ghwndMDIClient;
 
+#include "ADFOpus.h"   // for 
+
+
+
+
+
+
+
+#include "ChildCommon.h"   // for CHILDINFO
+
+
+
+//static BOOL CALLBACK EnumOpenFiles(HWND hwndChild, LPARAM lParam)
+//{
+//	// 1) Only consider windows with your MDI‐child class
+//	char cls[32] = { 0 };
+//	GetClassNameA(hwndChild, cls, sizeof(cls));
+//	if (strcmp(cls, "ADFOpusAmigaFileList") != 0)
+//		return TRUE;  // skip non‐MDI children
+//
+//	// 2) Grab your child‐info pointer
+//	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndChild, GWLP_USERDATA);
+//	// Guard against NULL or insanely low addresses
+//	if (!ci || (ULONG_PTR)ci < 0x10000)
+//		return TRUE;
+//
+//	// 3) Finally, safe to read orig_path
+//	if (ci->orig_path && ci->orig_path[0])
+//	{
+//		HWND hCombo = (HWND)lParam;
+//		SendMessageA(hCombo, CB_ADDSTRING, 0, (LPARAM)ci->orig_path);
+//	}
+//	return TRUE;
+//}
+
+//static BOOL CALLBACK EnumOpenFiles(HWND hwndChild, LPARAM lParam)
+//{
+//	char cls[64] = { 0 };
+//	GetClassNameA(hwndChild, cls, sizeof(cls));
+//
+//	// Debug: show every child’s HWND and class name
+//	{
+//		char buf[128];
+//		wsprintfA(buf,
+//			"EnumOpenFiles Debug\n\n"
+//			"HWND: 0x%p\n"
+//			"Class: %s",
+//			hwndChild,
+//			cls);
+//		MessageBoxA(NULL, buf, "EnumOpenFiles", MB_OK);
+//	}
+//
+//	// Your existing filter—replace "MDIChildClassName" once you know the real one
+//	if (strcmp(cls, "ADFOpusAmigaFileList") != 0)
+//		return TRUE;
+//
+//	// Now grab the user‐data pointer
+//	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndChild, GWLP_USERDATA);
+//
+//	// Debug: show what pointer you got back
+//	{
+//		char buf[128];
+//		wsprintfA(buf,
+//			"After filtering by class, USERDATA = 0x%p",
+//			ci);
+//		MessageBoxA(NULL, buf, "EnumOpenFiles", MB_OK);
+//	}
+//
+//	// Guard and then add the path
+//	if (!ci || (ULONG_PTR)ci < 0x10000)
+//		return TRUE;
+//
+//	if (ci->orig_path && ci->orig_path[0])
+//	{
+//		HWND hCombo = (HWND)lParam;
+//
+//		// Debug: show the path you’re about to add
+//		{
+//			char buf[MAX_PATH + 32];
+//			wsprintfA(buf,
+//				"Adding to combo:\n%s",
+//				ci->orig_path);
+//			MessageBoxA(NULL, buf, "EnumOpenFiles", MB_OK);
+//		}
+//
+//		SendMessageA(hCombo,
+//			CB_ADDSTRING,
+//			0,
+//			(LPARAM)ci->orig_path);
+//	}
+//
+//	return TRUE;
+//}
+//
+
+
 
 const char* defaultGreaseweazleFilename = "adfopus_greaseweazle_default.adf";
 
@@ -270,7 +366,577 @@ static void EscapeBackslashes(
 
 
 
+#include <windows.h>
+#include <shlwapi.h>     // PathFindExtensionA
+#include <commctrl.h>    // combo & MDI messages
+#pragma comment(lib, "Shlwapi.lib")
 
+extern HWND   ghwndMDIClient;    // your MDI client
+extern char   gstrFileName[];
+
+#include <shlwapi.h>     // for PathFindExtensionA
+#pragma comment(lib, "Shlwapi.lib")
+
+#include <windows.h>
+#include <shlwapi.h>     // for PathFindExtensionA, PathCombineA, PathQuoteSpacesA
+#pragma comment(lib, "Shlwapi.lib")
+
+extern HWND ghwndMDIClient;     // your MDI client handle
+extern char gstrFileName[];     // buffer holding the current ADF path
+
+
+
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------
+// callback for EnumChildWindows: adds every Amiga-ADFLister title to the combo
+static BOOL CALLBACK _AddAmigaChildren(HWND hwndChild, LPARAM lParam)
+{
+	// 1) filter by your Amiga-list window class
+	char cls[64];
+	GetClassNameA(hwndChild, cls, sizeof(cls));
+	if (strcmp(cls, "ADFOpusAmigaFileList") != 0)
+		return TRUE;   // not an ADF lister window, skip it
+
+	// 2) pull the title (full path) out
+	char title[MAX_PATH] = { 0 };
+	if (GetWindowTextA(hwndChild, title, MAX_PATH) > 0)
+	{
+		// 3) only .adf images
+		const char* ext = PathFindExtensionA(title);
+		if (ext && _stricmp(ext, ".adf") == 0)
+		{
+			HWND hCombo = (HWND)lParam;
+			SendMessageA(hCombo, CB_ADDSTRING, 0, (LPARAM)title);
+		}
+	}
+	return TRUE;  // continue enumeration
+}
+
+//-----------------------------------------------------------------------------
+// Greaseweazle “Write” dialog proc
+LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
+{
+	switch (msg)
+	{
+	case WM_INITDIALOG:
+	{
+		HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
+		// clear previous entries
+		SendMessage(hCombo, CB_RESETCONTENT, 0, 0);
+
+		// walk every direct child of the MDI client
+		EnumChildWindows(
+			ghwndMDIClient,
+			_AddAmigaChildren,
+			(LPARAM)hCombo
+		);
+
+		// default‐select the first item, if any
+		if (SendMessage(hCombo, CB_GETCOUNT, 0, 0) > 0)
+			SendMessage(hCombo, CB_SETCURSEL, 0, 0);
+
+		// init Drive‐A/B radios
+		CheckRadioButton(
+			dlg,
+			IDC_GW_RADIO_WRITE_DRIVE_A,
+			IDC_GW_RADIO_WRITE_DRIVE_B,
+			IDC_GW_RADIO_WRITE_DRIVE_A
+		);
+
+		return TRUE;
+	}
+
+	case WM_COMMAND:
+		switch (LOWORD(wp))
+		{
+		case ID_GW_WRITE_CANCEL:
+			EndDialog(dlg, TRUE);
+			return TRUE;
+
+		case ID_GW_WRITE_START:
+			RunGreaseweazleWrite(dlg);
+			EndDialog(dlg, TRUE);
+			return TRUE;
+		}
+		break;
+
+	case WM_CLOSE:
+		EndDialog(dlg, TRUE);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
+
+
+
+
+//-----------------------------------------------------------------------------
+// Builds the gw.exe command line and launches it
+void RunGreaseweazleWrite(HWND dlg)
+{
+	HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
+	int  idx = (int)SendMessage(hCombo, CB_GETCURSEL, 0, 0);
+	if (idx == CB_ERR)
+	{
+		MessageBoxA(
+			dlg,
+			"Please select an Amiga disk image (.adf) to write.",
+			"No File Selected",
+			MB_OK | MB_ICONWARNING
+		);
+		return;
+	}
+
+	char picked[MAX_PATH] = { 0 };
+	SendMessageA(
+		hCombo,
+		CB_GETLBTEXT,
+		(WPARAM)idx,
+		(LPARAM)picked
+	);
+
+	// copy to global if needed elsewhere
+	strcpy_s(gstrFileName, MAX_PATH, picked);
+
+	// locate gw.exe
+	char gwDir[MAX_PATH] = "C:\\Program Files\\Greaseweazle";
+	char gwExe[MAX_PATH] = "gw.exe";
+	CHAR gwPath[MAX_PATH];
+	if (!PathCombineA(gwPath, gwDir, gwExe))
+	{
+		MessageBoxA(
+			dlg,
+			"Failed to locate Greaseweazle executable.",
+			"Error",
+			MB_OK | MB_ICONERROR
+		);
+		return;
+	}
+	// PathQuoteSpacesA(gwPath);
+
+	// drive arg
+	char driveArg[32] = "--drive=A";
+	if (SendDlgItemMessage(
+		dlg, IDC_GW_RADIO_WRITE_DRIVE_B,
+		BM_GETCHECK, 0, 0) == BST_CHECKED)
+	{
+		strcpy_s(driveArg, sizeof driveArg, "--drive=B");
+	}
+
+	// assemble command-line: write <drive> "<picked>"
+	CHAR cmdLine[256];
+	sprintf_s(
+		cmdLine, sizeof cmdLine,
+		" write %s \"%s\"",
+		driveArg, picked
+	);
+
+	//// launch
+	//STARTUPINFOA        si = { sizeof(si) };
+	//PROCESS_INFORMATION pi;
+	//ZeroMemory(&pi, sizeof(pi));
+	//if (!CreateProcessA(
+	//	gwPath, cmdLine,
+	//	NULL, NULL, FALSE,
+	//	CREATE_NEW_CONSOLE,
+	//	NULL, NULL, &si, &pi))
+	//{
+	//	MessageBoxA(
+	//		dlg,
+	//		"Failed to launch Greaseweazle.",
+	//		"Error",
+	//		MB_OK | MB_ICONERROR
+	//	);
+	//	//MessageBoxA(
+	//	//	dlg,
+	//	//	gwPath,
+	//	//	"gwPath",
+	//	//	MB_OK | MB_ICONERROR
+	//	//);
+	//	//MessageBoxA(
+	//	//	dlg,
+	//	//	cmdLine,
+	//	//	"cmdLine",
+	//	//	MB_OK | MB_ICONERROR
+	//	//);
+	//	return;
+	//}
+
+
+	//// launch BLOCKING the main app until it's done
+	//// (so the user can't try to do something else while it's running)
+	//STARTUPINFOA        si = { sizeof(si) };
+	//PROCESS_INFORMATION pi;
+	//ZeroMemory(&pi, sizeof(pi));
+	//if (!CreateProcessA(
+	//	gwPath, cmdLine,
+	//	NULL, NULL, FALSE,
+	//	CREATE_NEW_CONSOLE,
+	//	NULL, NULL, &si, &pi))
+	//{
+	//	MessageBox(
+	//		dlg,
+	//		"Failed to launch Greaseweazle.",
+	//		"Error",
+	//		MB_OK | MB_ICONERROR
+	//	);
+	//	//MessageBoxA(
+	//	//	dlg,
+	//	//	gwPath,
+	//	//	"gwPath",
+	//	//	MB_OK | MB_ICONERROR
+	//	//);
+	//	//MessageBoxA(
+	//	//	dlg,
+	//	//	cmdLine,
+	//	//	"cmdLine",
+	//	//	MB_OK | MB_ICONERROR
+	//	//);
+	//	return;
+	//}
+
+
+	//CloseHandle(pi.hProcess);
+	//CloseHandle(pi.hThread);
+
+
+		// launch BLOCKING the main app until it's done
+	// (so the user can't try to do something else while it's running)
+	// because if they changed a disk while it's being written, that would be bad.
+
+		//if ( !CreateProcessA(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
+	//if (!CreateProcess(gwPath, cmdLine, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi)) {
+
+	//	MessageBoxA(dlg, "Can't access the Greaseweazle application! Check the path...", "Failed!:", MB_OK | MB_ICONERROR);
+	//	MessageBoxA(dlg, gwPath, "Failed! Check gwPath:", MB_OK | MB_ICONERROR);
+
+	//}
+
+	STARTUPINFOA        si = { sizeof(si) };
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&pi, sizeof(pi));
+	if (!CreateProcess(
+		gwPath, cmdLine,
+		NULL, NULL, FALSE,
+		CREATE_NEW_CONSOLE,
+		NULL, NULL, &si, &pi))
+	{
+
+		MessageBoxA(dlg, "Can't access the Greaseweazle application! Check the path...", "Failed!:", MB_OK | MB_ICONERROR);
+		MessageBoxA(dlg, gwPath, "Failed! Check gwPath:", MB_OK | MB_ICONERROR);
+
+	}
+
+	HANDLE hProc;
+	hProc = OpenProcess(SYNCHRONIZE, FALSE, pi.dwProcessId);
+	WaitForSingleObject(hProc, INFINITE);
+	CloseHandle(hProc);
+	EndDialog(dlg, TRUE);
+
+
+	return;
+
+
+
+
+}
+
+
+
+
+
+//LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
+//{
+//	/* Placeholder until I can create the Greaseweazle functionality to replace DISK2FDI. */
+//
+//	static DWORD aIds[] = {
+//		IDCANCEL,				IDCANCEL,
+//		0,0
+//	};
+//
+//	switch (msg) {
+//
+//	case WM_INITDIALOG:
+//	
+//		//  HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
+//
+//		//// Sample filenames
+//		//const char* files[] = {
+//		//	"example1.adf",
+//		//	"demo_disk.adf",
+//		//	"test_image.adf"
+//		//};
+//		//int count = sizeof(files) / sizeof(files[0]);
+//
+//		//for (int i = 0; i < count; i++)
+//		//{
+//		//	SendMessageA(
+//		//		hCombo,
+//		//		CB_ADDSTRING,
+//		//		0,
+//		//		(LPARAM)files[i]
+//		//	);
+//		//}
+//
+//		//HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
+//		//SendMessageA(hCombo, CB_ADDSTRING, 0, (LPARAM)"Please select an open disk image...");
+//
+//		//// Select the first item by default
+//		//SendMessage(hCombo, CB_SETCURSEL, 0, 0);
+//
+//
+//			// ... your existing setup code ...
+//
+//	// 1) Grab the combo control
+//		HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
+//
+//		// 2) Clear any old entries
+//		SendMessage(hCombo, CB_RESETCONTENT, 0, 0);
+//
+//		// 3) Walk every MDI child and add its filename
+//		//    ghwndMDIClient is your MDI client HWND
+//		EnumChildWindows(ghwndMDIClient, EnumOpenFiles, (LPARAM)hCombo);
+//
+//		// 4) Optionally select the first item if any
+//		if (SendMessage(hCombo, CB_GETCOUNT, 0, 0) > 0)
+//			SendMessage(hCombo, CB_SETCURSEL, 0, 0);
+//
+//		return TRUE;
+//
+//
+//	
+//
+//		// Radio Pair #2 - Source Drive
+//		CheckRadioButton(dlg,
+//			IDC_GW_RADIO_WRITE_DRIVE_A,  // first ID in group
+//			IDC_GW_RADIO_WRITE_DRIVE_B,  // last ID in group
+//			IDC_GW_RADIO_WRITE_DRIVE_A   // ID to select
+//		);
+//
+//
+//
+//		return TRUE;
+//
+//		break;
+//
+//	case WM_COMMAND:
+//		switch ((int)LOWORD(wp)) {
+//
+//
+//
+//		case ID_GW_WRITE_CANCEL:
+//			EndDialog(dlg, TRUE);
+//			return TRUE;
+//			break;
+//
+//		case ID_GW_WRITE_START:
+//
+//			RunGreaseweazleWrite(dlg);
+//
+//			EndDialog(dlg, TRUE);
+//			return TRUE;
+//
+//			break;
+//
+//		}/*end-switch*/
+//		break;
+//
+//		//IDGWSTART
+//
+//
+//	case WM_CLOSE:
+//		EndDialog(dlg, TRUE);
+//		return TRUE;
+//		break;
+//
+//	}/*end-switch*/
+//
+//	return FALSE;
+//
+//}
+//
+//
+//
+//void RunGreaseweazleWrite(HWND dlg)
+//{
+//
+//	//// THIS WORKS EVEN IF TEH PROGRAM IS IN A FOLDER PATH WITH SPACE FUCK YEAH!
+//	//// must be mutable buffers, not literals
+//	//char TESTexePath[MAX_PATH] = "C:\\Program Files\\Greaseweazle\\gw.exe";
+//	//char TESTcmdArgs[256] = " write --drive=A --format=amiga.amigados C:\\Users\\micro\\Example_Disk.adf";
+//	//// you need the space so the program name is separated from its args
+//
+//	//STARTUPINFOA TESTsi = { sizeof(TESTsi) };
+//	//PROCESS_INFORMATION TESTpi;
+//
+//	////strcpy(gstrFileName, imageFullPath); // I think the gstrFileName is the last disk image loaded?
+//
+//	//MessageBoxA(dlg, gstrFileName, "DEBUG: gstrFileName", MB_OK | MB_ICONERROR);
+//
+//	//// pass exePath in lpApplicationName, args only in lpCommandLine
+//	//if (!CreateProcessA(
+//	//	TESTexePath,        // launches gw.exe directly
+//	//	TESTcmdArgs,        // its argv[1]…argv[n]
+//	//	NULL, NULL,
+//	//	FALSE,
+//	//	CREATE_NEW_CONSOLE,
+//	//	NULL, NULL,
+//	//	&TESTsi, &TESTpi
+//	//))
+//	//{
+//	//	MessageBoxA(dlg,
+//	//	"Launch failed",
+//	//	"Error", MB_OK | MB_ICONERROR);
+//	//}
+//	//else
+//	//{
+//	//	CloseHandle(TESTpi.hProcess);
+//	//	CloseHandle(TESTpi.hThread);
+//	//}
+//
+//
+//	// 1) Configurable at runtime (load from your options later)
+//
+//	char greaseweazlePATH[MAX_PATH] = "C:\\Program Files\\Greaseweazle";
+//	char greaseweazleEXE[MAX_PATH] = "gw.exe";
+//
+//	// 3) Build the on‐disk path to the Greaseweazle .exe
+//	CHAR batchFullPath[MAX_PATH];
+//	if (!PathCombineA(batchFullPath, greaseweazlePATH, greaseweazleEXE))
+//	{
+//		MessageBoxA(
+//			dlg,
+//			"Failed to combine Greaseweazle path.\n"
+//			"Check your greaseweazlePATH and greaseweazleEXE settings.",
+//			"Error",
+//			MB_OK | MB_ICONERROR
+//		);
+//
+//		return;
+//	}
+//
+//	// batchFullPath is now wrapped in quotes if it contains spaces
+//	PathQuoteSpacesA(batchFullPath);
+//
+//	// 4) Arguments you’ll pass to gw.exe
+//	// .\gw.exe read --drive=A --format=amiga.amigados example_disk.adf
+//	// -------- ---- --------- ----------------------- ---------------- 
+//	char rwArg[32]           = "write";
+//	char driveArg[32]        = "--drive=A";
+//	char formatArg[32]       = "--format=amiga.amigados";
+//	char imagePath[MAX_PATH] = "C:\\Program Files\\Greaseweazle";
+//	char imageArg[MAX_PATH]  = "gw.exe";
+//
+//	// Drive A Selection
+//	if (SendDlgItemMessage(dlg, IDC_GW_RADIO_WRITE_DRIVE_A, BM_GETCHECK, 0L, 0L) == BST_CHECKED) {
+//		strcpy(driveArg, "--drive=A");
+//	}
+//
+//	// Drive B Selection
+//	if (SendDlgItemMessage(dlg, IDC_GW_RADIO_WRITE_DRIVE_B, BM_GETCHECK, 0L, 0L) == BST_CHECKED) {
+//		strcpy(driveArg, "--drive=B");
+//	}
+//
+//
+//
+//
+//	// Disk Image Path for Greaseweazle
+//	// This is where I need to like pull it in from somewhere...
+//
+//
+//	// This will append “\” only if one isn’t already there.
+//	// Returns a pointer to the backslash in the new string.
+//	PathAddBackslashA(imagePath);
+//
+//
+//
+//
+//	// Get selected file to write from the dialog box -->IDC_GW_COMBO_FILETOWRITE
+//	//char selected[MAX_PATH];
+//	//HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
+//	//int idx = (int)SendMessage(hCombo, CB_GETCURSEL, 0, 0);
+//	//if (idx != CB_ERR)
+//	//{
+//	//	
+//	//	SendMessageA(
+//	//		hCombo,
+//	//		CB_GETLBTEXT,
+//	//		(WPARAM)idx,
+//	//		(LPARAM)selected
+//	//	);
+//	//	// 'selected' now holds the filename user picked
+//	//}
+//
+//	char picked[MAX_PATH];
+//
+//	HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
+//	int  idx = (int)SendMessage(hCombo, CB_GETCURSEL, 0, 0);
+//	if (idx != CB_ERR)
+//	{
+//		SendMessageA(hCombo, CB_GETLBTEXT, (WPARAM)idx, (LPARAM)picked);
+//		// 'picked' now holds the full path they chose
+//		// copy to gstrFileName or pass to RunGreaseweazle…
+//		strcpy(gstrFileName, picked);
+//	}
+//
+//
+//	// 5) Build the gw.exe argument string
+//	// assumes that the end of hte path has a \ backslash
+//	// .\gw.exe read --drive=A --format=amiga.amigados example_disk.adf
+//	// -------- ---- --------- ----------------------- ----------------
+//	// also there needs to be an extra space before the args that get appened after gw.exe
+//	CHAR gwArgs[256] = "";
+//	sprintf_s(gwArgs, sizeof gwArgs,
+//		" %s %s %s \"%s\"",
+//		rwArg,
+//		driveArg,
+//		formatArg,
+//		picked /* "C:\\Users\\micro\\Example_Disk.adf" */
+//	);
+//
+//	// 1) Combine the dir + exe
+//	//CHAR batchFullPath[MAX_PATH];
+//	PathCombineA(batchFullPath, greaseweazlePATH, greaseweazleEXE);
+//
+//	MessageBoxA(dlg, batchFullPath, "batchFullPath", MB_OK | MB_ICONERROR);
+//	MessageBoxA(dlg, gwArgs, "gwArgs", MB_OK | MB_ICONERROR);
+//
+//	// 8) Launch cmd.exe in a new console so you can watch output
+//	STARTUPINFOA        si = { sizeof(si) };
+//	PROCESS_INFORMATION pi;
+//	ZeroMemory(&si, sizeof(si));
+//	si.dwFlags = STARTF_USESHOWWINDOW;
+//	si.wShowWindow = SW_SHOWNORMAL;
+//	HANDLE hProc;
+//
+//
+//	//if ( !CreateProcessA(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
+//	if (!CreateProcess(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi)) {
+//
+//		MessageBoxA(dlg, "Can't access the Greaseweazle application! Check the path...", "Failed!:", MB_OK | MB_ICONERROR);
+//		MessageBoxA(dlg, batchFullPath, "Failed! Check batchFullPath:", MB_OK | MB_ICONERROR);
+//
+//	}
+//	else
+//	{
+//		CloseHandle(pi.hProcess);
+//		CloseHandle(pi.hThread);
+//	}
+//
+//
+//
+//}
+//
 
 
 
@@ -279,7 +945,7 @@ static void EscapeBackslashes(
 void RunGreaseweazle(HWND dlg)
 {
 	// 1) Configurable at runtime (load from your options later)
-
+	 
 	char greaseweazlePATH[MAX_PATH] = "C:\\Program Files\\Greaseweazle";
 	char greaseweazleEXE[MAX_PATH] = "gw.exe";
 
@@ -375,8 +1041,8 @@ void RunGreaseweazle(HWND dlg)
 	//CHAR batchFullPath[MAX_PATH];
 	PathCombineA(batchFullPath, greaseweazlePATH, greaseweazleEXE);
 
-	char TESTexePath[MAX_PATH] = "C:\\Program Files\\Greaseweazle\\gw.exe";
-	char TESTcmdArgs[256] = " read --drive=A --format=amiga.amigados example_disk.adf";
+	//char TESTexePath[MAX_PATH] = "C:\\Program Files\\Greaseweazle\\gw.exe";
+	//char TESTcmdArgs[256] = " read --drive=A --format=amiga.amigados example_disk.adf";
 
 	// 8) Launch cmd.exe in a new console so you can watch output
 	STARTUPINFOA        si = { sizeof(si) };
@@ -385,6 +1051,19 @@ void RunGreaseweazle(HWND dlg)
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_SHOWNORMAL;
 	HANDLE hProc;
+
+	//MessageBoxA(
+	//	dlg,
+	//	batchFullPath,
+	//	"batchFullPath",
+	//	MB_OK | MB_ICONERROR
+	//);
+	//MessageBoxA(
+	//	dlg,
+	//	gwArgs,
+	//	"gwArgs",
+	//	MB_OK | MB_ICONERROR
+	//);
 
 	//if ( !CreateProcessA(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
 	if ( !CreateProcess(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
@@ -483,230 +1162,3 @@ void RunGreaseweazle(HWND dlg)
 
 
 
-
-
-
-
-
-
-
-
-//LRESULT CALLBACK Disk2FDIProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
-//{
-//
-//	static DWORD aIds[] = { 
-//		IDC_EDIT_FILENAME,		IDH_DISK2FDI_FILENAME,
-//		IDC_CHECK_OPEN,			IDH_DISK2FDI_CHECK_OPEN,
-//		IDC_RADIO_FDI,			IDH_DISK2FDI_TYPE_FDI,	
-//		IDC_RADIO_ADF,			IDH_DISK2FDI_TYPE_ADF,	
-//		IDC_RADIO_ST,			IDH_DISK2FDI_TYPE_ST,
-//		IDC_RADIO_IMG,			IDH_DISK2FDI_TYPE_IMG,
-//		IDC_CHECK_USE_B_DRIVE,	IDH_DISK2FDI_USE_B,
-//		IDC_RADIO_SINGLE_SIDED,	IDH_DISK2FDI_1SIDED,
-//		IDC_RADIO_DOUBLE_SIDED,	IDH_DISK2FDI_2SIDED,
-//		IDC_CHECK_TRACKS,		IDH_DISK2FDI_NUM_TRACKS,
-//		IDC_EDIT_TRACKS,		IDH_DISK2FDI_NUM_TRACKS,
-//		IDC_CHECK_SECTORS,		IDH_DISK2FDI_NUM_SECTORS,
-//		IDC_EDIT_SECTORS,		IDH_DISK2FDI_NUM_SECTORS,
-//		IDSTART,				IDH_DISK2FDI_START_BUTTON,
-//		IDC_BUTTON_FDI_HELP,	IDH_DISK2FDI_HELP_BUTTON,
-//		IDCANCEL,				IDH_DISK2FDI_CANCEL_BUTTON,
-//		0,0 
-//	}; 	
-//
-//
-//	switch(msg) {
-//	case WM_INITDIALOG:
-//
-//		SendDlgItemMessage(dlg, IDC_RADIO_ADF, BM_SETCHECK, BST_CHECKED, 0l);
-//		SendDlgItemMessage(dlg, IDC_RADIO_DOUBLE_SIDED, BM_SETCHECK, BST_CHECKED, 0l);
-//		
-//		// Set the spin control ranges.
-//		SendDlgItemMessage(dlg, IDC_SPIN_TRACKS, UDM_SETRANGE, 0L, MAKELONG(87, 1));	// 1 - 87 tracks.
-//		SendDlgItemMessage(dlg, IDC_SPIN_SECTORS, UDM_SETRANGE, 0L, MAKELONG(64, 1));	// 1 - 64 sectors.
-//		// Set the spin control default values.
-//		SendDlgItemMessage(dlg, IDC_SPIN_TRACKS, UDM_SETPOS, 0L, MAKELONG((SHORT)80, 0));	// Default to 80 tracks.
-//		SendDlgItemMessage(dlg, IDC_SPIN_SECTORS, UDM_SETPOS, 0L, MAKELONG((SHORT)22, 0));	// Default to 22 sectors.
-//
-//		return TRUE;
-//	case WM_COMMAND:
-//		switch((int)LOWORD(wp)) {
-//
-//			case IDC_RADIO_FDI:
-//				EnableWindow(GetDlgItem(dlg, IDC_CHECK_SECTORS), FALSE);
-//				EnableWindow(GetDlgItem(dlg, IDC_CHECK_TRACKS), TRUE);
-//				EnableWindow(GetDlgItem(dlg, IDC_CHECK_OPEN), FALSE);		// Disable opening in Opus.
-//				return TRUE;
-//
-//			case IDC_RADIO_ADF:
-//				EnableWindow(GetDlgItem(dlg, IDC_CHECK_SECTORS), FALSE);
-//				EnableWindow(GetDlgItem(dlg, IDC_CHECK_TRACKS), FALSE);
-//				EnableWindow(GetDlgItem(dlg, IDC_CHECK_OPEN), TRUE);		// Enable opening in Opus.
-//				return TRUE;
-//			
-//			case IDC_RADIO_ST:
-//			case IDC_RADIO_IMG:
-//				EnableWindow(GetDlgItem(dlg, IDC_CHECK_SECTORS), TRUE);
-//				EnableWindow(GetDlgItem(dlg, IDC_CHECK_TRACKS), TRUE);
-//				EnableWindow(GetDlgItem(dlg, IDC_CHECK_OPEN), FALSE);		// Disable opening in Opus.
-//				return TRUE;
-//		
-//			case IDC_CHECK_TRACKS:
-//				if(SendDlgItemMessage(dlg, IDC_CHECK_TRACKS, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//					EnableWindow(GetDlgItem(dlg, IDC_EDIT_TRACKS), TRUE);
-//					EnableWindow(GetDlgItem(dlg, IDC_SPIN_TRACKS), TRUE);
-//				}
-//				else{
-//					EnableWindow(GetDlgItem(dlg, IDC_EDIT_TRACKS), FALSE);
-//					EnableWindow(GetDlgItem(dlg, IDC_SPIN_TRACKS), FALSE);
-//				}
-//				return TRUE;
-//
-//			case IDC_CHECK_SECTORS:
-//				if(SendDlgItemMessage(dlg, IDC_CHECK_SECTORS, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//					EnableWindow(GetDlgItem(dlg, IDC_EDIT_SECTORS), TRUE);
-//					EnableWindow(GetDlgItem(dlg, IDC_SPIN_SECTORS), TRUE);
-//				}
-//				else{
-//					EnableWindow(GetDlgItem(dlg, IDC_EDIT_SECTORS), FALSE);
-//					EnableWindow(GetDlgItem(dlg, IDC_SPIN_SECTORS), FALSE);
-//				}
-//				return TRUE;
-//
-//			case IDSTART:
-//				RunDisk2FDI(dlg);
-//				return TRUE;
-//
-//			case IDCANCEL:
-//				EndDialog(dlg, TRUE);
-//				return TRUE;
-//
-//			case IDC_BUTTON_FDI_HELP:
-//				// Implement help button.
-//				WinHelp(dlg, "ADFOpus.hlp>Opus_win", HELP_CONTEXT, IDH_DISK2FDI);
-//				return TRUE;
-//
-//		}
-//		break;
-//
-//	case WM_CLOSE:
-//		EndDialog(dlg, TRUE);
-//		return TRUE;
-//
-//	// Context sensitive help.
-//    case WM_HELP: 
-//       WinHelp(((LPHELPINFO) lp)->hItemHandle, "adfopus.hlp", HELP_WM_HELP, (DWORD) (LPSTR) aIds); 
-//        break; 
-// 
-//    case WM_CONTEXTMENU: 
-//        WinHelp((HWND) wp, "adfopus.hlp", HELP_CONTEXTMENU, (DWORD) (LPVOID) aIds); 
-//        break; 	
-//
-//	}
-//	return FALSE;
-//}
-
-
-//void RunDisk2FDI(HWND dlg)
-///// Creates a string containing the command line arguments and runs Disk2FDI with these arguments.
-///// <BR>Input:  A handle to the calling dialogue.
-///// <BR>Output: 
-//{
-//	char	*szCommand = "DISK2FDI.COM";			// Command.
-//	char	*szTracksArg = "/T";
-//	char	*szHeadsArg = "/H";
-//	char	*szSectorArg = "/S";
-//	char	*szDriveArg = "B:";
-//		
-//	char	szFileName[MAX_PATH];					// Dump name.
-//	char	szCommandLine[MAX_PATH + 26];			// Final command line - max name length + 26 for args.
-//	char	szCommandLineArgs[MAX_PATH + 26];		// Final command line - max name length + 26 for args.
-//	char	szNumTracks[3];
-//	char	szNumSectors[3];
-//	char	fileName[MAX_PATH];
-//	char	drive[MAX_PATH];
-//	BOOL	bIsADF = FALSE;
-//	STARTUPINFO s_info;
-//	PROCESS_INFORMATION p_info;
-//	HANDLE hProc;
-//
-//	sprintf(szCommandLineArgs, " ");	// Print a space to avoid errors copying an unintialised string later.
-//
-//	// Number of heads.
-//	if(SendDlgItemMessage(dlg, IDC_RADIO_SINGLE_SIDED, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//		sprintf(szCommandLineArgs, "%s %s1 ", szCommandLineArgs, szHeadsArg);
-//	}
-//	
-//	// Sector dump.
-//	if(SendDlgItemMessage(dlg, IDC_RADIO_ADF, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//		sprintf(szCommandLineArgs, "%s %s ", szCommandLineArgs, szSectorArg);
-//		bIsADF = TRUE;
-//	}
-//	else if(SendDlgItemMessage(dlg, IDC_RADIO_FDI, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//		if(SendDlgItemMessage(dlg, IDC_CHECK_TRACKS, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//			SendDlgItemMessage(dlg, IDC_EDIT_TRACKS, WM_GETTEXT, 3, (LPARAM)szNumTracks);     // check for 2 digits????????
-//			sprintf(szCommandLineArgs, "%s %s%s ", szCommandLineArgs, szTracksArg, szNumTracks);
-//		}
-//	}
-//	else if(SendDlgItemMessage(dlg, IDC_RADIO_IMG, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//		if(SendDlgItemMessage(dlg, IDC_CHECK_TRACKS, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//			SendDlgItemMessage(dlg, IDC_EDIT_TRACKS, WM_GETTEXT, 3, (LPARAM)szNumTracks);
-//			sprintf(szCommandLineArgs, "%s %s%s ", szCommandLineArgs, szTracksArg, szNumTracks);
-//		}
-//		sprintf(szCommandLineArgs, "%s %s ", szCommandLineArgs, szSectorArg);
-//		if(SendDlgItemMessage(dlg, IDC_CHECK_SECTORS, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//			SendDlgItemMessage(dlg, IDC_EDIT_SECTORS, WM_GETTEXT, 3, (LPARAM)szNumSectors);
-//			sprintf(szCommandLineArgs, "%s%s ", szCommandLineArgs, szNumSectors);
-//		}
-//	}
-//	else if(SendDlgItemMessage(dlg, IDC_RADIO_ST, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//		if(SendDlgItemMessage(dlg, IDC_CHECK_TRACKS, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//			SendDlgItemMessage(dlg, IDC_EDIT_TRACKS, WM_GETTEXT, 3, (LPARAM)szNumTracks);
-//			sprintf(szCommandLineArgs, "%s %s%s ", szCommandLineArgs, szTracksArg, szNumTracks);
-//		}
-//		sprintf(szCommandLineArgs, "%s %s ", szCommandLineArgs, szSectorArg);
-//		if(SendDlgItemMessage(dlg, IDC_CHECK_SECTORS, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//			SendDlgItemMessage(dlg, IDC_EDIT_SECTORS, WM_GETTEXT, 3, (LPARAM)szNumSectors);
-//			sprintf(szCommandLineArgs, "%s%s ", szCommandLineArgs, szNumSectors);
-//		}
-//
-//	}
-//
-//	// Number of heads.
-//	if(SendDlgItemMessage(dlg, IDC_CHECK_USE_B_DRIVE, BM_GETCHECK, 0L, 0L) == BST_CHECKED ){
-//		sprintf(szCommandLineArgs, "%s %s ", szCommandLineArgs, szDriveArg);
-//	}
-//	
-//	SendDlgItemMessage(dlg, IDC_EDIT_FILENAME, WM_GETTEXT, MAX_PATH, (LPARAM)szFileName);	// Get filename.
-//	sprintf(szCommandLineArgs, "%s %s", szCommandLineArgs, szFileName);
-//
-//	_splitpath(szFileName, drive, NULL, fileName, NULL);	// Get filename.
-//	if(strcmp(drive, "") == 0){
-//		(void)_getcwd(drive, MAX_PATH);
-//		strcat(drive, "\\");
-//		strcat(fileName, ".adf");
-//		strcat(drive, fileName);
-//		strcpy(gstrFileName, drive);
-//	}
-//
-//	sprintf(szCommandLine, "%s%s", szCommand, szCommandLineArgs);
-//	memset(&s_info, 0, sizeof(s_info));
-//	s_info.cb = sizeof(s_info);
-//	if(!CreateProcess(NULL, szCommandLine, NULL, NULL, FALSE, 0, NULL, NULL, &s_info, &p_info)){
-//		MessageBox(dlg,
-//				   "Disk2FDI was not found in the command path. See help for further details.",
-//				   "ADF Opus Error",
-//				   MB_ICONSTOP);
-//		return;
-//	}
-//
-//	// If opening after creation, wait for the process.
-//	if(SendDlgItemMessage(dlg, IDC_CHECK_OPEN, BM_GETCHECK, 0, 0L) == BST_CHECKED && bIsADF){
-//		hProc = OpenProcess(SYNCHRONIZE, FALSE, p_info.dwProcessId);
-//		WaitForSingleObject(hProc, INFINITE);
-//		CloseHandle(hProc);
-//		EndDialog(dlg, TRUE);
-//		CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
-//	}
-//	return;
-//}

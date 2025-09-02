@@ -17,4 +17,7 @@ void				RunDisk2FDI(HWND dlg);
 LRESULT CALLBACK	GreaseweazleProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp);
 void				RunGreaseweazle(HWND dlg);
 
+LRESULT CALLBACK	GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp);
+void				RunGreaseweazleWrite(HWND dlg);
+
 #endif /* ndef DISK2FDI_H */
