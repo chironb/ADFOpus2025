@@ -384,37 +384,55 @@ void RunGreaseweazle(HWND dlg)
 	ZeroMemory(&si, sizeof(si));
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_SHOWNORMAL;
+	HANDLE hProc;
 
-	if (!CreateProcessA(
-		batchFullPath,
-		gwArgs,     
-		NULL, NULL,
-		FALSE,
-		CREATE_NEW_CONSOLE,
-		NULL, NULL,
-		&si,
-		&pi
-	))
-	{
-		MessageBoxA(
-			dlg,
-			"Can't access the Greaseweazle application! Check the path...",
-			"Failed!:",
-			MB_OK | MB_ICONERROR
-		);
-		MessageBoxA(
-			dlg,
-			batchFullPath,
-			"Failed! Check batchFullPath:",
-			MB_OK | MB_ICONERROR
-		);
+	//if ( !CreateProcessA(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
+	if ( !CreateProcess(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
+
+		MessageBoxA( dlg, "Can't access the Greaseweazle application! Check the path...", "Failed!:", MB_OK | MB_ICONERROR);
+		MessageBoxA( dlg, batchFullPath, "Failed! Check batchFullPath:", MB_OK | MB_ICONERROR );
+	
 	}
-	else
-	{
-		// close handles if you don't need to wait
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
+	//else
+	//{
+	//	// close handles if you don't need to wait
+	//	CloseHandle(pi.hProcess);
+	//	CloseHandle(pi.hThread);
+	//}
+
+	//sprintf(szCommandLine, "%s%s", szCommand, szCommandLineArgs);
+	//memset(&s_info, 0, sizeof(s_info));
+	//s_info.cb = sizeof(s_info);
+
+	//if ( !CreateProcess(NULL, szCommandLine, NULL, NULL, FALSE, 0, NULL, NULL, &s_info, &p_info)) {
+	//	
+	//	MessageBox(dlg,
+	//		"Disk2FDI was not found in the command path. See help for further details.",
+	//		"ADF Opus Error",
+	//		MB_ICONSTOP);
+	//	return;
+	//}
+
+	// Prep full path and filename so we can open it right away in ADF Opus 2025!
+	CHAR imageFullPath[256] = "";
+	sprintf_s(imageFullPath, sizeof imageFullPath,
+		"%s%s",
+		imagePath,
+		imageArg
+	);
+
+	strcpy(gstrFileName, imageFullPath);
+
+	// If opening after creation, wait for the process.
+	if (SendDlgItemMessage(dlg, IDC_GW_CHECK_OPEN, BM_GETCHECK, 0, 0L) == BST_CHECKED) {
+		hProc = OpenProcess(SYNCHRONIZE, FALSE, pi.dwProcessId);
+		WaitForSingleObject(hProc, INFINITE);
+		CloseHandle(hProc);
+		EndDialog(dlg, TRUE);
+		CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
 	}
+	return;
+
 
 }
 
@@ -692,4 +710,3 @@ void RunGreaseweazle(HWND dlg)
 //	}
 //	return;
 //}
-
