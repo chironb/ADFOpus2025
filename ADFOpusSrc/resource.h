@@ -70,6 +70,8 @@
 #define IDB_TEXTVIEWER                  227
 #define IDD_TEXT_VIEWER                 228
 #define IDD_GREASEWEAZLE                229
+#define IDD_GREASEWEAZLE_WRITEFLOPPY    230
+#define IDD_GREASEWEAZLE_WRITE          230
 #define IDC_NEWPATH                     1004
 #define IDC_NEWADF                      1005
 #define IDC_NEWHARDFILE                 1006
@@ -210,9 +212,11 @@
 #define IDC_RADIO1                      1154
 #define IDC_GW_RADIO_DRIVE_0            1154
 #define IDC_GW_RADIO_DRIVE_A            1154
+#define IDC_GW_RADIO_WRITE_DRIVE_A      1154
 #define IDC_RADIO2                      1155
 #define IDC_GW_RADIO_DRIVE_1            1155
 #define IDC_GW_RADIO_DRIVE_B            1155
+#define IDC_GW_RADIO_WRITE_DRIVE_B      1155
 #define IDC_RADIO3                      1156
 #define IDC_GW_RADIO_READ_IMAGE         1156
 #define IDC_RADIO4                      1157
@@ -223,6 +227,12 @@
 #define IDC_GW_EDIT_PATH                1160
 #define IDC_GW_NEWBROWSE                1161
 #define IDC_GW_BTN_BROWSE               1161
+#define IDC_GW_COMBO_FILETOWRITE        1163
+#define IDC_BUTTON2                     1165
+#define ID_CANCEL_GW_WRITE              1165
+#define ID_GW_WRITE_CANCEL              1165
+#define IDC_GW_SHOWDENSITY              1166
+#define ID_GW_WRITE_START               1167
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -279,6 +289,7 @@
 #define ID_BUTTON40125                  40125
 #define ID_TOOLS_TEXT_VIEWER            40126
 #define IDC_LICENCEPAGEBTN              40127
+#define ID_Menu                         40127
 #define IDB_TBBUTTONS_LARGE             40128
 #define IDC_BUILDINFO                   40129
 #define IDB_TBBUTTONS_TRUECOLOR         40130
@@ -289,6 +300,8 @@
 #define IDB_INVERTSELECTION             40136
 #define ID_TOOLS_GREASEWEAZLE           40137
 #define IDB_GREASEWEAZLE                40138
+#define ID_TOOLS_GREASEWEAZLEWRITE      40139
+#define IDB_GREASEWEAZLEWRITE           40140
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -296,8 +309,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        232
-#define _APS_NEXT_COMMAND_VALUE         40127
-#define _APS_NEXT_CONTROL_VALUE         1162
+#define _APS_NEXT_COMMAND_VALUE         40128
+#define _APS_NEXT_CONTROL_VALUE         1168
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

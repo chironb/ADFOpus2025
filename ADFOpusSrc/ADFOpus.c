@@ -81,6 +81,8 @@ char gstrCmdLineArgs[CMDLINE_BUFFER] = { 0 };
 char g_defaultLocalPath[MAX_PATH] = { 0 };
 
 
+
+
 // -----------------------------------------------------------------------------
 // At top of ADFOpus.c (after your #includes)
 //
@@ -802,7 +804,7 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 	//}
 
 
-
+	// TODO: WTF?!?!?!?! This does nothing??!??!?!
 	// 5) spawn initial child windows
 	if (argCount > 0)
 	{
@@ -1184,6 +1186,10 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 
 	case ID_TOOLS_GREASEWEAZLE:
 		DialogBox(instance, MAKEINTRESOURCE(IDD_GREASEWEAZLE), win, (DLGPROC)GreaseweazleProc);
+		break;
+
+	case ID_TOOLS_GREASEWEAZLEWRITE:
+		DialogBox(instance, MAKEINTRESOURCE(IDD_GREASEWEAZLE_WRITE), win, (DLGPROC)GreaseweazleProcWrite);
 		break;
 
 	case ID_TOOLS_OPTIONS:
@@ -1691,7 +1697,10 @@ void GetTooltipText(char *buf, int cmd)
 		strcpy(buf, "Batch Converter");
 		break;
 	case ID_TOOLS_GREASEWEAZLE:
-		strcpy(buf, "Greaseweazle");
+		strcpy(buf, "Greaseweazle Read Floppy");
+		break;
+	case ID_TOOLS_GREASEWEAZLEWRITE:
+		strcpy(buf, "Greaseweazle Write Floppy");
 		break;
 	case ID_TOOLS_INSTALL:
 		strcpy(buf, "Install Bootblock");

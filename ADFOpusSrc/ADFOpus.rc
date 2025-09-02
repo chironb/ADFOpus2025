@@ -142,17 +142,18 @@ IDD_ABOUTPAGE1 DIALOGEX 0, 0, 245, 190
 STYLE DS_SETFONT | WS_CHILD
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    PUSHBUTTON      "https://github.com/chironb/ADFOpus2025",IDC_WEBPAGEBTN,45,135,150,15
+    PUSHBUTTON      "https://github.com/chironb/ADFOpus2025",IDC_WEBPAGEBTN,45,136,150,15
     CONTROL         IDB_LOGO,ID_LOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,7,5,228,55
     LTEXT           "Original (c) 1998-2002 Dan Sutherland && Gary Harris",IDC_STATIC,35,74,183,8
-    CTEXT           "2025 updates by Chiron Bramberger",IDC_STATIC,32,89,181,10
-    CTEXT           "Visit the project page on GitHub:",IDC_STATIC,8,125,230,10
+    CTEXT           "2025 updates by Chiron Bramberger",IDC_STATIC,31,83,181,10
+    CTEXT           "Visit the project page on GitHub:",IDC_STATIC,8,126,230,10
     LTEXT           "",IDC_OPUS_VERSION,90,63,79,8
-    LTEXT           "ADF Opus comes with ABSOLUTELY NO WARRANTY.",IDC_STATIC,34,100,179,8
-    LTEXT           "This is Free Software! Licence:",IDC_STATIC,49,113,146,8
-    PUSHBUTTON      "GNU GPL v2",IDC_LICENCEPAGEBTN,150,110,50,15
-    PUSHBUTTON      "Original 2003 Homepage",IDC_WEBPAGEBTN2,63,150,116,15
-    LTEXT           "",IDC_BUILDINFO,63,167,116,15
+    LTEXT           "ADF Opus comes with ABSOLUTELY NO WARRANTY.",IDC_STATIC,34,104,179,8
+    LTEXT           "This is Free Software! Licence:",IDC_STATIC,49,114,146,8
+    PUSHBUTTON      "GNU GPL v2",IDC_LICENCEPAGEBTN,150,111,50,15
+    PUSHBUTTON      "Original 2003 Homepage",IDC_WEBPAGEBTN2,63,151,116,15
+    LTEXT           "",IDC_BUILDINFO,63,168,116,15
+    LTEXT           "Now with Greaseweazle support!",IDC_STATIC,68,93,104,8
 END
 
 IDD_ABOUTPAGE2 DIALOG 0, 0, 237, 189
@@ -393,25 +394,42 @@ END
 
 IDD_GREASEWEAZLE DIALOGEX 0, 0, 173, 223
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Greaseweazle"
+CAPTION "Greaseweazle - Create Image"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     EDITTEXT        IDC_GW_EDIT_FILENAME,8,18,158,14,ES_AUTOHSCROLL
-    CONTROL         "Open in ADF Opus after creation",IDC_GW_CHECK_OPEN,
+    CONTROL         "Open in ADF Opus after creation:",IDC_GW_CHECK_OPEN,
                     "Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,27,183,115,10
     CONTROL         "DD 880 KB",IDC_GW_RADIO_DOUBLEDENSITY,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,15,134,66,10
     CONTROL         "HD 1.76 MB",IDC_GW_RADIO_HIGHDENSITY,"Button",BS_AUTORADIOBUTTON,87,134,55,10
     DEFPUSHBUTTON   "Start",IDGWSTART,115,202,51,14
     PUSHBUTTON      "Cancel",IDCANCEL,7,202,51,14
     GROUPBOX        "Filename:",IDC_STATIC,8,7,158,31,BS_LEFT
-    GROUPBOX        "Source Drive",IDC_STATIC,9,90,158,28
-    GROUPBOX        "Disk Density",IDC_STATIC_GW_DENSITY,9,122,158,28
+    GROUPBOX        "Source Drive:",IDC_STATIC,9,90,158,28
+    GROUPBOX        "Disk Density:",IDC_STATIC_GW_DENSITY,9,122,158,28
     CONTROL         "Drive A",IDC_GW_RADIO_DRIVE_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,19,103,39,10
     CONTROL         "Drive B",IDC_GW_RADIO_DRIVE_B,"Button",BS_AUTORADIOBUTTON,91,102,39,10
     LTEXT           "Click ""Start"" to run Greaseweazle to image or create a floppy disk!",IDC_STATIC,18,156,138,17
     EDITTEXT        IDC_GW_EDIT_PATH,7,53,158,12,ES_AUTOHSCROLL
     PUSHBUTTON      "Browse...",IDC_GW_BTN_BROWSE,116,66,50,15
-    GROUPBOX        "    Path:",IDC_STATIC,7,42,165,44,BS_LEFT
+    GROUPBOX        "Path:",IDC_STATIC,7,42,165,44,BS_LEFT
+END
+
+IDD_GREASEWEAZLE_WRITE DIALOGEX 0, 0, 673, 88
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Greaseweazle - Create Floppy"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Filename of ADF Image to Write:",IDC_STATIC,7,7,659,35,BS_LEFT
+    COMBOBOX        IDC_GW_COMBO_FILETOWRITE,14,18,645,88,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Required Disk and Drive Type:",IDC_STATIC_GW_DENSITY,7,42,158,28
+    GROUPBOX        "Target Drive:",IDC_STATIC,173,42,158,28
+    PUSHBUTTON      "Start",ID_GW_WRITE_START,594,54,50,14
+    PUSHBUTTON      "Cancel",ID_GW_WRITE_CANCEL,519,54,50,14
+    LTEXT           "Click ""Start"" to write a disk image to a real floppy disk using Greaseweazle!",IDC_STATIC,354,50,138,17
+    EDITTEXT        IDC_GW_SHOWDENSITY,15,52,137,14,ES_AUTOHSCROLL
+    CONTROL         "Drive A",IDC_GW_RADIO_WRITE_DRIVE_A,"Button",BS_AUTORADIOBUTTON,198,53,39,10
+    CONTROL         "Drive B",IDC_GW_RADIO_WRITE_DRIVE_B,"Button",BS_AUTORADIOBUTTON,261,53,39,10
 END
 
 
@@ -582,6 +600,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 216
     END
+
+    IDD_GREASEWEAZLE_WRITE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 666
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 81
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -628,7 +654,8 @@ BEGIN
         MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER
         MENUITEM SEPARATOR
         MENUITEM "&Batch Converter",            ID_TOOLS_BATCHCONVERTER
-        MENUITEM "&Greaseweazle Imager",        ID_TOOLS_GREASEWEAZLE
+        MENUITEM "&Greaseweazle Read",          ID_TOOLS_GREASEWEAZLE
+        MENUITEM "Greaseweazle Write",          ID_TOOLS_GREASEWEAZLEWRITE
         MENUITEM SEPARATOR
         MENUITEM "&Write Bootblock",            ID_TOOLS_INSTALL, GRAYED
         MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
@@ -797,6 +824,11 @@ BEGIN
     0
 END
 
+IDD_GREASEWEAZLE_WRITE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -909,6 +941,8 @@ IDB_BATCH               BITMAP                  "images\\batch.bmp"
 IDB_DISK2FDI            BITMAP                  "images\\disk2fdi.bmp"
 
 IDB_GREASEWEAZLE        BITMAP                  "images\\disk2fdi.bmp"
+
+IDB_GREASEWEAZLEWRITE   BITMAP                  "images\\disk2fdi.bmp"
 
 IDB_INSTALL             BITMAP                  "images\\install.bmp"
 
