@@ -419,6 +419,138 @@ static BOOL CALLBACK _AddAmigaChildren(HWND hwndChild, LPARAM lParam)
 	return TRUE;  // continue enumeration
 }
 
+
+
+
+
+
+//-----------------------------------------------------------------------------
+// callback for EnumChildWindows: for each ADF window, show a MessageBox
+static BOOL CALLBACK _ShowAmigaDensity(HWND hwndChild, LPARAM lParam)
+{
+	// 1) Filter to only your ADF‐lister windows
+	char cls[64];
+	GetClassNameA(hwndChild, cls, sizeof(cls));
+	if (strcmp(cls, "ADFOpusAmigaFileList") != 0)
+		return TRUE;   // not an ADF window, keep enumerating
+	
+	// 2) Grab your CHILDINFO* from GWLP_USERDATA
+	CHILDINFO* ci = (CHILDINFO*)GetWindowLong(hwndChild, 0);
+	 
+	if (!ci || !ci->dev)
+		return TRUE;   // missing data, skip
+	 
+	// 3) Map devType → human string
+	char tempStr[50];
+	switch (ci->dev->devType)
+	{
+	case DEVTYPE_FLOPDD:
+		strcpy(tempStr, "Double Density Floppy (880KB ADF)");
+		break;
+	case DEVTYPE_FLOPHD:
+		strcpy(tempStr, "High Density Floppy (1760KB ADF)");
+		break;
+	case DEVTYPE_HARDDISK:
+		strcpy(tempStr, "Hard disk dump");
+		break;
+	case DEVTYPE_HARDFILE:
+		strcpy(tempStr, "Hardfile");
+		break;
+	default:
+		strcpy(tempStr, "Unknown (!)");
+		break;
+	}
+
+	// 4) Pop up the box (lParam is your dialog HWND)
+	MessageBoxA(
+		(HWND)lParam,
+		tempStr,
+		"Disk Density",
+		MB_OK | MB_ICONINFORMATION);
+
+	return TRUE;  // continue enumerating if there are more windows
+}
+
+
+#include <windows.h>
+
+// params we’ll pass as lParam to EnumChildWindows
+typedef struct {
+	HWND        dlg;       // dialog you want to update
+	const char* path;      // full path to match
+} ShowDensityParams;
+
+
+//-----------------------------------------------------------------------------
+// walks your MDI children, finds the one whose title == params.path,
+// pops a MessageBox *and* updates IDC_GW_SHOWDENSITY in params.dlg
+static BOOL CALLBACK _ShowAmigaDensityFromPath(HWND hwndChild, LPARAM lParam)
+{
+	ShowDensityParams* p = (ShowDensityParams*)lParam;
+
+	// 1) only your ADF‐lister windows
+	char cls[64];
+	GetClassNameA(hwndChild, cls, sizeof(cls));
+	if (strcmp(cls, "ADFOpusAmigaFileList") != 0)
+		return TRUE;
+
+	// 2) get the window’s title (full path)
+	char title[MAX_PATH] = { 0 };
+	if (GetWindowTextA(hwndChild, title, MAX_PATH) <= 0)
+		return TRUE;
+
+	// 3) skip until it matches the path we passed in
+	if (strcmp(title, p->path) != 0)
+		return TRUE;
+
+	// 4) pull out your CHILDINFO* (stored at offset 0)
+	CHILDINFO* ci = (CHILDINFO*)GetWindowLong(hwndChild, 0);
+	if (!ci || !ci->dev)
+		return FALSE;   // stop, but nothing to show
+
+	// 5) map devType → human string
+	char tempStr[64];
+	switch (ci->dev->devType)
+	{
+	case DEVTYPE_FLOPDD:
+		strcpy_s(tempStr, sizeof(tempStr),
+			"Double Density Floppy (880KB ADF)");
+		break;
+	case DEVTYPE_FLOPHD:
+		strcpy_s(tempStr, sizeof(tempStr),
+			"High Density Floppy (1760KB ADF)");
+		break;
+	case DEVTYPE_HARDDISK:
+		strcpy_s(tempStr, sizeof(tempStr),
+			"Hard disk dump");
+		break;
+	case DEVTYPE_HARDFILE:
+		strcpy_s(tempStr, sizeof(tempStr),
+			"Hardfile");
+		break;
+	default:
+		strcpy_s(tempStr, sizeof(tempStr),
+			"Unknown density");
+		break;
+	}
+
+	//// 6) pop the MessageBox (parented to your dialog)
+	//MessageBoxA(
+	//	p->dlg,
+	//	tempStr,
+	//	"Disk Density",
+	//	MB_OK | MB_ICONINFORMATION);
+
+	// 7) also update the static control in your dialog
+	SetDlgItemTextA(
+		p->dlg,
+		IDC_GW_SHOWDENSITY,
+		tempStr);
+
+	// found it—stop enumeration
+	return FALSE;
+}
+
 //-----------------------------------------------------------------------------
 // Greaseweazle “Write” dialog proc
 LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
@@ -438,9 +570,40 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 			(LPARAM)hCombo
 		);
 
+
 		// default‐select the first item, if any
 		if (SendMessage(hCombo, CB_GETCOUNT, 0, 0) > 0)
 			SendMessage(hCombo, CB_SETCURSEL, 0, 0);
+
+
+		//// Now enumerate and pop the density for each open ADF window:
+		//EnumChildWindows(
+		//	ghwndMDIClient,     // your MDI client window
+		//	_ShowAmigaDensity,  // the callback above
+		//	(LPARAM)dlg         // passed to the callback as lParam
+		//);
+
+// 1) pull the selected path out of the combo
+		char picked[MAX_PATH] = { 0 };
+		// HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
+		int  sel = (int)SendMessage(hCombo, CB_GETCURSEL, 0, 0);
+		if (sel != CB_ERR)
+			SendMessageA(
+				hCombo,
+				CB_GETLBTEXT,
+				(WPARAM)sel,
+				(LPARAM)picked);
+
+		// 2) build our param struct
+		ShowDensityParams params = { dlg, picked };
+
+		// 3) enumerate the MDI children—only the matching one will fire
+		EnumChildWindows(
+			ghwndMDIClient,
+			_ShowAmigaDensityFromPath,
+			(LPARAM)&params);
+
+
 
 		// init Drive‐A/B radios
 		CheckRadioButton(
@@ -454,10 +617,41 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 	}
 
 	case WM_COMMAND:
-		switch (LOWORD(wp))
+	{
+		WORD    id = LOWORD(wp);
+		WORD    ev = HIWORD(wp);
+
+		// 1) Catch the user changing the combo selection
+		if (id == IDC_GW_COMBO_FILETOWRITE && ev == CBN_SELCHANGE)
+		{
+			// 2) Pull the newly selected path out of the combo
+			char picked[MAX_PATH] = { 0 };
+			HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
+			int  sel = (int)SendMessage(hCombo, CB_GETCURSEL, 0, 0);
+			if (sel != CB_ERR)
+			{
+				SendMessageA(
+					hCombo,
+					CB_GETLBTEXT,
+					(WPARAM)sel,
+					(LPARAM)picked);
+
+				// 3) Build the params and re‐run the EnumChildWindows lookup
+				ShowDensityParams params = { dlg, picked };
+				EnumChildWindows(
+					ghwndMDIClient,
+					_ShowAmigaDensityFromPath,
+					(LPARAM)&params);
+			}
+
+			return TRUE;   // handled
+		}
+
+		// 4) Your existing Start/Cancel handling…
+		switch (id)
 		{
 		case ID_GW_WRITE_CANCEL:
-			EndDialog(dlg, TRUE);
+			EndDialog(dlg, FALSE);
 			return TRUE;
 
 		case ID_GW_WRITE_START:
@@ -465,7 +659,10 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 			EndDialog(dlg, TRUE);
 			return TRUE;
 		}
-		break;
+	}
+	break;
+
+
 
 	case WM_CLOSE:
 		EndDialog(dlg, TRUE);
