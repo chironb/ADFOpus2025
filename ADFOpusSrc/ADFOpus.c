@@ -52,6 +52,7 @@
 #include "FDI.h"
 #include "Bootblock.h"
 #include "TextViewer.h"
+#include "HexViewer.h"
 
 #include "ADFLib.h"
 #include "Help\AdfOpusHlp.h"
@@ -1170,6 +1171,10 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 		DialogBox(instance, MAKEINTRESOURCE(IDD_TEXT_VIEWER), win, (DLGPROC)TextViewerProc);
 		break;
 
+	case ID_TOOLS_HEX_VIEWER:
+		DialogBox(instance, MAKEINTRESOURCE(IDD_HEX_VIEWER), win, (DLGPROC)HexViewerProc);
+		break;
+
 	case ID_TOOLS_BATCHCONVERTER:
 		DialogBox(instance, MAKEINTRESOURCE(IDD_BATCHCONVERTER), win, (DLGPROC)BatchConvertProc);
 		break;
@@ -1692,6 +1697,9 @@ void GetTooltipText(char *buf, int cmd)
 		break;
 	case ID_TOOLS_TEXT_VIEWER:
 		strcpy(buf, "Text Viewer");
+		break;
+	case ID_TOOLS_HEX_VIEWER:
+		strcpy(buf, "Hex Viewer");
 		break;
 	case ID_TOOLS_BATCHCONVERTER:
 		strcpy(buf, "Batch Converter");

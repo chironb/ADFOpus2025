@@ -217,11 +217,11 @@ BEGIN
     LTEXT           "",IDC_DEVSECT,110,85,105,8
 END
 
-IDD_VOLINFOPAGE2 DIALOG 0, 0, 227, 172
+IDD_VOLINFOPAGE2 DIALOGEX 0, 0, 227, 172
 STYLE DS_SETFONT | WS_CHILD
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    EDITTEXT        IDC_VOLLABEL,10,15,205,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_VOLLABEL,10,15,205,12,ES_AUTOHSCROLL | ES_READONLY
     GROUPBOX        "Label",IDC_STATIC,5,5,215,30
     GROUPBOX        "Filesystem",IDC_STATIC,5,40,215,50
     LTEXT           "Fast filesystem",IDC_STATIC,15,55,95,10
@@ -266,25 +266,24 @@ BEGIN
     CONTROL         "Progress1",IDC_CREATEPROGRESS,"msctls_progress32",WS_BORDER,5,5,245,10
 END
 
-IDD_OPTIONS DIALOGEX 0, 0, 227, 268
+IDD_OPTIONS DIALOGEX 0, 0, 227, 163
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Preferences"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    GROUPBOX        "Windows lister default: Local Filesystem",IDC_STATIC,7,5,213,35
-    GROUPBOX        "Default label for new volumes",IDC_STATIC,7,45,213,25
-    EDITTEXT        IDC_OLABEL,10,55,205,12,ES_AUTOHSCROLL
-    GROUPBOX        "Ask for confirmation before:",IDC_STATIC,7,75,213,35
-    CONTROL         "Commencing delete",IDC_ODELETE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,195,10
-    CONTROL         "Deleting directories",IDC_ODELDIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,95,195,10
-    GROUPBOX        "Miscellaneous",IDC_STATIC,7,115,213,25
+    GROUPBOX        "Default label for new volumes",IDC_STATIC,7,7,213,25
+    EDITTEXT        IDC_OLABEL,10,17,205,12,ES_AUTOHSCROLL
+    GROUPBOX        "Ask for confirmation before:",IDC_STATIC,7,37,213,35
+    CONTROL         "Commencing delete",IDC_ODELETE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,47,195,10
+    CONTROL         "Deleting directories",IDC_ODELDIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,57,195,10
+    GROUPBOX        "Miscellaneous",IDC_STATIC,7,77,213,25
     CONTROL         "Use directory cache blocks where possible",IDC_ODIRCACHE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,125,205,10
-    GROUPBOX        "File Types",IDC_STATIC,7,145,213,31
-    PUSHBUTTON      "Register Amiga disk file types with Windows Explorer",IDC_OREGISTER,12,158,203,14
-    DEFPUSHBUTTON   "OK",IDC_OOK,7,246,50,15
-    PUSHBUTTON      "Apply",IDC_OAPPLY,62,246,50,15,WS_DISABLED
-    PUSHBUTTON      "Close",IDCANCEL,172,246,50,15
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,87,205,10
+    GROUPBOX        "File Types",IDC_STATIC,7,107,213,31
+    PUSHBUTTON      "Register Amiga disk file types with Windows Explorer",IDC_OREGISTER,12,120,203,14
+    DEFPUSHBUTTON   "OK",IDC_OOK,7,141,50,15
+    PUSHBUTTON      "Apply",IDC_OAPPLY,62,141,50,15,WS_DISABLED
+    PUSHBUTTON      "Close",IDCANCEL,172,141,50,15
 END
 
 IDD_ABOUTPAGE4 DIALOG 0, 0, 236, 156
@@ -542,7 +541,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 220
         TOPMARGIN, 7
-        BOTTOMMARGIN, 261
+        BOTTOMMARGIN, 156
     END
 
     IDD_ABOUTPAGE4, DIALOG
@@ -632,7 +631,7 @@ BEGIN
     POPUP "&Edit"
     BEGIN
         MENUITEM "&Delete",                     ID_ACTION_DELETE
-        MENUITEM "Undelete",                    ID_ACTION_UNDELETE, GRAYED
+        MENUITEM "Undelete",                    ID_ACTION_UNDELETE
         MENUITEM "Re&name",                     ID_ACTION_RENAME
         MENUITEM SEPARATOR
         MENUITEM "Select &All",                 ID_EDIT_SELECTALL
@@ -647,23 +646,24 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Disk &Information",           ID_FIL_INFORMATION
         MENUITEM SEPARATOR
-        MENUITEM "&Properties",                 ID_ACTION_PROPERTIES, GRAYED
+        MENUITEM "&Properties",                 ID_ACTION_PROPERTIES
     END
     POPUP "&Tools"
     BEGIN
         MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER
+        MENUITEM "&HEX Viewer",                 ID_TOOLS_HEX_VIEWER
         MENUITEM SEPARATOR
         MENUITEM "&Batch Converter",            ID_TOOLS_BATCHCONVERTER
         MENUITEM "&Greaseweazle Read",          ID_TOOLS_GREASEWEAZLE
         MENUITEM "Greaseweazle Write",          ID_TOOLS_GREASEWEAZLEWRITE
         MENUITEM SEPARATOR
-        MENUITEM "&Write Bootblock",            ID_TOOLS_INSTALL, GRAYED
+        MENUITEM "&Write Bootblock",            ID_TOOLS_INSTALL
         MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
     END
     POPUP "&View"
     BEGIN
         MENUITEM "&Refresh",                    ID_VIEW_REFRESH
-        MENUITEM "Undeletable Files",           ID_VIEW_SHOWUNDELETABLEFILES, GRAYED
+        MENUITEM "Undeletable Files",           ID_VIEW_SHOWUNDELETABLEFILES
         MENUITEM "&Toolbar",                    ID_VIEW_TOOL_BAR
         MENUITEM "&Status Bar",                 ID_VIEW_THE_STATUSBAR
     END
@@ -695,11 +695,12 @@ BEGIN
         MENUITEM "&Unselect All",               ID_EDIT_SELECTNONE
         MENUITEM SEPARATOR
         MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER, GRAYED
+        MENUITEM "&HEX Viewer",                 ID_TOOLS_HEX_VIEWER, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
         MENUITEM "Disk &Information",           ID_FIL_INFORMATION
         MENUITEM SEPARATOR
-        MENUITEM "&Properties",                 ID_ACTION_PROPERTIES, GRAYED
+        MENUITEM "File &Properties",            ID_ACTION_PROPERTIES, GRAYED
     END
 END
 
@@ -828,6 +829,11 @@ BEGIN
     0
 END
 
+IDD_VOLINFOPAGE2 AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -875,12 +881,22 @@ BEGIN
     PUSHBUTTON      "Copy to Clipboard",IDC_BOOTBLOCK_COPY,7,231,84,14
 END
 
-IDD_TEXT_VIEWER DIALOGEX 0, 0, 348, 260
+IDD_TEXT_VIEWER DIALOGEX 0, 0, 323, 253
 STYLE DS_SETFONT | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-FONT 8, "MS Sans Serif", 0, 0, 0x1
+CAPTION "Text File Viewer"
+FONT 10, "Courier New", 400, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,291,239,50,14
-    EDITTEXT        IDC_EDIT_TEXT,7,7,334,225,ES_MULTILINE | WS_VSCROLL | WS_HSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,266,232,50,14
+    EDITTEXT        IDC_EDIT_TEXT,7,7,309,225,ES_MULTILINE | ES_READONLY | WS_VSCROLL | WS_HSCROLL
+END
+
+IDD_HEX_VIEWER DIALOGEX 0, 0, 323, 253
+STYLE DS_SETFONT | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "HEX File Viewer"
+FONT 10, "Courier New", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,266,232,50,14
+    EDITTEXT        IDC_EDIT_HEX,7,7,309,225,ES_MULTILINE | ES_READONLY | WS_VSCROLL | WS_HSCROLL
 END
 
 
@@ -903,9 +919,17 @@ BEGIN
     IDD_TEXT_VIEWER, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 341
+        RIGHTMARGIN, 316
         TOPMARGIN, 7
-        BOTTOMMARGIN, 253
+        BOTTOMMARGIN, 246
+    END
+
+    IDD_HEX_VIEWER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 316
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 246
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -968,6 +992,8 @@ IDB_REFRESH             BITMAP                  "images\\refresh.bmp"
 
 IDB_TEXTVIEWER          BITMAP                  "images\\textviewer.bmp"
 
+IDB_HEXVIEWER           BITMAP                  "images\\textviewer.bmp"
+
 IDB_TBBUTTONS_TRUECOLOR BITMAP                  "images\\toolbar_truecolor.bmp"
 
 IDB_SELECTALL           BITMAP                  "images\\selectall.bmp"
@@ -983,6 +1009,16 @@ IDB_INVERTSELECTION     BITMAP                  "images\\selectinvert.bmp"
 //
 
 IDD_DISPLAY_BOOTBLOCK AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_TEXT_VIEWER AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_HEX_VIEWER AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

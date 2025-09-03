@@ -276,6 +276,9 @@
     <ClInclude Include="ADFOpusSrc\MenuIcons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ADFOpusSrc\HexViewer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ADFOpusSrc\About.c">
@@ -639,6 +642,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ADFOpusSrc\MenuIcons.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ADFOpusSrc\HexViewer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

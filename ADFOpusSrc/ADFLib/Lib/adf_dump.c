@@ -8,6 +8,10 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<errno.h>
+#include <stdio.h>
+#include <string.h>   // <-- for strerror
+#include <errno.h>    // <-- for errno
+
 
 #include"adf_defs.h"
 #include"adf_str.h"

@@ -48,6 +48,7 @@
     <ClInclude Include="ADFOpusSrc\ChildCommon.h" />
     <ClInclude Include="ADFOpusSrc\fdi.h" />
     <ClInclude Include="ADFOpusSrc\fdi2raw.h" />
+    <ClInclude Include="ADFOpusSrc\HexViewer.h" />
     <ClInclude Include="ADFOpusSrc\Init.h" />
     <ClInclude Include="ADFOpusSrc\Install.h" />
     <ClInclude Include="ADFOpusSrc\ListView.h" />
@@ -87,6 +88,7 @@
     <ClCompile Include="ADFOpusSrc\ChildCommon.c" />
     <ClCompile Include="ADFOpusSrc\fdi.c" />
     <ClCompile Include="ADFOpusSrc\fdi2raw.c" />
+    <ClCompile Include="ADFOpusSrc\HexViewer.c" />
     <ClCompile Include="ADFOpusSrc\Init.c" />
     <ClCompile Include="ADFOpusSrc\Install.c" />
     <ClCompile Include="ADFOpusSrc\ListView.c" />
