@@ -36,6 +36,7 @@ static const MenuIconEntry menuIconMap[] = {
 
     // Tools menu
     { ID_TOOLS_TEXT_VIEWER,         IDB_TEXTVIEWER },
+    { ID_TOOLS_HEX_VIEWER,          IDB_HEXVIEWER },
     { ID_TOOLS_BATCHCONVERTER,      IDB_BATCH },
     { ID_TOOLS_GREASEWEAZLE,        IDB_GREASEWEAZLE },
     { ID_TOOLS_GREASEWEAZLEWRITE,   IDB_GREASEWEAZLEWRITE },

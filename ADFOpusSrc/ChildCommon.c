@@ -608,6 +608,7 @@ BOOL ChildOnCommand(HWND win, WPARAM wp, LPARAM lp)
     switch (wp)
     {
     case ID_TOOLS_TEXT_VIEWER:
+	case ID_TOOLS_HEX_VIEWER:
     case ID_TOOLS_DISPLAYBOOTBLOCK:
     case ID_TOOLS_INSTALL:
     case ID_FIL_INFORMATION:
@@ -779,6 +780,7 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 				EnableMenuItem(hMenu, ID_ACTION_RENAME, MF_GRAYED);
 				EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
 				EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_GRAYED);
+				EnableMenuItem(hMenu, ID_TOOLS_HEX_VIEWER, MF_GRAYED);
 				SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_DELETE, MAKELONG(FALSE, 0));
 				SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_RENAME, MAKELONG(FALSE, 0));
 				SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_PROPERTIES, MAKELONG(FALSE, 0));
@@ -805,6 +807,8 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 						case ICO_WINDIR:
 							SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(FALSE, 0));
 							EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_GRAYED);
+							SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_HEX_VIEWER, MAKELONG(FALSE, 0));
+							EnableMenuItem(hMenu, ID_TOOLS_HEX_VIEWER, MF_GRAYED);
 							bDirClicked = TRUE;
 							bFileClicked = FALSE;
 							break;
@@ -812,6 +816,8 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 						case ICO_WINFILE:
 							SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(TRUE, 0));
 							EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
+							SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_HEX_VIEWER, MAKELONG(TRUE, 0));
+							EnableMenuItem(hMenu, ID_TOOLS_HEX_VIEWER, MF_ENABLED);
 							bDirClicked = FALSE;
 							bFileClicked = TRUE;							
 					}
@@ -926,6 +932,8 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 			SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_PROPERTIES, MAKELONG(FALSE, 0));
 			EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_GRAYED);
 			SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(FALSE, 0));
+			EnableMenuItem(hMenu, ID_TOOLS_HEX_VIEWER, MF_GRAYED);
+			SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_HEX_VIEWER, MAKELONG(FALSE, 0));
 //			bClicked = FALSE;											// Deactivate the Properties context menu item.
 			bDirClicked = bFileClicked = FALSE;							// Deactivate the context menu items...
 			// ..and undeletion items.
@@ -1287,6 +1295,8 @@ void ChildUpOneLevel(HWND win)
 	SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_PROPERTIES, MAKELONG(FALSE, 0));
 	EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_GRAYED);
 	SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(FALSE, 0));
+	EnableMenuItem(hMenu, ID_TOOLS_HEX_VIEWER, MF_GRAYED);
+	SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_HEX_VIEWER, MAKELONG(FALSE, 0));
 
 	ChildUpdate(win);
 }
@@ -1558,9 +1568,10 @@ void DisplayContextMenu(HWND win, POINT pt)
 		if (bDirClicked || bFileClicked)
 			EnableMenuItem(popup,
 				ID_ACTION_PROPERTIES, MF_ENABLED);
-		if (bFileClicked)
-			EnableMenuItem(popup,
-				ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
+		if (bFileClicked) {
+			EnableMenuItem(popup, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
+			EnableMenuItem(popup, ID_TOOLS_HEX_VIEWER, MF_ENABLED);
+		}
 
 		// FIX: Enable/disable Write Bootblock
 		if (ci && ci->isAmi && (ci->vol->bootCode != 1))

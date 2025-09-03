@@ -72,6 +72,8 @@
 #define IDD_GREASEWEAZLE                229
 #define IDD_GREASEWEAZLE_WRITEFLOPPY    230
 #define IDD_GREASEWEAZLE_WRITE          230
+#define IDD_HEX_FILE_VIEWER             231
+#define IDD_HEX_VIEWER                  231
 #define IDC_NEWPATH                     1004
 #define IDC_NEWADF                      1005
 #define IDC_NEWHARDFILE                 1006
@@ -234,6 +236,7 @@
 #define IDC_GW_SHOWDENSITY              1166
 #define ID_GW_WRITE_START               1167
 #define IDC_BOOTBLOCK_COPY              1169
+#define IDC_EDIT_HEX                    1171
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -292,9 +295,13 @@
 #define IDC_LICENCEPAGEBTN              40127
 #define ID_Menu                         40127
 #define IDB_TBBUTTONS_LARGE             40128
+#define ID_Menu40128                    40128
 #define IDC_BUILDINFO                   40129
+#define ID_TOOLS_HEXVIEWER              40129
 #define IDB_TBBUTTONS_TRUECOLOR         40130
+#define ID_TOOLS_HEX_VIEWER             40130
 #define IDB_TILECLO                     40131
+#define ID_SEL_HEXVIEWER                40131
 #define IDB_REFRESH                     40132
 #define IDB_SELECTALL                   40134
 #define IDB_SELECTNONE                  40135
@@ -303,15 +310,16 @@
 #define IDB_GREASEWEAZLE                40138
 #define ID_TOOLS_GREASEWEAZLEWRITE      40139
 #define IDB_GREASEWEAZLEWRITE           40140
+#define IDB_HEXVIEWER                   40141
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        233
-#define _APS_NEXT_COMMAND_VALUE         40128
-#define _APS_NEXT_CONTROL_VALUE         1170
+#define _APS_NEXT_RESOURCE_VALUE        235
+#define _APS_NEXT_COMMAND_VALUE         40132
+#define _APS_NEXT_CONTROL_VALUE         1172
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
