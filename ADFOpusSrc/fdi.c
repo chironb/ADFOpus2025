@@ -730,12 +730,72 @@ void RunGreaseweazleWrite(HWND dlg)
 		strcpy_s(driveArg, sizeof driveArg, "--drive=B");
 	}
 
-	// assemble command-line: write <drive> "<picked>"
+
+
+
+	// "Double Density Floppy (880KB ADF)"
+	// "High Density Floppy (1760KB ADF)"
+	// IDC_GW_SHOWDENSITY == "Double Density Floppy (880KB ADF)"
+
+	// drive arg
+	//char formatArg[32] = "--format=amiga.amigados";
+	//if (SendDlgItemMessage(
+	//	dlg, IDC_GW_RADIO_WRITE_DRIVE_B,
+	//	BM_GETCHECK, 0, 0) == BST_CHECKED)
+	//{
+	//	strcpy_s(driveArg, sizeof driveArg, "--format=amiga.amigados_hd");
+	//}
+
+
+
+	char formatArg[32] = { 0 };
+	char densityText[64] = { 0 };
+
+	// pull the exact label text out of the dialog
+	GetDlgItemTextA(
+		dlg,
+		IDC_GW_SHOWDENSITY,
+		densityText,
+		sizeof(densityText)
+	);
+
+	// compare for each exact string and set formatArg
+	if (strcmp(densityText, "Double Density Floppy (880KB ADF)") == 0) {
+		// double‐density selected
+		strcpy_s(formatArg, sizeof(formatArg),
+			"--format=amiga.amigados");
+	}
+	else if (strcmp(densityText, "High Density Floppy (1760KB ADF)") == 0) {
+		// high‐density selected
+		strcpy_s(formatArg, sizeof(formatArg),
+			"--format=amiga.amigados_hd");
+	}
+	else {		
+		// If we get here, something’s wrong. This means it's a weird format.
+		MessageBoxA(dlg, "Error: Format unrecognized. Can't run Greaseweazle!", "Error:", MB_OK);
+		
+		EndDialog(dlg, IDABORT);
+		return;
+	}
+
+
+	// Now you can pass formatArg to your formatting routine:
+	// MessageBoxA(dlg, formatArg, "Format Arg", MB_OK);
+
+
+
+	// .\gw.exe write --drive=A --format=amiga.amigados example_disk.adf
+	// -------- ----- --------- ----------------------- ---------------- 
+	
+	// .\gw.exe write --drive=A --format=amiga.amigados_hd example_disk.adf
+	// -------- ----- --------- -------------------------- ---------------- 
+	
+	// assemble command-line: write <drive> <format> "<picked>"
 	CHAR cmdLine[256];
 	sprintf_s(
 		cmdLine, sizeof cmdLine,
-		" write %s \"%s\"",
-		driveArg, picked
+		" write %s %s \"%s\"",
+		driveArg, formatArg, picked
 	);
 
 	//// launch
