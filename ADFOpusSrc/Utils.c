@@ -324,8 +324,10 @@ void UpdateMenuItems(HMENU menu)
 	EnableMenuItem(menu, ID_TOOLS_DISPLAYBOOTBLOCK, MF_GRAYED);
 
 	// Check bootblock and enable "Install" menu item if not already bootable.
-	if(ci != NULL && ci->isAmi && (ci->vol->bootCode != 1))
+	if (ci != NULL && ci->isAmi && (ci->vol->bootCode != 1)) {
 		EnableMenuItem(menu, ID_TOOLS_INSTALL, MF_ENABLED);
+		EnableMenuItem(menu, ID_TOOLS_WRITE_RAW_BOOTBLOCK, MF_ENABLED);
+	}
 	// Enable bootblock display if Ami lister.
 	if(ci != NULL && ci->isAmi)
 		EnableMenuItem(menu, ID_TOOLS_DISPLAYBOOTBLOCK, MF_ENABLED);

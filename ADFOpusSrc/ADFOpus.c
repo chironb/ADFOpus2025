@@ -1186,7 +1186,11 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 	case ID_TOOLS_INSTALL:
 		InstallBootBlock(win, ci->vol, FALSE);
 		EnableMenuItem(ghmenuMain, ID_TOOLS_INSTALL, MF_GRAYED);
+		break;
 
+	case ID_TOOLS_WRITE_RAW_BOOTBLOCK:
+		RawWriteBootBlock(win, ci->vol, FALSE);
+		EnableMenuItem(ghmenuMain, ID_TOOLS_WRITE_RAW_BOOTBLOCK, MF_GRAYED);
 		break;
 
 	case ID_TOOLS_GREASEWEAZLE:
@@ -1712,6 +1716,9 @@ void GetTooltipText(char *buf, int cmd)
 		break;
 	case ID_TOOLS_INSTALL:
 		strcpy(buf, "Install Bootblock");
+		break;
+	case ID_TOOLS_WRITE_RAW_BOOTBLOCK:
+		strcpy(buf, "Raw Write Bootblock");
 		break;
 	case ID_TOOLS_DISPLAYBOOTBLOCK:
 		strcpy(buf, "Display Bootblock");
