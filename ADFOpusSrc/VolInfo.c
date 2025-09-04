@@ -1,4 +1,4 @@
-/* ADF Opus Copyright 1998-2002 by 
+﻿/* ADF Opus Copyright 1998-2002 by 
  * Dan Sutherland <dan@chromerhino.demon.co.uk> and Gary Harris <gharris@zip.com.au>.	
  *
  */
@@ -65,6 +65,7 @@ LRESULT CALLBACK VolInfoDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		IDC_VOLINTL,			IDH_INFO_VOL_INTL,
 		IDC_VOLINFO_HELP,		IDH_INFO_HELP_BUTTON,
 		IDCANCEL,				IDH_INFO_CLOSE_BUTTON,
+		IDC_UPDATELABEL,
 		0,0 
 	}; 	
 	
@@ -74,7 +75,7 @@ LRESULT CALLBACK VolInfoDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		VolInfoInit(dlg, tabControl);
 		return TRUE;
 	case WM_COMMAND:
-		switch(wp) {
+		switch (wp) {
 		case IDCANCEL:
 			VolInfoKill(dlg, tabControl);
 			return TRUE;
@@ -82,6 +83,12 @@ LRESULT CALLBACK VolInfoDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		case IDC_VOLINFO_HELP:
 			// Implement help button.
 			WinHelp(dlg, "ADFOpus.hlp>Opus_win", HELP_CONTEXT, IDH_INFORMATION_DIALOGUE_DEV);
+			return TRUE;
+
+
+
+		case IDC_UPDATELABEL:
+			MessageBox(dlg, "IDC_UPDATELABEL", "DEBUG:", MB_OK | MB_ICONINFORMATION);
 			return TRUE;
 
 		}
@@ -94,6 +101,9 @@ LRESULT CALLBACK VolInfoDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 			return TRUE;
 		}
 		break;
+
+
+
 	case WM_CLOSE:
 		VolInfoKill(dlg, tabControl);
 		return TRUE;
@@ -287,12 +297,69 @@ void VolInfoOnSelChanged(HWND dlg)
 	ShowWindow(pages[curPage], SW_SHOW);
 }
 
+//LRESULT CALLBACK VolInfoChildDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
+///* none of the child windows do anything, so we give them this token proc
+// */
+//{
+//	return FALSE;
+//}
+
+
+
+
+void VolUpdateLabel(HWND dlg) {
+
+	// 1) Grab the text from the label control
+	char labelText[256] = { 0 };
+	HWND hLabel = GetDlgItem(dlg, IDC_VOLLABEL);
+	if (hLabel)
+	{
+		// Pull up to 255 chars (leaving room for null)
+		GetWindowTextA(hLabel, labelText, sizeof(labelText));
+	}
+	else
+	{
+		strcpy_s(labelText, sizeof(labelText), "<no label>");
+	}
+
+
+	// 2) Show it in the message box
+	MessageBoxA(
+		dlg,
+		labelText,
+		"Current Volume Label",
+		MB_OK | MB_ICONINFORMATION
+	);
+
+}
+
+
+
+//-----------------------------------------------------------------------------
+// This is the dialog‐proc for each of your tab pages.
+// Controls on page1/page2 land here, so handle IDC_UPDATELABEL here.
 LRESULT CALLBACK VolInfoChildDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
-/* none of the child windows do anything, so we give them this token proc
- */
 {
+	switch (msg)
+	{
+	case WM_COMMAND:
+	{
+		int id = LOWORD(wp);
+		int code = HIWORD(wp);
+
+		if (id == IDC_UPDATELABEL && code == BN_CLICKED)
+		{
+			VolUpdateLabel(dlg);
+
+			return TRUE;
+		}
+	}
+	break;
+	}
+
 	return FALSE;
 }
+
 
 void VolInfoKill(HWND dlg, HWND tc)
 /* destroy the child windows and quit
