@@ -307,32 +307,94 @@ void VolInfoOnSelChanged(HWND dlg)
 
 
 
-void VolUpdateLabel(HWND dlg) {
+//void VolUpdateLabel(HWND dlg) {
+//
+//	// 1) Grab the text from the label control
+//	char labelText[256] = { 0 };
+//	HWND hLabel = GetDlgItem(dlg, IDC_VOLLABEL);
+//	if (hLabel)
+//	{
+//		// Pull up to 255 chars (leaving room for null)
+//		GetWindowTextA(hLabel, labelText, sizeof(labelText));
+//	}
+//	else
+//	{
+//		strcpy_s(labelText, sizeof(labelText), "<no label>");
+//	}
+//
+//
+//	// 2) Show it in the message box
+//	MessageBoxA(
+//		dlg,
+//		labelText,
+//		"Current Volume Label",
+//		MB_OK | MB_ICONINFORMATION
+//	);
+//
+//}
+#include <windows.h>
+#include <string.h>     // for memset, memcpy
+#include "adf_blk.h"    // struct bRootBlock, MAXNAMELEN
+#include "adf_raw.h"    // adfReadRootBlock, adfWriteRootBlock, RC_OK
+#include "ChildCommon.h"// CHILDINFO
 
-	// 1) Grab the text from the label control
+extern HWND ghwndMDIClient;  // your MDI host
+//----------------------------------------------------------------------------  
+void VolUpdateLabel(HWND dlg)
+{
+	// 1) Pull new label text out of the edit control
 	char labelText[256] = { 0 };
-	HWND hLabel = GetDlgItem(dlg, IDC_VOLLABEL);
-	if (hLabel)
+	GetDlgItemTextA(dlg, IDC_VOLLABEL, labelText, sizeof(labelText));
+
+	// 2) Find the active child and its Volume*
+	HWND hActive = (HWND)SendMessage(ghwndMDIClient,
+		WM_MDIGETACTIVE, 0, 0);
+	CHILDINFO* ci = (CHILDINFO*)GetWindowLong(hActive, 0);
+	if (!ci || !ci->vol)
 	{
-		// Pull up to 255 chars (leaving room for null)
-		GetWindowTextA(hLabel, labelText, sizeof(labelText));
+		MessageBoxA(dlg,
+			"Unable to locate the current volume.",
+			"Error", MB_OK | MB_ICONERROR);
+		return;
 	}
-	else
+
+	// 3) Read the existing root block
+	struct bRootBlock root;
+	if (adfReadRootBlock(ci->vol,
+		ci->vol->rootBlock,
+		&root) != RC_OK)
 	{
-		strcpy_s(labelText, sizeof(labelText), "<no label>");
+		MessageBoxA(dlg,
+			"Failed to read the root block from the ADF file.",
+			"Error", MB_OK | MB_ICONERROR);
+		return;
 	}
 
+	// 4) Copy our new name into the block (truncate if too long)
+	size_t inLen = strlen(labelText);
+	size_t maxLen = sizeof(root.diskName) - 1;
+	if (inLen > maxLen) inLen = maxLen;
 
-	// 2) Show it in the message box
-	MessageBoxA(
-		dlg,
-		labelText,
-		"Current Volume Label",
-		MB_OK | MB_ICONINFORMATION
-	);
+	root.nameLen = (char)inLen;
+	memset(root.diskName, 0, sizeof(root.diskName));
+	memcpy(root.diskName, labelText, inLen);
 
+	// 5) Write it back (adfWriteRootBlock will rebuild the checksum)
+	if (adfWriteRootBlock(ci->vol,
+		ci->vol->rootBlock,
+		&root) != RC_OK)
+	{
+		MessageBoxA(dlg,
+			"Failed to write the updated root block to the ADF file.",
+			"Error", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	// 6) Success!
+	MessageBoxA(dlg,
+		"Volume label updated successfully in the ADF file.",
+		"Success", MB_OK | MB_ICONINFORMATION);
 }
-
 
 
 //-----------------------------------------------------------------------------
