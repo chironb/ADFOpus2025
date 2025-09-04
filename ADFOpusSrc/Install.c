@@ -101,7 +101,7 @@ int InstallBootBlock(HWND win, struct Volume* vol, BOOL bNewAdf)
     char           fileName[MAX_PATH] = "";
     OPENFILENAMEA  ofn = { 0 };
     FILE* fp;
-    DWORD          read;
+    // DWORD          read;
 
     // If this is a new ADF or user confirms overwrite...
     if (bNewAdf || MessageBoxA(win, szWarning, "ADF Opus Warning!", MB_YESNO | MB_ICONWARNING) == IDYES)

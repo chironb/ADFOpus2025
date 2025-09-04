@@ -69,6 +69,8 @@ extern HWND      ghwndFrame;  // your main window handle
 extern BOOL      bDirClicked;
 extern BOOL      bFileClicked;
 
+#include "Bootblock.h"   // now brings in RawWriteBootBlock()
+
 
 // 1) include your shared header
 // #include "ADFOpus.h" already did this above del this later. my code is messy like my brain! Messy.... like a fox!
@@ -762,7 +764,7 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 	ReadOptions();
 	adfEnvInitDefault();
 	adfSetEnvFct(ADFError, ADFWarning, ADFVerbose);
-	adfEnv.rwhAccess = ADFAccess;
+	adfEnv.rwhAccess = ADFAccess; // ABOUT THAT WARNING *** NOTE THIS OFTEN THROWS AN ERROR BUT LIKE LEAVE IT ALONE FOR NOW! IT'S FINE... I think... Warning: 'typedef ': ignored on left of 'unsigned __int64' when no variable is declared
 	adfEnv.progressBar = ADFProgress;
 	adfEnv.useRWAccess = TRUE;
 	adfEnv.useProgressBar = TRUE;
@@ -1316,7 +1318,7 @@ VOID ADFVerbose(char *strMessage)
 	MessageBox(ghwndFrame, strMessage, "ADFLib Message", MB_OK | MB_ICONINFORMATION);
 }
 
-void ADFAccess(SECTNUM physical, SECTNUM logical, BOOL write)
+void ADFAccess(SECTNUM physical, SECTNUM logical, BOOL write) // ABOUT THAT WARNING *** NOTE THIS OFTEN THROWS AN ERROR BUT LIKE LEAVE IT ALONE FOR NOW! IT'S FINE... I think... Warning: 'typedef ': ignored on left of 'unsigned __int64' when no variable is declared
 {
 	CurrentSect = physical;
 }

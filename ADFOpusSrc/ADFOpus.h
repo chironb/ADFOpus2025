@@ -64,7 +64,7 @@ VOID ADFVerbose(char *);
 
 // Chiron 2025
 //void ADFAccess(SECTNUM, SECTNUM, BOOL);
-typedef unsigned long SECTNUM;
+typedef unsigned long SECTNUM; // ABOUT THAT WARNING *** NOTE THIS OFTEN THROWS AN ERROR BUT LIKE LEAVE IT ALONE FOR NOW! IT'S FINE... I think... Warning: 'typedef ': ignored on left of 'unsigned __int64' when no variable is declared
 void ADFAccess(
 	SECTNUM physical,
 	SECTNUM logical,
