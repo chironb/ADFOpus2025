@@ -171,7 +171,7 @@ BEGIN
     PUSHBUTTON      "This is Free Software! Licence: GNU GPL v2",IDC_LICENCEPAGEBTN,44,113,155,15
     PUSHBUTTON      "Original 2003 Homepage",IDC_WEBPAGEBTN2,63,153,116,15
     LTEXT           "Now with Greaseweazle support!",IDC_STATIC,67,97,104,8
-    LTEXT           "ADF Opus 2025 v1.0.6",IDC_STATIC,83,65,74,8
+    LTEXT           "ADF Opus 2025 v1.0.8",IDC_STATIC,83,65,74,8
 END
 
 IDD_ABOUTPAGE2 DIALOG 0, 0, 237, 189
