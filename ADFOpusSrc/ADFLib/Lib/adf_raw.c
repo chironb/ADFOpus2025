@@ -226,30 +226,30 @@ adfWriteBootBlock(struct Volume* vol, struct bBootBlock* boot)
     boot->dosType[1] = 'O';
     boot->dosType[2] = 'S';
 	memcpy(buf, boot, LOGICAL_BLOCK_SIZE*2);
-#ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_BOOT);
-#endif
+    #ifdef LITT_ENDIAN
+        swapEndian(buf, SWBL_BOOT);
+    #endif
 
     if (boot->rootBlock==880 || boot->data[0]!=0) {
         newSum = adfBootSum(buf);
-/*fprintf(stderr,"sum %x %x\n",newSum,adfBootSum2(buf));*/
+        /* fprintf(stderr,"sum %x %x\n",newSum,adfBootSum2(buf)); */
         swLong(buf+4,newSum);
-/*        *(unsigned long*)(buf+4) = swapLong((unsigned char*)&newSum);*/
+        /* *(unsigned long*)(buf+4) = swapLong((unsigned char*)&newSum); */
     }
 
-#ifdef _DEBUG_PRINTF_
-	dumpBlock(buf);
-	dumpBlock(buf+512);
-#endif /*_DEBUG_PRINTF_*/
+    #ifdef _DEBUG_PRINTF_
+	    dumpBlock(buf);
+	    dumpBlock(buf+512);
+    #endif /*_DEBUG_PRINTF_*/
 
     if (adfWriteBlock(vol, 0, buf)!=RC_OK)
 		return RC_ERROR;
 	if (adfWriteBlock(vol, 1,  buf+512)!=RC_OK)
 		return RC_ERROR;
 
-#ifdef _DEBUG_PRINTF_
-	puts("adfWriteBootBlock");
-#endif /*_DEBUG_PRINTF_*/
+    #ifdef _DEBUG_PRINTF_
+	    puts("adfWriteBootBlock");
+    #endif /*_DEBUG_PRINTF_*/
 
     return RC_OK;
 }

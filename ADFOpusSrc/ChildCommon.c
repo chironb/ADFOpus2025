@@ -611,6 +611,7 @@ BOOL ChildOnCommand(HWND win, WPARAM wp, LPARAM lp)
 	case ID_TOOLS_HEX_VIEWER:
     case ID_TOOLS_DISPLAYBOOTBLOCK:
     case ID_TOOLS_INSTALL:
+	case ID_TOOLS_WRITE_RAW_BOOTBLOCK:
     case ID_FIL_INFORMATION:
     case ID_ACTION_PROPERTIES:
     case ID_TOOLS_BATCHCONVERTER:
@@ -1574,10 +1575,13 @@ void DisplayContextMenu(HWND win, POINT pt)
 		}
 
 		// FIX: Enable/disable Write Bootblock
-		if (ci && ci->isAmi && (ci->vol->bootCode != 1))
+		if (ci && ci->isAmi && (ci->vol->bootCode != 1)) {
 			EnableMenuItem(popup, ID_TOOLS_INSTALL, MF_ENABLED);
-		else
+			EnableMenuItem(popup, ID_TOOLS_WRITE_RAW_BOOTBLOCK, MF_ENABLED);
+		} else {
 			EnableMenuItem(popup, ID_TOOLS_INSTALL, MF_GRAYED);
+			EnableMenuItem(popup, ID_TOOLS_WRITE_RAW_BOOTBLOCK, MF_GRAYED);
+		}
 
 		TrackPopupMenuEx(
 			popup,

@@ -45,6 +45,14 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_TOOLS_WRITE_RAW_BOOTBLOCK BITMAP                  "images\\bitmap1.bmp"
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -54,6 +62,18 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_LOGO                BITMAP                  "Images\\Logo.bmp"
+
+IDB_TBBUTTONS           BITMAP                  "Images\\Toolbar.bmp"
+
+IDB_TBBUTTONS_LARGE     BITMAP                  "Images\\toolbar_large.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -142,18 +162,16 @@ IDD_ABOUTPAGE1 DIALOGEX 0, 0, 245, 190
 STYLE DS_SETFONT | WS_CHILD
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    PUSHBUTTON      "https://github.com/chironb/ADFOpus2025",IDC_WEBPAGEBTN,45,136,150,15
+    PUSHBUTTON      "https://github.com/chironb/ADFOpus2025",IDC_WEBPAGEBTN,45,138,150,15
     CONTROL         IDB_LOGO,ID_LOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,7,5,228,55
-    LTEXT           "Original (c) 1998-2002 Dan Sutherland && Gary Harris",IDC_STATIC,35,74,183,8
-    CTEXT           "2025 updates by Chiron Bramberger",IDC_STATIC,31,83,181,10
-    CTEXT           "Visit the project page on GitHub:",IDC_STATIC,8,126,230,10
-    LTEXT           "",IDC_OPUS_VERSION,90,63,79,8
-    LTEXT           "ADF Opus comes with ABSOLUTELY NO WARRANTY.",IDC_STATIC,34,104,179,8
-    LTEXT           "This is Free Software! Licence:",IDC_STATIC,49,114,146,8
-    PUSHBUTTON      "GNU GPL v2",IDC_LICENCEPAGEBTN,150,111,50,15
-    PUSHBUTTON      "Original 2003 Homepage",IDC_WEBPAGEBTN2,63,151,116,15
-    LTEXT           "",IDC_BUILDINFO,63,168,116,15
-    LTEXT           "Now with Greaseweazle support!",IDC_STATIC,68,93,104,8
+    LTEXT           "Original (c) 1998-2002 Dan Sutherland && Gary Harris",IDC_STATIC,38,79,168,8
+    CTEXT           "2025 updates by Chiron Bramberger",IDC_STATIC,31,87,181,10
+    CTEXT           "Visit the project page on GitHub:",IDC_STATIC,43,128,156,10
+    LTEXT           "ADF Opus comes with ABSOLUTELY NO WARRANTY.",IDC_STATIC,33,105,179,8
+    PUSHBUTTON      "This is Free Software! Licence: GNU GPL v2",IDC_LICENCEPAGEBTN,44,113,155,15
+    PUSHBUTTON      "Original 2003 Homepage",IDC_WEBPAGEBTN2,63,153,116,15
+    LTEXT           "Now with Greaseweazle support!",IDC_STATIC,67,97,104,8
+    LTEXT           "ADF Opus 2025 v1.0.6",IDC_STATIC,83,65,74,8
 END
 
 IDD_ABOUTPAGE2 DIALOG 0, 0, 237, 189
@@ -657,7 +675,8 @@ BEGIN
         MENUITEM "&Greaseweazle Read",          ID_TOOLS_GREASEWEAZLE
         MENUITEM "Greaseweazle Write",          ID_TOOLS_GREASEWEAZLEWRITE
         MENUITEM SEPARATOR
-        MENUITEM "&Write Bootblock",            ID_TOOLS_INSTALL
+        MENUITEM "&Install Bootblock",          ID_TOOLS_INSTALL, GRAYED
+        MENUITEM "&Write Raw Bootblock",        ID_TOOLS_WRITE_RAW_BOOTBLOCK, GRAYED
         MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
     END
     POPUP "&View"
@@ -745,18 +764,6 @@ IDI_ICON_DMS            ICON                    "Images\\dms.ico"
 IDI_ICON_HDF            ICON                    "Images\\hdf.ico"
 
 IDI_ICON_DMP            ICON                    "Images\\dmp.ico"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_LOGO                BITMAP                  "Images\\Logo.bmp"
-
-IDB_TBBUTTONS           BITMAP                  "Images\\Toolbar.bmp"
-
-IDB_TBBUTTONS_LARGE     BITMAP                  "Images\\toolbar_large.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -868,6 +875,76 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Bitmap
+//
+
+IDB_NEW                 BITMAP                  "images\\new.bmp"
+
+IDB_OPEN                BITMAP                  "images\\open.bmp"
+
+IDB_CLOSE               BITMAP                  "images\\close.bmp"
+
+IDB_RENAME              BITMAP                  "images\\rename.bmp"
+
+IDB_DELETE              BITMAP                  "images\\delete.bmp"
+
+IDB_CREATEDIR           BITMAP                  "images\\createdir.bmp"
+
+IDB_UPONELEVEL          BITMAP                  "images\\uponelev.bmp"
+
+IDB_INFO                BITMAP                  "images\\info.bmp"
+
+IDB_PROPERTIES          BITMAP                  "images\\properti.bmp"
+
+IDB_OPTIONS             BITMAP                  "images\\options.bmp"
+
+IDB_BATCH               BITMAP                  "images\\batch.bmp"
+
+IDB_DISK2FDI            BITMAP                  "images\\disk2fdi.bmp"
+
+IDB_GREASEWEAZLE        BITMAP                  "images\\disk2fdi.bmp"
+
+IDB_GREASEWEAZLEWRITE   BITMAP                  "images\\disk2fdi.bmp"
+
+IDB_INSTALL             BITMAP                  "images\\install.bmp"
+
+IDB_RAWWRITEBOOTBLOCK   BITMAP                  "images\\install.bmp"
+
+IDB_DISPLAY             BITMAP                  "images\\display.bmp"
+
+IDB_TILEHOR             BITMAP                  "images\\tilehor.bmp"
+
+IDB_TILEVER             BITMAP                  "images\\tilever.bmp"
+
+IDB_CASCADE             BITMAP                  "images\\cascade.bmp"
+
+IDB_TILECLO             BITMAP                  "images\\closeallwindows.bmp"
+
+IDB_HELP                BITMAP                  "images\\help.bmp"
+
+IDB_ABOUT               BITMAP                  "images\\about.bmp"
+
+IDB_UNDELETE            BITMAP                  "images\\undelete.bmp"
+
+IDB_SHOWUNDELETABLE     BITMAP                  "images\\showundel.bmp"
+
+IDB_REFRESH             BITMAP                  "images\\refresh.bmp"
+
+IDB_TEXTVIEWER          BITMAP                  "images\\textviewer.bmp"
+
+IDB_HEXVIEWER           BITMAP                  "images\\textviewer.bmp"
+
+IDB_TBBUTTONS_TRUECOLOR BITMAP                  "images\\toolbar_truecolor.bmp"
+
+IDB_SELECTALL           BITMAP                  "images\\selectall.bmp"
+
+IDB_SELECTNONE          BITMAP                  "images\\selectnone.bmp"
+
+IDB_INVERTSELECTION     BITMAP                  "images\\selectinvert.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Dialog
 //
 
@@ -879,6 +956,8 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,266,230,50,15
     EDITTEXT        IDC_EDIT_BOOTBLOCK,7,7,309,219,ES_MULTILINE | ES_READONLY | WS_VSCROLL
     PUSHBUTTON      "Copy to Clipboard",IDC_BOOTBLOCK_COPY,7,231,84,14
+    PUSHBUTTON      "Save as Text",IDC_BOOTBLOCK_SAVETEXT,106,231,64,14
+    PUSHBUTTON      "Save as Binary",IDC_BOOTBLOCK_SAVEBINARY,185,231,66,14
 END
 
 IDD_TEXT_VIEWER DIALOGEX 0, 0, 323, 253
@@ -933,74 +1012,6 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_NEW                 BITMAP                  "images\\new.bmp"
-
-IDB_OPEN                BITMAP                  "images\\open.bmp"
-
-IDB_CLOSE               BITMAP                  "images\\close.bmp"
-
-IDB_RENAME              BITMAP                  "images\\rename.bmp"
-
-IDB_DELETE              BITMAP                  "images\\delete.bmp"
-
-IDB_CREATEDIR           BITMAP                  "images\\createdir.bmp"
-
-IDB_UPONELEVEL          BITMAP                  "images\\uponelev.bmp"
-
-IDB_INFO                BITMAP                  "images\\info.bmp"
-
-IDB_PROPERTIES          BITMAP                  "images\\properti.bmp"
-
-IDB_OPTIONS             BITMAP                  "images\\options.bmp"
-
-IDB_BATCH               BITMAP                  "images\\batch.bmp"
-
-IDB_DISK2FDI            BITMAP                  "images\\disk2fdi.bmp"
-
-IDB_GREASEWEAZLE        BITMAP                  "images\\disk2fdi.bmp"
-
-IDB_GREASEWEAZLEWRITE   BITMAP                  "images\\disk2fdi.bmp"
-
-IDB_INSTALL             BITMAP                  "images\\install.bmp"
-
-IDB_DISPLAY             BITMAP                  "images\\display.bmp"
-
-IDB_TILEHOR             BITMAP                  "images\\tilehor.bmp"
-
-IDB_TILEVER             BITMAP                  "images\\tilever.bmp"
-
-IDB_CASCADE             BITMAP                  "images\\cascade.bmp"
-
-IDB_TILECLO             BITMAP                  "images\\closeallwindows.bmp"
-
-IDB_HELP                BITMAP                  "images\\help.bmp"
-
-IDB_ABOUT               BITMAP                  "images\\about.bmp"
-
-IDB_UNDELETE            BITMAP                  "images\\undelete.bmp"
-
-IDB_SHOWUNDELETABLE     BITMAP                  "images\\showundel.bmp"
-
-IDB_REFRESH             BITMAP                  "images\\refresh.bmp"
-
-IDB_TEXTVIEWER          BITMAP                  "images\\textviewer.bmp"
-
-IDB_HEXVIEWER           BITMAP                  "images\\textviewer.bmp"
-
-IDB_TBBUTTONS_TRUECOLOR BITMAP                  "images\\toolbar_truecolor.bmp"
-
-IDB_SELECTALL           BITMAP                  "images\\selectall.bmp"
-
-IDB_SELECTNONE          BITMAP                  "images\\selectnone.bmp"
-
-IDB_INVERTSELECTION     BITMAP                  "images\\selectinvert.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////

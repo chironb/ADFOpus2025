@@ -141,6 +141,10 @@
     <Image Include="ADFOpusSrc\Images\AmiFile.ico" />
     <Image Include="ADFOpusSrc\Images\AmiLister.ico" />
     <Image Include="ADFOpusSrc\images\batch.bmp" />
+    <Image Include="ADFOpusSrc\images\bitmap1.bmp" />
+    <Image Include="ADFOpusSrc\images\bitmap2.bmp" />
+    <Image Include="ADFOpusSrc\images\bitmap3.bmp" />
+    <Image Include="ADFOpusSrc\images\bitmap4.bmp" />
     <Image Include="ADFOpusSrc\images\cascade.bmp" />
     <Image Include="ADFOpusSrc\images\close.bmp" />
     <Image Include="ADFOpusSrc\images\closeallwindows.bmp" />
