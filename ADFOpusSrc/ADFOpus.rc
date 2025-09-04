@@ -881,9 +881,13 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
 
 IDB_NEW                 BITMAP                  "images\\new.bmp"
 
+IDB_NEWLIST             BITMAP                  "images\\newlister.bmp"
+
 IDB_OPEN                BITMAP                  "images\\open.bmp"
 
 IDB_CLOSE               BITMAP                  "images\\close.bmp"
+
+IDB_EXIT                BITMAP                  "images\\exit.bmp"
 
 IDB_RENAME              BITMAP                  "images\\rename.bmp"
 
@@ -933,7 +937,7 @@ IDB_REFRESH             BITMAP                  "images\\refresh.bmp"
 
 IDB_TEXTVIEWER          BITMAP                  "images\\textviewer.bmp"
 
-IDB_HEXVIEWER           BITMAP                  "images\\textviewer.bmp"
+IDB_HEXVIEWER           BITMAP                  "images\\hexviewer.bmp"
 
 IDB_TBBUTTONS_TRUECOLOR BITMAP                  "images\\toolbar_truecolor.bmp"
 

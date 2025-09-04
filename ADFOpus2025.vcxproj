@@ -159,12 +159,15 @@
     <Image Include="ADFOpusSrc\Images\DriveFloppy525.ico" />
     <Image Include="ADFOpusSrc\Images\DriveHD.ico" />
     <Image Include="ADFOpusSrc\Images\DriveNet.ico" />
+    <Image Include="ADFOpusSrc\images\exit.bmp" />
     <Image Include="ADFOpusSrc\Images\hdf.ico" />
     <Image Include="ADFOpusSrc\images\help.bmp" />
+    <Image Include="ADFOpusSrc\images\hexviewer.bmp" />
     <Image Include="ADFOpusSrc\images\info.bmp" />
     <Image Include="ADFOpusSrc\images\install.bmp" />
     <Image Include="ADFOpusSrc\Images\Logo.bmp" />
     <Image Include="ADFOpusSrc\images\new.bmp" />
+    <Image Include="ADFOpusSrc\images\newlister.bmp" />
     <Image Include="ADFOpusSrc\images\open.bmp" />
     <Image Include="ADFOpusSrc\images\options.bmp" />
     <Image Include="ADFOpusSrc\images\properti.bmp" />

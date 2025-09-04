@@ -318,6 +318,8 @@
 #define IDB_HEXVIEWER                   40141
 #define IDB_RAWWRITEBOOTBLOCK           40142
 #define IDC_UPDATELABEL 			    40143
+#define IDB_EXIT                        40144
+#define IDB_NEWLIST                     40145
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

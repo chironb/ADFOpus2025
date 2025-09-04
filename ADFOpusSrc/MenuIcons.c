@@ -15,10 +15,10 @@ static const MenuIconEntry menuIconMap[] = {
     // File menu
     { ID_FIL_NEW,                   IDB_NEW },
     { ID_ACTION_NEWDIRECTORY,       IDB_CREATEDIR },
-    { ID_VIEW_NEWWINDOWSLISTER,     IDB_TEXTVIEWER },
+    { ID_VIEW_NEWWINDOWSLISTER,     IDB_NEWLIST },
     { ID_FIL_OPEN,                  IDB_OPEN },
     { ID_FIL_CLOSE,                 IDB_CLOSE },
-    { ID_FIL_EXIT,                  IDB_CLOSE },
+    { ID_FIL_EXIT,                  IDB_EXIT },
 
     // Edit menu
     { ID_ACTION_DELETE,             IDB_DELETE },
