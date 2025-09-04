@@ -8,8 +8,8 @@
 #include <direct.h>
 
 static DWORD aIds[] = {
-    IDC_EDIT_HEX,         
-    IDOK,                   
+    IDC_EDIT_HEX,
+    IDOK,
     0, 0
 };
 
@@ -22,8 +22,8 @@ static void FormatHexDump(
     size_t               outSize)
 {
     char* p = out;
-    size_t   rem = outSize;
-    int      written;
+    size_t rem = outSize;
+    int    written;
 
     for (size_t offset = 0; offset < len; offset += 16) {
         // 1) offset
@@ -66,16 +66,11 @@ static void FormatHexDump(
         out[outSize - 1] = '\0';
 }
 
-
-
-
+//------------------------------------------------------------------------------
+// Hex viewer dialog proc
 LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 {
     static HBRUSH hBrush = NULL;
-    //char    buf[MAX_PATH];
-    //char    szError[MAX_PATH];
-    //char    lpFileName[MAX_PATH];
-    //FILE* fp;
 
     switch (msg)
     {
@@ -89,6 +84,10 @@ LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         unsigned char* raw;
         char* dump;
 
+        // Create one black brush for our custom coloring
+        if (!hBrush)
+            hBrush = CreateSolidBrush(RGB(0, 0, 0));
+
         // --- 1) get the selected filename from your listview ---
         // assume you have a global "ci" pointer pointing at your CHILDINFO
         int iIndex = LVGetItemFocused(ci->lv);
@@ -100,19 +99,15 @@ LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
             strcat_s(lpFileName, sizeof(lpFileName), buf);
         }
         else {
-            // your ADF‐extraction path
             if (_chdir(dirTemp) == -1) {
                 _mkdir(dirTemp);
                 _chdir(dirTemp);
             }
-            GetFileFromADF(ci->vol, buf);  // assume this always succeeds for debug
+            GetFileFromADF(ci->vol, buf);
             strcpy_s(lpFileName, sizeof(lpFileName), dirTemp);
             strcat_s(lpFileName, sizeof(lpFileName), buf);
             _chdir(dirOpus);
         }
-
-        //// --- 2) Debug: make sure the path is valid ---
-        //MessageBoxA(dlg, lpFileName, "HexViewer Opening", MB_OK);
 
         // --- 3) Open & read the file ---
         fp = fopen(lpFileName, "rb");
@@ -137,7 +132,6 @@ LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         fclose(fp);
 
         // --- 4) Hex‐dump it ---
-        // allocate ~70 chars per 16‐byte line
         dump = malloc((fileSize / 16 + 1) * 80);
         if (!dump) {
             free(raw);
@@ -161,24 +155,36 @@ LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         return TRUE;
     }
 
+    // Paint white text on black background for our hex edit control
+    case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORSTATIC:
+    {
+        HDC   hdc = (HDC)wp;
+        HWND  ctl = (HWND)lp;
+        int   id = GetDlgCtrlID(ctl);
+
+        if (id == IDC_EDIT_HEX)
+        {
+            SetBkMode(hdc, OPAQUE);
+            SetTextColor(hdc, RGB(255, 255, 255));
+            SetBkColor(hdc, RGB(0, 0, 0));
+            return (INT_PTR)hBrush;
+        }
+        break;
+    }
+
     case WM_SIZE:
     {
         HWND hEdit = GetDlgItem(dlg, IDC_EDIT_HEX);
         HWND hButtonOK = GetDlgItem(dlg, IDOK);
-        //HWND hButtonHelp = GetDlgItem(dlg, IDC_TEXTVIEWER_HELP);
         RECT lpRect;
 
         int nWidth = LOWORD(lp);
         int nHeight = HIWORD(lp);
 
-        // Recompute margins & sizes in dialog units
         lpRect = (RECT){ 0,0,7,6 };
         MapDialogRect(dlg, &lpRect);
         int marginOKR = lpRect.right, marginOKB = lpRect.bottom;
-
-        lpRect = (RECT){ 0,0,63,6 };
-        MapDialogRect(dlg, &lpRect);
-        int marginHelpR = lpRect.right, marginHelpB = lpRect.bottom;
 
         lpRect = (RECT){ 0,0,7,28 };
         MapDialogRect(dlg, &lpRect);
@@ -188,7 +194,6 @@ LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         MapDialogRect(dlg, &lpRect);
         int btnW = lpRect.right, btnH = lpRect.bottom;
 
-        // OK button
         MoveWindow(
             hButtonOK,
             nWidth - btnW - marginOKR,
@@ -196,19 +201,10 @@ LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
             btnW, btnH, TRUE
         );
 
-        //// Help button
-        //MoveWindow(
-        //    hButtonHelp,
-        //    nWidth - btnW - marginHelpR,
-        //    nHeight - btnH - marginHelpB,
-        //    btnW, btnH, TRUE
-        //);
-
-        // Edit control
         MoveWindow(
             hEdit,
-            7, // left margin
-            7, // top margin
+            7,
+            7,
             nWidth - marginEditR - 7,
             nHeight - marginEditB - 7,
             TRUE
@@ -222,15 +218,6 @@ LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         case IDOK:
             EndDialog(dlg, TRUE);
             return TRUE;
-
-        /*case IDC_TEXTVIEWER_HELP:
-            WinHelp(
-                dlg,
-                "ADFOpus.hlp",
-                HELP_CONTEXT,
-                IDH_TEXTVIEWER
-            );
-            return TRUE;*/
         }
         break;
 
@@ -241,15 +228,6 @@ LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         }
         EndDialog(dlg, TRUE);
         return TRUE;
-
-    //case WM_HELP:
-    //    WinHelp(
-    //        ((LPHELPINFO)lp)->hItemHandle,
-    //        "ADFOpus.hlp",
-    //        HELP_WM_HELP,
-    //        (DWORD_PTR)aIds
-    //    );
-    //    return TRUE;
 
     case WM_CONTEXTMENU:
         WinHelp(

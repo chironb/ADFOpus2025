@@ -813,6 +813,15 @@
     <Image Include="ADFOpusSrc\images\bitmap4.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="ADFOpusSrc\images\newlister.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\exit.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\hexviewer.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="ADFOpusSrc\images\ArrowCop.cur">
