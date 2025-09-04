@@ -713,14 +713,15 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Select All",                 ID_EDIT_SELECTALL
         MENUITEM "&Unselect All",               ID_EDIT_SELECTNONE
+        MENUITEM "&Invert Selection", ID_EDIT_INVERTSELECTION
         MENUITEM SEPARATOR
-        MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER, GRAYED
-        MENUITEM "&HEX Viewer",                 ID_TOOLS_HEX_VIEWER, GRAYED
+        MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER
+        MENUITEM "&HEX Viewer",                 ID_TOOLS_HEX_VIEWER
         MENUITEM SEPARATOR
         MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
         MENUITEM "Disk &Information",           ID_FIL_INFORMATION
         MENUITEM SEPARATOR
-        MENUITEM "File &Properties",            ID_ACTION_PROPERTIES, GRAYED
+        MENUITEM "File &Properties",            ID_ACTION_PROPERTIES
     END
 END
 

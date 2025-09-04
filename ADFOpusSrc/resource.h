@@ -2,7 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by ADFOpus.rc
 //
-#define IDC_STATIC                      -1
 #define IDS_VERSION                     1
 #define IDD_ABOUT                       101
 #define IDR_MAINMENU                    102
@@ -308,7 +307,9 @@
 #define ID_SEL_HEXVIEWER                40131
 #define IDB_REFRESH                     40132
 #define ID_TOOLS_WRITE_RAW_BOOTBLOCK    40132
+#define ID_SEL_SELECTINVERTED           40133
 #define IDB_SELECTALL                   40134
+#define ID_Menu40134                    40134
 #define IDB_SELECTNONE                  40135
 #define IDB_INVERTSELECTION             40136
 #define ID_TOOLS_GREASEWEAZLE           40137
@@ -317,15 +318,17 @@
 #define IDB_GREASEWEAZLEWRITE           40140
 #define IDB_HEXVIEWER                   40141
 #define IDB_RAWWRITEBOOTBLOCK           40142
-#define IDC_UPDATELABEL 			    40143
+#define IDC_UPDATELABEL                 40143
 #define IDB_EXIT                        40144
 #define IDB_NEWLIST                     40145
+#define IDC_STATIC                      -1
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        240
-#define _APS_NEXT_COMMAND_VALUE         40133
+#define _APS_NEXT_COMMAND_VALUE         40135
 #define _APS_NEXT_CONTROL_VALUE         1174
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
