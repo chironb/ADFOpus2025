@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by ADFOpus.rc
 //
+#define IDC_STATIC                      -1
 #define IDS_VERSION                     1
 #define IDD_ABOUT                       101
 #define IDR_MAINMENU                    102
@@ -239,6 +240,7 @@
 #define IDC_BOOTBLOCK_COPY              1169
 #define IDC_EDIT_HEX                    1171
 #define IDC_BOOTBLOCK_SAVETEXT          1172
+#define IDC_BUTTON1                     1173
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -315,15 +317,14 @@
 #define IDB_GREASEWEAZLEWRITE           40140
 #define IDB_HEXVIEWER                   40141
 #define IDB_RAWWRITEBOOTBLOCK           40142
-#define IDC_STATIC                      -1
-
+#define IDC_UPDATELABEL 			    40143
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        240
 #define _APS_NEXT_COMMAND_VALUE         40133
-#define _APS_NEXT_CONTROL_VALUE         1173
+#define _APS_NEXT_CONTROL_VALUE         1174
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif
