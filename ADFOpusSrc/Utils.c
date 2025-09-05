@@ -172,7 +172,7 @@ void ResizeMDIClientWin()
 //			SetMenuItemBitmaps(hsubmenuView, 1, MF_BYPOSITION, bmpMenu, bmpMenu);
 //			break;
 //		// Action menu.
-//		case IDB_UPONELEVEL:
+//		case z:
 //			SetMenuItemBitmaps(hsubmenuAction, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
 //			break;
 //		case IDB_CREATEDIR:
