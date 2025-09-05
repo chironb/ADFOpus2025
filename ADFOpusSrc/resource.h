@@ -71,9 +71,9 @@
 #define IDD_TEXT_VIEWER                 228
 #define IDD_GREASEWEAZLE                229
 #define IDD_GREASEWEAZLE_WRITEFLOPPY    230
-#define IDD_GREASEWEAZLE_WRITE          230
-#define IDD_HEX_FILE_VIEWER             231
-#define IDD_HEX_VIEWER                  231
+#define IDD_GREASEWEAZLE_WRITE          231
+#define IDD_HEX_FILE_VIEWER             232
+#define IDD_HEX_VIEWER                  233
 #define IDC_NEWPATH                     1004
 #define IDC_NEWADF                      1005
 #define IDC_NEWHARDFILE                 1006

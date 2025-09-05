@@ -70,7 +70,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 
 IDB_LOGO                BITMAP                  "Images\\Logo.bmp"
 
-IDB_TBBUTTONS           BITMAP                  "Images\\Toolbar.bmp"
+IDB_TBBUTTONS           BITMAP                  "Images\\toolbar_truecolor.bmp"
 
 IDB_TBBUTTONS_LARGE     BITMAP                  "Images\\toolbar_large.bmp"
 
@@ -713,7 +713,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Select All",                 ID_EDIT_SELECTALL
         MENUITEM "&Unselect All",               ID_EDIT_SELECTNONE
-        MENUITEM "&Invert Selection", ID_EDIT_INVERTSELECTION
+        MENUITEM "&Invert Selection",           ID_EDIT_INVERTSELECTION
         MENUITEM SEPARATOR
         MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER
         MENUITEM "&HEX Viewer",                 ID_TOOLS_HEX_VIEWER
@@ -781,7 +781,7 @@ IDC_POINTER_COPY        CURSOR                  "images\\ArrowCop.cur"
 // Toolbar
 //
 
-IDB_TBBUTTONS TOOLBAR 16, 15
+IDB_TBBUTTONS TOOLBAR 16, 16
 BEGIN
     BUTTON      ID_BUTTON40099
     BUTTON      ID_BUTTON40100
@@ -906,15 +906,13 @@ IDB_OPTIONS             BITMAP                  "images\\options.bmp"
 
 IDB_BATCH               BITMAP                  "images\\batch.bmp"
 
-IDB_DISK2FDI            BITMAP                  "images\\disk2fdi.bmp"
+IDB_GREASEWEAZLE        BITMAP                  "images\\greaseweazle.bmp"
 
-IDB_GREASEWEAZLE        BITMAP                  "images\\disk2fdi.bmp"
+IDB_GREASEWEAZLEWRITE   BITMAP                  "images\\greaseweazlewrite.bmp"
 
-IDB_GREASEWEAZLEWRITE   BITMAP                  "images\\disk2fdi.bmp"
+IDB_INSTALL             BITMAP                  "images\\bootblockinstall.bmp"
 
-IDB_INSTALL             BITMAP                  "images\\install.bmp"
-
-IDB_RAWWRITEBOOTBLOCK   BITMAP                  "images\\install.bmp"
+IDB_RAWWRITEBOOTBLOCK   BITMAP                  "images\\bootblockrawwrite.bmp"
 
 IDB_DISPLAY             BITMAP                  "images\\display.bmp"
 
@@ -956,7 +954,7 @@ IDB_INVERTSELECTION     BITMAP                  "images\\selectinvert.bmp"
 
 IDD_DISPLAY_BOOTBLOCK DIALOGEX 0, 0, 323, 252
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Display Bootblock"
+CAPTION "View Bootblock"
 FONT 10, "Courier New", 400, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,266,230,50,15
