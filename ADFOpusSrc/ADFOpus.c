@@ -1723,7 +1723,7 @@ void GetTooltipText(char *buf, int cmd)
 		strcpy(buf, "Raw Write Bootblock");
 		break;
 	case ID_TOOLS_DISPLAYBOOTBLOCK:
-		strcpy(buf, "Display Bootblock");
+		strcpy(buf, "View Bootblock");
 		break;
 	case ID_TOOLS_OPTIONS:
 		strcpy(buf, "Preferences");

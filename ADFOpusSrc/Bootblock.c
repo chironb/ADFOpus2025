@@ -5,7 +5,7 @@
  /*! \file Bootblock.c
   *  \brief Bootblock display functions.
   *
-  * Bootblock.c - routines to handle the display bootblock dialogue
+  * Bootblock.c - routines to handle the View Bootblock dialogue
   */
 
 #include "Pch.h"

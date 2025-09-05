@@ -822,6 +822,18 @@
     <Image Include="ADFOpusSrc\images\hexviewer.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="ADFOpusSrc\images\greaseweazle.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\greaseweazlewrite.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\bootblockinstall.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\bootblockrawwrite.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="ADFOpusSrc\images\ArrowCop.cur">
