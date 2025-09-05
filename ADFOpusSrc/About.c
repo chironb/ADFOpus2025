@@ -1,270 +1,174 @@
-/* ADF Opus Copyright 1998-2002 by 
- * Dan Sutherland <dan@chromerhino.demon.co.uk> and Gary Harris <gharris@zip.com.au>.	
- *
- */
-/*! \file About.c
- *  \brief About box functions.
- *
- * About.c - routines to handle about box messages
- */
-
-#include "Pch.h"
-
+﻿#include "Pch.h"
 #include "ADFOpus.h"
-#include "About.h"
-#include "adflib.h"
-#include "zlib.h"
+#include "ChildCommon.h"
 #include <windows.h>
-#include <stdio.h>    // for snprintf
-#include "resource.h"    // for IDC_BUILDINFO
+#include <shellapi.h>   // ShellExecuteA
+#include <string.h>     // strrchr, strcpy_s, strcat_s, strncpy_s
+#include <winver.h>     // version‐info APIs
 
+#pragma comment(lib, "Version.lib")  // link in GetFileVersionInfo* and VerQueryValue
 
-
-/* local prototypes */
-LRESULT CALLBACK AboutChildDlgProc(HWND, UINT, WPARAM, LPARAM);
-LRESULT CALLBACK AboutChildDlgProc(HWND, UINT, WPARAM, LPARAM);
-void InitAboutBox(HWND);
-void AboutOnSelChanged(HWND);
-void KillAboutBox(HWND);
-
-/* external globals */
-extern HINSTANCE instance;
-
-LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
-/*! Callback function for the about dialogue.		<BR>
- *	Input:											<BR>	
- *		dlg		- Handle to parent window.			<BR>
- *		msg		- the Windows message being sent.	<BR>
- *		wp		- message parameter					<BR>
- *		lp		- message parameter					<BR>
- *	Output:											<BR>
- *		LRESULT - Success or failure.
- */
+// About dialog procedure
+LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	LPNMHDR nmhdr;
-	aboutInfo *ai;
+    static HBITMAP hBmp = NULL;
 
-	switch(msg) {
-		case WM_INITDIALOG:
-			ai = malloc(sizeof(aboutInfo));
-			SetWindowLong(dlg, GWL_USERDATA, (long)ai);
-			ai->tabControl = GetDlgItem(dlg, IDC_ABOUTTABCTRL);		
-			InitAboutBox(dlg);
-			return TRUE;
-		case WM_COMMAND:
-			switch(wp) {
-				case IDCANCEL:
-					EndDialog(dlg, TRUE);
-					return TRUE;
-			}
-			break;
-		case WM_CLOSE:
-			KillAboutBox(dlg);
-			EndDialog(dlg, TRUE);
-			return TRUE;
-		case WM_NOTIFY:
-			nmhdr = (NMHDR *)lp;
-			switch(nmhdr->code) {
-				case TCN_SELCHANGE:
-					AboutOnSelChanged(dlg);
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
+    switch (msg)
+    {
+    case WM_INITDIALOG:
+    {
+        // 1) Load and display the bitmap graphic
+        HINSTANCE hInst = GetModuleHandle(NULL);
+        hBmp = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_NEW_ABOUT_GRAPHIC));
+        if (hBmp)
+        {
+            SendDlgItemMessage(
+                dlg,
+                IDC_NEW_ABOUT_GRAPHIC,  // Static control ID
+                STM_SETIMAGE,
+                IMAGE_BITMAP,
+                (LPARAM)hBmp
+            );
+        }
 
-// Chiron 2025
-// 
-//LRESULT CALLBACK AboutChildDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
-///*! shared callback function for the child dialogues (pages)	<BR>
-// *	Input:														<BR>
-// *		dlg		- Handle to parent window.						<BR>
-// *		msg		- the Windows message being sent.				<BR>
-// *		wp		- message parameter								<BR>
-// *		lp		- message parameter								<BR>
-// *	Output:														<BR>	
-// *		LRESULT - Success or failure.							<BR>
-// */
-//{
-//	switch (msg) {
-//	case WM_COMMAND:
-//		switch (wp) {
-//		case IDC_WEBPAGEBTN2:
-//			ShellExecute(dlg, "open", "https://adfopus.sourceforge.net/",
-//				NULL, NULL, 0);
-//			break;
-//		case IDC_WEBPAGEBTN:
-//			ShellExecute(dlg, "open", "https://github.com/chironb/ADFOpus2025",
-//				NULL, NULL, 0);
-//			break;
-//		case IDC_LICENCEPAGEBTN:
-//			ShellExecute(dlg, "open", "https://web.archive.org/web/20250626140938/https://adfopus.sourceforge.net/index/license.htm",
-//				NULL, NULL, 0);
-//			break;
-//		case IDC_EMAILBTN:
-//			ShellExecute(dlg, "open", "mailto:gharris@zip.com.au",
-//				NULL, NULL, 0);
-//			break;
-//		case IDC_ADFLIBBTN:
-//			ShellExecute(dlg, "open", "http://perso.club-internet.fr/lclevy/adflib/",
-//				NULL, NULL, 0);
-//			break;
-//		case IDC_ZLIBBTN:
-//			ShellExecute(dlg, "open", "http://www.cdrom.com/pub/infozip/zlib/",
-//				NULL, NULL, 0);
-//			break;
-//		}
-//	}
-//	return FALSE;
-//}
-LRESULT CALLBACK AboutChildDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
-{
-	switch (msg) {
+        // 2) Retrieve the FileVersion string from VERSIONINFO
+        char versionStr[64] = "";
+        char exePath[MAX_PATH] = { 0 };
 
-	case WM_INITDIALOG:
-	{
-		char buf[64];
-		// __DATE__ and __TIME__ expand at compile time
-		snprintf(buf, sizeof(buf),
-			"Build Date: %s at %s",
-			__DATE__, __TIME__);
+        if (GetModuleFileNameA(NULL, exePath, MAX_PATH))
+        {
+            DWORD verHandle = 0;
+            DWORD verSize = GetFileVersionInfoSizeA(exePath, &verHandle);
+            if (verSize > 0)
+            {
+                BYTE* verData = (BYTE*)malloc(verSize);
+                if (verData &&
+                    GetFileVersionInfoA(exePath, verHandle, verSize, verData))
+                {
+                    struct LANGANDCODEPAGE {
+                        WORD wLanguage;
+                        WORD wCodePage;
+                    } *lpTranslate = NULL;
+                    UINT cbTranslate = 0;
 
-		// Fill the blank static control you placed in the RC
-		SetDlgItemText(dlg, IDC_BUILDINFO, buf);
-		return TRUE;
-	}
+                    if (VerQueryValueA(
+                        verData,
+                        "\\VarFileInfo\\Translation",
+                        (LPVOID*)&lpTranslate,
+                        &cbTranslate)
+                        && cbTranslate >= sizeof(*lpTranslate))
+                    {
+                        char subBlock[64];
+                        sprintf_s(
+                            subBlock, sizeof(subBlock),
+                            "\\StringFileInfo\\%04x%04x\\FileVersion",
+                            lpTranslate[0].wLanguage,
+                            lpTranslate[0].wCodePage
+                        );
 
-	case WM_COMMAND:
-		switch (wp) {
-		case IDC_WEBPAGEBTN2:
-			ShellExecute(dlg, "open",
-				"https://adfopus.sourceforge.net/",
-				NULL, NULL, SW_SHOWNORMAL);
-			break;
+                        LPVOID lpBuffer = NULL;
+                        UINT   dwLen = 0;
+                        if (VerQueryValueA(
+                            verData,
+                            subBlock,
+                            &lpBuffer,
+                            &dwLen)
+                            && dwLen > 0)
+                        {
+                            // Copy up to dwLen-1 chars
+                            strncpy_s(versionStr, sizeof(versionStr),
+                                (LPCSTR)lpBuffer, dwLen - 1);
+                        }
+                    }
+                }
+                free(verData);
+            }
+        }
 
-		case IDC_WEBPAGEBTN:
-			ShellExecute(dlg, "open",
-				"https://github.com/chironb/ADFOpus2025",
-				NULL, NULL, SW_SHOWNORMAL);
-			break;
+        // 3) Build and set the bottom text: app name, version, build date/time
+        char buildText[256];
+        if (versionStr[0] != '\0')
+        {
+            sprintf_s(
+                buildText, sizeof(buildText),
+                "ADF Opus 2025 - v%s - Built: %s at %s",
+                versionStr, __DATE__, __TIME__
+            );
+        }
+        else
+        {
+            sprintf_s(
+                buildText, sizeof(buildText),
+                "ADF Opus 2025 - Built: %s at %s",
+                __DATE__, __TIME__
+            );
+        }
+        SetDlgItemTextA(dlg, IDC_STATIC_BUILD, buildText);
 
-		case IDC_LICENCEPAGEBTN:
-			ShellExecute(dlg, "open",
-				"https://web.archive.org/web/20250626140938/https://adfopus.sourceforge.net/index/license.htm",
-				NULL, NULL, SW_SHOWNORMAL);
-			break;
+        return TRUE;
+    }
 
-		case IDC_EMAILBTN:
-			ShellExecute(dlg, "open",
-				"mailto:gharris@zip.com.au",
-				NULL, NULL, SW_SHOWNORMAL);
-			break;
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case IDC_BTN_CREDITS:
+        {
+            // Open Credits.txt next to the EXE
+            char exeDir[MAX_PATH] = { 0 };
+            char creditsPath[MAX_PATH] = { 0 };
 
-		case IDC_ADFLIBBTN:
-			ShellExecute(dlg, "open",
-				"http://perso.club-internet.fr/lclevy/adflib/",
-				NULL, NULL, SW_SHOWNORMAL);
-			break;
+            if (GetModuleFileNameA(NULL, exeDir, MAX_PATH))
+            {
+                // Keep only the directory
+                char* slash = strrchr(exeDir, '\\');
+                if (slash) *(slash + 1) = '\0';
 
-		case IDC_ZLIBBTN:
-			ShellExecute(dlg, "open",
-				"http://www.cdrom.com/pub/infozip/zlib/",
-				NULL, NULL, SW_SHOWNORMAL);
-			break;
-		}
-		break;
-	}
+                strcpy_s(creditsPath, sizeof(creditsPath), exeDir);
+                strcat_s(creditsPath, sizeof(creditsPath), "Credits.txt");
 
-	return FALSE;
-}
+                ShellExecuteA(dlg, "open", creditsPath, NULL, NULL, SW_SHOWNORMAL);
+            }
+            else
+            {
+                // fallback if path lookup fails
+                ShellExecuteA(dlg, "open", "Credits.txt", NULL, NULL, SW_SHOWNORMAL);
+            }
+            return TRUE;
+        }
 
+        case IDC_BTN_WEBSITE:
+            ShellExecuteA(
+                dlg,
+                "open",
+                "https://github.com/chironb/ADFOpus2025",
+                NULL,
+                NULL,
+                SW_SHOWNORMAL
+            );
+            return TRUE;
 
+        case IDC_BTN_OK:
+            // Clean up the bitmap and close
+            if (hBmp)
+            {
+                DeleteObject(hBmp);
+                hBmp = NULL;
+            }
+            EndDialog(dlg, IDOK);
+            return TRUE;
+        }
+        break;
 
+    case WM_CLOSE:
+        // Clean up on X click
+        if (hBmp)
+        {
+            DeleteObject(hBmp);
+            hBmp = NULL;
+        }
+        EndDialog(dlg, IDCANCEL);
+        return TRUE;
+    }
 
-
-void InitAboutBox(HWND dlg)
-/// Initialise the about property sheet.		<BR>
-///	Input:										<BR>
-///		dlg - Handle to parent window.			<BR>
-///	Output:										<BR>
-///		void.
-{
-	TC_ITEM tie;
-	RECT rec;
-	int i;
-	aboutInfo *ai = (aboutInfo *)GetWindowLong(dlg, GWL_USERDATA);
-	char tempStr[1024];
-
-	tie.mask = TCIF_TEXT | TCIF_IMAGE;
-	tie.iImage = -1;
-	tie.pszText = "About";
-	TabCtrl_InsertItem(ai->tabControl, 0, &tie);
-	tie.pszText = "ADFlib";
-	TabCtrl_InsertItem(ai->tabControl, 1, &tie);
-	tie.pszText = "xDMS";
-	TabCtrl_InsertItem(ai->tabControl, 2, &tie);
-	tie.pszText = "ZLib";
-	TabCtrl_InsertItem(ai->tabControl, 3, &tie);
-	tie.pszText = "Credits";
-	TabCtrl_InsertItem(ai->tabControl, 4, &tie);
-	tie.pszText = "Greets";
-	TabCtrl_InsertItem(ai->tabControl, 5, &tie);
-
-	ai->pages[0] = CreateDialog(instance, MAKEINTRESOURCE(IDD_ABOUTPAGE1), ai->tabControl, AboutChildDlgProc);
-	ai->pages[1] = CreateDialog(instance, MAKEINTRESOURCE(IDD_ABOUTPAGE4), ai->tabControl, AboutChildDlgProc);
-	ai->pages[2] = CreateDialog(instance, MAKEINTRESOURCE(IDD_ABOUTPAGE6), ai->tabControl, AboutChildDlgProc);
-	ai->pages[3] = CreateDialog(instance, MAKEINTRESOURCE(IDD_ABOUTPAGE5), ai->tabControl, AboutChildDlgProc);
-	ai->pages[4] = CreateDialog(instance, MAKEINTRESOURCE(IDD_ABOUTPAGE2), ai->tabControl, AboutChildDlgProc);
-	ai->pages[5] = CreateDialog(instance, MAKEINTRESOURCE(IDD_ABOUTPAGE3), ai->tabControl, AboutChildDlgProc);
-
-	// Get Opus version number and write to page 1 of About box.
-	LoadString(instance, IDS_VERSION, tempStr, sizeof(tempStr));
-	SetDlgItemText(ai->pages[0], IDC_OPUS_VERSION, tempStr);
-	
-	// ADFLib, ZLib version and date.
-	sprintf(tempStr, "This copy of ADF Opus is using ADFlib version %s.", adfGetVersionNumber());
-	SetDlgItemText(ai->pages[1], IDC_ADFLIBVER, tempStr);
-	sprintf(tempStr, "%s", adfGetVersionDate());
-	SetDlgItemText(ai->pages[1], IDC_ADFLIBDATE, tempStr);
-	sprintf(tempStr, "ADF Opus uses ZLib %s for its GZip compression support.", zlibVersion());
-	SetDlgItemText(ai->pages[3], IDC_ZLIBVER, tempStr);
-
-	GetClientRect(ai->tabControl, &rec);
-	TabCtrl_AdjustRect(ai->tabControl, FALSE, &rec);
-
-	for (i = 0 ; i < 6 ; i++) {
-		MoveWindow(ai->pages[i], rec.left, rec.top, rec.right - rec.left, rec.bottom - rec.top, FALSE);
-	}
-
-	ai->curPage = 0;
-	ShowWindow(ai->pages[ai->curPage], SW_SHOW);
-}
-
-void AboutOnSelChanged(HWND dlg)
-/// Select a new property page.				<BR>
-///	Input:									<BR>
-///		dlg - Handle to parent window.		<BR>
-///	Output:									<BR>
-///		void.
-{ 
-	aboutInfo *ai = (aboutInfo *)GetWindowLong(dlg, GWL_USERDATA);
-
-	ShowWindow(ai->pages[ai->curPage], SW_HIDE);
-	ai->curPage = TabCtrl_GetCurSel(ai->tabControl);
-	ShowWindow(ai->pages[ai->curPage], SW_SHOW);
-}
-
-void KillAboutBox(HWND dlg)
-/// Close the about property sheet.			<BR>
-///	Input:									<BR>
-///		dlg - Handle to parent window.		<BR>
-///	Output:									<BR>
-///		void.
-{
-	int i;
-
-	aboutInfo *ai = (aboutInfo *)GetWindowLong(dlg, GWL_USERDATA);
-
-	for (i = 0 ; i < 4 ; i++)
-		DestroyWindow(ai->pages[i]);
+    return FALSE;  // default processing
 }

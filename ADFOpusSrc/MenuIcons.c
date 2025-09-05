@@ -56,6 +56,7 @@ static const MenuIconEntry menuIconMap[] = {
 
     // Help menu
     { ID_HELP_ABOUT,                IDB_ABOUT },
+    { IDM_HELP_README,              IDB_README }
 };
     
 static const size_t menuIconCount =
