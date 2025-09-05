@@ -834,6 +834,12 @@
     <Image Include="ADFOpusSrc\images\bootblockrawwrite.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="ADFOpusSrc\Images\new_about_graphic.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\readme.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="ADFOpusSrc\images\ArrowCop.cur">

@@ -234,12 +234,16 @@
 #define ID_CANCEL_GW_WRITE              1165
 #define ID_GW_WRITE_CANCEL              1165
 #define IDC_BOOTBLOCK_SAVEBINARY        1165
+#define IDC_BTN_OK                      1165
 #define IDC_GW_SHOWDENSITY              1166
 #define ID_GW_WRITE_START               1167
 #define IDC_BOOTBLOCK_COPY              1169
 #define IDC_EDIT_HEX                    1171
 #define IDC_BOOTBLOCK_SAVETEXT          1172
 #define IDC_BUTTON1                     1173
+#define IDC_BTN_CREDITS                 1173
+#define IDC_BTN_WEBSITE                 1174
+#define IDC_STATIC_BUILD                1175
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -311,6 +315,7 @@
 #define IDB_SELECTALL                   40134
 #define ID_Menu40134                    40134
 #define IDB_SELECTNONE                  40135
+#define IDM_HELP_README                 40135
 #define IDB_INVERTSELECTION             40136
 #define ID_TOOLS_GREASEWEAZLE           40137
 #define IDB_GREASEWEAZLE                40138
@@ -321,6 +326,10 @@
 #define IDC_UPDATELABEL                 40143
 #define IDB_EXIT                        40144
 #define IDB_NEWLIST                     40145
+#define IDB_TOOLS_WRITE_RAW_BOOTBLOCK   40146
+#define IDB_NEW_ABOUT_GRAPHIC           40147
+#define IDC_NEW_ABOUT_GRAPHIC           40148
+#define IDB_README                      40149
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -328,8 +337,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        240
-#define _APS_NEXT_COMMAND_VALUE         40135
-#define _APS_NEXT_CONTROL_VALUE         1174
+#define _APS_NEXT_COMMAND_VALUE         40136
+#define _APS_NEXT_CONTROL_VALUE         1177
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif
