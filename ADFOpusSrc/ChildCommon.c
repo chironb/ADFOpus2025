@@ -1268,7 +1268,8 @@ BOOL ChildShowUndeletable(HWND win)
 	int				pos;
 
 
-	CHILDINFO *ci = (CHILDINFO *)GetWindowLong(win, 0);
+	//CHILDINFO *ci = (CHILDINFO *)GetWindowLong(win, 0);
+	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(win, 0); // Chiron TODO: Look at original non-ported code!
 	cell = list = adfGetDelEnt(ci->vol);
 	if(cell == NULL){
 		MessageBox(win, "There are no undeletable files or directories on this volume.", "Undelete Message", 
@@ -1299,15 +1300,20 @@ BOOL ChildShowUndeletable(HWND win)
 	return TRUE;
 }
 
+
+
+
+
 BOOL ChildUndelete(HWND win)
 {
 	struct List* list = NULL, * cell;
 	struct GenBlock* block;
 	int             index, iNumSelected, i;
 	char            buf[MAX_PATH];
-	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(win, GWLP_USERDATA);
-
+	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(win, 0);
+	
 	iNumSelected = ListView_GetSelectedCount(ci->lv);
+	
 	index = ListView_GetNextItem(ci->lv, -1, LVNI_CUT | LVNI_SELECTED);
 
 
