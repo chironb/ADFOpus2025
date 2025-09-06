@@ -330,6 +330,8 @@
 #define IDB_NEW_ABOUT_GRAPHIC           40147
 #define IDC_NEW_ABOUT_GRAPHIC           40148
 #define IDB_README                      40149
+#define IDM_HELP_CHM					40150 
+#define IDI_HELP_CHM					40151
 #define IDC_STATIC                      -1
 
 #define IDI_NEW                 50001

@@ -1,0 +1,47 @@
+Thank you for using ADF Opus 2025!
+
+This update to the program was started in 2025 by Chiron Bramberger. 
+
+The original help file in .HLP format was decompiled and ported to the modern .CHM format with help from the HelpDecoGui2 project found here:
+https://sourceforge.net/projects/helpdecogui2/
+
+Additional help was providing by this excellent guide:
+https://help-info.de/wayback/en/Help_Info_WinHelp/hw_converting.htm
+
+A proper updated credits document still needs to be written. 
+
+What follows below is the original credits information taken from the "About" dialog box from the last original release of v1.2 in the early 2000's. 
+
+-----
+
+ADF Opus v1.2
+
+Copyright © 1998-2002 Dan Sutherland && Gary Harris.
+
+Any comments, ideas of bug reports? 
+Mail the author. 
+mailto:gharris@zip.com.au
+
+The Credits (in order of appearance)
+Dan Sutherland                     Idea, design, code
+Laurent Clévy                      Amiga filesystem code (ADFLib), ideas and help
+Gary Harris                        Help file, bug reports, ideas, more help and more code
+André R. de la Rocha               DMS conversion routines (xDMS)
+James Thomas                       The ADF Opus logo
+Jean-loup Gailly and Mark Adler    ZLib
+
+ADFlib is a portable, GPLed implementation of the Amiga filesystem written by Laurent Clévy. For more information visit the ADFlib homepage:
+http://perso.club-internet.fr/lclevy/adflib/
+
+ADF Opus uses xDMS 1.3 for its DMS decompression facility written by
+André R. de la Rocha.
+
+xDMS uses source code fragments or informations from the following
+public domain or freeware programs:
+Unix  LHA  by Masaru Oki
+LZHUF  by Haruyasu Yoshizaki
+testdms  by  Bjorn Stenberg
+
+ADF Opus uses ZLib 1.1.4 for its GZip compression support Copyright (C) 1995-2002 Jean-loup Gailly and Mark Adler.
+You can find ZLib at:
+http://www.cdrom.com/pub/infozip/zlib/

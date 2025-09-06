@@ -729,6 +729,22 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 		return TRUE;
 	}
 
+	case IDM_HELP_CHM:
+	{
+		char exeDir[MAX_PATH], fullPath[MAX_PATH];
+		if (GetModuleFileNameA(NULL, exeDir, MAX_PATH)) {
+			char* slash = strrchr(exeDir, '\\');
+			if (slash) *(slash + 1) = '\0';
+			strcpy_s(fullPath, sizeof(fullPath), exeDir);
+			strcat_s(fullPath, sizeof(fullPath), "ADFOpus2025Help.chm");
+			ShellExecuteA(win, "open", fullPath, NULL, NULL, SW_SHOWNORMAL);
+		}
+		else {
+			ShellExecuteA(win, "open", "ADFOpus2025Help.chm", NULL, NULL, SW_SHOWNORMAL);
+		}
+		return TRUE;
+	}
+
 	// Chiron 2025 TODO: Windows no longer supports hlp files. This should be removed. Maybe in the future something better can happen here. 
 	// Implement help menu items.
 	case ID_HELP_HELPTOPICS:

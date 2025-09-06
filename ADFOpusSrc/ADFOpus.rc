@@ -701,7 +701,9 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "View Readme",                 IDM_HELP_README
+        MENUITEM "View &Help",                  IDM_HELP_CHM
+        MENUITEM "View &Readme",                IDM_HELP_README
+        MENUITEM SEPARATOR
         MENUITEM "&About...",                   ID_HELP_ABOUT
     END
 END
@@ -773,46 +775,73 @@ IDI_ICON_HDF            ICON                    "Images\\hdf.ico"
 
 IDI_ICON_DMP            ICON                    "Images\\dmp.ico"
 
+IDI_NEW                 ICON                    "images\\new.ico"
 
+IDI_NEWLIST             ICON                    "images\\newlister.ico"
 
+IDI_OPEN                ICON                    "images\\open.ico"
 
-IDI_NEW                 ICON DISCARDABLE                  "images\\new.ico"
-IDI_NEWLIST             ICON DISCARDABLE                  "images\\newlister.ico"
-IDI_OPEN                ICON DISCARDABLE                  "images\\open.ico"
-IDI_CLOSE               ICON DISCARDABLE                  "images\\close.ico"
-IDI_EXIT                ICON DISCARDABLE                  "images\\exit.ico"
-IDI_RENAME              ICON DISCARDABLE                  "images\\rename.ico"
-IDI_DELETE              ICON DISCARDABLE                  "images\\delete.ico"
-IDI_CREATEDIR           ICON DISCARDABLE                  "images\\createdir.ico"
-IDI_UPONELEVEL          ICON DISCARDABLE                  "images\\uponelev.ico"
-IDI_INFO                ICON DISCARDABLE                  "images\\info.ico"
-IDI_PROPERTIES          ICON DISCARDABLE                  "images\\properti.ico"
-IDI_OPTIONS             ICON DISCARDABLE                  "images\\options.ico"
-IDI_BATCH               ICON DISCARDABLE                  "images\\batch.ico"
-IDI_GREASEWEAZLE        ICON DISCARDABLE                  "images\\greaseweazle.ico"
-IDI_GREASEWEAZLEWRITE   ICON DISCARDABLE                  "images\\greaseweazlewrite.ico"
-IDI_INSTALL             ICON DISCARDABLE                  "images\\bootblockinstall.ico"
-IDI_RAWWRITEBOOTBLOCK   ICON DISCARDABLE                  "images\\bootblockrawwrite.ico"
-IDI_DISPLAY             ICON DISCARDABLE                  "images\\display.ico"
-IDI_TILEHOR             ICON DISCARDABLE                  "images\\tilehor.ico"
-IDI_TILEVER             ICON DISCARDABLE                  "images\\tilever.ico"
-IDI_CASCADE             ICON DISCARDABLE                  "images\\cascade.ico"
-IDI_TILECLO             ICON DISCARDABLE                  "images\\closeallwindows.ico"
-IDI_HELP                ICON DISCARDABLE                  "images\\help.ico"
-IDI_ABOUT               ICON DISCARDABLE                  "images\\about.ico"
-IDI_UNDELETE            ICON DISCARDABLE                  "images\\undelete.ico"
-IDI_SHOWUNDELETABLE     ICON DISCARDABLE                  "images\\showundel.ico"
-IDI_REFRESH             ICON DISCARDABLE                  "images\\refresh.ico"
-IDI_TEXTVIEWER          ICON DISCARDABLE                  "images\\textviewer.ico"
-IDI_HEXVIEWER           ICON DISCARDABLE                  "images\\hexviewer.ico"
-// IDI_TBBUTTONS_TRUECOLOR ICON DISCARDABLE                  "images\\toolbar_trueclor.ico"
-IDI_SELECTALL           ICON DISCARDABLE                  "images\\selectall.ico"
-IDI_SELECTNONE          ICON DISCARDABLE                  "images\\selectnone.ico"
-IDI_INVERTSELECTION     ICON DISCARDABLE                  "images\\selectinvert.ico"
-IDI_README              ICON DISCARDABLE                  "images\\readme.ico"
+IDI_CLOSE               ICON                    "images\\close.ico"
 
+IDI_EXIT                ICON                    "images\\exit.ico"
 
+IDI_RENAME              ICON                    "images\\rename.ico"
 
+IDI_DELETE              ICON                    "images\\delete.ico"
+
+IDI_CREATEDIR           ICON                    "images\\createdir.ico"
+
+IDI_UPONELEVEL          ICON                    "images\\uponelev.ico"
+
+IDI_INFO                ICON                    "images\\info.ico"
+
+IDI_PROPERTIES          ICON                    "images\\properti.ico"
+
+IDI_OPTIONS             ICON                    "images\\options.ico"
+
+IDI_BATCH               ICON                    "images\\batch.ico"
+
+IDI_GREASEWEAZLE        ICON                    "images\\greaseweazle.ico"
+
+IDI_GREASEWEAZLEWRITE   ICON                    "images\\greaseweazlewrite.ico"
+
+IDI_INSTALL             ICON                    "images\\bootblockinstall.ico"
+
+IDI_RAWWRITEBOOTBLOCK   ICON                    "images\\bootblockrawwrite.ico"
+
+IDI_DISPLAY             ICON                    "images\\display.ico"
+
+IDI_TILEHOR             ICON                    "images\\tilehor.ico"
+
+IDI_TILEVER             ICON                    "images\\tilever.ico"
+
+IDI_CASCADE             ICON                    "images\\cascade.ico"
+
+IDI_TILECLO             ICON                    "images\\closeallwindows.ico"
+
+IDI_HELP                ICON                    "images\\help.ico"
+
+IDI_HELP_CHM            ICON                    "images\\helpchm.ico"
+
+IDI_ABOUT               ICON                    "images\\about.ico"
+
+IDI_UNDELETE            ICON                    "images\\undelete.ico"
+
+IDI_SHOWUNDELETABLE     ICON                    "images\\showundel.ico"
+
+IDI_REFRESH             ICON                    "images\\refresh.ico"
+
+IDI_TEXTVIEWER          ICON                    "images\\textviewer.ico"
+
+IDI_HEXVIEWER           ICON                    "images\\hexviewer.ico"
+
+IDI_SELECTALL           ICON                    "images\\selectall.ico"
+
+IDI_SELECTNONE          ICON                    "images\\selectnone.ico"
+
+IDI_INVERTSELECTION     ICON                    "images\\selectinvert.ico"
+
+IDI_README              ICON                    "images\\readme.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -932,73 +961,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
 // Bitmap
 //
 
-//IDB_NEW                 BITMAP                  "images\\new.bmp"
-//
-//IDB_NEWLIST             BITMAP                  "images\\newlister.bmp"
-//
-//IDB_OPEN                BITMAP                  "images\\open.bmp"
-//
-//IDB_CLOSE               BITMAP                  "images\\close.bmp"
-//
-//IDB_EXIT                BITMAP                  "images\\exit.bmp"
-//
-//IDB_RENAME              BITMAP                  "images\\rename.bmp"
-//
-//IDB_DELETE              BITMAP                  "images\\delete.bmp"
-//
-//IDB_CREATEDIR           BITMAP                  "images\\createdir.bmp"
-//
-//IDB_UPONELEVEL          BITMAP                  "images\\uponelev.bmp"
-//
-//IDB_INFO                BITMAP                  "images\\info.bmp"
-//
-//IDB_PROPERTIES          BITMAP                  "images\\properti.bmp"
-//
-//IDB_OPTIONS             BITMAP                  "images\\options.bmp"
-//
-//IDB_BATCH               BITMAP                  "images\\batch.bmp"
-//
-//IDB_GREASEWEAZLE        BITMAP                  "images\\greaseweazle.bmp"
-//
-//IDB_GREASEWEAZLEWRITE   BITMAP                  "images\\greaseweazlewrite.bmp"
-//
-//IDB_INSTALL             BITMAP                  "images\\bootblockinstall.bmp"
-//
-//IDB_RAWWRITEBOOTBLOCK   BITMAP                  "images\\bootblockrawwrite.bmp"
-//
-//IDB_DISPLAY             BITMAP                  "images\\display.bmp"
-//
-//IDB_TILEHOR             BITMAP                  "images\\tilehor.bmp"
-//
-//IDB_TILEVER             BITMAP                  "images\\tilever.bmp"
-//
-//IDB_CASCADE             BITMAP                  "images\\cascade.bmp"
-//
-//IDB_TILECLO             BITMAP                  "images\\closeallwindows.bmp"
-//
-//IDB_HELP                BITMAP                  "images\\help.bmp"
-//
-//IDB_ABOUT               BITMAP                  "images\\about.bmp"
-//
-//IDB_UNDELETE            BITMAP                  "images\\undelete.bmp"
-//
-//IDB_SHOWUNDELETABLE     BITMAP                  "images\\showundel.bmp"
-//
-//IDB_REFRESH             BITMAP                  "images\\refresh.bmp"
-//
-//IDB_TEXTVIEWER          BITMAP                  "images\\textviewer.bmp"
-//
-//IDB_HEXVIEWER           BITMAP                  "images\\hexviewer.bmp"
-//
 IDB_TBBUTTONS_TRUECOLOR BITMAP                  "images\\toolbar_truecolor.bmp"
-//
-//IDB_SELECTALL           BITMAP                  "images\\selectall.bmp"
-//
-//IDB_SELECTNONE          BITMAP                  "images\\selectnone.bmp"
-//
-//IDB_INVERTSELECTION     BITMAP                  "images\\selectinvert.bmp"
-//
-//IDB_README              BITMAP                  "images\\readme.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,1377 @@
+{\rtf1\ansi\deff1
+{\fonttbl{\f0\froman Times New Roman;}{\f1\fswiss Arial;}{\f2\fswiss MS Sans Serif;}{\f3\froman MS Serif;}}
+{\colortbl;\red127\green0\blue127;\red0\green0\blue0;\red0\green0\blue255;\red0\green127\blue127;\red0\green127\blue0;\red0\green0\blue127;\red255\green0\blue0;}
+{\stylesheet{\fs100 \snext0 Normal;}
+}\pard\plain
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0001}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_introduction\'d6A}
+{\up #}{\footnote\pard\plain{\up #} idh_introduction}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\qc\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} DiskMasher;dms support;GZip;introduction;page, web;web;world wide web;www}
+\fs100\cf1 ADF Opus \cf2 \line
+
+\par \pard\qc\li115 \plain\f2\fs20 Copyright 1998-2003 by Dan Sutherland and Gary Harris.\line
+Help file by Gary Harris.
+\par 
+\par Visit the ADF Opus web page: \uldb \cf3 http://adfopus.sourceforge.net/ \plain\f2\fs20\cf3 {\v %!EF(`http://adfopus.sourceforge.net/',`',1)}\plain\f2\fs20 
+\par 
+\par \pard\sb335\sa115\sl-315\li115 \f3\fs28\cf4 Introduction \cf2 
+\par \pard\li115 \plain\f2\fs20 ADF Opus is a management tool for the disk image files used by Amiga emulators. These disk images take the form of a file with .adf suffix. Opus can also access hardfiles, simulated hard-disks-in-a-file, also used by these emulators and can access files stored on the Windows file system but accessed by an emulator as a hard drive. Under Windows NT4, or possibly Windows 2000, it also allows you to access a real Amiga-formatted hard drive attached to your PC.
+\par 
+\par It allows you to perform most common tasks (like copying, renaming, deleting, etc.) with your ADFs without having to go anywhere near an emulator. Features include long filename support, support for OFS and FFS volumes, high speed file copying, a powerful MDI interface (you can even copy files directly from one ADF to another), access to and conversion between compressed disk image formats and lots of other cool stuff.
+\par \pard\li115 
+\par Amiga emulators can directly access ADFs compressed with DiskMasher (DMS), an Amiga disk cruncher, or with the industry-standard Gzip compression utility. ADF Opus can extract ADFs compressed by either of these programmes, allowing you to read or modify their contents and can (re)compress ADFs in the Gzip format. Compression to DMS format is not supported as the DMS algorithm is subject to copyright. If this changes, support for DMS compression will more than likely be added. Until then, either use DMS from within an emulator to compress disk images or use the built-in Gzip support, which often creates smaller images. DMS for Amiga is freely available on the net from \uldb \cf3 Aminet \plain\f2\fs20\cf3 {\v %!EF(`http://us.aminet.net/~aminet/',`',1)}\plain\f2\fs20 .
+\par \pard\li115 
+\par ADF Opus can create new disk images of both double-density (880 KB) and high density (1.76 MB) disks. It can also create hardfiles up to 512 MB in size.
+\par 
+\par Best of all it's free, so enjoy it!
+\par 
+\par 
+\par 
+\par For further information about obtaining, setting up and using Amiga emulators see my \uldb \cf3 Amiga Emulation FAQ \plain\f2\fs20\cf3 {\v %!EF(`http://jetjockey.fly.to/faq.html',`',1)}\plain\f2\fs20 , the Frequently Asked Questions list for the alt.emulators.amiga newsgroup. This is also a great place to go to ask questions, seek advice and is peopled by a good bunch of Amiga enthusiasts (read fanatics :-) who are happy to help. You are welcome to add your own experiences to the FAQ for the benefit of others.
+\par \pard\li115 
+\par The source code for ADF Opus is also available from the ADF Opus web site, for those interested, under the terms of the GNU GPL,
+\par 
+\par 
+\par 
+\par \uldb Installation\plain\f2\fs20 {\v idh_installation}\line
+\uldb The Main Window\plain\f2\fs20 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0002}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_installation\'ffA}
+{\up #}{\footnote\pard\plain{\up #} idh_installation}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} dlls;installation;setup;shortcuts}
+\f3\fs28\cf4 Installation \cf2 
+\par \pard\li115 \plain\f2\fs20 ADF Opus is provided in an automated Ghost Installer package. To install ADF Opus, simply run the installer and follow the instructions presented.
+\par 
+\par You can install over the top of an existing installation but outdated files which have no equivalent in the new package won't be uninstalled. On the one hand there are unlikely to be many changes to the current file package, on the other it's probably better to uninstall the old one if you want to be sure.
+\par 
+\par 
+\par 
+\par \uldb The Main Window\plain\f2\fs20 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0003}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_main_window\'ff\'ffA}
+{\up #}{\footnote\pard\plain{\up #} idh_main}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} adfs, viewing;Amiga file lister;attributes, file;buttons;file attributes;lister, Amiga;lister, Windows;menus;status bar;toolbar;window, main;windows;Windows lister;windows, sub-}
+\f3\fs28\cf4 The Main Window \cf2 
+\par \pard\li115 \plain\f2\fs20 This is ADF Opus' main window view. Click on the menu items, buttons and other elements for an explanation of their function and to view the sub-windows. Click on items in the popup views for more details.
+\par 
+\par \pard\li115\tx355 \tab \tab \tab \{bmc bm0.SHG\}
+\par 
+\par 
+\par 
+\par \uldb Using The Program\plain\f2\fs20 {\v 5MZ0_LB}\line
+\uldb The Create New File Dialogue\plain\f2\fs20 {\v 13RKF64}\line
+\uldb The Information Dialogue\plain\f2\fs20 {\v IDH_INFORMATION_DIALOGUE_DEV}\line
+\uldb The Batch Converter\plain\f2\fs20 {\v idh_Batch_Converter}\line
+\uldb The Options Dialogue\plain\f2\fs20 {\v idh_options}\line
+\uldb The Select Volume Dialogue\plain\f2\fs20 {\v L15D_8}\line
+\uldb The Properties Dialogues\plain\f2\fs20 {\v idh_properties}\line
+\uldb The Disk2FDI Dialogue\plain\f2\fs20 {\v idh_disk2fdi}\line
+\uldb The Text Viewer Dialogue\plain\f2\fs20 {\v idh_textviewer}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0006}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_create_dialogue\'0f\'89\'81\'e3\'af\'96\'93\'f5"\{0\'ac\'1c\'a8}
+{\up #}{\footnote\pard\plain{\up #} 13RKF64}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115\tx355 {\up K}{\footnote\pard\plain{\up K} adfs, creating;adzs, creating;creating blank disks;disk creation;hardfiles, creating}
+\f3\fs28\cf4 The Create New Volume Dialogue \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Click on parts of the dialogue for help.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \tab \tab \tab \{bmc bm1.SHG\}
+\par 
+\par 
+\par \pard\li115\tx355 \b\fs22\cf5 Usage \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \plain\f2\fs20 Use this dialogue to create a new, empty disk image or hardfile. You can select the type, capacity, \uldb file system\plain\f2\fs20 {\v idh_FileSystem} flags and disk label for your creation using the available options. Selecting the "Open after creating" option causes ADF Opus to open the new image in a new child window after it has been created.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Use the \uldb Batch Converter\plain\f2\fs20 {\v idh_Batch_Converter} to convert your new ADF to an ADZ, if you want to compress it.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115 \uldb The Main Window\plain\f2\fs20 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0007}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_information_dialoguewan'\{0\'a9\'1c\'a8}
+{\up #}{\footnote\pard\plain{\up #} IDH_INFORMATION_DIALOGUE_DEV}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} information, volume}
+\f3\fs28\cf4 The Volume Information Dialogue \cf2 
+\par \pard\li115 \plain\f2\fs20 Click on parts of the property pages for help.
+\par 
+\par \b\fs22\cf5 The Device Tab \cf2 
+\par 
+\par \pard\li115\tx355 \tab \tab \tab \{bmc bm2.SHG\}
+\par 
+\par {\up #}{\footnote\pard\plain{\up #} IDH_INFORMATION_DIALOGUE_VOL}
+{\up K}{\footnote\pard\plain{\up K} information, device}
+ 
+\par \pard\li115\tx355 \cf5 The Volume Tab \cf2 
+\par \pard\li115\tx355 
+\par \tab \tab \tab \{bmc bm3.SHG\}
+\par 
+\par \plain\f2\fs20 
+\par 
+\par \uldb The Main Window\plain\f2\fs20 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0008}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_batch_converter}
+{\up #}{\footnote\pard\plain{\up #} idh_Batch_Converter}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115\tx355 {\up K}{\footnote\pard\plain{\up K} adf;adfs, compressing;adz;Batch Converter;converting between formats;dms;temporary files}
+\f3\fs28\cf4 The Batch Converter Dialogue \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Click on parts of the dialogue for help.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \tab \tab \tab \{bmc bm4.SHG\}
+\par 
+\par \pard\li115\tx355 \b\fs22\cf5 Usage \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \plain\f2\fs20  Use the Batch Converter to convert between uncompressed ADFs and other, compressed formats. The converter can compress ADFs to ADZ format, decompress ADZs to ADF format, decompress DMS' to ADFs and convert DMS' to ADZs. Compression to DMS format is currently not available as this format is subject to copyright restrictions.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Select disk images for conversion using the \cf6 Add \cf2 button. These will be listed in the upper window. Remove single files by selecting the file and clicking the \cf6 Remove \cf2  button. The \cf6 Remove All \cf2 button will clear all files from the list.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Select the output format using the \cf6 Output Type \cf2 buttons. Selecting the \cf6 Disk Image (ADF) \cf2 button will convert listed files to ADF format. Selecting the \cf6 Compressed Disk Image (ADZ) \cf2 button will convert listed files to ADZ format. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The button for a format that is unavailable for a particular conversion is disabled i.e. The \cf6 Disk Image (ADF) \cf2 button will be disabled if an ADF is selected into the list and the \cf6 Compressed Disk Image (ADZ) \cf2 button will be disabled if an ADZ is selected into the list. This means that if you select both types, both buttons will be disabled. You should select files of only one type or of different types that can be converted to the same output type. For example a selection of ADZs and DMS' could all be converted to ADFs.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 You can reset the \cf6 Output Type \cf2 buttons by closing the Batch Converter and reopening it.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Start conversion by pressing the \cf6 Start \cf2 button. The converted file's name is removed from the list on completion.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 For each attempted conversion, a status message is printed to the \cf6 Status \cf2  window reporting success or failure.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Temporary Files \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \plain\f2\fs20 When converting between DMS and ADZ formats, ADF Opus creates a temporary, intermediate ADF in the \cf6 opustemp \cf2 directory, which is removed after conversion. \cf6 opustemp \cf2 is created in the same directory as ADF Opus and is removed when it shuts down.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115 \uldb The Main Window\plain\f2\fs20\cf2 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0009}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_options\'09}
+{\up #}{\footnote\pard\plain{\up #} idh_options}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} deletion, confirming;file types, registering;label, setting default;options;preferences;Windows lister, setting start directory}
+\f3\fs28\cf4 The Options Dialogue \cf2 
+\par \pard\li115 \plain\f2\fs20 Click on parts of the dialogue for help.
+\par 
+\par 
+\par \pard\li115\tx355 \tab \tab \tab \{bmc bm5.SHG\}
+\par 
+\par 
+\par \pard\li115\tx355 \b\fs22\cf5 Usage \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \plain\f2\fs20 Use the Options Dialogue to set your program preferences. You can set how you want the Windows lister to start, the default label for new volumes, the level of confirmation required for deletion and whether you want ADF Opus to make use of directory cache blocks when it can.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Pressing the \cf6 Register Amiga disk file types with Windows Explorer \cf2 button will register .adf, .adz, .dms, .dmp and .hdf files with Windows.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115 \uldb The Main Window\plain\f2\fs20\cf2 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:000a}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_volsel}
+{\up #}{\footnote\pard\plain{\up #} L15D_8}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} volumes, selecting}
+\f3\fs28\cf4 The Volume Selection Dialogue \cf2 
+\par \pard\li115 \plain\f2\fs20 Click on parts of the dialogue for help.
+\par 
+\par 
+\par \pard\li115\tx355 \tab \tab \tab \{bmc bm6.SHG\}
+\par 
+\par 
+\par \pard\li115\tx355 \b\fs22\cf5 Usage \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \plain\f2\fs20 This dialogue is displayed when you open a device that contains multiple volumes. Select the volume you wish ADF Opus to open from the list.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115 \uldb The Main Window\plain\f2\fs20 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:000b}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_file_properties\'07}
+{\up #}{\footnote\pard\plain{\up #} idh_properties}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} attributes;comment;file comment;file properties;flags;properties, file;property flags}
+\f3\fs28\cf4 The Properties Dialogues \cf2 
+\par \pard\li115 \plain\f2\fs20 Click on parts of the dialogue for help.
+\par 
+\par 
+\par \pard\li115\tx355 \tab \tab \tab \{bmc bm7.SHG\}\tab \{bmc bm8.SHG\}
+\par 
+\par 
+\par \pard\li115\tx355 \b\fs22\cf5 Usage \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \plain\f2\fs20 Use these dialogues to set the file properties of selected files. You can also set a comment for Amiga files and directories. Comments are limited to 79 characters by ADFLib.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115 \uldb The Main Window\plain\f2\fs20 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:000c}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_disk2fdi}
+{\up #}{\footnote\pard\plain{\up #} idh_disk2fdi}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} converting floppy disks;disk2fdi;floppy disks, converting}
+\f3\fs28\cf4 The Disk2FDI Dialogue \cf2 
+\par \pard\li115 \plain\f2\fs20 Click on parts of the dialogue for help.
+\par 
+\par 
+\par \pard\li115\tx355 \tab \tab \tab \{bmc bm9.SHG\}
+\par 
+\par 
+\par \pard\li115\tx355 \b\fs22\cf5 Usage \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \plain\f2\fs20 The dialogue presents the same options as are available for Disk2FDI on the command line and Opus simply builds the command line for you and runs Disk2FDI in a shell. This makes the creation of images from actual Amiga disks convenient and easy and available within Opus itself. You can create ADFs directly from your original disks and manage them within Opus immediately.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 DIsk2FDI now runs as a separate process which means that you can now either continue working in Opus while it runs in the background or, if you are creating an ADF, you can choose to open the image in Opus once Disk2FDI has finished. If you choose this option, you will not be able to do anything else with ADF Opus until Disk2FDI finishes. For this reason, the default option is to let Disk2FDI run independently. Whichever option you choose, you still need to close the Disk2FDI shell window once it has finished executing.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 It is not possible to run multiple instances of Disk2FDI creating ADFs simply because it requires exclusive access to both floppy drives. It may be possible to run two instances in cases where you are creating images for which only one floppy drive is required, I can't test this. If an instance of Disk2FDI can't access the required resources it will fail politely and you'll just need to close its shell window.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF Opus will disable the Disk2FDI menu item under Windows NT, 2K and XP since Disk2FDI itself doesn't work on these platforms. On other versions, make sure that you check Disk2FDI's documentation and that your system meets the requirements for it to operate e.g. you have two disk drives with one being suitable to the media you wish to copy.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Disk2FDI can be found at \uldb \cf3 http://www.oldskool.org/disk2fdi/ \plain\f2\fs20\cf3 {\v %!EF(`http://www.oldskool.org/disk2fdi/',`',1)}\plain\f2\fs20 .
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115 \uldb The Main Window\plain\f2\fs20 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:000d}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_bootblockound a'\{0\'a9\'1d\'a8}
+{\up #}{\footnote\pard\plain{\up #} idh_bootblock}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} bootblock, display;display bootblock}
+\f3\fs28\cf4 The Display Bootblock Dialogue \cf2 
+\par \pard\li115 \plain\f2\fs20 Click on parts of the dialogue for help.
+\par 
+\par 
+\par \pard\li115\tx355 \tab \tab \tab \{bmc bm10.SHG\}
+\par 
+\par 
+\par \pard\li115\tx355 \b\fs22\cf5 Usage \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \plain\f2\fs20 This dialogue shows the bootblock that is currently installed, in ASCII code. Some bootblocks, especially non-standard ones, contain readable text messages in this area which can be interesting or informative. A standard AmigaOS bootblock shows the code "DOS", as above.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115 \uldb The Main Window\plain\f2\fs20 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:000e}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_textviewer}
+{\up #}{\footnote\pard\plain{\up #} idh_textviewer}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} display text;text viewer;text, display;text, view;viewer}
+\f3\fs28\cf4 The Text Viewer Dialogue \cf2 
+\par \pard\li115 \plain\f2\fs20 Click on parts of the dialogue for help.
+\par 
+\par 
+\par \pard\li115\tx355 \tab \tab \tab \{bmc bm11.SHG\}
+\par 
+\par 
+\par \pard\li115\tx355 \b\fs22\cf5 Usage \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \plain\f2\fs20 This dialogue displays the contents of the selected file in ASCII code. The text viewer is useful for viewing simple files, such as Startup-Sequence, that can't be run or opened directly under Windows because they do not have a dot suffix, e.g. .txt, and therefore don't respond to Windows' file association system. The viewer is only activated for files and will only display ASCII code. Binary or other code will not be displayed. The displayed text can be copied but not edited. File types that are registered with Windows can still be viewed using the viewer as long as they contain ASCII code. For ease of viewing, the text viewer is fully resizable.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115 \uldb The Main Window\plain\f2\fs20 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0004}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_using_the_programlogue $\{0\'aa\'1c\'a8}
+{\up #}{\footnote\pard\plain{\up #} 5MZ0_LB}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} adfs, closing;adfs, copying to and from;adfs, navigating;adfs, opening;directories;directories, copying;directories, deleting;directories, renaming;directory;directory, levels;directory, new;directory, properties;directory,listing;drag and drop;drive list;file system, Windows;files, closing;files, copying;files, navigating;files, opening;files, viewing;files, Windows;properties;properties, directory}
+\f3\fs28\cf4 Using The Program \cf2 
+\par \pard\li115 \f2\b\fs22\cf5 Accessing The Windows File System \cf2 
+\par \plain\f2\fs20  When ADF Opus starts you will see a Windows lister already open. This lister provides access to the files on your PC. You can choose whether this lister should open with a list of drives or in a particular directory in the "Options" dialogue. To open a new Windows lister, select \cf6 View|New Windows Lister \cf2 .
+\par 
+\par \b\fs22\cf5 Opening A Disk Image \cf2 
+\par \plain\f2\fs20 To work with an ADF, ADZ or DMS file you must first open it. You can open one by doing any of the following:
+\par \pard\li115 
+\par \pard\li115\tx355 \tab \'b7 select \cf6 Open... \cf2 from the \cf6 File \cf2 menu 
+\par \tab \'b7 click the \{bmc bm12.BMP\} button on the toolbar 
+\par \tab \'b7 press \cf6 Ctrl+O \cf2 
+\par 
+\par Then select the file from the dialogue box that appears. Note that it is possible to open more than one disk image at a time - each will open in its own window.
+\par 
+\par \pard\li115\tx355 \b\fs22\cf5 Navigating \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Navigation is simple - just like Windows Explorer. Double-click a directory to change into it and view its contents. To go back to the parent directory, click the \{bmc bm13.BMP\} button on the toolbar.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 To change to a different drive in the Windows pane, just click the \{bmc bm13.BMP\} button when you're already at the root directory. Icons for all drives will appear - just double-click one to view its contents.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Copying Files \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Copying is dead easy - just drag and drop the file from one pane to another and it will be copied. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Note: \cf2 drag and drop is not restricted to a single window - if you have two disk images open at once you can copy files from one to another. To move files within a disk image you can open two copies of a single disk image and drag files from one to the other. You can even copy from one Windows directory to another (but you might be better off using Windows Explorer for managing your Windows files). Go ahead and try it - knock yourself out! 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Creating A New Directory \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 To create a new directory, either select \cf6 Action|New Directory \cf2 or click the \{bmc bm14.BMP\} button on the toolbar. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Renaming Files And Directories \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 You can rename a file or directory by selecting it and then selecting \cf6 Action|Rename \cf2 or clicking the \{bmc bm15.BMP\} button on the toolbar.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Deleting Files And Directories \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 You can delete a file or directory by selecting it and then selecting \cf6 Action|Delete \cf2 or clicking the \{bmc bm16.BMP\} button on the toolbar. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Undeleting Files And Directories \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Undeleting files or directories is a two-step process.  Firstly, with the parent ADF's window active, select \cf6 View|Undeletable Files \cf2 or click the \{bmc bm17.BMP\} button on the toolbar. Opus will then display all files available for undeletion or advise otherwise. Undeletable files are shown ghosted. Undelete an entry by selecting it and then selecting \cf6 Action|Undelete \cf2 or clicking the \{bmc bm18.BMP\} button on the toolbar. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Note: \cf2 ADFLib's undeletion routines are imperfect. All undeletable files are notified at the root level as well as in the directory from which they were deleted. You need to be in the correct directory for undeletion to succeed. You may have to find the correct one by trial and error. Displaying all files at the root level actually acts as a summary of available recoverable files, so it's not all bad. Some files that should be recoverable may not be displayed. Some files that are displayed may not undelete successfully. Unfortunately, I can't fix this. I still think that some level of recovery is useful, rather than having none. At least you have some chance of being able to recover lost data.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Creating A New Blank ADF \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Choose \cf6 File|New... \cf2 or click the \{bmc bm19.BMP\} button to open the Create New Volume dialogue. You can set the path, label and other options from this dialogue. You can also choose whether to use  \uldb FFS\plain\f2\fs20\cf2 {\v idh_FileSystem}, \uldb Directory Caching\plain\f2\fs20\cf2 {\v idh_FileSystem} and  \uldb International Mode\plain\f2\fs20\cf2 {\v idh_FileSystem} by selecting the appropriate checkboxes under \cf6 Flags \cf2 . You can make an ADF bootable by selecting \cf6 Install \cf2 from the \cf6 Tools \cf2  menu or clicking the \{bmc bm20.BMP\} button. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Caution: \cf2  ADFLib can not detect whether an ADF is already bootable or the existing bootblock is valid. To avoid losing anything of value, work on a copy of the ADF and check it within an emulator before deleting the original.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Creating A New Blank Hardfile \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Choose \cf6 File|New... \cf2 or click the \{bmc bm19.BMP\} button to open the Create New Volume dialogue. You can set the path, label and other options from this dialogue. You can choose the size of the hardfile by selecting \cf6 Preset Size \cf2 and selecting a size from 1 to 512MB from the lister, or by selecting \cf6 Custom Size \cf2 and entering the required size manually. You can also opt to use \uldb FFS\plain\f2\fs20\cf2 {\v idh_FileSystem}, \uldb Directory Caching\plain\f2\fs20\cf2 {\v idh_FileSystem} or  \uldb International Mode\plain\f2\fs20\cf2 {\v idh_FileSystem}, as for ADFs.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Note: \cf2 For maximim compatibility, especially with older versions of Workbench, leave  \uldb FFS\plain\f2\fs20\cf2 {\v idh_FileSystem} and \uldb International Mode\plain\f2\fs20\cf2 {\v idh_FileSystem} turned off.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Getting Information About A Disk Image \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Choose \cf6 Information... \cf2 from the \cf6 File \cf2  menu or click the \{bmc bm21.BMP\} button to view a summary of the current ADF such as how much free space there is, what \uldb file system\plain\f2\fs20\cf2 {\v idh_FileSystem} it uses, whether it has been compressed and so on. See the \uldb Volume Information Dialogue \plain\f2\fs20\cf2 {\v IDH_INFORMATION_DIALOGUE_DEV} section for  details.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Getting Information About A File Or Directory \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Choose \cf6 Properties... \cf2 from the \cf6 Action \cf2  or context menus or click the \{bmc bm22.BMP\} button to display the attributes or property flags for a file or directory. If the selected item is an Amiga file or directory, its file comment will also be displayed, if one exists. Comments are limited to 79 characters in length by ADFLib. See the \uldb Properties Dialogue \plain\f2\fs20\cf2 {\v idh_properties} section for  details.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Closing A Disk Image \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 This is pretty obvious but when you're finished with a disk image you need to close it before you use it in another program like UAE. To close an image just select its window and click the \{bmc bm23.BMP\} button on the toolbar (or select \cf6 File|Close \cf2 ). If you don't close an ADZ you have made changes to, the changes will be lost at program shutdown.  All changes to DMS files will be lost since ADF Opus can't compress to DMS format (see \uldb Introduction\plain\f2\fs20\cf2 {\v idh_introduction}). If you want to modify a DMS file, convert it to ADZ and modify that.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Running Or Opening Files \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 You can run or open files listed in the file listers by double-clicking the file. Files appearing in an Amiga lister will open as long as the file type is registered with Windows and a suitable application exists which can handle that file type. For example, if you double-click on a text file called myfile.txt and the .txt file type is registered to open in your text editor, myfile.txt will open in the text editor. See \uldb Registering File Types With Windows\plain\f2\fs20 {\v 1USE1UD}
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Viewing Files Within ADF Opus\cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 Select the file and then choose \cf6 Tools|Text Viewer \cf2  or click the \{bmc bm24.BMP\} button to display the text viewer. The viewer can also be activated from the context menu. See the \uldb Text Viewer Dialogue \plain\f2\fs20\cf2 {\v idh_textviewer} section for details.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Temporary Files \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 When ADF Opus opens a compressed disk image, it creates a temporary, intermediate ADF in specially created directory called \cf6 opustemp \cf2 . If the image's child window is specifically closed, Opus recompresses an ADZ, or simply closes a DMS, and deletes the related ADF from the \cf6 opustemp \cf2 directory. If ADF Opus is shut down with child windows still open, any changes to an ADZ will be lost and the temporary ADF will not be deleted normally. To avoid leaving ADFs in the \cf6 temp \cf2 directory, ADF Opus removes all ADF files from the \cf6 opustemp \cf2 directory on shutdown.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115 \uldb The Main Window\plain\f2\fs20\cf2 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:000f}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_file_types}
+{\up #}{\footnote\pard\plain{\up #} 1USE1UD}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} files, registering;shell usage;Windows, registering files types with}
+\f3\fs28\cf4 Registering File Types with Windows \cf2 
+\par \pard\li115 \plain\f2\fs20 If you have files in an ADF that you want to open under Windows and you get an error message when you double-click on them, you need to register them with Windows. In order to be able to do this, you must have a suitable Windows programme that handles the type. For example, an AmigaDOS command will never open under Windows as the binary code is incompatible. Files that are specific to a particular Amiga utility may not open. Most other files, such as text, picture and sound files should be fine. If you don't currently have a compatible viewer or handler, you can probably find one on the net.
+\par \pard\li115 
+\par Windows registers file types according to the last three letters of their name, the three after the dot. This means that you may need to register a particular type of file more than once, if it can have different file suffixes. A common case of this is the text file. Text files can have a huge range of file suffixes. A common one used with text files circulated with Amiga programmes is .readme, which is not generally used on Windows. To register text files with this suffix with Windows, copy one to your Windows file system, or create one, left-click the file once to highlight its icon, hold down the Shift key and right-click on the file. In the context menu that appears will be an item labelled \cf6 Open with... \cf2 . Select this. Select your text editor from the list that appears, check the box labelled \cf6 Always use this program to open this type of file \cf2 and click \cf6 OK \cf2 . If the text editor is not in the list, click \cf6 Other... \cf2 and find it manually.
+\par \pard\li115 
+\par 
+\par 
+\par \uldb The Main Window\plain\f2\fs20\cf2 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0005}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_file_types}
+{\up #}{\footnote\pard\plain{\up #} 81YU65}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} files, registering;shell usage;Windows, registering Amiga files with}
+\f3\fs28\cf4 Opus, File Types and the Shell \cf2 
+\par \pard\li115 \plain\f2\fs20 ADF Opus now allows you to register Amiga disk file types with Windows Explorer so that double-clicking these files will open them in ADF Opus. You can also select multiple files, using Shift or Ctrl and double-clicking on the final one, and they will all open in Opus. Each file type has its own icon to distinguish it from the others. Right-clicking on a disk file will now give you the option \cf6 Open with ADF Opus \cf2 along with the usual selection.
+\par 
+\par Amiga disk files will be registered for you when you first run ADF Opus after installation i.e. if no registry entry for ADF Opus' preferences exists. In case you haven't uninstalled a previous version or wish to re-register the file types after their association has been changed, you can register files by clicking the \cf6 Register Amiga file types with Windows Explorer \cf2 button on the \uldb Options Dialogue\plain\f2\fs20\cf2 {\v idh_options}. This writes the registry entries required for Windows to recognise the files.
+\par \pard\li115 
+\par Windows needs to know where to find Opus in order to open these files for you and since the icons are held within ADF Opus' executable file. Therefore, you should also re-register file types if you move ADF Opus to a new directory. Pressing the \uldb Options Dialogue\plain\f2\fs20\cf2 {\v idh_options} button will rewrite the registry entries with the new path so that all works as it should. You may not see the icons again until you next restart Windows.
+\par 
+\par In addition, ADF Opus can now be run from the command line, under Windows, allowing its use from file managers etc. This feature was necessary for file associations to work but was also requested by Christian von Krogh. Entering "ADFOpus gaz.adf" will open gaz.adf in Opus. Entering "ADFOpus gaz1.adf gaz2.adz gaz.dms" will open all three files in Opus at once. Entering just "ADFOpus" will open the program by itself. Any amount of white space between file names is acceptable. Anything not identifiable as a disk file will generate an ADFLib error. Identifiable files are still opened.
+\par \pard\li115 
+\par 
+\par 
+\par \uldb The Main Window\plain\f2\fs20\cf2 {\v idh_main}\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0010}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_filesystem}
+{\up #}{\footnote\pard\plain{\up #} idh_FileSystem}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} compatibility,Workbench;DC;Directory Cache;disk capacity;disks, formatting;Fast File System;FFS;file system options;file system, Amiga;format;International Mode;Kickstart;OFS;Original File System;Workbench}
+\f3\fs28\cf4 The Amiga File System \cf2 
+\par \pard\li115 \plain\f2\fs20 To quote the Amiga A1200 manual in part:
+\par 
+\par "Floppy disks may be formatted with the original Amiga file system (OFS) or the Fast File System (FFS). You can also format disks with a directory caching option for faster response in opening disk windows and reading disk directories. This option slightly decreases the amount of space on the disk."
+\par 
+\par "The following options are available for formatting disks in the Amiga's floppy drive."
+\par \cf6 \line
+-----------------------------------------------------------------------------------\line
+Amiga File System \tab Approximate Formatted Capacity \line
+-----------------------------------------------------------------------------------\cf2  \trowd\trgaph25\trleft-6 \cellx1995\cellx3995\cellx5995\pard\intbl\li115\tx355 OFS\cell\pard \pard\intbl\li115\tx355 837 KB\cell\intbl\row
+\trowd\trgaph25\trleft-6 \cellx1995\cellx3995\cellx5995\pard\intbl\li115\tx355 FFS\cell\pard \pard\intbl\li115\tx355 879 KB\cell\intbl\row
+\trowd\trgaph25\trleft-6 \cellx1995\cellx3995\cellx5995\pard\intbl\li115\tx355 DC-OFS\cell\pard \pard\intbl\li115\tx355 837 KB\cell\intbl\row
+\trowd\trgaph25\trleft-6 \cellx1995\cellx3995\cellx5995\pard\intbl\li115\tx355 DC-FFS\cell\pard \pard\intbl\li115\tx355 879 KB\cell\intbl\row
+\pard\tx355 
+\par \pard\tx355 "Disks formatted with the directory-caching option cannot be read by Amigas with earlier versions of the system software. Do not format a disk with the directory-caching option if you need to use the disk to transfer the files to an Amiga with Release 2 or earlier system software."
+\par \pard\tx355 
+\par \pard\tx355 ...and the Amiga OS3.1 Workbench manual:
+\par \pard\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Fast File System \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 "Allows the Amiga to fit more information on a disk. It is faster than the standard file system. Fast File System disks are incompatible with Workbench software releases prior to 2.0 and should not be selected for disks that are also used on pre-Release 2 Amigas."
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 International Mode \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 "Fully supports international characters in file names. We recommend that you set this option on. International Mode is incompatible with Workbench software releases prior to 2.0 and should not be selected for disks that are also used on pre-Release 2 Amigas."
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \b\fs22\cf5 Directory Cache \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 "Speeds up the opening of drawers, file requesters and listings. This option is off by default. Disks using Directory Cache are incompatible with Workbench software releases prior to 3.0 and should not be selected for disks that are also used on pre-Release 3 Amigas."
+\par \pard\li115\tx355 
+\par \pard\li115 So the message is don't use these options if you want to use your disk with older versions of Kickstart or Workbench or you want others to have that facility.\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0012}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_uae\'c0}
+{\up #}{\footnote\pard\plain{\up #} idh_uae}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} .adf;adfs, amiga disk files;emulation;platforms;ports;uae}
+\f3\fs28\cf4 UAE, Fellow and ADFs \cf2 
+\par \pard\li115 \plain\f2\fs20 UAE, the Unix Amiga Emulator is a package which allows the emulation of an Amiga computer on other platforms. Since most platforms can't read Amiga floppy disks, the software emulates the floppy drive as well. It uses files with a .adf suffix as replacement for floppy disks. Adf stands for Amiga Disk File. ADF Opus' reason for being is to allow these disk files to be manipulated directly from Windows.
+\par 
+\par UAE is available for a number of platforms including Mac, BeBox, NextStep, Amiga, pOS, XFree86/OS2, Acorn RISC PC, Win32 and DOS. Further details can be obtained from one of the UAE web sites. 
+\par \pard\li115\tx355 
+\par WinUAE:\line
+\tab Bernd Schmidt\line
+\tab Available: \uldb \cf3 http://www.winuae.net/ \plain\f2\fs20\cf3 {\v %!EF(`http://www.winuae.net/',`',1)}\plain\f2\fs20 
+\par 
+\par DosUAE:\line
+\tab Gustavo Goedert ICQ 16667569\line
+\tab Available: \uldb \cf3 http://www.jackbox.com/users/ggoedert/dosuae/ \plain\f2\fs20\cf3 {\v %!EF(`http://www.jackbox.com/users/ggoedert/dosuae/',`',1)}\plain\f2\fs20 
+\par 
+\par Another worthy emulator is Fellow by Petter Schau. Fellow is written for MS-DOS, uses the same ADF disk images and is also free. Unfortunately, both the official and unofficial sites are no longer in evidence. Petter seems to have moved exclusively to WinFellow but even this has seen no development for nearly a year. Try WinFellow or this download site:
+\par \pard\li115\tx355 
+\par Fellow:\line
+\tab Petter Schau <pschau@online.no>\line
+\tab Available: \uldb \cf3 http://amiga.emucamp.com/emu_fellow.htm \plain\f2\fs20\cf3 {\v %!EF(`http://amiga.emucamp.com/emu_fellow.htm',`',1)}\plain\f2\fs20 
+\par 
+\par WinFellow:\line
+\tab WinFellow Team <andax@users.sourceforge.net>\line
+\tab Available: \uldb \cf3 http://fellow.sourceforge.net/ \plain\f2\fs20\cf3 {\v %!EF(`http://fellow.sourceforge.net/',`',1)}\plain\f2\fs20 
+\par 
+\par Some programmes run better on one emulator than the other, or will only currently run on one of them. Some people prefer one over the other, we suggest that you try, and use, both.
+\par \pard\li115\tx355 
+\par Our great thanks must go to the many people who maintain UAE and Fellow on all of these platforms, for helping to keep the Amiga spirit alive. 
+\par 
+\par Rock on!\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0014}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_harddrives}
+{\up #}{\footnote\pard\plain{\up #} idh_harddrives}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115\tx355 {\up K}{\footnote\pard\plain{\up K} Amiga hard drives;connecting hard drives;hard drives, connecting;native hard drives}
+\f3\fs28\cf4 Connecting Hard Drives Under NT, 2K and XP \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 
+\par \pard\li115\tx355 Many users have asked about this feature of Windows NT, 2000 and XP and how to resolve problems connecting and accessing their Amiga hard drives. Bjarke Viksoe, the author of ADF View, has written a small utility to test access to native Amiga hard drives connected to your system. You can use the utility to test whether your Amiga hard drive will be accessible from within ADF Opus.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF View also uses ADFLib to access this feature and is implemented as a shell namespace extension. It can access one Amiga HD and one partition. ADF Opus should be able to do at least the same, the difficulties experienced are to do with setting up access under Windows. ADF View's help contains some advice including the need to be logged in with administrator priveleges to be able to access Amiga drives.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF View can be used in conjunction with ADF Opus if you do not register the Amiga disk file types with Opus. Once you do this, you will need to re-install ADF View to restore the associations to it.
+\par \pard\li115\tx355 
+\par \pard\li115 ADF View and the test utility can be found at \uldb \cf3 http://www.viksoe.dk/adfview/ \plain\f2\fs20\cf3 {\v %!EF(`http://www.viksoe.dk/adfview/',`',1)}\plain\f2\fs20 .\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0015}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_bugs}
+{\up #}{\footnote\pard\plain{\up #} idh_bugs}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} bugs;limitations}
+\f3\fs28\cf4 Known Bugs/Limitations \cf2 
+\par \pard\li115 \f2\fs20\cf6 V1.0 \cf2 
+\par 
+\par \pard\li115\tx355 \tab ADFLib doesn't recognise hardfiles smaller than 1802240 bytes (1.7 MB). This isn't an
+\par \tab issue as you would expect a hardfile to be larger than a floppy disk, anyway.
+\par 
+\par 
+\par \cf6 V1.2 \cf2 
+\par 
+\par \tab End of line markers show up in the text viewer as an ugly vertical black bar. I have
+\par \tab spent hours trying to trace the cause of this, even using MS example code and can't
+\par \tab find it yet.\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0016}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_copyrighttions $\{0\'aa\'1d\'a8}
+{\up #}{\footnote\pard\plain{\up #} idh_copyright}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115\tx355 {\up K}{\footnote\pard\plain{\up K} commercial use;copyright;distribution;freeware;limitations;redistribution;trademarks;warranty}
+\f3\fs28\cf4 Copyright/Legal Notice \cf2 
+\par \pard\li115\tx355 \plain\f2\fs20 ADF Opus - An Amiga emulator disk image manager for Windows.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Copyright (C) 2002 Dan Sutherland and Gary Harris
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 This program is free software; you can redistribute it and/or modify it under the terms of the \uldb GNU General Public License \plain\f2\fs20 {\v idh_Licence} as published by the \uldb \cf3 Free Software Foundation\plain\f2\fs20\cf3 {\v %!EF(`http://www.fsf.org',`',1)}\plain\f2\fs20 , either version 2 of the License, or (at your option) any later version.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 This program is distributed in the hope that it will be useful but WITHOUT ANY WARRANTY, without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the \uldb \cf3 GNU General Public License \plain\f2\fs20\cf3 {\v idh_Licence}\plain\f2\fs20  for more details.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 You should have received a copy of the \uldb \cf3 GNU General Public License \plain\f2\fs20\cf3 {\v idh_Licence}\plain\f2\fs20  along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF Opus uses ADFlib which is Copyright 1997-2002 by Laurent Clevy and also released under the GPL (not the GLPL). You can use ADFlib to write your own software which access ADFs and Amiga devices - see the ADFlib documentation for more details. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF Opus also contains portions of xDMS written by Andre R. de la Rocha, and placed in the Public Domain. xDMS is available on Aminet.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF Opus uses ZLib 1.1.4 for its GZip compression support. ZLib is copyright (C) 1995-2002 Jean-loup Gailly and Mark Adler.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Any trademarks mentioned are the property of their owners.
+\par \pard\li115\tx355 
+\par \pard\li115 If you include ADF Opus on a CD-ROM collection or coverdisk, etc. it'd be nice if you told me about it, or even let me have a copy.\page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0017}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_feedbackentione(\{0\'a6\'1d\'a8}
+{\up #}{\footnote\pard\plain{\up #} idh_feedback}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} address, email;bug reports;comments;email;feedback;reports, bug;suggestions}
+\f3\fs28\cf4 Feedback \cf2 
+\par \pard\li115 \plain\f2\fs20 I heartily welcome any comments, suggestions, bug reports and other feedback you may have. My e-mail address is \uldb \cf3 gharris@zip.com.au \plain\f2\fs20\cf3 {\v %!EF(`mailto:gharris@zip.com.au',`',1)}\plain\f2\fs20  If you include the words "ADF Opus" in the subject line it'd help me, since I can filter your message from spam and frivolous personal e-mail.
+\par 
+\par If reporting a bug, please include as many details as you can, e.g. steps required to repeat it, your machine type, RAM, OS, ADF Opus version no., etc. Thanks.
+\par \pard\li115 
+\par \page
+{\up #}{\footnote\pard\plain{\up #} 1.9Z5W}
+\pard\li115 The name of and system path to the ADF in the active window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILE_MENU}
+\pard\li115 \{bml bm25.SHG\}\page
+{\up #}{\footnote\pard\plain{\up #} IDH_EDIT_MENU}
+\pard\li115 \{bml bm26.SHG\}\page
+{\up #}{\footnote\pard\plain{\up #} IDH_VIEW_MENU}
+\pard\li115 \{bml bm27.SHG\}\page
+{\up #}{\footnote\pard\plain{\up #} IDH_ACTION_MENU}
+\pard\li115 \{bml bm28.SHG\}\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TOOLS_MENU}
+\pard\li115 \{bml bm29.SHG\}\page
+{\up #}{\footnote\pard\plain{\up #} IDH_WINDOW_MENU}
+\pard\li115 \{bml bm30.SHG\}\page
+{\up #}{\footnote\pard\plain{\up #} IDH_HELP_MENU}
+\pard\li115 \{bml bm31.SHG\}\page
+{\up #}{\footnote\pard\plain{\up #} 65EC4X}
+\pard\li115 \{bml bm32.SHG\}\page
+{\up #}{\footnote\pard\plain{\up #} IDH_NEW_BUTTON}
+\pard\li115 Open the \uldb Create New Volume\plain\f2\fs20 {\v 13RKF64} dialogue.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPEN_BUTTON}
+\pard\li115 Open an existing ADF, ADZ or DMS.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CLOSE_BUTTON}
+\pard\li115 Close the active directory window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_RENAME_BUTTON}
+\pard\li115 Rename a file or directory in the disk image or Windows drive.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DELETE_BUTTON}
+\pard\li115 Delete a file or directory in the disk image or Windows drive.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_NEW_DIR_BUTTON}
+\pard\li115 Create a new directory in the disk image or Windows drive.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_UP_ONE_LEVEL}
+\pard\li115 Click here to go up one directory level in your system or disk image at a time. To get a list of the drives on your system, click here when in the system root directory.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_BUTTON}
+\pard\li115 Open the \uldb Volume Information\plain\f2\fs20 {\v IDH_INFORMATION_DIALOGUE_DEV} dialogue window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_BUTTON}
+\pard\li115 Open the \uldb Properties\plain\f2\fs20 {\v idh_properties} dialogue.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_SHOW_UNDELETABLE_BUTTON}
+\pard\li115 Show undeletable files on an Amiga volume. Use \cf6 Action|Undelete \cf2  or the \cf6 Undelete \cf2 \{bmc bm18.BMP\} button to recover the files.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_ACTION_UNDELETE}
+\pard\li115 \plain\f2\fs20 Undelete selected files. Use \cf6 View|Undeletable Files \cf2 or the \cf6 Show Undeletable Files \cf2 \{bmc bm17.BMP\} button first to display recoverable files.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TEXTVIEWER_BUTTON}
+\pard\li115 \plain\f2\fs20 Open the \uldb Text Viewer\plain\f2\fs20 {\v idh_textviewer} dialogue window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_SYSTEM_CONTENTS_WINDOW}
+\pard\li115 The name of the system directory you are currently viewing in this directory listing window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_ADF_CONTENTS_WINDOW}
+\pard\li115 The name of the disk image directory you are currently viewing in this directory listing window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_SYSTEM_DIR_WINDOW}
+\pard\li115 The current system directory listing.  \ul Right click\plain\f2\fs20 {\v 65EC4X} for menu shortcuts to the \cf6 Up One Directory Level \cf2 and \cf6 Edit \cf2 menu commands.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_ADF_DIR_WINDOW}
+\pard\li115 \plain\f2\fs20 The current disk image directory listing. \ul Right click\plain\f2\fs20 {\v 65EC4X} for menu shortcuts to the \cf6 Up One Directory Level \cf2 and \cf6 Edit \cf2 menu commands.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_STATUS_BAR}
+\pard\li115 \plain\f2\fs20 The status bar is not yet functional. Disabling it from the view menu will give you more space for the directory listings.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILENAME}
+\pard\li115 The names of all directories and files contained in the directory being viewed.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILESIZE}
+\pard\li115 The size of each listed directory or file.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILEFLAGS_PC}
+\pard\li115 The Windows attributes that are set for each directory or file. If blank, no attributes are set.
+\par 
+\par \cf7 R \cf6 Read Only \line
+\cf7 H \cf6 Hidden\line
+\cf7 A \cf6 Archive\line
+\cf7 S \cf6 System \cf2 
+\par 
+\par For details see windows Help.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILEFLAGS_AMIGA}
+\pard\li115 \plain\f2\fs20 The Amiga file flags that are set for each directory or file. If blank, no flags are set.
+\par 
+\par \cf7 H \cf6 Hold \cf2 -  If H, P, R, and E are set, the file can be made resident on first load (OS 2.x and 3.0).
+\par 
+\par \cf7 S \cf6 Script \cf2 - If set, the file is a script (a text file of AmigaDOS  commands) and can be run without using the EXECUTE command.
+\par 
+\par \cf7 P \cf6 Pure \cf2 - If set for a command, it can be made resident in memory. This allows the command to be run without being reloaded from disk each time, reducing time and memory use. To be made resident, a command should be both re-entrant and re-executable. A re-entrant command can properly support independent use by two or more programs at the same time. Just setting the Pure bit does not make a command or program pure. See the AmigaDOS reference for more information. This bit is best left unchanged.
+\par \pard\li115 
+\par \cf7 A \cf6 Archived \cf2 - This attribute is set by some backup programs to indicate that a file or directory has been archived (backed up). It is cleared whenever the file is saved.
+\par 
+\par \cf7 R \cf6 Readable \cf2 - If set, information in the file can be read. If this attribute is clear, a tool will not run and a project cannot be loaded by its Default Tool.
+\par 
+\par \cf7 W \cf6 Writable \cf2 - If set, information can be written into the file. Unless Writable is set, you cannot make changes to the file.
+\par \pard\li115 
+\par \cf7 E \cf6 Executable \cf2 - If set, the file is a tool that can be run from Workbench or the Shell. If this attribute is clear, the tool cannot be run from the Shell.
+\par 
+\par \cf7 D \cf6 Deletable \cf2 - If set, the drawer, project or tool can be erased from the disk. If clear, the object is protected from deletion.
+\par 
+\par Set these attributes from the Workbench Icon Information tool, the Shell command PROTECT or ADF Opus' Properties dialogue. \page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILE_COMMENT}
+\pard\li115 \plain\f2\fs20 The Amiga file comment, if one exists. A short informative text message.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILE_NEW}
+\pard\li115 Create a \uldb new\plain\f2\fs20 {\v 13RKF64} ADF disk image.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILE_OPEN}
+\pard\li115 Open an existing disk image, hardfile or disk dump.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILE_OPEN_DEVICE}
+\pard\li115 On Windows NT4 or 2000, open an Amiga hard drive.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILE_CLOSE}
+\pard\li115 Close the currently selected disk image and its child window. Closing an ADZ will also recompress it.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILE_INFORMATION}
+\pard\li115 Open the \uldb Information Dialogue\plain\f2\fs20 {\v IDH_INFORMATION_DIALOGUE_DEV} for the selected disk image.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_FILE_EXIT}
+\pard\li115 Exit ADF Opus.\page
+{\up #}{\footnote\pard\plain{\up #} 11QK7VM}
+\pard\li115 Open the Properties Dialogue.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_EDIT_SELECT_ALL}
+\pard\li115 Select all items in the active window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_EDIT_SELECT_NONE}
+\pard\li115 Deselect all selected items in the active window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_EDIT_INVERT_SELECTION}
+\pard\li115 Invert the current selection in the active window. That is, deselect all selected items and select any unselected items.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_VIEW_REFRESH}
+\pard\li115 Refresh the current window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_VIEW_WINLIST}
+\pard\li115 Open a new Windows file lister.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_VIEW_TOOLBAR}
+\pard\li115 Check this item to enable the toolbar. Unchecking it hides the toolbar from view.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_VIEW_STATUS_BAR}
+\pard\li115 Check this item to enable the status bar. Unchecking it hides the status bar from view.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_ACTION_UP_ONE_LEVEL}
+\pard\li115 Go up one directory level in the active disk image or Windows drive.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_ACTION_NEW_DIRECTORY}
+\pard\li115 Create a new directory in the active disk image or Windows drive.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_ACTION_DELETE}
+\pard\li115 Delete a file or directory in the active disk image or Windows drive.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_ACTION_RENAME}
+\pard\li115 Rename a file or directory in the active disk image or Windows drive.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_ACTION_PROPERTIES}
+\pard\li115 Open the \uldb Properties Dialogue\plain\f2\fs20 {\v idh_properties} to set file flags.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TOOLS_TEXTVIEWER}
+\pard\li115 Open the \uldb Text Viewer\plain\f2\fs20 {\v idh_textviewer}.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TOOLS_BATCH_CONVERTER}
+\pard\li115 Open the \uldb Batch Converter\plain\f2\fs20 {\v idh_Batch_Converter}.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TOOLS_DISK2FDI}
+\pard\li115 Open the \uldb Disk2FDI Dialogue\plain\f2\fs20 {\v idh_disk2fdi} to run Disk2FDI to create disk images from original floppy disks.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TOOLS_INSTALL}
+\pard\li115 Install an Amiga floppy disk boot block to make a disk image bootable. See the caution in \uldb Using The Program\plain\f2\fs20 {\v 5MZ0_LB} before installing.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TOOLS_BOOTBLOCK}
+\pard\li115 Open the \uldb Display Bootblock Dialogue\plain\f2\fs20 {\v idh_bootblock} to display the current ADF's bootblock.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TOOLS_OPTIONS}
+\pard\li115 Open the \uldb Options Dialogue\plain\f2\fs20 {\v idh_options} to set programme preferences.\page
+{\up #}{\footnote\pard\plain{\up #} L.2M7U}
+\pard\li115 Open the \uldb Create New Volume\plain\f2\fs20 {\v 13RKF64} dialogue.\page
+{\up #}{\footnote\pard\plain{\up #} 14BGTNS}
+\pard\li115 Open an existing disk image.\page
+{\up #}{\footnote\pard\plain{\up #} 19IRLZ8}
+\pard\li115 Close the active directory window.\page
+{\up #}{\footnote\pard\plain{\up #} 5Y85__}
+\pard\li115 Open the \uldb Volume Information\plain\f2\fs20 {\v IDH_INFORMATION_DIALOGUE_DEV} dialogue window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_WINDOW_CASCADE}
+\pard\li115 Cascade the open windows.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_WINDOW_TILE_HORIZONTALLY}
+\pard\li115 Tile the open windows horizontally.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_WINDOW_TILE_VERTICALLY}
+\pard\li115 Tile the open windows vertically.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_WINDOW_ARRANGE_ICONS}
+\pard\li115 Arrange minimized window icons at the bottom of the main window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_WINDOW_CLOSE_ALL}
+\pard\li115 Close all open windows.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_WINDOW_LIST}
+\pard\li115 A list of all the open windows. Check the name of the window you want to view to bring it to the front and make it the active window.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_HELP_TOPICS}
+\pard\li115 Display the list of contents of the ADF Opus help file.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_HELP_OVERVIEW}
+\pard\li115 Display the Main Window section of the ADF Opus help file.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_HELP_ABOUT}
+\pard\li115 Open the About dialogue. I'll let you try this one. : -)\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_DEV_PATH}
+\pard\li115 The path to the disk image.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_DEV_SIZE}
+\pard\li115 The size of the final disk image. For an ADZ or DMS this is the compressed size of the file. The original size of the image is found on the \uldb Volume \plain\f2\fs20 {\v IDH_INFORMATION_DIALOGUE_VOL} tab.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_DEV_TYPE}
+\pard\li115 The type of file and its disk density. An ADZ is listed as "Compressed" and a DMS as "Diskmashed".\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_DEV_GEOMETRY}
+\pard\li115 The number of cylinders per disk, read/write heads and sectors per cylinder for this disk.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_DEV_VOLUMES}
+\pard\li115 A list of the volumes appearing on this device. For each volume, its ID, name and start and end block numbers are given.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_VOL_LABEL}
+\pard\li115 The disk label of the disk image. You can change the label by deleting the text in the edit window and entering the new name. Clicking \cf6 Close \cf2  will accept the change.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_VOL_FFS}
+\pard\li115 \plain\f2\fs20 Indicates whether the ADF was formatted using the Fast File System (FFS) or the Old File System (OFS).\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_VOL_INTL}
+\pard\li115 Indicates whether the ADF was formatted using International Mode.\page
+{\up #}{\footnote\pard\plain{\up #} 0SXXLC}
+\pard\li115 Indicates whether the ADF was formatted with directory cache turned on or off.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_VOL_TOTAL}
+\pard\li115 The total capacity of the uncompressed disk image, in kilobytes.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_VOL_USED}
+\pard\li115 The amount of uncompressed disk space used, in kilobytes.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_VOL_FREE}
+\pard\li115 The available, unused, uncompressed disk image disk space, in kilobytes.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_VOL_FULL}
+\pard\li115 The percentage of the uncompressed disk image's disk space used.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_INFO_CLOSE_BUTTON}
+\pard\li115 Closes the Volume Information dialogue, accepting any change to the disk label.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_PATH_EDIT}
+\pard\li115 Enter the path and name for the new file here or use the browse button.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_PATH_BROWSE}
+\pard\li115 Select the path and name for the new file or enter it directly into the edit control to the left.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_TYPE_ADF}
+\pard\li115 The new volume will be created as an ADF when this radio button is selected.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_TYPE_HD}
+\pard\li115 If this box is checked, the new volume will be a high density ADF simulating a high density floppy disk with 1.76MB capacity. If the box is unchecked, the ADF will have the standard 880KB capacity.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_TYPE_HARDFILE}
+\pard\li115 The new volume will be created as a hardfile when this radio button is selected.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_TYPE_HARDFILE_PRESET}
+\pard\li115 Selecting this radio button allows you to select the size of the hardfile from the list of presets.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_TYPE_HARDFILE_PRESET_SIZES}
+\pard\li115 Select the size of the hardfile from 1 to 512 MB.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_TYPE_HARDFILE_CUSTOM}
+\pard\li115 Selecting this radio button allows you to enter a custom size for the hardfile in the edit control.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_TYPE_HARDFILE_CUSTOM_SIZE}
+\pard\li115 Enter the desired custom hardfile size here.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_FILESYSTEM_FFS}
+\pard\li115 Check this box to use FFS in the new volume. If the box is not checked, OFS will be used.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_FILESYSTEM_DC}
+\pard\li115 Check this box to create the new volume with Directory Cache Mode.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_FILESYSTEM_IFS}
+\pard\li115 Check this box to create the new volume with International Mode.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_FILESYSTEM_BOOT}
+\pard\li115 Check this box to make the new volume bootable.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_LABEL}
+\pard\li115 Enter the disk label for the new file.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_OPEN}
+\pard\li115 Check this box to open the new file after creation.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_CREATE_BUTTON}
+\pard\li115 Create the file with the selected settings.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_CREATE_HELP_BUTTON}
+\pard\li115 Open the help topic for this dialogue.\page
+{\up #}{\footnote\pard\plain{\up #} 2EN82P}
+\pard\li115 Cancel file creation and close the dialogue.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_SOURCE_LIST}
+\pard\li115 The list of disk images to be converted.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_ADD_BUTTON}
+\pard\li115 Click this button to open the "Open Files" dialogue. Select files here to add to the list to be converted.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_REMOVE_BUTTON}
+\pard\li115 Remove a disk image from the list. This button is only available when a disk image is selected in the list.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_REMOVE_ALL_BUTTON}
+\pard\li115 Remove all disk images from the list.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_DELETE_ORIGINAL}
+\pard\li115 Check this check box if you want the original files to be deleted after compression or extraction. \page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_ADF_BUTTON}
+\pard\li115 Select this button if you want disk images to be converted to uncompressed ADF format. This button is disabled if an ADF is selected into the conversion  list. To reset it, close the Batch Converter.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_ADZ_BUTTON}
+\pard\li115 Select this button if you want disk images to be converted to compressed ADZ format. This button is disabled if an ADZ is selected into the conversion list. To reset it, close the Batch Converter.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_STATUS}
+\pard\li115 A report is printed to this window for each image that is listed for conversion, telling you whether the conversion is successful.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_START_BUTTON}
+\pard\li115 Select this button to convert all disk images in the list.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_HELP_BUTTON}
+\pard\li115 Open the help topic for this dialogue.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BATCH_CLOSE_BUTTON}
+\pard\li115 Close the Batch Converter.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_WINLIST_DRIVE}
+\pard\li115 Select this option if you want the Windows lister to open with a list of all your drives.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_WINLIST_DIR}
+\pard\li115 Select this option if you want the Windows lister to open in a particular directory. \page
+{\up #}{\footnote\pard\plain{\up #} .15SI}
+\pard\li115 Enter the desired directory path that the Windows lister should open in the edit box.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_LABEL}
+\pard\li115 Enter the default label that will appear in the \cf6 Label \cf2  field of the \cf6 Create New Volume \cf2 dialogue when creating disk images.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_CONFIRM_COMDEL}
+\pard\li115 \plain\f2\fs20 Check this checkbox if you want ADF Opus to open a requester asking for confirmation before deleting files.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_CONFIRM_DELDIR}
+\pard\li115 Check this checkbox if you want ADF Opus to open a requester asking for confirmation before deleting directories.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_MISC_DIRCACHE}
+\pard\li115 Check this checkbox if you want ADF Opus to use directory cache blocks.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_REGISTER_BUTTON}
+\pard\li115 Register Amiga file types with Windows Explorer. Disk files will have their own icons and double-clicking a file will open it in ADF Opus.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_OK_BUTTON}
+\pard\li115 Close and save options.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_APPLY_BUTTON}
+\pard\li115 Save options without closing the dialogue.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_OPTIONS_CANCEL_BUTTON}
+\pard\li115 Close dialogue without saving changes.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_VOLSEL_LIST}
+\pard\li115 A list of all the volumes present on the current device.Select the volume you want ADF Opus to open from this list.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_VOLSEL_OPEN_BUTTON}
+\pard\li115 Press this button to open the selected volume.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_VOLSEL_CANCEL_BUTTON}
+\pard\li115 Press this button to cancel the operation without opening a volume.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_FILENAME_WIN}
+\pard\li115 The name of the currently selected Windows file or directory.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_WIN_READONLY}
+\pard\li115 Check this box to set the Read Only flag for this file. This prevents the file from being written to, changed or deleted.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_WIN_ARCHIVE}
+\pard\li115 Check this box to set the Archive flag for this file. This is used by some programs to determine whether the file should be archived.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_WIN_HIDDEN}
+\pard\li115 Check this box to set the Hidden flag for this file. Files with this flag set will be hidden from view unless you select "Show all files" in Folder Properties.\page
+\pard\li115 {\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_WIN_SYSTEM}
+Check this box to set the System flag for this file. Files with this flag set are required by the system for its operation. You should usually let Windows handle this.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_WIN_OK_BUTTON}
+\pard\li115 Close and save selected file properties.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_WIN_CANCEL_BUTTON}
+\pard\li115 Close dialogue without saving changes.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_FILENAME_AMI}
+\pard\li115 The name of the currently selected Amiga file or directory.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_AMI_READABLE}
+\pard\li115 Check this box to set the Readable flag for this file. If set, information in the file can be read. If this attribute is clear, a tool will not run and a project cannot be loaded by its Default Tool.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_AMI_WRITABLE}
+\pard\li115 Check this box to set the Writable flag for this file. If set, information can be written into the file. Unless Writable is set, you cannot make changes to the file.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_AMI_EXECUTABLE}
+\pard\li115 Check this box to set the Executable flag for this file. If set, the file is a tool that can be run from Workbench or the Shell. If this attribute is clear, the tool cannot be run from the Shell.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_AMI_DELETABLE}
+\pard\li115 Check this box to set the Deletable flag for this file. If set, the drawer, project or tool can be erased from the disk. If clear, the object is protected from deletion.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_AMI_SCRIPT}
+\pard\li115 Check this box to set the Script flag for this file. If set, the file is a script (a text file of AmigaDOS commands) and can be run without using the EXECUTE command.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_AMI_ARCHIVE}
+\pard\li115 Check this box to set the Archive flag for this file. This attribute is set by some backup programs to indicate that a file or directory has been archived (backed up). It is cleared whenever the file is saved.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_AMI_PURE}
+\pard\li115 Check this box to set the Pure flag for this file. If set for a command, it can be made resident in memory. This allows the command to be run without being reloaded from disk each time, reducing time and memory use. To be made resident, a command should be both re-entrant and re-executable. A re-entrant command can properly support independent use by two or more programs at the same time. Just setting the Pure bit does not make a command or program pure. See the AmigaDOS reference for more information. This bit is best left unchanged.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_AMI_HOLDBIT}
+\pard\li115 Check this box to set the Hold flag for this file. If H, P, R, and E are set, the file can be made resident on first load (OS 2.x and 3.0).\page
+{\up #}{\footnote\pard\plain{\up #} IDH_PROPERTIES_AMI_COMMENT}
+\pard\li115 A file comment of up to 79 characters length.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_FILENAME}
+\pard\li115 Enter the name for the output disk image file. You do not need to add .adf etc, Disk2FDI will add it for you. Enter the full path to the desired location if you don't want the image created in ADF Opus' directory.
+\par 
+\par Examples:\line
+Entering "myimage" with ADF selected will result in a disk image named myimage.adf being created in the same directory as Disk2FDI.\line
+Entering "C:\'5cImages\'5cmyimage" with ADF selected will create a disk image named myimage.adf in C:\'5cImages.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_CHECK_OPEN}
+\pard\li115 Select this checkbox if you are creating an ADF and you want it to be opened after creation. This option is deactivated when FDI, ST or IMG types are selected since ADF Opus can't open these images.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_TYPE_FDI}
+\pard\li115 Select this radio button to create an FDI image.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_TYPE_ADF}
+\pard\li115 Select this radio button to create an ADF (Amiga) image.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_TYPE_ST}
+\pard\li115 Select this radio button to create an ST (Atari ST) image.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_TYPE_IMG}
+\pard\li115 Select this radio button to create an IMG (PC) image.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_USE_B}
+\pard\li115 Check this box if you want to use your B: drive as the image source i.e. the disk you are copying is in the B: drive. Leave it unchecked to use A:.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_1SIDED}
+\pard\li115 Check this box if you are copying a single-sided disk or one side of a double-sided disk.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_2SIDED}
+\pard\li115 Check this box if you are copying a double-sided disk (default).\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_NUM_TRACKS}
+\pard\li115 Check this box if you want to specify a number of tracks to copy. Set the number of tracks, between 1 and 87, with the spin control. This number is fixed to 80 for ADFs and is otherwise limited by the highest track physically reachable by the drive. Unless you have a good reason to use this feature and know what you are doing, leave it disabled.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_NUM_SECTORS}
+\pard\li115 Check this box if you want to specify a number of sectors per track. Set the number of sectors, between 1 and 64, with the spin control. This option is available for ST and IMG files only and is auto-detected by default. Unless you have a good reason to use this feature and know what you are doing, leave it disabled.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_START_BUTTON}
+\pard\li115 Run Disk2FDI with the selected options. Disk2FDI will run in a shell as a seperate process. If you close the Disk2FDI dialogue you can continue working with ADF Opus while it runs.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_DISK2FDI_CANCEL_BUTTON}
+\pard\li115 Close the dialogue without running Disk2FDI.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BOOTBLOCK_DISPLAY}
+\pard\li115 The installed bootblock, displayed in ASCII code.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_BOOTBLOCK_OK_BUTTON}
+\pard\li115 Close the dialogue.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TEXTVIEWER_EDIT}
+\pard\li115 Any ASCII text contained within the selected file is displayed here. Selecting files that contain no text will result in a blank display.\page
+{\up #}{\footnote\pard\plain{\up #} IDH_TEXTVIEWER_BUTTON_OK}
+\pard\li115 Close the viewer.\page
+\pard \plain\f0\cf2\cb2 \page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0013}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_licence`\'d5A}
+{\up #}{\footnote\pard\plain{\up #} idh_Licence}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard {\up K}{\footnote\pard\plain{\up K} Licence,GNU Public}
+
+\par \pard\qc\li115 \plain\f2\b\fs30 GNU GENERAL PUBLIC LICENSE \plain\f2\fs30 
+\par \pard\li115 \fs20 
+\par \pard\qc\li115 \i Version 2, June 1991 \plain\f2\fs20 
+\par 
+\par \pard\li115 Copyright (C) 1989, 1991 Free Software Foundation, Inc. 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA. Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
+\par 
+\par \b\fs25 Preamble \plain\f2\fs25 
+\par 
+\par \fs20 The licenses for most software are designed to take away your freedom to share and change it. By contrast, the GNU General Public License is intended to guarantee your freedom to share and change free software--to make sure the software is free for all its users. This General Public License applies to most of the Free Software Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too.
+\par \pard\li115 
+\par When we speak of free software, we are referring to freedom, not price. Our General Public Licenses are designed to make sure that you have the freedom to distribute copies of free software (and charge for this service if you wish), that you receive source code or can get it if you want it, that you can change the software or use pieces of it in new free programs; and that you know you can do these things.
+\par 
+\par To protect your rights, we need to make restrictions that forbid anyone to deny you these rights or to ask you to surrender the rights. These restrictions translate to certain responsibilities for you if you distribute copies of the software, or if you modify it.
+\par \pard\li115 
+\par For example, if you distribute copies of such a program, whether gratis or for a fee, you must give the recipients all the rights that you have. You must make sure that they, too, receive or can get the source code. And you must show them these terms so they know their rights.
+\par 
+\par We protect your rights with two steps: (1) copyright the software, and (2) offer you this license which gives you legal permission to copy, distribute and/or modify the software.
+\par 
+\par Also, for each author's protection and ours, we want to make certain that everyone understands that there is no warranty for this free software. If the software is modified by someone else and passed on, we want its recipients to know that what they have is not the original, so that any problems introduced by others will not reflect on the original authors' reputations.
+\par \pard\li115 
+\par Finally, any free program is threatened constantly by software patents. We wish to avoid the danger that redistributors of a free program will individually obtain patent licenses, in effect making the program proprietary. To prevent this, we have made it clear that any patent must be licensed for everyone's free use or not licensed at all.
+\par 
+\par The precise terms and conditions for copying, distribution and modification follow.
+\par 
+\par \pard\qc\li115  --------------------------------------------------------------------------------------
+\par 
+\par \b\fs25 GNU GENERAL PUBLIC LICENSE \plain\f2\fs25 
+\par \pard\li115 \fs22 
+\par \pard\qc\li115 \b TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION \plain\f2\fs22 
+\par \pard\li115 
+\par 0. This License applies to any program or other work which contains a notice placed by the copyright holder saying it may be distributed under the terms of this General Public License. The "Program", below, refers to any such program or work, and a "work based on the Program" means either the Program or any derivative work under copyright law: that is to say, a work containing the Program or a portion of it, either verbatim or with modifications and/or translated into another language. (Hereinafter, translation is included without limitation in the term "modification".) Each licensee is addressed as "you".
+\par \pard\li115 
+\par Activities other than copying, distribution and modification are not covered by this License; they are outside its scope. The act of running the Program is not restricted, and the output from the Program is covered only if its contents constitute a work based on the Program (independent of having been made by running the Program). Whether that is true depends on what the Program does.
+\par 
+\par 1. You may copy and distribute verbatim copies of the Program's source code as you receive it, in any medium, provided that you conspicuously and appropriately publish on each copy an appropriate copyright notice and disclaimer of warranty; keep intact all the notices that refer to this License and to the absence of any warranty; and give any other recipients of the Program a copy of this License along with the Program.
+\par \pard\li115 
+\par You may charge a fee for the physical act of transferring a copy, and you may at your option offer warranty protection in exchange for a fee.
+\par 
+\par 2. You may modify your copy or copies of the Program or any portion of it, thus forming a work based on the Program, and copy and distribute such modifications or work under the terms of Section 1 above, provided that you also meet all of these conditions:
+\par 
+\par a) You must cause the modified files to carry prominent notices stating that you changed the files and the date of any change.
+\par \pard\li115 
+\par b) You must cause any work that you distribute or publish, that in whole or in part contains or is derived from the Program or any part thereof, to be licensed as a whole at no charge to all third parties under the terms of this License.
+\par 
+\par c) If the modified program normally reads commands interactively when run, you must cause it, when started running for such interactive use in the most ordinary way, to print or display an announcement including an appropriate copyright notice and a notice that there is no warranty (or else, saying that you provide a warranty) and that users may redistribute the program under these conditions, and telling the user how to view a copy of this License. (Exception: if the Program itself is interactive but does not normally print such an announcement, your work based on the Program is not required to print an announcement.)
+\par \pard\li115 
+\par These requirements apply to the modified work as a whole. If identifiable sections of that work are not derived from the Program, and can be reasonably considered independent and separate works in themselves, then this License, and its terms, do not apply to those sections when you distribute them as separate works. But when you distribute the same sections as part of a whole which is a work based on the Program, the distribution of the whole must be on the terms of this License, whose permissions for other licensees extend to the entire whole, and thus to each and every part regardless of who wrote it.
+\par \pard\li115 
+\par Thus, it is not the intent of this section to claim rights or contest your rights to work written entirely by you; rather, the intent is to exercise the right to control the distribution of derivative or collective works based on the Program.
+\par 
+\par In addition, mere aggregation of another work not based on the Program with the Program (or with a work based on the Program) on a volume of a storage or distribution medium does not bring the other work under the scope of this License.
+\par \pard\li115 
+\par 3. You may copy and distribute the Program (or a work based on it, under Section 2) in object code or executable form under the terms of Sections 1 and 2 above provided that you also do one of the following:
+\par 
+\par a) Accompany it with the complete corresponding machine-readable source code, which must be distributed under the terms of Sections 1 and 2 above on a medium customarily used for software interchange; or,
+\par 
+\par b) Accompany it with a written offer, valid for at least three years, to give any third party, for a charge no more than your cost of physically performing source distribution, a complete machine-readable copy of the corresponding source code, to be distributed under the terms of Sections 1 and 2 above on a medium customarily used for software interchange; or,
+\par \pard\li115 
+\par c) Accompany it with the information you received as to the offer to distribute corresponding source code. (This alternative is allowed only for noncommercial distribution and only if you received the program in object code or executable form with such an offer, in accord with Subsection b above.)
+\par 
+\par The source code for a work means the preferred form of the work for making modifications to it. For an executable work, complete source code means all the source code for all modules it contains, plus any associated interface definition files, plus the scripts used to control compilation and installation of the executable. However, as a special exception, the source code distributed need not include anything that is normally distributed (in either source or binary form) with the major components (compiler, kernel, and so on) of the operating system on which the executable runs, unless that component itself accompanies the executable.
+\par \pard\li115 
+\par If distribution of executable or object code is made by offering access to copy from a designated place, then offering equivalent access to copy the source code from the same place counts as distribution of the source code, even though third parties are not compelled to copy the source along with the object code.
+\par 
+\par 4. You may not copy, modify, sublicense, or distribute the Program except as expressly provided under this License. Any attempt otherwise to copy, modify, sublicense or distribute the Program is void, and will automatically terminate your rights under this License. However, parties who have received copies, or rights, from you under this License will not have their licenses terminated so long as such parties remain in full compliance.
+\par \pard\li115 
+\par 5. You are not required to accept this License, since you have not signed it. However, nothing else grants you permission to modify or distribute the Program or its derivative works. These actions are prohibited by law if you do not accept this License. Therefore, by modifying or distributing the Program (or any work based on the Program), you indicate your acceptance of this License to do so, and all its terms and conditions for copying, distributing or modifying the Program or works based on it.
+\par \pard\li115 
+\par 6. Each time you redistribute the Program (or any work based on the Program), the recipient automatically receives a license from the original licensor to copy, distribute or modify the Program subject to these terms and conditions. You may not impose any further restrictions on the recipients' exercise of the rights granted herein. You are not responsible for enforcing compliance by third parties to this License.
+\par 
+\par 7. If, as a consequence of a court judgment or allegation of patent infringement or for any other reason (not limited to patent issues), conditions are imposed on you (whether by court order, agreement or otherwise) that contradict the conditions of this License, they do not excuse you from the conditions of this License. If you cannot distribute so as to satisfy simultaneously your obligations under this License and any other pertinent obligations, then as a consequence you may not distribute the Program at all. For example, if a patent license would not permit royalty-free redistribution of the Program by all those who receive copies directly or indirectly through you, then the only way you could satisfy both it and this License would be to refrain entirely from distribution of the Program.
+\par \pard\li115 
+\par If any portion of this section is held invalid or unenforceable under any particular circumstance, the balance of the section is intended to apply and the section as a whole is intended to apply in other circumstances.
+\par 
+\par It is not the purpose of this section to induce you to infringe any patents or other property right claims or to contest validity of any such claims; this section has the sole purpose of protecting the integrity of the free software distribution system, which is implemented by public license practices. Many people have made generous contributions to the wide range of software distributed through that system in reliance on consistent application of that system; it is up to the author/donor to decide if he or she is willing to distribute software through any other system and a licensee cannot impose that choice.
+\par \pard\li115 
+\par This section is intended to make thoroughly clear what is believed to be a consequence of the rest of this License.
+\par 
+\par 8. If the distribution and/or use of the Program is restricted in certain countries either by patents or by copyrighted interfaces, the original copyright holder who places the Program under this License may add an explicit geographical distribution limitation excluding those countries, so that distribution is permitted only in or among countries not thus excluded. In such case, this License incorporates the limitation as if written in the body of this License.
+\par \pard\li115 
+\par 9. The Free Software Foundation may publish revised and/or new versions of the General Public License from time to time. Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns.
+\par 
+\par Each version is given a distinguishing version number. If the Program specifies a version number of this License which applies to it and "any later version", you have the option of following the terms and conditions either of that version or of any later version published by the Free Software Foundation. If the Program does not specify a version number of this License, you may choose any version ever published by the Free Software Foundation.
+\par \pard\li115 
+\par 10. If you wish to incorporate parts of the Program into other free programs whose distribution conditions are different, write to the author to ask for permission. For software which is copyrighted by the Free Software Foundation, write to the Free Software Foundation; we sometimes make exceptions for this. Our decision will be guided by the two goals of preserving the free status of all derivatives of our free software and of promoting the sharing and reuse of software generally.
+\par \pard\li115 
+\par \pard\li125 \b\fs25 NO WARRANTY \plain\f2\fs25 
+\par 
+\par \b\fs22 11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+\par \pard\li125 
+\par 12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\plain\f2\fs22 
+\par \pard\li125 
+\par \pard\qc\li125 END OF TERMS AND CONDITIONS
+\par 
+\par \pard\li125 \b\fs25 How to Apply These Terms to Your New Programs \plain\f2\fs25 
+\par 
+\par \fs20 If you develop a new program, and you want it to be of the greatest possible use to the public, the best way to achieve this is to make it free software which everyone can redistribute and change under these terms.
+\par 
+\par To do so, attach the following notices to the program. It is safest to attach them to the start of each source file to most effectively convey the exclusion of warranty; and each file should have at least the "copyright" line and a pointer to where the full notice is found.
+\par \pard\li125 
+\par \f3\fs25 <one line to give the program's name and a brief idea of what it does.> Copyright (C) 19yy <name of author>
+\par 
+\par This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+\par 
+\par This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+\par \pard\li125 
+\par You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+\par 
+\par \f2\fs20 Also add information on how to contact you by electronic and paper mail.
+\par 
+\par If the program is interactive, make it output a short notice like this when it starts in an interactive mode:
+\par 
+\par \f3\fs25 Gnomovision version 69, Copyright (C) 19yy name of author Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'. This is free software, and you are welcome to redistribute it under certain conditions; type `show c' for details.
+\par \pard\li125 
+\par \f2\fs20 The hypothetical commands `show w' and `show c' should show the appropriate parts of the General Public License. Of course, the commands you use may be called something other than `show w' and `show c'; they could even be mouse-clicks or menu items--whatever suits your program.
+\par 
+\par You should also get your employer (if you work as a programmer) or your school, if any, to sign a "copyright disclaimer" for the program, if necessary. Here is a sample; alter the names:
+\par 
+\par \pard\li125 \f3\fs25 Yoyodyne, Inc., hereby disclaims all copyright interest in the program `Gnomovision' (which makes passes at compilers) written by James Hacker.
+\par 
+\par <signature of Ty Coon>, 1 April 1989\line
+Ty Coon, President of Vice
+\par 
+\par \f2\fs20 This General Public License does not permit incorporating your program into proprietary programs. If your program is a subroutine library, you may consider it more useful to permit linking proprietary applications with the library. If this is what you want to do, use the GNU Library General Public License instead of this License.\page
+\pard \plain\f0\cf2\cb2 \page
+{\up +}{\footnote\pard\plain{\up +} BROWSE0001:0011}
+{\up $}{\footnote\pard\plain{\up $} Adf_Opus_historyp\'d6A}
+{\up #}{\footnote\pard\plain{\up #} idh_history}
+{\up >}{\footnote\pard\plain{\up >} opus_win}
+\pard\sb335\sa115\sl-315\li115 {\up K}{\footnote\pard\plain{\up K} history}
+\plain\f3\fs28\cf4 History \cf2 
+\par \pard\li115 \f2\fs20\cf7 Version 1.2 released 26 February 2003 \cf2 
+\par 
+\par Added a text viewer for viewing of simple text files. The viewer allows viewing of files that are not associated with an application under Windows, such as startup-sequences. The viewer is available through the toolbar and the main and context menus.
+\par 
+\par Fixed a bug that resulted in the boot block not being found during installation when creating an ADF in any directory other than Opus' root directory , caused by a silly assumption about the path to the bootblock.
+\par \pard\li115 
+\par Prevented the bootblock warning from being displayed when creating a new, bootable adf.
+\par 
+\par Updated help yet again for the new features and GUI elements and corrected some outdated elements.
+\par 
+\par 
+\par \cf7 Version 1.1 released 20 February 2003 \cf2 
+\par 
+\par Made listboxes full-width selection.
+\par 
+\par Widened the file name field since Windows listers don't have comments any more.
+\par 
+\par Fixed Delete, Rename and Make New Directory buttons and menu items so that they are now disabled when in drive view.
+\par \pard\li115 
+\par Changed the Delete toolbar button's bitmap to red, which is more conventional and indicative.
+\par 
+\par Made a change to ADFLib to return an error if undeletion unsuccessful.
+\par 
+\par Added ADFLib's undelete function to Opus. Added menu and toolbar items to show undeletable files and to undelete them.
+\par 
+\par Added menu icons.
+\par 
+\par Created Doxygen documentation of source code.
+\par 
+\par Found and fixed a bug that caused the wrong icons to be shown for drives when in drive view. A redundant resource ID had been left in the code.
+\par \pard\li115 
+\par 
+\par \cf7 Version 1.0 released  18 October 2002 \cf2 
+\par 
+\par Changed the name of the temp dir to avoid possible conflicts.
+\par 
+\par Prevented change of case of suffix name when an ADF is opened.
+\par 
+\par Fixed a nasty bug that caused a working ADF to be deleted on exit.
+\par 
+\par Increased speed if a file can't be opened by bypassing unnecessary code.
+\par 
+\par Fixed a bug that caused a crash when Properties was selected from the context menu before the user had clicked in the window. The Properties item is now not available until the window has been clicked at least once.
+\par \pard\li115\tx355 
+\par Properties menu items and toolbar button should now behave properly across the board, including not being available when showing the drive list.\tab 
+\par 
+\par Removed the "Clone Current Window" item.
+\par 
+\par Finally fixed things so that when files are opened from the command line at startup or through Windows' file association, the Windows lister is behind the ADF windows and the most recent ADF's lister is on top and active.
+\par 
+\par Changed web site address references to new SourceForge address.
+\par \pard\li115\tx355 
+\par Changed Disk2FDI dialogue's Apply button to Start.
+\par 
+\par The Disk2FDI menu item is now unavailable under WinNT, 2K and XP since Disk2FDI itself doesn't work on these platforms.
+\par 
+\par Unable to open ADF after creation with Disk2FDI - ShellExecute limitation.
+\par 
+\par Increased available memory for list of files to add to Batch Converter by a factor of 5.
+\par 
+\par Bootblock display now works.
+\par 
+\par Recovered the main help file after some miserable MS travesty trashed my formatting beyond redemption.
+\par \pard\li115\tx355 
+\par Updated to version 0.7.9c of ADFLib.
+\par 
+\par Updated to version 1.1.4 of ZLib.
+\par 
+\par Updated UAE web links.
+\par 
+\par Automated zlib version posting in About and tampered with text alignment on some pages.
+\par 
+\par Improved compilation options and automation in VC++ workspace.
+\par 
+\par Massive help update including new pics, updated links and additional material.
+\par 
+\par Opus would crash if the bootblock display menu item was selected when in Windows listers. The item is now disabled when in Windows listers, as it should be.
+\par \pard\li115\tx355 
+\par Removed the Comment column from Windows listers as it has no function under Windows.
+\par 
+\par Rearranged the Tools menu.
+\par 
+\par Fixed a bug I was unaware of that stopped properties being written in both dialogues.
+\par 
+\par Implemented help in Disk2FDI and Bootblock display dialogues.
+\par 
+\par Fixed the long-standing problem with help in the Volume Information dialogue, as far as is possible. There are still small areas between the General and Geometry items that will return the help for the volume list at the bottom. Help seems to default to this if no control is detected. Clicking on the items themselves works as expected, now. For all intents and purposes, it's fixed.
+\par \pard\li115\tx355 
+\par Fixed a bug where clicking the Directory Cache option in the New File window opened help.
+\par 
+\par Overhauled the toolbar, including rearranging the buttons to match the menu and new buttons for all of the tools that didn't have them.
+\par 
+\par Added a warning dialogue before bootblock installation and improved the error message reported when the bootblock file is not found.
+\par 
+\par Disk2FDI now runs in a separate process. This means that you can continue working in Opus while Disk2FDI runs. It also allows synchronisation with Opus' process so that the new ADF can be opened after creation. A checkbox is provided on the Disk2FDI dialogue to select this. The checkbox is disabled when FDI, ST or IMG are selected as Opus can't open these image types.
+\par \pard\li115\tx355 
+\par Fixed a bug with the Disk2FDI command line. It didn't run in my development version. Don't know if this ever got out into the wild. It might be that Disk2FDI's command syntax changed between versions.
+\par 
+\par Added a divider line to Batch Converter output to improve readability.
+\par 
+\par Added an option to the Batch Converter to delete converted files on completion.
+\par 
+\par Updated the help yet again with updated bitmaps and info.
+\par 
+\par Created installers for release and source versions and compressed release executable with UPX for a 64% reduction in size.
+\par \pard\li115\tx355 
+\par Made further improvements to VC++ workspace to remove the need for multiple copies of libs.
+\par 
+\par Centred all dialogues and improved the tab order in many.
+\par 
+\par Found that the experimental version of ADFLib 0.7.9c that I had was incomplete. Updated this version to a full package based on 0.7.9b and submitted to Laurent. ADF Opus now uses this newer version. It appears that ADFs with more than 80 tracks are now supported. Feedback requested.
+\par 
+\par 
+\par \pard\li115\tx355 \cf7 Version 0.9 released 31 July 2002 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 This is an inter-interim :-) release prior to version 1.0.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Version 0.9 adds an interface to the Disk2FDI programme which allows ADF Opus to act as a front-end and provides Amiga disk copying and other functions from within the programme. As well as this, Opus can now run files directly from an open ADF, as long as the file can be opened under Windows by a suitable application.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.8 released 12 December 2001 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 This is an interim release prior to version 1.0.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Properties management functions completed.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Bootblock installation functions completed.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed problem with file path in Information dialogue.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added automatic ADFLib date and version recognition to About.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed bug where filenames were being incorrectly displayed in info dlg and saved names were using false data.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed Batch Converter bug which forced user to hit start between ops.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Improved Batch Converter start button activation.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Batch Converter now checks for overwrite.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Made property flag column wider to fit all flags.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Ability to read and change Amiga file comments.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Created new lister column for comments.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Modified adflib file comment handling to include \'5c0 after string. Submitted to Laurent.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Help updated.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.7.4 released 2 September 2000 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Automated updating of the version string on the first page of the "About" property sheet from the existing version string resource.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.7.3 released 2 September 2000 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Implemented association of Amiga file types with Opus, within Explorer. ADF, ADZ, DMS, DMP and HDF files now have their own icons and double-clicking them will open them in ADF Opus. This includes an option to "Open with ADF Opus" when files of these types are right-clicked.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Amiga file types are now registered when ADF Opus is installed for the first time. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Extended the Options dialogue to include a button to register Amiga file types manually.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Also implemented command line operation in conjunction with file association. Typing "ADFOpus file1.adf file2.adf" will open file1.adf and file2.adf in ADF Opus. Requested by Christian von Krogh. Hope you like it, Christian. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed a bug where the File|Information menu item was not being disabled when no windows were open. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The temp directory is now deleted at shutdown. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Found and fixed the ADFLib bug that killed hard file access, after much searching. :-)\line
+I really didn't want to release another version without fixing this.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF Opus now uses the latest version 0.7.9 of ADFLib.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed a bug that caused Opus to crash when the menu was selected whilst there were no child windows open. I'm not sure if this one made it into the wild.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Updated the help file.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Did away with the history, readme and license html files and incorporated the contents into the help file.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Discovered, after some correspondence with Laurent, that ADFLib 0.7.9a was actually the latest version and the version posted as the latest one, in fact, wasn't. This is why the hardfile bug re-appeared. :-( Reverted to this version.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.7.2 released 4 March 2000 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Re-enabled the File|Information menu item to activate the Volume Information dialogue. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Changed the About copyright text to GPL suggested. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Changed things so that the buttons on the About dialogue actually open the right web page and email address as well as display them. Cheers to Andy Voss for pointing out the blunder. ;-) 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 When converting DMS to ADZ, the temporary ADF is now created in the temp directory, avoiding an existing ADF of the same name being deleted from the working directory inadvertently. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Batch Converter output buttons are now properly reset when the dialogue is closed.  Using Remove All will also reset them. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added About tabs to fully credit xDMS and zlib. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added the help file to the installer. You'll have to remove the AdfOpus.GID, that's created by Windows, manually when you uninstall, for now. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The help file returns, updated for version 0.7.2 and integrated as context sensitive help. The content has been heavily updated and expanded In dialogues, either click on the question mark [?] button and select a feature or right click on a feature for context-sensitive help. Use the Help buttons to open the help topics for the dialogues. You can also open the topic list or the Main Window help topic from the main menu. See Bugsfor more info on the current programme status. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.7.1 released 25 February 2000 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Some careless path management during the addition of compressed ADF handling caused the opening of uncompressed ADFs to break. Fixed. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added functionality that ensures that temporary ADFs, created when opening compressed ADFs, are not left in the temp directory on exit. These are now deleted by ADF Opus as part of programme shutdown. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.7 released 21 February 2000 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 When creating a new ADF or hardfile, ADF Opus now takes notice of whether you specified FFS/INTL/DIRC (before it used to always create OFS volumes with no international mode and no directory cache). 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The Read Only check box in the Open dialogue now works. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The Options dialogue is now fully functional and correct. Settings are saved between sessions in the registry. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The batch converter can now convert between all formats with the exception that it can't compress to DMS i.e. ADF->ADZ, ADZ->ADF, DMS->ADF, DMS->ADZ. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 I'm looking into the status of the DMS standard and the possibility of adding DMS compression to ADF Opus. For now, use DMS within the emulator to compress ADFs, if desired. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Documentation and About box updated with new mail and web addresses. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 You can now open ADZ and DMS files for viewing. ADZs can be manipulated normally and will be recompressed when closed. DMS' can be viewed but not manipulated since, at present, they can't be recompressed. Compressed disk images are extracted to ADFs, which are created in a temporary directory. The temporary directory defaults to <Adf Opus path>, at present. A user-configurable temp directory might be an option for the future. Temporary files are deleted on exit or when the owner child window is closed. Modifications to ADZs are performed on the temporary ADF and that is then compressed. Make sure that you close the child window of an ADZ you have made changes to, before exiting ADF Opus, to ensure that it is recompressed before exit. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed a minor bug that caused the Up One Directory Level button to remain active until pressed again, when returning to the root directory of disk files. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The Information dialogue now shows whether a disk image is compressed and what its compressed size is in the Device tab. The Volume tab still shows the details of the original disk image. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.6.1 released 2 October 1999 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed bug where the program kept a lock on ADF files even after they had been closed.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed serious bug which caused corruption of hardfiles (actually a bug in ADFlib).
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Enabled recursive copying of directories (now you can install Workbench from ADFs onto a hardfile!) 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.6 released 21 September 1999 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added a copy progress window (not entirely complete yet). There is also a display of the current physical sector being accessed during the copy process. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed missing details for first entry in a list. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Can recursively delete Windows directories. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADFlib section added to About box. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Can recursively delete Amiga directories.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Removed Up One Level item in listers because it was causing too many complications and it is non-standard. You can use the equivalent button in the toolbar or the context-menu instead (sorry Laurent ;-).
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 View | Clone Current Window has been disabled because it doesn't work (yet).
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Stopped it being possible to drop files onto a drive list window (doh!).
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Started an Options dialogue (not 100% functional yet).
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Due to complaints, directories are now sorted case insensitively (same as Windows Explorer).
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added a .inf file for easy install/removal.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Uses a nicer cursor when dragging files.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.5.0 released 29 May 1999 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 NOTE: Since this version is a complete rewrite, it's possible that bugs which were killed in previous versions have returned, so previous history entries are a bit meaningless.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF Opus is rewritten from scratch as a raw Win32 application, hence the smaller file size and better performance (older versions used Borland's OWL classes). 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 New version numbering system - x.y.z rather than x.yy. Don't ask. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 I have scrapped my own ADF access routines in favour of Laurent Clevy's ADFLib, which is more robust and has more features (like write support to DCFS volumes and unlimited hardfile size). 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF Opus can open real Amiga hard disks if running under Windows NT4 or the beta of Windows 2000. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 User interface redesigned - now Windows file lists and ADF contents are displayed in separate windows rather than one split window. This makes the display less cluttered when working with a lot of ADFs. The menus have also been moved around and are hopefully more logical now (Laurent's idea). 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 You can now open ADFs by dragging them from Windows Explorer onto the ADF Opus window.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 It is now possible to open more than one view of a disk image (e.g. to copy a file from one dir to another in the same ADF). 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Gary's help file is temporarily MIA. It will surely return in the near future. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The DMS converter has been generalised into a batch converter. At the moment it still only supports DMS->ADF but in the future will support things like DMS->ADZ, ADZ->ADF, and maybe even ADF->DMS. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Right-clicking in a child window brings up a context-menu of useful commands.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Deleting (empty) directories works now. Thanks to Chris Neale for spotting that one.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 You can now open DMS files and copy files out of them.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Volume information is now more comprehensive - includes info about device and volume(s).
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added an option to install (make bootable) an ADF. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.30 released 9 December 1998 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added a DMS to ADF converter (Tools|Convert|DMS->ADF) using code based on xDMS by Andre R. de la Rocha. This also features a batch converter, which allows you to convert many ADFs in one operation. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Optimised bitmap code - copying files from Windows to Amiga is now much faster, especially when copying into large or very full volumes. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The program now multitasks properly when copying files, even on Windows 95/98. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 International Mode volumes now work correctly due to new hash function. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 It is now possible to open more than one file at once in the Open dialogue. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.21 released 6 October 1998 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed yet another bug in my hash chain routines that caused errors when renaming or deleting in a volume with more than a few files. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Changed the link in the about box to reflect the change of homepage. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.20 released 1 October 1998 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Integrated the help file properly. Context-sensitive help is available pretty much everywhere. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added read/write support for hardfiles. Just open them as you would a normal ADF file. The maximum size of a hardfile is somewhere around 50MB. This restriction will be lifted in the future. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 By default the Open dialogue now displays .hdf files as well as .adf. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The New Volume dialogue now allows you to create hardfiles and high-density ADFs. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Editing a volume label after performing a write operation sometimes caused corrupted directory entries. Fixed. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Found and fixed another stupid bug: OFS volumes were not being written correctly and caused checksum errors in AmigaDOS. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.11 released 14 September 1998 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Added a help file written by Gary Harris. I haven't yet had chance to integrate it into the program - I'll do that in the next update. For now just double-click on the .hlp file to view it. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 You can now delete files (not directories yet, not even empty ones) by clicking the Delete button on the toolbar or choosing File|Delete. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The Volume Information dialogue now behaves more logically: if you edit the volume label and then close the dialogue (without clicking OK) the change will not be committed to disk. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed a serious bug in my hash-chain management routines where copying more than a few files into a volume caused corrupted directory entries. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Sizes of files are now displayed in KB rather than bytes (except if the file is less than 1KB, in which case the size in bytes is still displayed). 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 The last 1KB of a volume was not been used. This should be fixed now. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Implemented View|Refresh and View|Refresh All. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.10 released 6 September 1998 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 You can now create new directories in your ADFs by clicking the New Directory button on the toolbar or selecting File|New Directory. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 You can rename files and dirs by clicking twice (not double-clicking) on their names, or using the Rename toolbar button or File|Rename. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Fixed a crazy bug which caused the program to sometimes miss directory entries. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Status bar is now turned off by default, because it doesn't actually do anything yet. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.02 released 30 August 1998 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Copying a file into an ADF sometimes caused other files to disappear. Fixed. Probably.
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 ADF contents are now sorted alphabetically. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 It is now possible to create new formatted ADFs (via Volume|New or the New button on the toolbar). 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 You can relabel volumes by editing the label in the Volume Information dialogue. v0.01 forgot to calculate the bitmap checksum, so volumes written with it had to be validated by AmigaDOS before they could be used. Fixed. Now checks the bitmap checksum is valid before opening a volume. 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 \cf7 Version 0.01 released 20 August 1998 \cf2 
+\par \pard\li115\tx355 
+\par \pard\li115\tx355 Initial beta release.
+\par \pard\li115\tx355 
+\par \page
+\pard \plain\f0\cf2\cb2 }
