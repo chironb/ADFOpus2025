@@ -332,6 +332,42 @@
 #define IDB_README                      40149
 #define IDC_STATIC                      -1
 
+#define IDI_NEW                 50001
+#define IDI_NEWLIST             50002
+#define IDI_OPEN                50003
+#define IDI_CLOSE               50004
+#define IDI_EXIT                50005
+#define IDI_RENAME              50006
+#define IDI_DELETE              50007
+#define IDI_CREATEDIR           50008
+#define IDI_UPONELEVEL          50009
+#define IDI_INFO                50010
+#define IDI_PROPERTIES          50011
+#define IDI_OPTIONS             50012
+#define IDI_BATCH               50013
+#define IDI_GREASEWEAZLE        50014
+#define IDI_GREASEWEAZLEWRITE   50015
+#define IDI_INSTALL             50016
+#define IDI_RAWWRITEBOOTBLOCK   50017
+#define IDI_DISPLAY             50018
+#define IDI_TILEHOR             50019
+#define IDI_TILEVER             50020
+#define IDI_CASCADE             50021
+#define IDI_TILECLO             50022
+#define IDI_HELP                50023
+#define IDI_ABOUT               50024
+#define IDI_UNDELETE            50025
+#define IDI_SHOWUNDELETABLE     50026
+#define IDI_REFRESH             50027
+#define IDI_TEXTVIEWER          50028
+#define IDI_HEXVIEWER           50029
+#define IDI_TBBUTTONS_TRUECOLOR 50030
+#define IDI_SELECTALL           50031
+#define IDI_SELECTNONE          50032
+#define IDI_INVERTSELECTION     50033
+#define IDI_README              50034
+
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

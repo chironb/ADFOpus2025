@@ -1,106 +1,271 @@
+// MenuIcons.c
 #include <windows.h>
-#include "resource.h"    // your ID_* and IDB_* macros
-#include "MenuIcons.h"
+#include "resource.h"    // your IDI_* macros
+#include "MenuIcons.h"   // prototypes for these functions
 
-// Declare ghwndFrame. Make sure to assign it the main frame window handle in your app initialization code.
-extern HWND ghwndFrame;
-
-// 1) Map each command‐ID in your .rc menus to the BITMAP resource ID.
-typedef struct {
-    UINT cmdID;
-    UINT bmpRes;
-} MenuIconEntry;
-
+// 1) Define your menu-icon map here:
+typedef struct { UINT cmdID, icoRes; } MenuIconEntry;
 static const MenuIconEntry menuIconMap[] = {
     // File menu
-    { ID_FIL_NEW,                   IDB_NEW },
-    { ID_ACTION_NEWDIRECTORY,       IDB_CREATEDIR },
-    { ID_VIEW_NEWWINDOWSLISTER,     IDB_NEWLIST },
-    { ID_FIL_OPEN,                  IDB_OPEN },
-    { ID_FIL_CLOSE,                 IDB_CLOSE },
-    { ID_FIL_EXIT,                  IDB_EXIT },
+    { ID_FIL_NEW,                   IDI_NEW },
+    { ID_ACTION_NEWDIRECTORY,       IDI_CREATEDIR },
+    { ID_VIEW_NEWWINDOWSLISTER,     IDI_NEWLIST },
+    { ID_FIL_OPEN,                  IDI_OPEN },
+    { ID_FIL_CLOSE,                 IDI_CLOSE },
+    { ID_FIL_EXIT,                  IDI_EXIT },
 
     // Edit menu
-    { ID_ACTION_DELETE,             IDB_DELETE },
-    { ID_ACTION_UNDELETE,           IDB_UNDELETE },
-    { ID_ACTION_RENAME,             IDB_RENAME },
-    { ID_TOOLS_OPTIONS,             IDB_OPTIONS },
-    { ID_EDIT_SELECTALL,            IDB_SELECTALL },
-    { ID_EDIT_SELECTNONE,           IDB_SELECTNONE },
-	{ ID_EDIT_INVERTSELECTION,      IDB_INVERTSELECTION },
+    { ID_ACTION_DELETE,             IDI_DELETE },
+    { ID_ACTION_UNDELETE,           IDI_UNDELETE },
+    { ID_ACTION_RENAME,             IDI_RENAME },
+    { ID_TOOLS_OPTIONS,             IDI_OPTIONS },
+    { ID_EDIT_SELECTALL,            IDI_SELECTALL },
+    { ID_EDIT_SELECTNONE,           IDI_SELECTNONE },
+    { ID_EDIT_INVERTSELECTION,      IDI_INVERTSELECTION },
 
     // Action menu
-    { ID_ACTION_UPONELEVEL,         IDB_UPONELEVEL },
-    { ID_FIL_INFORMATION,           IDB_INFO },
-    { ID_ACTION_PROPERTIES,         IDB_PROPERTIES },
+    { ID_ACTION_UPONELEVEL,         IDI_UPONELEVEL },
+    { ID_FIL_INFORMATION,           IDI_INFO },
+    { ID_ACTION_PROPERTIES,         IDI_PROPERTIES },
 
     // Tools menu
-    { ID_TOOLS_TEXT_VIEWER,         IDB_TEXTVIEWER },
-    { ID_TOOLS_HEX_VIEWER,          IDB_HEXVIEWER },
-    { ID_TOOLS_BATCHCONVERTER,      IDB_BATCH },
-    { ID_TOOLS_GREASEWEAZLE,        IDB_GREASEWEAZLE },
-    { ID_TOOLS_GREASEWEAZLEWRITE,   IDB_GREASEWEAZLEWRITE },
-    { ID_TOOLS_INSTALL,             IDB_INSTALL },
-    { ID_TOOLS_WRITE_RAW_BOOTBLOCK, IDB_RAWWRITEBOOTBLOCK },
-    { ID_TOOLS_DISPLAYBOOTBLOCK,    IDB_DISPLAY },
+    { ID_TOOLS_TEXT_VIEWER,         IDI_TEXTVIEWER },
+    { ID_TOOLS_HEX_VIEWER,          IDI_HEXVIEWER },
+    { ID_TOOLS_BATCHCONVERTER,      IDI_BATCH },
+    { ID_TOOLS_GREASEWEAZLE,        IDI_GREASEWEAZLE },
+    { ID_TOOLS_GREASEWEAZLEWRITE,   IDI_GREASEWEAZLEWRITE },
+    { ID_TOOLS_INSTALL,             IDI_INSTALL },
+    { ID_TOOLS_WRITE_RAW_BOOTBLOCK, IDI_RAWWRITEBOOTBLOCK },
+    { ID_TOOLS_DISPLAYBOOTBLOCK,    IDI_DISPLAY },
 
     // View menu
-    { ID_VIEW_SHOWUNDELETABLEFILES, IDB_SHOWUNDELETABLE },
-    { ID_VIEW_REFRESH,              IDB_REFRESH },
+    { ID_VIEW_SHOWUNDELETABLEFILES, IDI_SHOWUNDELETABLE },
+    { ID_VIEW_REFRESH,              IDI_REFRESH },
 
     // Window menu
-    { ID_WIN_CASCADE,               IDB_CASCADE },
-    { ID_WIN_TILEHORIZONTAL,        IDB_TILEHOR },
-    { ID_WIN_TILEVERTICAL,          IDB_TILEVER },
-    { ID_WIN_CLOSEALL,              IDB_TILECLO },
+    { ID_WIN_CASCADE,               IDI_CASCADE },
+    { ID_WIN_TILEHORIZONTAL,        IDI_TILEHOR },
+    { ID_WIN_TILEVERTICAL,          IDI_TILEVER },
+    { ID_WIN_CLOSEALL,              IDI_TILECLO },
 
     // Help menu
-    { ID_HELP_ABOUT,                IDB_ABOUT },
-    { IDM_HELP_README,              IDB_README }
+    { ID_HELP_ABOUT,                IDI_ABOUT },
+    { IDM_HELP_README,              IDI_README }
 };
-    
-static const size_t menuIconCount =
-sizeof(menuIconMap) / sizeof(menuIconMap[0]);
 
-static HBITMAP gMenuBitmaps[32]; // Enough for all menu items
+// Compile-time count of entries
+#define MENU_ICON_COUNT  (sizeof(menuIconMap)/sizeof(menuIconMap[0]))
 
-// 2) The helper. Call it on a root HMENU (from LoadMenu or GetMenu) or a popup.
-void SetMenuBitmaps(HINSTANCE hInst, HMENU hMenu)
+// State for owner-draw
+static HMENU  g_hCurrentMenu = NULL;
+static HICON  g_hIcons[MENU_ICON_COUNT];
+static int    g_iconW, g_iconH;
+
+///////////////////////////////////////////////////////////////////////////
+// InitMenuIcons: call in WM_INITMENUPOPUP for each submenu
+///////////////////////////////////////////////////////////////////////////
+void InitMenuIcons(HINSTANCE hInst, HMENU hMenu)
 {
-    size_t i;
-    for (i = 0; i < menuIconCount; ++i) {
-        HBITMAP hBmp = (HBITMAP)LoadImage(
-            hInst,
-            MAKEINTRESOURCE(menuIconMap[i].bmpRes),
-            IMAGE_BITMAP,
-            0, 0,
-            LR_DEFAULTSIZE | LR_CREATEDIBSECTION
-        );
-        if (!hBmp) {
-            char buf[128];
-            wsprintf(buf, "Failed to load bitmap resource %u", menuIconMap[i].bmpRes);
-            MessageBox(NULL, buf, "Bitmap Load Error", MB_OK);
-            continue;
-        }
-        gMenuBitmaps[i] = hBmp; // Store for later cleanup
+    g_hCurrentMenu = hMenu;
 
-        SetMenuItemBitmaps(
+    // Use the system small-icon metrics (16×16 on standard DPI)
+    g_iconW = GetSystemMetrics(SM_CXSMICON);
+    g_iconH = GetSystemMetrics(SM_CYSMICON);
+
+    MENUITEMINFOA mii = { sizeof(mii) };
+    mii.fMask = MIIM_FTYPE;
+    mii.fType = MFT_OWNERDRAW;
+
+    for (size_t i = 0; i < MENU_ICON_COUNT; ++i)
+    {
+        // Load the icon at exactly g_iconW × g_iconH
+        HICON hIcon = (HICON)LoadImageA(
+            hInst,
+            MAKEINTRESOURCEA(menuIconMap[i].icoRes),
+            IMAGE_ICON,
+            g_iconW, g_iconH,
+            LR_DEFAULTCOLOR | LR_CREATEDIBSECTION
+        );
+        if (!hIcon)
+            continue;
+
+        g_hIcons[i] = hIcon;
+
+        // Mark this item OWNERDRAW
+        SetMenuItemInfoA(
             hMenu,
             menuIconMap[i].cmdID,
-            MF_BYCOMMAND,
-            hBmp, hBmp
+            FALSE,
+            &mii
         );
     }
-    DrawMenuBar(ghwndFrame);
+
+    // If this is your main frame’s menu bar, force a redraw
+    DrawMenuBar(GetActiveWindow());
 }
 
-// Call this on app exit:
-void FreeMenuBitmaps()
+///////////////////////////////////////////////////////////////////////////
+// OnMeasureItem: owner-draw measurement
+///////////////////////////////////////////////////////////////////////////
+void OnMeasureItem(HWND hWnd, MEASUREITEMSTRUCT* mis)
 {
-    for (size_t i = 0; i < menuIconCount; ++i) {
-        if (gMenuBitmaps[i]) {
-            DeleteObject(gMenuBitmaps[i]);
-            gMenuBitmaps[i] = NULL;
+    if (mis->CtlType != ODT_MENU || !g_hCurrentMenu)
+        return;
+
+    static HMENU lastMenu = NULL;
+    static int   maxW = 0;
+
+    HMENU hMenu = g_hCurrentMenu;
+    UINT  cmd = mis->itemID;
+
+    if (hMenu != lastMenu) {
+        lastMenu = hMenu;
+        maxW = 0;
+    }
+
+    for (size_t i = 0; i < MENU_ICON_COUNT; ++i)
+    {
+        if (menuIconMap[i].cmdID != cmd)
+            continue;
+
+        // Get the menu text
+        char buf[128];
+        int  len = GetMenuStringA(hMenu, cmd, buf, sizeof(buf), MF_BYCOMMAND);
+        if (len < 0) len = 0;
+
+        // Measure it
+        HDC   hdc = GetDC(hWnd);
+        HFONT oldF = (HFONT)SelectObject(hdc, GetStockObject(DEFAULT_GUI_FONT));
+        SIZE  sz;
+        GetTextExtentPoint32A(hdc, buf, len, &sz);
+        SelectObject(hdc, oldF);
+        ReleaseDC(hWnd, hdc);
+
+        // Compute width = gutter + padding + text
+        const int padding = 6;
+        int thisW = g_iconW + padding + sz.cx;
+        if (thisW > maxW)
+            maxW = thisW;
+
+        mis->itemWidth = maxW;
+        mis->itemHeight = g_iconH + 4;  // small vertical padding
+        return;
+    }
+
+    // Default (non-owner-draw) fallback
+    mis->itemWidth = 0;
+    mis->itemHeight = 0;
+}
+
+///////////////////////////////////////////////////////////////////////////
+// OnDrawItem: owner-draw rendering (icons, checks, text)
+///////////////////////////////////////////////////////////////////////////
+void OnDrawItem(HWND hWnd, DRAWITEMSTRUCT* dis)
+{
+    if (dis->CtlType != ODT_MENU || !g_hCurrentMenu)
+        return;
+
+    UINT cmd = dis->itemID;
+    BOOL selected = (dis->itemState & ODS_SELECTED) != 0;
+    BOOL disabled = (dis->itemState & (ODS_GRAYED | ODS_DISABLED)) != 0;
+
+    // Check state from the actual HMENU
+    UINT mstate = GetMenuState(g_hCurrentMenu, cmd, MF_BYCOMMAND);
+    BOOL checked = (mstate != 0xFFFFFFFF && (mstate & MF_CHECKED));
+
+    // 1) Fill background
+    HBRUSH hbr = CreateSolidBrush(
+        selected
+        ? GetSysColor(COLOR_HIGHLIGHT)
+        : GetSysColor(COLOR_MENU)
+    );
+    FillRect(dis->hDC, &dis->rcItem, hbr);
+    DeleteObject(hbr);
+
+    // 2) Compute gutter rect
+    int x = dis->rcItem.left + 2;
+    int y = dis->rcItem.top + (dis->rcItem.bottom - dis->rcItem.top - g_iconH) / 2;
+    RECT rcG = { x, y, x + g_iconW, y + g_iconH };
+
+    // 3) Draw icon if mapped
+    BOOL drewIcon = FALSE;
+    for (size_t i = 0; i < MENU_ICON_COUNT; ++i)
+    {
+        if (menuIconMap[i].cmdID != cmd)
+            continue;
+
+        drewIcon = TRUE;
+        if (disabled)
+        {
+            DrawState(
+                dis->hDC, NULL, NULL,
+                (LPARAM)g_hIcons[i], 0,
+                x, y, g_iconW, g_iconH,
+                DST_ICON | DSS_DISABLED
+            );
+        }
+        else
+        {
+            DrawIconEx(
+                dis->hDC,
+                x, y,
+                g_hIcons[i],
+                g_iconW, g_iconH,
+                0, NULL,
+                DI_NORMAL
+            );
+        }
+        break;
+    }
+
+    // 4) If no icon but checked, draw the standard checkmark
+    if (!drewIcon && checked)
+    {
+        UINT dfcs = DFCS_MENUCHECK | DFCS_CHECKED;
+        if (disabled) dfcs |= DFCS_INACTIVE;
+        DrawFrameControl(dis->hDC, &rcG, DFC_MENU, dfcs);
+    }
+
+    // 5) Draw the text
+    char buf[128];
+    int  len = GetMenuStringA(
+        g_hCurrentMenu, cmd,
+        buf, sizeof(buf),
+        MF_BYCOMMAND
+    );
+    if (len < 0) len = 0;
+
+    SetBkMode(dis->hDC, TRANSPARENT);
+    SetTextColor(dis->hDC,
+        disabled
+        ? GetSysColor(COLOR_GRAYTEXT)
+        : (selected
+            ? GetSysColor(COLOR_HIGHLIGHTTEXT)
+            : GetSysColor(COLOR_MENUTEXT))
+    );
+
+    RECT rcText = dis->rcItem;
+    rcText.left += g_iconW + 6;  // gutter + padding
+    DrawTextA(
+        dis->hDC,
+        buf, -1,
+        &rcText,
+        DT_LEFT | DT_VCENTER | DT_SINGLELINE
+    );
+}
+
+///////////////////////////////////////////////////////////////////////////
+// CleanupMenuIcons: call on WM_DESTROY or after a TrackPopupMenuEx
+///////////////////////////////////////////////////////////////////////////
+void CleanupMenuIcons(void)
+{
+    for (size_t i = 0; i < MENU_ICON_COUNT; ++i)
+    {
+        if (g_hIcons[i])
+        {
+            DestroyIcon(g_hIcons[i]);
+            g_hIcons[i] = NULL;
         }
     }
+    g_hCurrentMenu = NULL;
 }

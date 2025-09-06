@@ -9,65 +9,14 @@
  * ChildCommon.c - Routines common to both types of child window
  */
 
-//// Chiron 2025 
-// // Tell the headers which minimum OS/IE features you need:
-//#ifndef WINVER
-//#  define WINVER    0x0501    // Windows XP+
-//#endif
-//#ifndef _WIN32_IE
-//#  define _WIN32_IE 0x0400    // IE4+ / Common Controls v6
-//#endif
-//
-//#include <windows.h>    // MUST come before any commctrl.h!
-//#include <commctrl.h>   // now pulls in listview styles, LVM_*, etc.
-//#pragma comment(lib, "comctl32.lib")
-//
-//
-//
-//
-//// Fallback definitions if your SDK is too old to define these:
-//#ifndef LVM_SETAUTOSCROLLINFO
-//#  define LVM_FIRST                0x1000
-//#  define LVM_SETAUTOSCROLLINFO    (LVM_FIRST + 239)
-//#endif
-//
-//#ifndef LVS_AUTOSCROLL_MARGIN
-//#  define LVS_AUTOSCROLL_MARGIN    0x0002
-//#endif
 
 
-
-//// Tell the headers to expose the v6+ ListView message
-//#ifndef WINVER
-//#  define WINVER      0x0501   // Windows XP+
-//#endif
-//#ifndef _WIN32_IE
-//#  define _WIN32_IE   0x0600   // IE6+ / ListView v6+ messages
-//#endif
-//
-//#include <windows.h>
-//#include <commctrl.h>            // for SendMessage, LVM_*
-//#pragma comment(lib, "comctl32.lib")
-//
-//// If your commctrl.h is too old, define the message yourself:
-//#ifndef LVM_SETAUTOSCROLLINFO
-//#  define LVM_FIRST               0x1000
-//#  define LVM_SETAUTOSCROLLINFO   (LVM_FIRST + 239)
-//#endif
 
 
 #include <windows.h>
 
 
-// Chiron 2025
-//
-//#include "MenuIcons.h"
-//// these must be declared or extern’d here:
-//extern HINSTANCE instance;
-//extern BOOL bDirClicked;
-//extern BOOL bFileClicked;
-//extern HWND   ghwndFrame;   // if you TrackPopup on that
-//
+
 #include "MenuIcons.h"
 extern HINSTANCE instance;    // or however you name your HINSTANCE
 extern HWND      ghwndFrame;  // your main window handle
@@ -126,15 +75,6 @@ static LRESULT CALLBACK ListViewClampProc(
 
 
 
-//// And define the struct if it isn’t in your headers:
-//#ifndef LVAUTOSCROLLINFO
-//typedef struct tagLVAUTOSCROLLINFO {
-//	UINT  cbSize;
-//	DWORD dwFlags;
-//	int   iMaxHorz;
-//	int   iMaxVert;
-//} LVAUTOSCROLLINFO, * LPLVAUTOSCROLLINFO;
-//#endif
 
 
 
@@ -241,11 +181,6 @@ HWND CreateChildWin(HWND client, long type)
 	} else {
 			strcpy(title, "Local Filesystem");
 	}
-	// Chiron 2025
-	// 
-	//} else
-	//	strcpy(title, "Windows Directory");	
-	
 
 
 
@@ -311,208 +246,7 @@ LRESULT CALLBACK ChildWinProc(HWND win, UINT msg, WPARAM wp, LPARAM lp)
 	return 0l;
 }
 
-// Chiron 2025
-// 
-//LRESULT ChildOnCreate(HWND win)
-//{
-//	CHILDINFO	*ci;
-//
-//	/* set the user data long to identify what type of child this is */
-//	SetWindowLong(win, GWL_USERDATA, newWinType);
-//
-//	/* allocate an info struct and store the address in the extra window space */
-//	ci = malloc(sizeof(CHILDINFO));
-//	SetWindowLong(win, 0, (LONG) ci);
-//
-//	/* set the current directory */
-//	if(GetWindowLong(win, GWL_USERDATA) == CHILD_WINLISTER){
-//		if(Options.defDriveList){
-//			strcpy(ci->curDir, "");
-//			ci->atRoot = TRUE;
-//		}
-//		else{
-//			strcpy(ci->curDir, Options.defaultDir);
-//			ci->atRoot = FALSE;
-//		}
-//	}
-//	else{
-//		strcpy(ci->curDir, "/");
-//		// Save disk type and compressed size to info structure.
-//		ci->dfDisk = dfDisk;
-//		ci->compSize = comp_size;
-//
-//		ci->dev = adfMountDev(gstrFileName, ReadOnly);
-//		if (ci->dev == NULL)
-//			return -1;
-//
-//		ci->vol = adfMount(ci->dev, volToOpen, FALSE);///////////////////
-//		if (ci->vol == NULL)
-//			return -1;
-//		ci->atRoot = TRUE;
-//	}
-//
-//	ci->readOnly = ReadOnly;
-//
-//	/* create the listview control and store the handle */
-//	ci->lv = CreateListView(win);
-//
-//	/* create the status bar */
-//	ci->sb = CreateWindow(
-//		STATUSCLASSNAME,
-//		"",
-//		WS_CHILD | WS_VISIBLE | CCS_TOP,
-//		CW_USEDEFAULT, CW_USEDEFAULT,
-//		CW_USEDEFAULT, CW_USEDEFAULT,
-//		win,
-//		NULL,
-//		instance,
-//		NULL
-//	);
-//
-//	/* init linked list of dir entries */
-//	ci->content = NULL;
-//
-//	ci->isAmi = (newWinType == CHILD_AMILISTER);
-//
-//	strcpy(ci->orig_path, buf);					// Store original filename.
-//	
-//
-//
-//	// Chiron 2025
-//	// 
-//	//if(ci->dfDisk != ADF)
-//	//	strcpy(ci->temp_path, gstrFileName);	// Store temp adf filename.
-//	if(ci->dfDisk != (enum DiskFormat)ADF)
-//		strcpy(ci->temp_path, gstrFileName);	// Store temp adf filename.
-//
-//
-//
-//
-//	// Disable properties menu item and toolbar button, in case they've been left active.
-//	hMenu = GetMenu(ghwndFrame);
-//	EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
-//	SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_PROPERTIES, MAKELONG(FALSE, 0));
-//
-//	ChildUpdate(win);
-//
-//	return 0;
-//}
 
-//LRESULT ChildOnCreate(HWND win)
-//{
-//	CHILDINFO* ci;
-//
-//	// mark this child’s type
-//	SetWindowLong(win, GWL_USERDATA, newWinType);
-//
-//	// allocate our per-window state
-//	ci = malloc(sizeof(*ci));
-//	if (!ci)
-//		return -1;
-//	SetWindowLong(win, 0, (LONG)ci);
-//
-//	if (newWinType == CHILD_WINLISTER)
-//	{
-//		//// 1) grab %USERPROFILE%
-//		//char homePath[MAX_PATH];
-//		//DWORD n = GetEnvironmentVariableA(
-//		//	"USERPROFILE",
-//		//	homePath,
-//		//	ARRAYSIZE(homePath)
-//		//);
-//
-//		//if (n > 0 && n < ARRAYSIZE(homePath))
-//		//{
-//		//	// copy it in
-//		//	strncpy_s(ci->curDir,
-//		//		sizeof(ci->curDir),
-//		//		homePath,
-//		//		_TRUNCATE);
-//
-//		//	// 2) make sure it ends with a backslash
-//		//	size_t len = strlen(ci->curDir);
-//		//	if (len > 0 && ci->curDir[len - 1] != '\\')
-//		//	{
-//		//		if (len + 1 < sizeof(ci->curDir))
-//		//		{
-//		//			ci->curDir[len] = '\\';
-//		//			ci->curDir[len + 1] = '\0';
-//		//		}
-//		//	}
-//		//}
-//		//else
-//		//{
-//		//	// fallback if USERPROFILE is missing or too long
-//		//	strcpy_s(ci->curDir,
-//		//		sizeof(ci->curDir),
-//		//		"C:\\");
-//		//}
-//
-//		//MessageBox(NULL, g_defaultPath, "DEBUG: Should show default path!", MB_OK | MB_ICONINFORMATION);
-//
-//		// Set the path using the global var we created for this and determine in ADFOpus when we deal with the command line. 
-//		/*strcpy_s(ci->curDir, sizeof(ci->curDir), "C:\\");*/
-//		//MessageBox(NULL, "WTF?!?!?", "ChildCOmmon.c --> if (newWinType == CHILD_WINLISTER) : g_defaultPath", MB_OK | MB_ICONINFORMATION);
-//		// Set the current path to the global path we figured out when we started the program and processed teh command line arguments. 
-//		strcpy_s(ci->curDir, sizeof(ci->curDir), g_defaultPath);
-//
-//		ci->atRoot = FALSE;
-//
-//		// optional: update CWD if other code depends on it
-//		SetCurrentDirectory(g_defaultPath);
-//	}
-//	else
-//	{
-//		// your existing ADF-lister init
-//		strcpy(ci->curDir, "/");
-//		ci->dfDisk = dfDisk;
-//		ci->compSize = comp_size;
-//
-//		ci->dev = adfMountDev(gstrFileName, ReadOnly);
-//		if (!ci->dev) return -1;
-//
-//		ci->vol = adfMount(ci->dev, volToOpen, FALSE);
-//		if (!ci->vol) return -1;
-//
-//		ci->atRoot = TRUE;
-//	}
-//
-//	ci->readOnly = ReadOnly;
-//
-//	// create listview
-//	ci->lv = CreateListView(win);
-//
-//	// create status bar
-//	ci->sb = CreateWindow(
-//		STATUSCLASSNAME, "",
-//		WS_CHILD | WS_VISIBLE | CCS_TOP,
-//		CW_USEDEFAULT, CW_USEDEFAULT,
-//		CW_USEDEFAULT, CW_USEDEFAULT,
-//		win, NULL, instance, NULL
-//	);
-//
-//	// init entries
-//	ci->content = NULL;
-//	ci->isAmi = (newWinType == CHILD_AMILISTER);
-//
-//	// stash original paths
-//	strcpy(ci->orig_path, buf);
-//	if (ci->dfDisk != (enum DiskFormat)ADF)
-//		strcpy(ci->temp_path, gstrFileName);
-//
-//	// disable Properties button until a selection
-//	hMenu = GetMenu(ghwndFrame);
-//	EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
-//	SendMessage(ghwndTB,
-//		TB_ENABLEBUTTON,
-//		ID_ACTION_PROPERTIES,
-//		MAKELONG(FALSE, 0));
-//
-//	// populate the view
-//	ChildUpdate(win);
-//
-//	return 0;
-//}
 
 
 #include "ADFOpus.h"    // for g_defaultLocalPath, newWinType, CHILD_WINLISTER
@@ -823,14 +557,7 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 							bFileClicked = TRUE;							
 					}
 
-//					if(bIsFile){
-//						SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(TRUE, 0));
-//						EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
-//					}
-//					else{
-//						SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(FALSE, 0));
-//						EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_GRAYED);
-//					}
+
 				}
 				bUndeleting = FALSE;
 			}
@@ -961,73 +688,6 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 }
 
 
-//HWND CreateListView(HWND win)
-//{
-//	HWND lv;
-//
-//	/* Create the control */
-//	lv = CreateWindowEx(
-//		WS_EX_CLIENTEDGE,
-//		WC_LISTVIEW,
-//		"",
-//		WS_CHILD | LVS_REPORT | LVS_EDITLABELS | WS_VISIBLE | 
-//			LVS_SHAREIMAGELISTS | LVS_NOSORTHEADER,
-//		0, 0,
-//		300, 100,
-//		win,
-//		NULL,
-//		instance,
-//		NULL
-//	);
-//
-//	if (lv == NULL)
-//		return NULL;
-//
-//	/* add the columns */
-//	LVAddColumn(lv, "Name", 200, 0);
-//	LVAddColumn(lv, "Size", 70, 1);
-//	LVAddColumn(lv, "Flags", 75, 2);
-//	// Create a Comment column in Amiga listers.
-//	if(GetWindowLong(win, GWL_USERDATA) != CHILD_WINLISTER)
-//		LVAddColumn(lv, "Comment", 605, 3);
-//
-//	/* assign the image list */
-//	ListView_SetImageList(lv, ghwndImageList, LVSIL_SMALL);
-//	// Set full row selection.
-//	ListView_SetExtendedListViewStyle(lv, LVS_EX_FULLROWSELECT);
-//	// Chiron 2025
-//	/* disable drag-auto-scroll (and the accompanying cursor warp) */
-//	// ListView_SetAutoScrollMargin(lv, 0, 0); // disable both horizontal & vertical auto-scroll
-//	// inside CreateListView after lv is created …
-//	//SendMessage(
-//	//	lv,
-//	//	LVM_SETAUTOSCROLLINFO,
-//	//	MAKEWPARAM(0, 0),               // cx=0, cy=0
-//	//	(LPARAM)LVS_AUTOSCROLL_MARGIN
-//	//);
-//	// 
-//	// Properly disable ListView auto-scroll (both axes)
-//	//LVAUTOSCROLLINFO asi;
-//	//asi.cbSize = sizeof(asi);
-//	//asi.dwFlags = 0;        // 0 = disable horizontal & vertical auto-scroll
-//	//asi.iMaxHorz = 0;       // unused when dwFlags==0
-//	//asi.iMaxVert = 0;       // unused when dwFlags==0
-//	//SendMessage(lv, LVM_SETAUTOSCROLLINFO, 0, (LPARAM)&asi);
-//
-//	// build the struct to turn OFF auto-scroll in both axes
-//	LVAUTOSCROLLINFO asi;
-//	ZeroMemory(&asi, sizeof(asi));
-//
-//	asi.cbSize = sizeof(asi);
-//	asi.dwFlags = 0;    // 0 = disable horizontal & vertical auto-scroll
-//	asi.iMaxHorz = 0;
-//	asi.iMaxVert = 0;
-//
-//	// this tells a v6 ListView to never call SetCursorPos behind your back
-//	SendMessage(lv, LVM_SETAUTOSCROLLINFO, 0, (LPARAM)&asi);
-//
-//	return lv;
-//} 
 HWND CreateListView(HWND win)
 {
 	HWND lv = CreateWindowEx(
@@ -1460,140 +1120,60 @@ BOOL ChildOnContextMenu(HWND win, int x, int y)
 	return FALSE;
 }
 
-// Chiron 2025
-// 
-//void DisplayContextMenu(HWND win, POINT pt)
-///* bring up the context menu
-// */
-//{
-//	HMENU	menu, popup;
-//	HBITMAP	bmpMenu;
-//
-//	menu = LoadMenu(instance, MAKEINTRESOURCE(IDR_LISTERMENU));
-//	if (menu == NULL)
-//		return;
-// 	popup = GetSubMenu(menu, 0);
-//	// Load and display menu bitmaps.
-//	bmpMenu =  (HBITMAP)LoadImage(instance, MAKEINTRESOURCE(IDB_UPONELEVEL), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE|LR_DEFAULTCOLOR);
-//	SetMenuItemBitmaps(popup, 0, MF_BYPOSITION, bmpMenu, bmpMenu);
-//	bmpMenu =  (HBITMAP)LoadImage(instance, MAKEINTRESOURCE(IDB_PROPERTIES), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE|LR_DEFAULTCOLOR);
-//	SetMenuItemBitmaps(popup, 6, MF_BYPOSITION, bmpMenu, bmpMenu);
-//	// Chiron 2025 - If I enable this then the Text Viewer icon is loaded in the right click menu for UNSELECT ALL and that's wrong. 
-//	//bmpMenu =  (HBITMAP)LoadImage(instance, MAKEINTRESOURCE(IDB_TEXTVIEWER), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE|LR_DEFAULTCOLOR);
-//	//SetMenuItemBitmaps(popup, 8, MF_BYPOSITION, bmpMenu, bmpMenu);
-//
-//	// Activate the Properties item if a file has been clicked.
-////	if(bClicked == TRUE)
-//	if(bDirClicked || bFileClicked)
-//		EnableMenuItem(popup, ID_ACTION_PROPERTIES, MF_ENABLED);
-//	if(bFileClicked)
-//		EnableMenuItem(popup, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
-//
-//	TrackPopupMenuEx(popup, 0, pt.x, pt.y, ghwndFrame, NULL);
-//	DestroyMenu(menu);
-//	DeleteObject(bmpMenu);
-//}
 
-// Make sure you’ve got this prototype visible:
-//void SetMenuBitmaps(HINSTANCE hInst, HWND hWnd, HMENU hMenu);
-//void SetMenuBitmaps(HINSTANCE hInst, HMENU hMenu);
+#include <windows.h>
+#include "resource.h"
+#include "MenuIcons.h"
 
-//void DisplayContextMenu(HWND win, POINT pt)
-//{
-//	// 1) Load the menu resource
-//	HMENU menu = LoadMenu(instance, MAKEINTRESOURCE(IDR_LISTERMENU));
-//	if (!menu)
-//		return;
-//
-//	// 2) Grab the submenu you’re about to show
-//	HMENU popup = GetSubMenu(menu, 0);
-//	if (!popup) {
-//		DestroyMenu(menu);
-//		return;
-//	}
-//
-//	// 3) Tell Windows this popup can show bitmaps
-//	{
-//		MENUINFO mi = { sizeof(mi) };
-//		// get existing style bits
-//		GetMenuInfo(popup, &mi);
-//
-//		// OR in the CHECKORBMP flag (preserve other bits!)
-//		mi.fMask = MIM_STYLE;
-//		mi.dwStyle = mi.dwStyle | MNS_CHECKORBMP;
-//		SetMenuInfo(popup, &mi);
-//	}
-//
-//	// 4) Apply your global mapping helper
-//	SetMenuBitmaps(instance, popup);
-//
-//	// 5) Enable/disable your items
-//	if (bDirClicked || bFileClicked)
-//		EnableMenuItem(popup, ID_ACTION_PROPERTIES, MF_ENABLED);
-//	if (bFileClicked)
-//		EnableMenuItem(popup, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
-//
-//	// 6) Show it
-//	TrackPopupMenuEx(
-//		popup,
-//		TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-//		pt.x,
-//		pt.y,
-//		win,
-//		NULL
-//	);
-//
-//	// 7) Cleanup
-//	DestroyMenu(menu);
-//}
+extern HINSTANCE instance;
+extern HWND      ghwndFrame;
+extern BOOL      bDirClicked, bFileClicked;
+//extern ContextInfo* ci;
 
-void DisplayContextMenu(HWND win, POINT pt)
+void DisplayContextMenu(HWND winLister, POINT pt)
 {
-	HMENU menu = LoadMenu(instance,
-		MAKEINTRESOURCE(IDR_LISTERMENU));
+	// 1) Load the bar resource and get its first submenu
+	HMENU menu = LoadMenu(instance, MAKEINTRESOURCE(IDR_LISTERMENU));
 	if (!menu) return;
+	HMENU popup = GetSubMenu(menu, 0);
+	if (!popup) { DestroyMenu(menu); return; }
 
-	// Decorate the root so popups get a gutter
+	// 2) Reserve the icon/check gutter on the popup itself
 	MENUINFO mi = { sizeof(mi) };
-	GetMenuInfo(menu, &mi);
+	GetMenuInfo(popup, &mi);
 	mi.fMask = MIM_STYLE;
 	mi.dwStyle = mi.dwStyle | MNS_CHECKORBMP;
-	SetMenuInfo(menu, &mi);
+	SetMenuInfo(popup, &mi);
 
-	// Grab and decorate the actual popup you’ll display
-	HMENU popup = GetSubMenu(menu, 0);
-	if (popup) {
-		SetMenuBitmaps(instance, popup);
+	// 3) Owner-draw setup (loads the icons & marks the IDs you mapped)
+	InitMenuIcons(instance, popup);
 
-		// your enable/disable logic
-		if (bDirClicked || bFileClicked)
-			EnableMenuItem(popup,
-				ID_ACTION_PROPERTIES, MF_ENABLED);
-		if (bFileClicked) {
-			EnableMenuItem(popup, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
-			EnableMenuItem(popup, ID_TOOLS_HEX_VIEWER, MF_ENABLED);
-		}
+	// 4) Enable/disable your items on that same popup
+	EnableMenuItem(popup,
+		ID_ACTION_PROPERTIES,
+		(bDirClicked || bFileClicked) ? MF_ENABLED : MF_GRAYED
+	);
+	// …and the rest of your logic…
 
-		// FIX: Enable/disable Write Bootblock
-		if (ci && ci->isAmi && (ci->vol->bootCode != 1)) {
-			EnableMenuItem(popup, ID_TOOLS_INSTALL, MF_ENABLED);
-			EnableMenuItem(popup, ID_TOOLS_WRITE_RAW_BOOTBLOCK, MF_ENABLED);
-		} else {
-			EnableMenuItem(popup, ID_TOOLS_INSTALL, MF_GRAYED);
-			EnableMenuItem(popup, ID_TOOLS_WRITE_RAW_BOOTBLOCK, MF_GRAYED);
-		}
+	// 5) Make sure the frame is foreground (necessary for ContextMenus)
+	SetForegroundWindow(ghwndFrame);
 
-		TrackPopupMenuEx(
-			popup,
-			TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-			pt.x, pt.y,
-			win,
-			NULL
-		);
-	}
+	// 6) Show the popup *with* the frame as the owner
+	TrackPopupMenuEx(
+		popup,
+		TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+		pt.x, pt.y,
+		ghwndFrame,    // ← IMPORTANT: frame handles Measure/Draw
+		NULL
+	);
+
+	// 7) Post a zero-msg so the menu will dismiss correctly
+	PostMessage(ghwndFrame, WM_NULL, 0, 0);
+
+	// 8) Cleanup
+	CleanupMenuIcons();
 	DestroyMenu(menu);
 }
-
 
 
 void ChildDelete(HWND win)
@@ -1719,55 +1299,6 @@ BOOL ChildShowUndeletable(HWND win)
 	return TRUE;
 }
 
-
-// Chiron 2025
-//BOOL ChildUndelete(HWND win)
-///*  Undelete files.
-// */
-//{
-//	struct List		*list, *cell;
-//	struct GenBlock	*block;
-//	int				index, iNumSelected, i;
-//	char			buf[MAX_PATH];
-//	CHILDINFO		*ci = (CHILDINFO *)GetWindowLong(win, 0);
-//
-//	
-////	index = LVGetItemFocused(ci->lv);
-//	iNumSelected = ListView_GetSelectedCount(ci->lv);
-//	index = ListView_GetNextItem(ci->lv, -1, LVNI_CUT|LVNI_SELECTED);					// Get first selected file.
-//	for(i = 0;i < iNumSelected;i++){
-//		LVGetItemCaption(ci->lv, buf, sizeof(buf), index);
-//		cell = list = adfGetDelEnt(ci->vol);
-//		// Read undeletable files list.
-//		while(cell){
-//			block =(struct GenBlock*) cell->content;
-//			// Check if names match and undelete if they do.
-//			if(strcmp(buf, block->name) == 0){
-//				if(adfUndelEntry(ci->vol, ci->vol->curDirPtr, block->sect) == RC_OK){	// Undelete it.
-//					ListView_SetItemState(ci->lv, index, 0, LVIS_CUT);					// Reset list state.
-//					ChildUpdate(win);
-//				}
-//				break;
-//			}
-//			cell = cell->next;
-//		}
-//		index = ListView_GetNextItem(ci->lv, index, LVNI_CUT|LVNI_SELECTED);			// Get next selected file.
-//	}
-//    adfFreeDelList(list);
-//	EnableMenuItem(hMenu, ID_ACTION_UNDELETE, MF_GRAYED);								// Reset menu and toolbar.
-//	SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_UNDELETE, MAKELONG(FALSE, 0));
-//	return TRUE;
-//}
-// 
-// --------------------------------------------------------------------------------
-// 
-// Initialize list (and cell if you like) to NULL before you use it. 
-// That way, even if no files are selected, you won’t pass an uninitialized pointer into adfFreeDelList.
-// 
-// Why This Fixes This:
-// -By writing struct List* list = NULL; , you guarantee list has a defined value in all code paths.
-// - The compiler no longer warns about “potentially uninitialized” because you explicitly initialized it.
-// - You also guard the free call(if (list)) so you only free a real list pointer.
 BOOL ChildUndelete(HWND win)
 {
 	struct List* list = NULL, * cell;
