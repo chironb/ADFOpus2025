@@ -86,130 +86,8 @@ char g_defaultLocalPath[MAX_PATH] = { 0 };
 
 
 
-// -----------------------------------------------------------------------------
-// At top of ADFOpus.c (after your #includes)
-//
-// resource.h must declare all the ID_* and IDB_* macros below
 #include <windows.h>
 #include "resource.h"
-
-//typedef struct {
-//	UINT cmdID;    // menu command from your .rc
-//	UINT bmpRes;   // bitmap resource (IDB_*)
-//} MenuIconEntry;
-
-//static const MenuIconEntry menuIconMap[] = {
-//	// File menu
-//	{ ID_FIL_NEW,                   IDB_NEW },
-//	{ ID_ACTION_NEWDIRECTORY,       IDB_CREATEDIR },
-//	{ ID_VIEW_NEWWINDOWSLISTER,     IDB_TEXTVIEWER },
-//	{ ID_FIL_OPEN,                  IDB_OPEN },
-//	{ ID_FIL_CLOSE,                 IDB_CLOSE },
-//	{ ID_FIL_EXIT,                  IDB_CLOSE },              // reuse “close” icon
-//
-//	// Edit menu
-//	{ ID_ACTION_DELETE,             IDB_DELETE },
-//	{ ID_ACTION_UNDELETE,           IDB_UNDELETE },
-//	{ ID_ACTION_RENAME,             IDB_RENAME },
-//	{ ID_TOOLS_OPTIONS,             IDB_OPTIONS },            // Preferences
-//
-//	// Action menu
-//	{ ID_ACTION_UPONELEVEL,         IDB_UPONELEVEL },
-//	{ ID_FIL_INFORMATION,           IDB_INFO },
-//	{ ID_ACTION_PROPERTIES,         IDB_PROPERTIES },
-//
-//	// Tools menu
-//	{ ID_TOOLS_TEXT_VIEWER,         IDB_TEXTVIEWER },
-//	{ ID_TOOLS_BATCHCONVERTER,      IDB_BATCH },
-//	{ ID_TOOLS_DISK2FDI,            IDB_DISK2FDI },
-//	{ ID_TOOLS_INSTALL,             IDB_INSTALL },
-//	{ ID_TOOLS_DISPLAYBOOTBLOCK,    IDB_DISPLAY },
-//
-//	// View menu
-//	{ ID_VIEW_SHOWUNDELETABLEFILES, IDB_SHOWUNDELETABLE },
-//
-//	// Window menu
-//	{ ID_WIN_CASCADE,               IDB_CASCADE },
-//	{ ID_WIN_TILEHORIZONTAL,        IDB_TILEHOR },
-//	{ ID_WIN_TILEVERTICAL,          IDB_TILEVER },
-//
-//	// Help menu
-//	{ ID_HELP_ABOUT,                IDB_ABOUT },
-//};
-
-//static const size_t menuIconCount =
-//sizeof(menuIconMap) / sizeof(menuIconMap[0]);
-
-//// Forward‐declare our helper
-//void SetMenuBitmaps(HINSTANCE hInst, HMENU hMenu);
-
-
-// Chiron 2025
-// 
-// -----------------------------------------------------------------------------
-// SetMenuBitmaps: load each bitmap and attach it by command ID
-// Call this after your main window (and its menu) has been created.
-//void SetMenuBitmaps(HINSTANCE hInst, HMENU hMenu)
-//{
-//	size_t i;
-//	for (i = 0; i < menuIconCount; ++i) {
-//		HBITMAP hBmp = (HBITMAP)LoadImage(
-//			hInst,
-//			MAKEINTRESOURCE(menuIconMap[i].bmpRes),
-//			IMAGE_BITMAP,
-//			0, 0,
-//			LR_DEFAULTSIZE | LR_CREATEDIBSECTION
-//		);
-//		if (hBmp) {
-//			// MF_BYCOMMAND pins the icon to the correct command ID,
-//			// regardless of its position in the menu.
-//			SetMenuItemBitmaps(
-//				hMenu,
-//				menuIconMap[i].cmdID,
-//				MF_BYCOMMAND,
-//				hBmp,    // normal state
-//				hBmp     // disabled state (reuse if no separate bmp)
-//			);
-//			DeleteObject(hBmp);
-//		}
-//	}
-//	DrawMenuBar(GetActiveWindow());
-//}
-//void SetMenuBitmaps(HINSTANCE hInst, HMENU hMenu)
-//{
-//	size_t i;
-//	char buf[128];
-//	for (i = 0; i < menuIconCount; ++i) {
-//		HBITMAP hBmp = (HBITMAP)LoadImage(
-//			hInst,
-//			MAKEINTRESOURCE(menuIconMap[i].bmpRes),
-//			IMAGE_BITMAP, 0, 0,
-//			LR_DEFAULTSIZE | LR_CREATEDIBSECTION
-//		);
-//		if (!hBmp) {
-//			// DEBUG: resource failed to load
-//			wsprintf(buf, "DEBUG: LoadImage failed for bmpRes=%u", menuIconMap[i].bmpRes);
-//			MessageBox(NULL, buf, "DEBUG", MB_OK);
-//			continue;
-//		}
-//
-//		// DEBUG: we’re about to attach this bitmap
-//		//wsprintf(buf, "Attaching bmpRes=%u to cmdID=%u",
-//		//	menuIconMap[i].bmpRes, menuIconMap[i].cmdID);
-//		//MessageBox(NULL, buf, "DEBUG", MB_OK);
-//
-//		SetMenuItemBitmaps(
-//			hMenu,
-//			menuIconMap[i].cmdID,
-//			MF_BYCOMMAND,
-//			hBmp, hBmp
-//		);
-//		DeleteObject(hBmp);
-//	}
-//
-//	// Use your frame’s HWND here, not GetActiveWindow()
-//	DrawMenuBar(ghwndFrame);
-//}
 
 
 
@@ -264,400 +142,6 @@ BOOL			ReadOnly;
 
 BOOL			bCmdLineArgs = FALSE;
 char			gstrCmdLineArgs[MAX_PATH * 2];			// Command line argument string.
-
-// Chiron 2025
-// 
-//int PASCAL WinMain(HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show)
-///* windows entry point function - initialises everything and enters the
-// * message loop
-// */
-//{
-//	MSG msg;
-//
-//	instance = inst;
-//	if (! RegisterAppClass(inst))
-//		return 1;
-//
-//	// Chiron 2025
-//	///* load the common control dll */
-//	//InitCommonControls();
-//	/* load common-controls v6 (so ListView_SetAutoScrollMargin is honored) */
-//	{
-//		INITCOMMONCONTROLSEX icex;
-//		icex.dwSize = sizeof(icex);
-//		icex.dwICC = ICC_LISTVIEW_CLASSES;    // just the ListView (and header) classes
-//		InitCommonControlsEx(&icex);
-//	}
-//
-//
-//
-//	/* load cursors */
-//	ghcurNormal = LoadCursor(NULL, IDC_ARROW);
-//	ghcurNo = LoadCursor(NULL, IDC_NO);
-//	ghcurDrag = LoadCursor(instance, MAKEINTRESOURCE(IDC_POINTER_COPY));
-//
-//	/* get user options */
-//	ReadOptions();
-//
-//	/* initialise ADFLib */
-//	adfEnvInitDefault();
-//	adfSetEnvFct(ADFError, ADFWarning, ADFVerbose);
-//
-//	adfEnv.rwhAccess = ADFAccess;
-//	adfEnv.progressBar = ADFProgress;
-//	adfEnv.useRWAccess = TRUE;
-//	adfEnv.useProgressBar = TRUE;
-//	adfEnv.useDirCache = Options.useDirCache;
-//
-//
-//
-//	// Chiron 2025
-//	//
-//	//// Create path to temp directory in Opus root directory.
-//	//(void)getcwd(dirTemp, 100);
-//	//strcpy(dirOpus, dirTemp);
-//	//strcat(dirTemp, "\\opustemp\\");
-//	// 
-//	// Get full path to the executable
-//	GetModuleFileName(NULL, dirOpus, MAX_PATH);
-//	//
-//	// Strip off the executable name to get the folder
-//	char* lastSlash = strrchr(dirOpus, '\\');
-//	if (lastSlash) *lastSlash = '\0';
-//	//
-//	// Set working directory to the EXE folder
-//	SetCurrentDirectory(dirOpus);
-//	//
-//	// Create path to temp directory in Opus root directory
-//	strcpy(dirTemp, dirOpus);
-//	strcat(dirTemp, "\\opustemp\\");
-//
-//
-//
-//	/* the main loop */
-//	msg.wParam = 1;
-//
-//	// Store command line arguments for processing in WM_CREATE.
-//	strcpy(gstrCmdLineArgs, cmdLine);
-//
-//	ghwndFrame = CreateAppWindow(inst);
-//	if (ghwndFrame)
-//	{
-//		ShowWindow(ghwndFrame, show);
-//		UpdateWindow(ghwndFrame);
-//
-//		/* standard message loop for MDI apps */
-//		while(GetMessage(&msg, NULL, 0, 0))
-//		{
-//			if(! TranslateMDISysAccel(ghwndMDIClient, &msg)) {
-//				TranslateMessage(&msg);
-//				DispatchMessage(&msg);
-//			}
-//		}
-//	}
-//
-//	/* clean up ADFLib */
-//	adfEnvCleanUp();
-//
-//	/* save options */
-//	WriteOptions();
-//
-//	/* unregister all the classes we registered (not really needed but...) */
-//	UnregisterAllClasses(inst);
-//
-//	return msg.wParam;
-//}
-
-//int PASCAL WinMain(HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show)
-//{
-//
-//
-//
-//	// MessageBox(NULL, g_defaultPath, "DEBUG: Should show default path!", MB_OK | MB_ICONINFORMATION);
-//
-//	MSG msg;
-//
-//
-//
-//	char dbg[256];
-//	snprintf(dbg, sizeof dbg, "WinMain: [%s]", cmdLine);
-//	MessageBox(NULL, dbg, "ENTRY DEBUG", MB_OK);
-//
-//
-//
-//	// stash raw cmd‐line
-//	strcpy_s(gstrCmdLineArgs, sizeof gstrCmdLineArgs, cmdLine);
-//
-//	// if you got one or more files on the command line...
-//	if (gstrCmdLineArgs[0] != '\0')
-//	{
-//		// parse into tokens just like you already do
-//		char ArgArray[20][MAX_PATH];
-//		int  argCount = 0;
-//		// … your existing loop that fills ArgArray and increments argCount …
-//
-//		// Take the last filename, strip off the name
-//		strcpy_s(g_defaultLocalPath,
-//			sizeof g_defaultLocalPath,
-//			ArgArray[argCount - 1]);
-//
-//		// remove the file component, leaving its folder
-//		PathRemoveFileSpecA(g_defaultLocalPath);
-//
-//		// ensure it ends with “\”
-//		PathAddBackslashA(g_defaultLocalPath);
-//	}
-//	else
-//	{
-//		// no files → fallback to %USERPROFILE%
-//		DWORD n = GetEnvironmentVariableA(
-//			"USERPROFILE",
-//			g_defaultLocalPath,
-//			MAX_PATH
-//		);
-//		if (n == 0 || n >= MAX_PATH)
-//			strcpy_s(g_defaultLocalPath, MAX_PATH, "C:\\");
-//		else
-//			PathAddBackslashA(g_defaultLocalPath);
-//	}
-//
-//	// DEBUG: show us what we computed
-//	MessageBox(
-//		NULL,
-//		g_defaultLocalPath,
-//		"DEBUG: g_defaultLocalPath",
-//		MB_OK | MB_ICONINFORMATION
-//	);
-//
-//
-//
-//
-//
-//
-//
-//	instance = inst;
-//	if (!RegisterAppClass(inst))
-//		return 1;
-//
-//	// Initialize common controls v6 for ListView, etc.
-//	{
-//		INITCOMMONCONTROLSEX icex;
-//		icex.dwSize = sizeof(icex);
-//		icex.dwICC = ICC_LISTVIEW_CLASSES;
-//		InitCommonControlsEx(&icex);
-//	}
-//
-//	// Load cursors
-//	ghcurNormal = LoadCursor(NULL, IDC_ARROW);
-//	ghcurNo = LoadCursor(NULL, IDC_NO);
-//	ghcurDrag = LoadCursor(inst, MAKEINTRESOURCE(IDC_POINTER_COPY));
-//
-//	// Read saved options, init ADFLib, set up directories…
-//	ReadOptions();
-//	adfEnvInitDefault();
-//	adfSetEnvFct(ADFError, ADFWarning, ADFVerbose);
-//	adfEnv.rwhAccess = ADFAccess;
-//	adfEnv.progressBar = ADFProgress;
-//	adfEnv.useRWAccess = TRUE;
-//	adfEnv.useProgressBar = TRUE;
-//	adfEnv.useDirCache = Options.useDirCache;
-//
-//	GetModuleFileName(NULL, dirOpus, MAX_PATH);
-//
-//	// Chiron 2025
-//	// 
-//	//if (char* lastSlash = strrchr(dirOpus, '\\')) *lastSlash = '\0';
-//	// at the top of your block (C89 style you can even group all your declarations)
-//	char* lastSlash;
-//
-//	// later …
-//	lastSlash = strrchr(dirOpus, '\\');
-//	if (lastSlash) {
-//		*lastSlash = '\0';
-//	}
-//
-//
-//
-//	SetCurrentDirectory(dirOpus);
-//	strcpy(dirTemp, dirOpus);
-//	strcat(dirTemp, "\\opustemp\\");
-//
-//	// Save command line args for WM_CREATE handlers
-//	strcpy(gstrCmdLineArgs, cmdLine);
-//
-//
-//
-//
-//
-//
-//
-//
-//	MessageBox(NULL, gstrCmdLineArgs[0], "DEBUG: ADFOpus.c gstrCmdLineArgs[0]", MB_OK | MB_ICONINFORMATION);
-//
-//
-//
-//	// We need this something... I can't remember what. 
-//	// Used for command line processing.
-//	int				iCountArgs;
-//
-//	// Open files given on the command line
-//	if (gstrCmdLineArgs[0] != '\0')
-//	{
-//		char ArgArray[20][MAX_PATH];
-//		int  argCount = 0;
-//		int  inQuote = 0;
-//		char* p = gstrCmdLineArgs;
-//		char  token[MAX_PATH];
-//		int   ti = 0;
-//
-//		bCmdLineArgs = TRUE;
-//
-//		MessageBox(NULL, "Do we get here?", "DEBUG: gstrCmdLineArgs[0] != '\\0'", MB_OK | MB_ICONINFORMATION);
-//
-//		// Walk the entire gstrCmdLineArgs buffer
-//		while (*p && argCount < _countof(ArgArray))
-//		{
-//			if (*p == '"')
-//			{
-//				// Toggle quote state, but don’t copy the quote itself
-//				inQuote = !inQuote;
-//			}
-//			else if (*p == ' ' && !inQuote)
-//			{
-//				// end of one token
-//				if (ti > 0)
-//				{
-//					token[ti] = '\0';
-//					strcpy_s(ArgArray[argCount++], MAX_PATH, token);
-//					ti = 0;
-//				}
-//			}
-//			else
-//			{
-//				// normal character
-//				token[ti++] = *p;
-//			}
-//			p++;
-//		}
-//
-//		// final token (if any)
-//		if (ti > 0 && argCount < _countof(ArgArray))
-//		{
-//			token[ti] = '\0';
-//			strcpy_s(ArgArray[argCount++], MAX_PATH, token);
-//		}
-//
-//		// launch a child for each full path
-//		for (iCountArgs = 0; iCountArgs < argCount; iCountArgs++)
-//		{
-//			// ArgArray[iCountArgs] now contains a clean path without quotes
-//			strcpy_s(gstrFileName, sizeof(gstrFileName), ArgArray[iCountArgs]);
-//			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
-//		}
-//
-//
-//		// testing
-//		strcpy_s(g_defaultPath, sizeof(g_defaultPath), "D:\\");
-//
-//
-//		// DEBUG: show last path processed - this is the path we want to use for the default local filesystem path.
-//		MessageBox(NULL, ArgArray[argCount - 1], "DEBUG: show last path processed", MB_OK | MB_ICONINFORMATION);
-//
-//	}
-//	else { // ELSE no command line arguments were given, so here we set a default local filesystem path for the user's home folder as the default.
-//		// DEBUG: show last path processed - this is the path we want to use for the default local filesystem path.
-//		//strcpy_s(g_defaultPath, sizeof(g_defaultPath), "C:\\");
-//		//MessageBox(NULL, "So like... there were no files on the command line. Cool bro.", "DEBUG:", MB_OK | MB_ICONINFORMATION);
-//		//MessageBox(NULL, "Do EVER we get here?", "DEBUG:", MB_OK | MB_ICONINFORMATION);
-//
-//		// 1) grab %USERPROFILE%
-//		char homePath[MAX_PATH];
-//		DWORD n = GetEnvironmentVariableA(
-//			"USERPROFILE",
-//			homePath,
-//			ARRAYSIZE(homePath)
-//		);
-//
-//		if (n > 0 && n < ARRAYSIZE(homePath))
-//		{
-//
-//			//MessageBox(NULL, "Do we get here?", "DEBUG:", MB_OK | MB_ICONINFORMATION);	
-//
-//			// copy it in
-//			strncpy_s(g_defaultPath,
-//				sizeof(g_defaultPath),
-//				homePath,
-//				_TRUNCATE);
-//
-//			// 2) make sure it ends with a backslash
-//			size_t len = strlen(g_defaultPath);
-//			if (len > 0 && g_defaultPath[len - 1] != '\\')
-//			{
-//				if (len + 1 < sizeof(g_defaultPath))
-//				{
-//					g_defaultPath[len] = '\\';
-//					g_defaultPath[len + 1] = '\0';
-//				}
-//			}
-//
-//			MessageBox(NULL, g_defaultPath, "ADFOpus.c: g_defaultPath", MB_OK | MB_ICONINFORMATION);
-//
-//
-//		}
-//		else
-//		{
-//			// fallback if USERPROFILE is missing or too long
-//			strcpy_s(g_defaultPath,
-//				sizeof(g_defaultPath),
-//				"C:\\");
-//		}
-//
-//
-//	}
-//
-//
-//
-//
-//	// Create the main frame window
-//	ghwndFrame = CreateAppWindow(inst);
-//	if (ghwndFrame)
-//	{
-//		// ←——— Add this block to attach your menu icons ———→
-//		{
-//			// attach to the top‐level menu bar:
-//			HMENU hMain = GetMenu(ghwndFrame);
-//			if (hMain)
-//				SetMenuBitmaps(instance, hMain);
-//		}
-//
-//		ShowWindow(ghwndFrame, show);
-//		UpdateWindow(ghwndFrame);
-//
-//		// Standard MDI/Message loop
-//		msg.wParam = 1;
-//		while (GetMessage(&msg, NULL, 0, 0))
-//		{
-//			if (!TranslateMDISysAccel(ghwndMDIClient, &msg))
-//			{
-//				TranslateMessage(&msg);
-//				DispatchMessage(&msg);
-//			}
-//		}
-//	}
-//
-//	// Cleanup
-//	adfEnvCleanUp();
-//	WriteOptions();
-//	UnregisterAllClasses(inst);
-//
-//
-//	return msg.wParam;
-//}
-
-
-
-
-
 
 
 
@@ -788,23 +272,6 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 	UpdateWindow(ghwndFrame);
 	// … after ShowWindow/UpdateWindow …
 
-	//if (argCount > 0)
-	//{
-	//	// 1) Always open the local FS lister first
-	//	CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
-
-	//	// 2) Then open one ADF child per file
-	//	for (i = 0; i < argCount; i++)
-	//	{
-	//		strcpy_s(gstrFileName, sizeof gstrFileName, ArgArray[i]);
-	//		CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
-	//	}
-	//}
-	//else
-	//{
-	//	// no args → just the one local FS lister
-	//	CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
-	//}
 
 
 	// TODO: WTF?!?!?!?! This does nothing??!??!?!
@@ -844,8 +311,9 @@ CLEANUP:
 
 
 
-
-
+#include <windows.h>
+#include "resource.h"     // IDR_LISTERMENU, ID_FIL_*, IDI_*, etc.
+#include "MenuIcons.h"    // InitMenuIcons, CleanupMenuIcons, OnMeasureItem, OnDrawItem
 LRESULT CALLBACK MainWinProc(
 	HWND   hwndFrame,
 	UINT   wMsg,
@@ -853,32 +321,32 @@ LRESULT CALLBACK MainWinProc(
 	LPARAM lParam
 )
 {
-	HANDLE          hDrop;
-	int             i, iCount;
+	HANDLE        hDrop;
+	int           i, iCount;
 	NMHDR* nmhdr = (NMHDR*)lParam;
-	LPTOOLTIPTEXT   lpTTT;
+	LPTOOLTIPTEXT lpTTT;
 
 	switch (wMsg)
 	{
-	case WM_CREATE:
-		// 1) Usual frame init
-		CreateProc(hwndFrame);
-		SetWindowPos(
-			hwndFrame, NULL,
-			0, 0, 800, 600,
-			SWP_NOZORDER | SWP_NOMOVE
-		);
+	case WM_INITMENU:
+	{
+		// Re-evaluate enabled/disabled on the main menu bar
+		HMENU hMenu = (HMENU)wParam;
+		UpdateMenuItems(hMenu);
+		break;
+	}
 
-		// 2) Spawn your children exactly once here:
+	case WM_CREATE:
+		CreateProc(hwndFrame);
+		SetWindowPos(hwndFrame, NULL, 0, 0, 800, 600,
+			SWP_NOZORDER | SWP_NOMOVE);
+
 		if (!gbFirstTime)
 		{
-			// If a file was passed on the command line…
 			if (gstrCmdLineArgs[0] != '\0')
 			{
-				// a) first open the Local‐FS lister
 				CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
 
-				// b) then parse gstrCmdLineArgs into tokens
 				{
 					char ArgArray[20][MAX_PATH];
 					char token[MAX_PATH];
@@ -888,9 +356,7 @@ LRESULT CALLBACK MainWinProc(
 					while (*p && argCount < _countof(ArgArray))
 					{
 						if (*p == '"')
-						{
 							inQuote = !inQuote;
-						}
 						else if (*p == ' ' && !inQuote && ti > 0)
 						{
 							token[ti] = '\0';
@@ -909,22 +375,17 @@ LRESULT CALLBACK MainWinProc(
 						strcpy_s(ArgArray[argCount++], MAX_PATH, token);
 					}
 
-					// c) spawn one ADF‐lister per file
 					for (i = 0; i < argCount; i++)
 					{
-						strcpy_s(gstrFileName,
-							sizeof gstrFileName,
-							ArgArray[i]);
+						strcpy_s(gstrFileName, sizeof gstrFileName, ArgArray[i]);
 						CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
 					}
 
-					// d) allow your WM_PAINT cascade to run once
 					bCmdLineArgs = TRUE;
 				}
 			}
 			else
 			{
-				// No files → one Local‐FS lister only
 				CreateChildWin(ghwndMDIClient, CHILD_WINLISTER);
 			}
 
@@ -933,34 +394,22 @@ LRESULT CALLBACK MainWinProc(
 		break;
 
 	case WM_PAINT:
-		// your one‐time cascade if needed
 		if (bCmdLineArgs)
 		{
 			HWND hwndActiveChild =
 				(HWND)SendMessage(ghwndMDIClient,
-					WM_MDIGETACTIVE,
-					0, 0);
-			SendMessage(ghwndMDIClient,
-				WM_MDINEXT,
-				(WPARAM)hwndActiveChild,
-				0);
-			SendMessage(ghwndMDIClient,
-				WM_MDICASCADE,
-				0, 0);
+					WM_MDIGETACTIVE, 0, 0);
+			SendMessage(ghwndMDIClient, WM_MDINEXT,
+				(WPARAM)hwndActiveChild, 0);
+			SendMessage(ghwndMDIClient, WM_MDICASCADE, 0, 0);
 			bCmdLineArgs = FALSE;
 		}
-
 		PaintProc(hwndFrame);
-
-		// vertical‐tile tweak
-		SendMessage(ghwndMDIClient,
-			WM_MDITILE,
-			MDITILE_VERTICAL,
-			0);
+		SendMessage(ghwndMDIClient, WM_MDITILE,
+			MDITILE_VERTICAL, 0);
 		break;
 
 	case WM_SIZE:
-		// just resize the tool/status bars & MDI client
 		SendMessage(ghwndTB, WM_SIZE, 0, 0);
 		SendMessage(ghwndSB, WM_SIZE, 0, 0);
 		ResizeMDIClientWin(hwndFrame, ghwndMDIClient);
@@ -968,76 +417,69 @@ LRESULT CALLBACK MainWinProc(
 
 	case WM_COMMAND:
 		if (!CommandProc(hwndFrame, wParam, lParam))
-			return DefFrameProc(
-				hwndFrame,
+		{
+			return DefFrameProc(hwndFrame,
 				ghwndMDIClient,
-				wMsg, wParam, lParam
-			);
+				wMsg, wParam, lParam);
+		}
 		break;
 
 	case WM_DROPFILES:
-		// drag‐&‐drop -> spawn ADF‐listers
 		hDrop = (HANDLE)wParam;
-		iCount = DragQueryFile(
-			hDrop,
-			0xFFFFFFFF,
-			gstrFileName,
-			sizeof gstrFileName
-		);
+		iCount = DragQueryFile(hDrop, 0xFFFFFFFF,
+			gstrFileName, sizeof gstrFileName);
 		for (i = 0; i < iCount; i++)
 		{
-			DragQueryFile(
-				hDrop,
-				i,
-				gstrFileName,
-				sizeof gstrFileName
-			);
+			DragQueryFile(hDrop, i,
+				gstrFileName, sizeof gstrFileName);
 			CreateChildWin(ghwndMDIClient,
 				CHILD_AMILISTER);
 		}
 		DragFinish(hDrop);
 		break;
 
-	case WM_INITMENU:
-		ghmenuMain = (HMENU)wParam;
-		UpdateMenuItems(ghmenuMain);
-		CheckMenuItem(ghmenuMain,
+	case WM_INITMENUPOPUP:
+	{
+		BOOL  isSysMenu = (BOOL)HIWORD(lParam);
+		HMENU hPopup = (HMENU)wParam;
+
+		// Let the MDI frame do merging & disabling
+		DefFrameProc(hwndFrame,
+			ghwndMDIClient,
+			WM_INITMENUPOPUP,
+			wParam,
+			lParam);
+
+		// Re-run custom enable/disable logic
+		UpdateMenuItems(hPopup);
+
+		// Set checks on View→Toolbar and View→Status Bar
+		CheckMenuItem(hPopup,
 			ID_VIEW_TOOL_BAR,
-			gbToolbarVisible
-			? MF_CHECKED
-			: MF_UNCHECKED);
-		CheckMenuItem(ghmenuMain,
+			MF_BYCOMMAND |
+			(gbToolbarVisible
+				? MF_CHECKED
+				: MF_UNCHECKED));
+		CheckMenuItem(hPopup,
 			ID_VIEW_THE_STATUSBAR,
-			gbStatusBarVisible
-			? MF_CHECKED
-			: MF_UNCHECKED);
-		SetMenuBitmaps(instance, ghmenuMain);
-		break;
+			MF_BYCOMMAND |
+			(gbStatusBarVisible
+				? MF_CHECKED
+				: MF_UNCHECKED));
 
-	case WM_DESTROY:
-		DestroyProc(hwndFrame);
-		break;
+		if (!isSysMenu)
+		{
+			MENUINFO mi = { sizeof(mi) };
+			GetMenuInfo(hPopup, &mi);
+			mi.fMask = MIM_STYLE;
+			mi.dwStyle = mi.dwStyle | MNS_CHECKORBMP;
+			SetMenuInfo(hPopup, &mi);
 
-	case WM_QUIT:
-		_chdir(dirOpus);
-		_rmdir(dirTemp);
-		break;
+			InitMenuIcons(instance, hPopup);
+		}
 
-	case WM_LBUTTONUP:
-		if (gbIsDragging) MainWinOnDrop();
-		break;
-
-	case WM_MOUSEMOVE:
-		if (gbIsDragging)
-			MainWinOnDragOver(
-				LOWORD(lParam),
-				HIWORD(lParam)
-			);
-		break;
-
-	case WM_KEYDOWN:
-		if (gbIsDragging) MainWinOnDrop();
-		break;
+		return 0;
+	}
 
 	case WM_NOTIFY:
 		if (nmhdr->code == TTN_NEEDTEXT)
@@ -1047,22 +489,60 @@ LRESULT CALLBACK MainWinProc(
 		}
 		break;
 
-	default:
-		return DefFrameProc(
-			hwndFrame,
+	case WM_LBUTTONUP:
+		if (gbIsDragging)
+		{
+			MainWinOnDrop();
+			return 0;
+		}
+		return DefFrameProc(hwndFrame,
 			ghwndMDIClient,
-			wMsg, wParam, lParam
-		);
+			wMsg, wParam, lParam);
+
+	case WM_MOUSEMOVE:
+		if (gbIsDragging)
+		{
+			MainWinOnDragOver(
+				LOWORD(lParam),
+				HIWORD(lParam)
+			);
+			return 0;
+		}
+		return DefFrameProc(hwndFrame,
+			ghwndMDIClient,
+			wMsg, wParam, lParam);
+
+	case WM_KEYDOWN:
+		if (gbIsDragging)
+		{
+			MainWinOnDrop();
+			return 0;
+		}
+		break;
+
+	case WM_MEASUREITEM:
+		OnMeasureItem(hwndFrame,
+			(MEASUREITEMSTRUCT*)lParam);
+		return TRUE;
+
+	case WM_DRAWITEM:
+		OnDrawItem(hwndFrame,
+			(DRAWITEMSTRUCT*)lParam);
+		return TRUE;
+
+	case WM_DESTROY:
+		CleanupMenuIcons();
+		PostQuitMessage(0);
+		return 0;
+
+	default:
+		return DefFrameProc(hwndFrame,
+			ghwndMDIClient,
+			wMsg, wParam, lParam);
 	}
 
 	return 0;
 }
-
-
-
-
-
-
 
 
 
