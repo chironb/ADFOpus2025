@@ -840,6 +840,105 @@
     <Image Include="ADFOpusSrc\images\readme.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="ADFOpusSrc\images\new.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\newlister.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\open.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\close.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\exit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\rename.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\delete.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\createdir.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\uponelev.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\info.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\properti.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\options.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\batch.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\greaseweazle.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\greaseweazlewrite.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\bootblockinstall.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\bootblockrawwrite.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\display.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\tilehor.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\tilever.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\cascade.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\closeallwindows.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\help.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\about.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\undelete.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\showundel.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\refresh.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\textviewer.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\hexviewer.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\selectall.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\selectnone.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\selectinvert.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ADFOpusSrc\images\readme.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="ADFOpusSrc\images\ArrowCop.cur">

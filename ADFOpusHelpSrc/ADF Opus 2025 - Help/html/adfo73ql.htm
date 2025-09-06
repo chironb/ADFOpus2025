@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Adf_Opus_filesystem</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="compatibility,Workbench">
+	<PARAM NAME="Keyword" VALUE="DC">
+	<PARAM NAME="Keyword" VALUE="Directory Cache">
+	<PARAM NAME="Keyword" VALUE="disk capacity">
+	<PARAM NAME="Keyword" VALUE="disks, formatting">
+	<PARAM NAME="Keyword" VALUE="Fast File System">
+	<PARAM NAME="Keyword" VALUE="FFS">
+	<PARAM NAME="Keyword" VALUE="file system options">
+	<PARAM NAME="Keyword" VALUE="file system, Amiga">
+	<PARAM NAME="Keyword" VALUE="format">
+	<PARAM NAME="Keyword" VALUE="International Mode">
+	<PARAM NAME="Keyword" VALUE="Kickstart">
+	<PARAM NAME="Keyword" VALUE="OFS">
+	<PARAM NAME="Keyword" VALUE="Original File System">
+	<PARAM NAME="Keyword" VALUE="Workbench">
+</OBJECT>
+
+<P><A NAME="idh_filesystem"></A>The Amiga File System </P>
+
+<P>To quote the Amiga A1200 manual in part:</P>
+
+<P>"Floppy disks may be formatted with the original Amiga file system (OFS) or the Fast File System (FFS). You can also format disks with a directory caching option for faster response in opening disk windows and reading disk directories. This option slightly decreases the amount of space on the disk."</P>
+
+<P>"The following options are available for formatting disks in the Amiga's floppy drive."</P>
+
+<P><BR>
+-----------------------------------------------------------------------------------<BR>
+Amiga File System Approximate Formatted Capacity <BR>
+----------------------------------------------------------------------------------- </P>
+
+<TABLE cols=2 width=267>
+
+<TR VALIGN="top">
+<TD width=50%>OFS</TD>
+<TD width=50%>837 KB</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=50%>FFS</TD>
+<TD width=50%>879 KB</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=50%>DC-OFS</TD>
+<TD width=50%>837 KB</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=50%>DC-FFS</TD>
+<TD width=50%>879 KB</TD>
+</TR>
+</TABLE><BR>
+
+<P>"Disks formatted with the directory-caching option cannot be read by Amigas with earlier versions of the system software. Do not format a disk with the directory-caching option if you need to use the disk to transfer the files to an Amiga with Release 2 or earlier system software."</P>
+
+<P>...and the Amiga OS3.1 Workbench manual:</P>
+
+<P><B>Fast File System </B></P>
+
+<P>"Allows the Amiga to fit more information on a disk. It is faster than the standard file system. Fast File System disks are incompatible with Workbench software releases prior to 2.0 and should not be selected for disks that are also used on pre-Release 2 Amigas."</P>
+
+<P><B>International Mode </B></P>
+
+<P>"Fully supports international characters in file names. We recommend that you set this option on. International Mode is incompatible with Workbench software releases prior to 2.0 and should not be selected for disks that are also used on pre-Release 2 Amigas."</P>
+
+<P><B>Directory Cache </B></P>
+
+<P>"Speeds up the opening of drawers, file requesters and listings. This option is off by default. Disks using Directory Cache are incompatible with Workbench software releases prior to 3.0 and should not be selected for disks that are also used on pre-Release 3 Amigas."</P>
+
+<P>So the message is don't use these options if you want to use your disk with older versions of Kickstart or Workbench or you want others to have that facility.</P>
+
+</BODY>
+</HTML>

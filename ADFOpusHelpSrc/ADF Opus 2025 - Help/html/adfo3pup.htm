@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>(Untitled)</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="idh_fileflags_amiga"></A>The Amiga file flags that are set for each directory or file. If blank, no flags are set.</P>
+
+<P>H Hold -  If H, P, R, and E are set, the file can be made resident on first load (OS 2.x and 3.0).</P>
+
+<P>S Script - If set, the file is a script (a text file of AmigaDOS  commands) and can be run without using the EXECUTE command.</P>
+
+<P>P Pure - If set for a command, it can be made resident in memory. This allows the command to be run without being reloaded from disk each time, reducing time and memory use. To be made resident, a command should be both re-entrant and re-executable. A re-entrant command can properly support independent use by two or more programs at the same time. Just setting the Pure bit does not make a command or program pure. See the AmigaDOS reference for more information. This bit is best left unchanged.</P>
+
+<P>A Archived - This attribute is set by some backup programs to indicate that a file or directory has been archived (backed up). It is cleared whenever the file is saved.</P>
+
+<P>R Readable - If set, information in the file can be read. If this attribute is clear, a tool will not run and a project cannot be loaded by its Default Tool.</P>
+
+<P>W Writable - If set, information can be written into the file. Unless Writable is set, you cannot make changes to the file.</P>
+
+<P>E Executable - If set, the file is a tool that can be run from Workbench or the Shell. If this attribute is clear, the tool cannot be run from the Shell.</P>
+
+<P>D Deletable - If set, the drawer, project or tool can be erased from the disk. If clear, the object is protected from deletion.</P>
+
+<P>Set these attributes from the Workbench Icon Information tool, the Shell command PROTECT or ADF Opus' Properties dialogue. </P>
+
+</BODY>
+</HTML>

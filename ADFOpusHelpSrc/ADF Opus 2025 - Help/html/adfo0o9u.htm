@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Adf_Opus_using_the_programlogue ${0ª¨</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="adfs, closing">
+	<PARAM NAME="Keyword" VALUE="adfs, copying to and from">
+	<PARAM NAME="Keyword" VALUE="adfs, navigating">
+	<PARAM NAME="Keyword" VALUE="adfs, opening">
+	<PARAM NAME="Keyword" VALUE="directories">
+	<PARAM NAME="Keyword" VALUE="directories, copying">
+	<PARAM NAME="Keyword" VALUE="directories, deleting">
+	<PARAM NAME="Keyword" VALUE="directories, renaming">
+	<PARAM NAME="Keyword" VALUE="directory">
+	<PARAM NAME="Keyword" VALUE="directory, levels">
+	<PARAM NAME="Keyword" VALUE="directory, new">
+	<PARAM NAME="Keyword" VALUE="directory, properties">
+	<PARAM NAME="Keyword" VALUE="directory,listing">
+	<PARAM NAME="Keyword" VALUE="drag and drop">
+	<PARAM NAME="Keyword" VALUE="drive list">
+	<PARAM NAME="Keyword" VALUE="file system, Windows">
+	<PARAM NAME="Keyword" VALUE="files, closing">
+	<PARAM NAME="Keyword" VALUE="files, copying">
+	<PARAM NAME="Keyword" VALUE="files, navigating">
+	<PARAM NAME="Keyword" VALUE="files, opening">
+	<PARAM NAME="Keyword" VALUE="files, viewing">
+	<PARAM NAME="Keyword" VALUE="files, Windows">
+	<PARAM NAME="Keyword" VALUE="properties">
+	<PARAM NAME="Keyword" VALUE="properties, directory">
+</OBJECT>
+
+<P><A NAME="5mz0_lb"></A>Using The Program </P>
+
+<P><B>Accessing The Windows File System </B></P>
+
+<P>When ADF Opus starts you will see a Windows lister already open. This lister provides access to the files on your PC. You can choose whether this lister should open with a list of drives or in a particular directory in the "Options" dialogue. To open a new Windows lister, select View|New Windows Lister .</P>
+
+<P><B>Opening A Disk Image </B></P>
+
+<P>To work with an ADF, ADZ or DMS file you must first open it. You can open one by doing any of the following:</P>
+
+<P>· select Open... from the File menu </P>
+
+<P>· click the <IMG SRC="../images/bm12.gif" ALT="" BORDER=0> button on the toolbar </P>
+
+<P>· press Ctrl+O </P>
+
+<P>Then select the file from the dialogue box that appears. Note that it is possible to open more than one disk image at a time - each will open in its own window.</P>
+
+<P><B>Navigating </B></P>
+
+<P>Navigation is simple - just like Windows Explorer. Double-click a directory to change into it and view its contents. To go back to the parent directory, click the <IMG SRC="../images/bm13.gif" ALT="" BORDER=0> button on the toolbar.</P>
+
+<P>To change to a different drive in the Windows pane, just click the <IMG SRC="../images/bm13.gif" ALT="" BORDER=0> button when you're already at the root directory. Icons for all drives will appear - just double-click one to view its contents.</P>
+
+<P><B>Copying Files </B></P>
+
+<P>Copying is dead easy - just drag and drop the file from one pane to another and it will be copied. </P>
+
+<P>Note: drag and drop is not restricted to a single window - if you have two disk images open at once you can copy files from one to another. To move files within a disk image you can open two copies of a single disk image and drag files from one to the other. You can even copy from one Windows directory to another (but you might be better off using Windows Explorer for managing your Windows files). Go ahead and try it - knock yourself out! </P>
+
+<P><B>Creating A New Directory </B></P>
+
+<P>To create a new directory, either select Action|New Directory or click the <IMG SRC="../images/bm14.gif" ALT="" BORDER=0> button on the toolbar. </P>
+
+<P><B>Renaming Files And Directories </B></P>
+
+<P>You can rename a file or directory by selecting it and then selecting Action|Rename or clicking the <IMG SRC="../images/bm15.gif" ALT="" BORDER=0> button on the toolbar.</P>
+
+<P><B>Deleting Files And Directories </B></P>
+
+<P>You can delete a file or directory by selecting it and then selecting Action|Delete or clicking the <IMG SRC="../images/bm16.gif" ALT="" BORDER=0> button on the toolbar. </P>
+
+<P><B>Undeleting Files And Directories </B></P>
+
+<P>Undeleting files or directories is a two-step process.  Firstly, with the parent ADF's window active, select View|Undeletable Files or click the <IMG SRC="../images/bm17.gif" ALT="" BORDER=0> button on the toolbar. Opus will then display all files available for undeletion or advise otherwise. Undeletable files are shown ghosted. Undelete an entry by selecting it and then selecting Action|Undelete or clicking the <IMG SRC="../images/bm18.gif" ALT="" BORDER=0> button on the toolbar. </P>
+
+<P>Note: ADFLib's undeletion routines are imperfect. All undeletable files are notified at the root level as well as in the directory from which they were deleted. You need to be in the correct directory for undeletion to succeed. You may have to find the correct one by trial and error. Displaying all files at the root level actually acts as a summary of available recoverable files, so it's not all bad. Some files that should be recoverable may not be displayed. Some files that are displayed may not undelete successfully. Unfortunately, I can't fix this. I still think that some level of recovery is useful, rather than having none. At least you have some chance of being able to recover lost data.</P>
+
+<P><B>Creating A New Blank ADF </B></P>
+
+<P>Choose File|New... or click the <IMG SRC="../images/bm19.gif" ALT="" BORDER=0> button to open the Create New Volume dialogue. You can set the path, label and other options from this dialogue. You can also choose whether to use  <A HREF="adfo73ql.htm">FFS</A>, <A HREF="adfo73ql.htm">Directory Caching</A> and  <A HREF="adfo73ql.htm">International Mode</A> by selecting the appropriate checkboxes under Flags . You can make an ADF bootable by selecting Install from the Tools  menu or clicking the <IMG SRC="../images/bm20.gif" ALT="" BORDER=0> button. </P>
+
+<P>Caution:  ADFLib can not detect whether an ADF is already bootable or the existing bootblock is valid. To avoid losing anything of value, work on a copy of the ADF and check it within an emulator before deleting the original.</P>
+
+<P><B>Creating A New Blank Hardfile </B></P>
+
+<P>Choose File|New... or click the <IMG SRC="../images/bm19.gif" ALT="" BORDER=0> button to open the Create New Volume dialogue. You can set the path, label and other options from this dialogue. You can choose the size of the hardfile by selecting Preset Size and selecting a size from 1 to 512MB from the lister, or by selecting Custom Size and entering the required size manually. You can also opt to use <A HREF="adfo73ql.htm">FFS</A>, <A HREF="adfo73ql.htm">Directory Caching</A> or  <A HREF="adfo73ql.htm">International Mode</A>, as for ADFs.</P>
+
+<P>Note: For maximim compatibility, especially with older versions of Workbench, leave  <A HREF="adfo73ql.htm">FFS</A> and <A HREF="adfo73ql.htm">International Mode</A> turned off.</P>
+
+<P><B>Getting Information About A Disk Image </B></P>
+
+<P>Choose Information... from the File  menu or click the <IMG SRC="../images/bm21.gif" ALT="" BORDER=0> button to view a summary of the current ADF such as how much free space there is, what <A HREF="adfo73ql.htm">file system</A> it uses, whether it has been compressed and so on. See the <A HREF="adfo0it2.htm">Volume Information Dialogue </A> section for  details.</P>
+
+<P><B>Getting Information About A File Or Directory </B></P>
+
+<P>Choose Properties... from the Action  or context menus or click the <IMG SRC="../images/bm22.gif" ALT="" BORDER=0> button to display the attributes or property flags for a file or directory. If the selected item is an Amiga file or directory, its file comment will also be displayed, if one exists. Comments are limited to 79 characters in length by ADFLib. See the <A HREF="adfo3gab.htm">Properties Dialogue </A> section for  details.</P>
+
+<P><B>Closing A Disk Image </B></P>
+
+<P>This is pretty obvious but when you're finished with a disk image you need to close it before you use it in another program like UAE. To close an image just select its window and click the <IMG SRC="../images/bm23.gif" ALT="" BORDER=0> button on the toolbar (or select File|Close ). If you don't close an ADZ you have made changes to, the changes will be lost at program shutdown.  All changes to DMS files will be lost since ADF Opus can't compress to DMS format (see <A HREF="adfo0zhq.htm">Introduction</A>). If you want to modify a DMS file, convert it to ADZ and modify that.</P>
+
+<P><B>Running Or Opening Files </B></P>
+
+<P>You can run or open files listed in the file listers by double-clicking the file. Files appearing in an Amiga lister will open as long as the file type is registered with Windows and a suitable application exists which can handle that file type. For example, if you double-click on a text file called myfile.txt and the .txt file type is registered to open in your text editor, myfile.txt will open in the text editor. See <A HREF="adfo1vl0.htm">Registering File Types With Windows</A></P>
+
+<P><B>Viewing Files Within ADF Opus</B></P>
+
+<P>Select the file and then choose Tools|Text Viewer  or click the <IMG SRC="../images/bm24.gif" ALT="" BORDER=0> button to display the text viewer. The viewer can also be activated from the context menu. See the <A HREF="adfo2t9u.htm">Text Viewer Dialogue </A> section for details.</P>
+
+<P><B>Temporary Files </B></P>
+
+<P>When ADF Opus opens a compressed disk image, it creates a temporary, intermediate ADF in specially created directory called opustemp . If the image's child window is specifically closed, Opus recompresses an ADZ, or simply closes a DMS, and deletes the related ADF from the opustemp directory. If ADF Opus is shut down with child windows still open, any changes to an ADZ will be lost and the temporary ADF will not be deleted normally. To avoid leaving ADFs in the temp directory, ADF Opus removes all ADF files from the opustemp directory on shutdown.</P>
+
+<P><A HREF="adfo7bu6.htm">The Main Window</A></P>
+
+</BODY>
+</HTML>
