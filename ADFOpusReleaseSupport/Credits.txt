@@ -8,6 +8,9 @@ https://sourceforge.net/projects/helpdecogui2/
 Additional help was providing by this excellent guide:
 https://help-info.de/wayback/en/Help_Info_WinHelp/hw_converting.htm
 
+The amazing Greaseweazle is by Keir Fraser and the host tools software can be found here: 
+https://github.com/keirf/greaseweazle
+
 A proper updated credits document still needs to be written. 
 
 What follows below is the original credits information taken from the "About" dialog box from the last original release of v1.2 in the early 2000's. 
