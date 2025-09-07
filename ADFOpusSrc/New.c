@@ -72,9 +72,16 @@ LRESULT CALLBACK NewDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		SendMessage(GetDlgItem(dlg, IDC_NEWPRESET), BM_SETCHECK, BST_CHECKED, 0l);
 		SendMessage(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), BM_SETCHECK, BST_CHECKED, 0l);
 		SendMessage(GetDlgItem(dlg, IDC_NEWPRESETSIZE), BM_SETCHECK, BST_CHECKED, 0l);
-		SetDlgItemText(dlg, IDC_NEWPATH, "NEW.ADF");
+		SetDlgItemText(dlg, IDC_NEWPATH, "adfopus_new_default.adf");
 		SetDlgItemText(dlg, IDC_NEWLABEL, Options.defaultLabel);
+		// Open in ADF Opus after creation
+		CheckDlgButton(
+			dlg,                // HWND of the dialog
+			IDC_NEWOPEN,    // control ID
+			BST_CHECKED         // set it checked
+		);
 		return TRUE;
+
 	case WM_COMMAND:
 		switch(wp) {
 		case IDC_NEWCREATE:

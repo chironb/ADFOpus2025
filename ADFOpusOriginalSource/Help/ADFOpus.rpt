@@ -1,0 +1,14 @@
+; Version 4.0 help file.
+; Compiled on February 27, 2000, at 5:14 PM with no compression.
+
+[OPTIONS]
+TITLE=ADF Opus help
+COPYRIGHT=ADF Opus V0.7.1 by Dan Sutherland                                          and Gary Harris.                                      Help file by Gary Harris.
+LCID=0xc09 0x0 0x0 ; English (Australian)
+CNT=.\AdfOpus.cnt
+
+[WINDOWS]
+opus_win="ADF Opus help",(84,3,837,1015),28420,(r14876671),(r12632256)
+
+[CONFIG-opus_win]
+CreateButton(`AdfOpusVersion',`Version',`About()')

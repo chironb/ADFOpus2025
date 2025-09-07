@@ -1,0 +1,1012 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_VOLINFO DIALOGEX 0, 0, 247, 215
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Disk Image Information"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "Tab1",IDC_VOLINFOTABCTRL,"SysTabControl32",0x0,5,5,235,
+                    185
+    PUSHBUTTON      "Help",IDC_VOLINFO_HELP,135,195,50,14
+    DEFPUSHBUTTON   "Close",IDCANCEL,190,195,50,14
+END
+
+IDD_BATCHCONVERTER DIALOGEX 0, 0, 257, 218
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Batch Converter"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Add...",IDC_BCADD,195,15,50,15
+    PUSHBUTTON      "Remove",IDC_BCREMOVE,195,35,50,15
+    PUSHBUTTON      "Remove All",IDC_BCREMOVEALL,195,55,50,15
+    CONTROL         "Delete original files",IDC_BCDELETE_ORIGINAL,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,76,115,10
+    CONTROL         "Disk Image (ADF)",IDC_BCADF,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE,10,107,115,14
+    CONTROL         "Compressed Disk Image (ADZ)",IDC_BCADZ,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,135,107,110,14
+    DEFPUSHBUTTON   "Start",IDC_BCSTART,90,196,50,15,WS_DISABLED
+    PUSHBUTTON      "Help",IDC_BCHELP,145,196,50,15
+    PUSHBUTTON      "Close",IDCANCEL,200,196,50,15
+    LISTBOX         IDC_BCFILELIST,10,15,180,55,LBS_MULTIPLESEL | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Source Files",IDC_STATIC,5,5,245,87
+    GROUPBOX        "Output type",IDC_STATIC,5,95,245,31
+    GROUPBOX        "Status",IDC_STATIC,5,129,245,60
+    LISTBOX         IDC_BCSTATUS,10,139,235,45,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_ABOUT DIALOG DISCARDABLE  0, 0, 257, 233
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About ADF Opus"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Tab1",IDC_ABOUTTABCTRL,"SysTabControl32",0x0,5,5,245,
+                    200
+    DEFPUSHBUTTON   "Good Work Fella!",IDCANCEL,182,211,70,15
+END
+
+IDD_NEWVOLUME DIALOGEX 0, 0, 247, 236
+STYLE DS_MODALFRAME | DS_CENTER | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Create New Volume"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_NEWPATH,10,15,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_NEWBROWSE,185,15,50,15
+    CONTROL         "Disk Image (ADF)",IDC_NEWADF,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,10,50,85,10
+    CONTROL         "High Density (1.76MB)",IDC_NEWHD,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,120,50,85,10
+    CONTROL         "Hardfile",IDC_NEWHARDFILE,"Button",BS_AUTORADIOBUTTON | 
+                    WS_TABSTOP,10,60,85,10
+    CONTROL         "Preset Size",IDC_NEWPRESET,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED | WS_GROUP | WS_TABSTOP,15,75,80,10
+    CONTROL         "Slider1",IDC_NEWPRESETSLIDER,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_TOP | WS_DISABLED | WS_TABSTOP,115,
+                    65,85,20
+    CONTROL         "Custom Size (KB)",IDC_NEWCUSTOM,"Button",
+                    BS_AUTORADIOBUTTON | WS_DISABLED | WS_TABSTOP,15,90,80,
+                    10
+    EDITTEXT        IDC_NEWCUSTOMSIZE,115,90,85,12,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    CONTROL         "Fast Filesystem",IDC_NEWFFS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,120,75,10
+    CONTROL         "Directory Caching",IDC_NEWDIRC,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,120,120,75,10
+    CONTROL         "International Mode",IDC_NEWINTL,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,130,75,10
+    CONTROL         "Bootable",IDC_NEWBOOTABLE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,120,130,75,10
+    EDITTEXT        IDC_NEWLABEL,10,160,225,12,ES_AUTOHSCROLL
+    CONTROL         "Open after creating",IDC_NEWOPEN,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,195,75,10
+    DEFPUSHBUTTON   "Create",IDC_NEWCREATE,80,215,50,15
+    PUSHBUTTON      "Help",IDC_NEWHELP,135,215,50,15
+    PUSHBUTTON      "Cancel",IDCANCEL,190,215,50,15
+    GROUPBOX        "Path",IDC_STATIC,5,5,235,30
+    GROUPBOX        "Type",IDC_STATIC,5,40,235,65
+    GROUPBOX        "Flags",IDC_STATIC,5,110,235,35
+    GROUPBOX        "Label",IDC_STATIC,5,150,235,30
+    GROUPBOX        "Misc",IDC_STATIC,5,185,235,25
+    LTEXT           "1MB",IDC_NEWPRESETSIZE,205,70,30,10
+END
+
+IDD_VOLSELECT DIALOGEX 0, 0, 212, 121
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Select volume(s) to open"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "List1",IDC_VOLSELLIST,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_NOSORTHEADER | WS_BORDER | 
+                    WS_TABSTOP,5,5,200,90
+    DEFPUSHBUTTON   "Open",IDC_VOLSELOPEN,45,100,49,15,WS_DISABLED
+    PUSHBUTTON      "Help",IDC_VOLSELHELP,100,100,50,15
+    PUSHBUTTON      "Cancel",IDCANCEL,155,100,50,15
+END
+
+IDD_ABOUTPAGE1 DIALOG DISCARDABLE  0, 0, 245, 190
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "http://adfopus.sourceforge.net/",IDC_WEBPAGEBTN,64,138,
+                    116,15
+    PUSHBUTTON      "Mail the author",IDC_EMAILBTN,91,167,62,14
+    CONTROL         105,ID_LOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | 
+                    SS_SUNKEN,7,5,228,55
+    LTEXT           "Copyright © 1998-2002 Dan Sutherland and Gary Harris.",
+                    IDC_STATIC,31,74,183,8
+    CTEXT           "ADF Opus comes with ABSOLUTELY NO WARRANTY.",IDC_STATIC,
+                    32,89,181,10
+    CTEXT           "For updates visit the ADF Opus web page:",IDC_STATIC,8,
+                    125,230,10
+    CTEXT           "Any comments, ideas or bug reports?",IDC_STATIC,8,156,
+                    230,8
+    LTEXT           "",IDC_OPUS_VERSION,83,63,79,8
+    LTEXT           "This is free software, and you are welcome to redistribute",
+                    IDC_STATIC,34,102,179,8
+    LTEXT           "it under certain conditions; see help for details.",
+                    IDC_STATIC,49,113,146,8
+END
+
+IDD_ABOUTPAGE2 DIALOG DISCARDABLE  0, 0, 237, 189
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "The Credits (in order of appearance)",IDC_STATIC,5,5,
+                    225,10
+    LTEXT           "Dan Sutherland",IDC_STATIC,7,21,225,8
+    RTEXT           "Idea, design, code",IDC_STATIC,5,30,225,8
+    LTEXT           "Laurent Clévy",IDC_STATIC,5,44,225,8
+    RTEXT           "Amiga filesystem code (ADFLib), ideas and help",
+                    IDC_STATIC,5,58,225,8
+    LTEXT           "Gary Harris",IDC_STATIC,5,72,225,8
+    RTEXT           "Help file, bug reports, ideas, more help and more code",
+                    IDC_STATIC,5,86,225,8
+    LTEXT           "André R. de la Rocha",IDC_STATIC,5,100,225,8
+    RTEXT           "DMS conversion routines (xDMS)",IDC_STATIC,5,114,225,8
+    LTEXT           "James Thomas",IDC_STATIC,7,128,225,8
+    RTEXT           "The ADF Opus logo",IDC_STATIC,7,142,225,8
+    RTEXT           "ZLib",IDC_STATIC,7,170,225,8
+    LTEXT           "Jean-loup Gailly and Mark Adler",IDC_STATIC,7,156,225,8
+END
+
+IDD_ABOUTPAGE3 DIALOG DISCARDABLE  0, 0, 237, 156
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "A few shouts go out to:",IDC_STATIC,5,5,225,10
+    CTEXT           "Lt. Col. Arif Majothi III",IDC_STATIC,5,20,225,10
+    CTEXT           "Clive Varley (Number Clive is alive!)",IDC_STATIC,5,30,
+                    225,10
+    CTEXT           "Director General Kenneth D. Barker",IDC_STATIC,5,40,225,
+                    10
+    CTEXT           "Drug-free American Brian Moss",IDC_STATIC,5,50,225,10
+    CTEXT           "Professional blag artist Naseer",IDC_STATIC,5,60,225,10
+    CTEXT           "Rock 'n' Roll Star Dean Stott",IDC_STATIC,5,70,225,10
+    CTEXT           "Amiga emu heroes Bernd, Petter, Brian, Mathias and all the rest",
+                    IDC_STATIC,5,90,225,10
+    CTEXT           "Nitro 9, Jaybee, The Man, PJ and all the other Amiga site maintainers",
+                    IDC_STATIC,5,100,225,10
+    CTEXT           "The original South Yorkshire Mass Murderer Craig Lowe",
+                    IDC_STATIC,5,80,225,10
+    CTEXT           "The Jester, Negative Action, Polo Breath, Whiskey and all the ex-Killers",
+                    IDC_STATIC,5,110,225,10
+    CTEXT           "The man with real teeth and a false head: Ali Owrak",
+                    IDC_STATIC,5,120,225,10
+    CTEXT           "All-round dodgy geezer Bobby Shah",IDC_STATIC,5,130,225,
+                    10
+    CTEXT           "Wise-old-man-trapped-in-the-body-of-a-little-girl Angela Webster",
+                    IDC_STATIC,5,140,225,10
+END
+
+IDD_VOLINFOPAGE1 DIALOG DISCARDABLE  0, 0, 227, 172
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "List1",IDC_DEVVOLLIST,"SysListView32",LVS_REPORT | 
+                    LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,10,115,205,45
+    GROUPBOX        "General",IDC_STATIC,5,5,215,45
+    LTEXT           "Path:",IDC_STATIC_PATH,15,15,40,10
+    LTEXT           "Size:",IDC_STATIC_SIZE,15,25,40,10
+    GROUPBOX        "Volumes",IDC_STATIC,5,105,215,60
+    GROUPBOX        "Geometry",IDC_STATIC,5,55,215,45
+    LTEXT           "Cylinders:",IDC_STATIC_CYLINDERS,15,65,92,10
+    LTEXT           "Heads:",IDC_STATIC_HEADS,15,75,92,10
+    LTEXT           "Sectors per cylinder:",IDC_STATIC_SECTORS,15,85,92,10
+    LTEXT           "Type:",IDC_STATIC_TYPE,15,35,40,10
+    LTEXT           "",IDC_DEVPATH,60,15,155,8
+    LTEXT           "",IDC_DEVSIZE,60,25,150,8
+    LTEXT           "",IDC_DEVTYPE,60,35,155,10
+    LTEXT           "",IDC_DEVCYLINDERS,110,65,100,8
+    LTEXT           "",IDC_DEVHEADS,110,75,100,8
+    LTEXT           "",IDC_DEVSECT,110,85,105,8
+END
+
+IDD_VOLINFOPAGE2 DIALOG DISCARDABLE  0, 0, 227, 172
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_VOLLABEL,10,15,205,12,ES_AUTOHSCROLL
+    GROUPBOX        "Label",IDC_STATIC,5,5,215,30
+    GROUPBOX        "Filesystem",IDC_STATIC,5,40,215,50
+    LTEXT           "Fast filesystem",IDC_STATIC,15,55,95,10
+    LTEXT           "International mode",IDC_STATIC,15,65,95,10
+    LTEXT           "Directory caching",IDC_STATIC,15,75,95,10
+    GROUPBOX        "Capacity",IDC_STATIC,5,95,215,70
+    LTEXT           "Total",IDC_STATIC,15,110,95,10
+    LTEXT           "Used",IDC_STATIC,15,120,95,10
+    LTEXT           "Free",IDC_STATIC,15,130,95,10
+    LTEXT           "Full",IDC_STATIC,15,140,95,10
+    LTEXT           "",IDC_VOLFFS,115,55,100,10
+    LTEXT           "",IDC_VOLINTL,115,65,100,10
+    LTEXT           "",IDC_VOLDIRC,115,75,100,10
+    LTEXT           "",IDC_VOLTOTAL,115,110,80,10
+    LTEXT           "",IDC_VOLUSED,115,120,75,10
+    LTEXT           "",IDC_VOLFREE,115,130,75,10
+    LTEXT           "",IDC_VOLFULL,115,140,75,10
+    CONTROL         "Progress1",IDC_VOLFULLGAUGE,"msctls_progress32",
+                    PBS_SMOOTH | WS_BORDER,15,150,195,10
+END
+
+IDD_PROGRESS2 DIALOG DISCARDABLE  0, 0, 257, 71
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Copying Files..."
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,200,50,50,16,WS_DISABLED
+    CONTROL         "Progress2",IDC_TOTALPROGRESS,"msctls_progress32",
+                    WS_BORDER,5,35,245,10
+    LTEXT           "Entire operation:",IDC_STATIC,5,25,60,10
+    LTEXT           "Current file:",IDC_STATIC,5,5,60,10
+    LTEXT           "",IDC_CURRENTFILE,70,5,180,10
+    CONTROL         "Progress3",IDC_CURFILEPROGRESS,"msctls_progress32",
+                    WS_BORDER,5,15,245,10
+    LTEXT           "Accessing sector:",IDC_STATIC,5,55,65,10
+    LTEXT           "-",IDC_CURRENTSECTOR,75,55,40,10
+END
+
+IDD_PROGRESS1 DIALOG DISCARDABLE  0, 0, 257, 41
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Creating Image File..."
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,200,20,50,16,WS_DISABLED
+    CONTROL         "Progress1",IDC_CREATEPROGRESS,"msctls_progress32",
+                    WS_BORDER,5,5,245,10
+END
+
+IDD_OPTIONS DIALOGEX 0, 0, 227, 205
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Options"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Windows lister defaults to:",IDC_STATIC,7,5,213,35
+    CONTROL         "Drive list",IDC_ODRIVELIST,"Button",BS_AUTORADIOBUTTON,
+                    10,15,190,10
+    CONTROL         "This directory:",IDC_OTHISDIR,"Button",
+                    BS_AUTORADIOBUTTON,10,25,65,10
+    EDITTEXT        IDC_ODIR,85,25,130,12,ES_AUTOHSCROLL
+    GROUPBOX        "Default label for new volumes",IDC_STATIC,7,45,213,25
+    EDITTEXT        IDC_OLABEL,10,55,205,12,ES_AUTOHSCROLL
+    GROUPBOX        "Ask for confirmation before:",IDC_STATIC,7,75,213,35
+    CONTROL         "Commencing delete",IDC_ODELETE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,85,195,10
+    CONTROL         "Deleting directories",IDC_ODELDIR,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,95,195,10
+    GROUPBOX        "Miscellaneous",IDC_STATIC,7,115,213,25
+    CONTROL         "Use directory cache blocks where possible",
+                    IDC_ODIRCACHE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,
+                    125,205,10
+    GROUPBOX        "File Types",IDC_STATIC,7,145,213,31
+    PUSHBUTTON      "Register Amiga disk file types with Windows Explorer",
+                    IDC_OREGISTER,12,158,203,14
+    DEFPUSHBUTTON   "OK",IDC_OOK,7,183,50,15
+    PUSHBUTTON      "Apply",IDC_OAPPLY,62,183,50,15,WS_DISABLED
+    PUSHBUTTON      "Help",IDC_OHELP,117,183,50,15
+    PUSHBUTTON      "Close",IDCANCEL,172,183,50,15
+END
+
+IDD_ABOUTPAGE4 DIALOG DISCARDABLE  0, 0, 236, 156
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "http://perso.club-internet.fr/lclevy/adflib/",
+                    IDC_ADFLIBBTN,48,75,140,15
+    CTEXT           "ADFlib is a portable, GPLed implementation of the Amiga filesystem written by Laurent Clévy. For more information visit the ADFlib homepage:",
+                    IDC_STATIC,5,40,225,25
+    CTEXT           "[]",IDC_ADFLIBVER,5,100,225,8
+    CTEXT           "[]",IDC_ADFLIBDATE,5,110,225,8
+END
+
+IDD_FILEPROPERTIES_WIN DIALOG DISCARDABLE  0, 0, 177, 87
+STYLE DS_MODALFRAME | DS_CENTER | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Windows File Properties"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Read-Only",IDC_WIN_READONLY,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,13,31,49,10
+    CONTROL         "Hidden",IDC_WIN_HIDDEN,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,13,42,39,10
+    CONTROL         "System",IDC_WIN_SYSTEM,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,13,53,39,10
+    CONTROL         "Archive",IDC_WIN_ARCHIVE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,13,64,40,10
+    PUSHBUTTON      "Help",IDC_PROPERTIES_WIN_HELP_BUTTON,120,66,50,14,NOT 
+                    WS_TABSTOP
+    PUSHBUTTON      "Cancel",IDCANCEL,120,45,50,14
+    DEFPUSHBUTTON   "OK",IDC_PROPERTIES_WIN_OK_BUTTON,120,24,50,14
+    LTEXT           "Filename:",IDC_STATIC,7,7,29,8
+    LTEXT           "[]",IDC_PROPERTIES_FILENAME_WIN,37,7,133,8
+    GROUPBOX        "Flags",IDC_STATIC,7,20,105,60
+END
+
+IDD_ABOUTPAGE5 DIALOG DISCARDABLE  0, 0, 236, 156
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "http://www.cdrom.com/pub/infozip/zlib/",IDC_ZLIBBTN,46,
+                    102,142,14
+    CTEXT           "[]",IDC_ZLIBVER,20,22,195,8
+    CTEXT           "ZLib is Copyright (C) 1995-2002 Jean-loup Gailly and Mark Adler.",
+                    IDC_STATIC,11,38,212,8
+    CTEXT           "ZLib is a freely available, general purpose data compression library ",
+                    IDC_STATIC,11,54,212,8
+    CTEXT           "with extensions available to provide access to GZip and Zip formats.",
+                    IDC_STATIC,7,70,222,8
+    CTEXT           "You can find ZLib at:",IDC_STATIC,11,86,212,8
+END
+
+IDD_ABOUTPAGE6 DIALOG DISCARDABLE  0, 0, 236, 156
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "xDMS is a public domain decompression utility for Diskmasher,",
+                    IDC_STATIC,18,27,199,8
+    CTEXT           "a disk cruncher popular on the Amiga computer, written by",
+                    IDC_STATIC,18,39,199,8
+    CTEXT           "ADF Opus uses xDMS 1.3 for its DMS decompression facility.",
+                    IDC_STATIC,18,15,199,8
+    CTEXT           "André de la Rocha",IDC_STATIC,18,51,199,8
+    CTEXT           "xDMS uses source code fragments or informations from the following",
+                    IDC_STATIC,7,73,222,8
+    CTEXT           "public domain or freeware programs:",IDC_STATIC,7,84,
+                    222,8
+    CTEXT           "Unix  LHA  by Masaru Oki",IDC_STATIC,7,95,222,8
+    CTEXT           "LZHUF  by Haruyasu Yoshizaki",IDC_STATIC,7,106,222,8
+    CTEXT           "testdms  by  Bjorn Stenberg",IDC_STATIC,7,117,222,8
+    CTEXT           "The xDMS program and source code are available on Aminet.",
+                    IDC_STATIC,7,134,222,8
+END
+
+IDD_FILEPROPERTIES_AMI DIALOG DISCARDABLE  0, 0, 177, 122
+STYLE DS_MODALFRAME | DS_CENTER | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Amiga File Properties"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Readable",IDC_AMI_READABLE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,13,31,47,10
+    CONTROL         "Script",IDC_AMI_SCRIPT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,66,31,34,10
+    CONTROL         "Writable",IDC_AMI_WRITABLE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,13,42,42,10
+    CONTROL         "Archive",IDC_AMI_ARCHIVE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,66,42,40,10
+    CONTROL         "Executable",IDC_AMI_EXECUTABLE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,13,53,51,10
+    CONTROL         "Pure",IDC_AMI_PURE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,66,53,31,10
+    CONTROL         "Deletable",IDC_AMI_DELETABLE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,13,64,46,10
+    CONTROL         "Hold Bit",IDC_AMI_HOLDBIT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,66,64,41,10
+    EDITTEXT        IDC_EDIT_COMMENT,12,96,152,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "Help",IDC_PROPERTIES_AMI_HELP_BUTTON,120,66,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,120,45,50,14
+    DEFPUSHBUTTON   "OK",IDC_PROPERTIES_AMI_OK_BUTTON,120,24,50,14
+    LTEXT           "Filename:",IDC_STATIC,7,7,29,8
+    LTEXT           "[]",IDC_PROPERTIES_FILENAME_AMI,37,7,133,8
+    GROUPBOX        "Flags",IDC_STATIC,7,20,105,60
+    GROUPBOX        "Comment",IDC_STATIC,7,84,163,32
+END
+
+IDD_DISK2FDI DIALOGEX 0, 0, 172, 228
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Disk2FDI"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_FILENAME,15,17,141,14,ES_AUTOHSCROLL
+    CONTROL         "Open in ADF Opus after creation",IDC_CHECK_OPEN,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,36,141,10
+    CONTROL         "FDI",IDC_RADIO_FDI,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,14,67,29,10
+    CONTROL         "ADF",IDC_RADIO_ADF,"Button",BS_AUTORADIOBUTTON | 
+                    WS_TABSTOP,50,67,30,10
+    CONTROL         "ST",IDC_RADIO_ST,"Button",BS_AUTORADIOBUTTON | 
+                    WS_TABSTOP,90,67,29,10
+    CONTROL         "IMG",IDC_RADIO_IMG,"Button",BS_AUTORADIOBUTTON | 
+                    WS_TABSTOP,126,67,29,10
+    CONTROL         "Use B: as source drive",IDC_CHECK_USE_B_DRIVE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,99,87,10
+    CONTROL         "1 (Single Sided)",IDC_RADIO_SINGLE_SIDED,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,130,66,10
+    CONTROL         "2 (Double-Sided)",IDC_RADIO_DOUBLE_SIDED,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,86,130,69,10
+    CONTROL         "Specify Number Of Tracks",IDC_CHECK_TRACKS,"Button",
+                    BS_AUTOCHECKBOX | BS_NOTIFY | WS_DISABLED | WS_TABSTOP,
+                    14,161,99,10
+    EDITTEXT        IDC_EDIT_TRACKS,130,160,25,12,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    CONTROL         "Spin1",IDC_SPIN_TRACKS,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | 
+                    UDS_ARROWKEYS | WS_DISABLED | WS_TABSTOP,152,159,13,14
+    CONTROL         "Specify Sectors Per Track",IDC_CHECK_SECTORS,"Button",
+                    BS_AUTOCHECKBOX | BS_NOTIFY | WS_DISABLED | WS_TABSTOP,
+                    14,179,99,10
+    EDITTEXT        IDC_EDIT_SECTORS,130,178,25,12,WS_DISABLED
+    CONTROL         "Spin1",IDC_SPIN_SECTORS,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | 
+                    UDS_ARROWKEYS | WS_DISABLED | WS_TABSTOP,152,177,13,14
+    DEFPUSHBUTTON   "Start",IDSTART,7,207,51,14
+    PUSHBUTTON      "Help",IDC_BUTTON_FDI_HELP,60,207,51,14
+    PUSHBUTTON      "Cancel",IDCANCEL,114,207,51,14
+    GROUPBOX        "Filename",IDC_STATIC,7,7,158,44
+    GROUPBOX        "Dump Type",IDC_STATIC,7,54,158,30
+    GROUPBOX        "Source Drive",IDC_STATIC,7,87,158,28
+    GROUPBOX        "Number Of Heads",IDC_STATIC,7,118,158,28
+    GROUPBOX        "Tracks And Sectors",IDC_STATIC,7,149,158,47
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_VOLINFO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 240
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 208
+    END
+
+    IDD_BATCHCONVERTER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 250
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 211
+    END
+
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 252
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 226
+    END
+
+    IDD_NEWVOLUME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 240
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 229
+    END
+
+    IDD_VOLSELECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 205
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 114
+    END
+
+    IDD_ABOUTPAGE1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 238
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 183
+    END
+
+    IDD_ABOUTPAGE2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 230
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 182
+    END
+
+    IDD_ABOUTPAGE3, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 230
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 149
+    END
+
+    IDD_VOLINFOPAGE1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 220
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 165
+    END
+
+    IDD_VOLINFOPAGE2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 220
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 165
+    END
+
+    IDD_PROGRESS2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 250
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 64
+    END
+
+    IDD_PROGRESS1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 250
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 34
+    END
+
+    IDD_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 220
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 198
+    END
+
+    IDD_ABOUTPAGE4, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 229
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 149
+    END
+
+    IDD_FILEPROPERTIES_WIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 170
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 80
+    END
+
+    IDD_ABOUTPAGE5, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 229
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 149
+    END
+
+    IDD_ABOUTPAGE6, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 229
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 149
+    END
+
+    IDD_FILEPROPERTIES_AMI, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 170
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 115
+    END
+
+    IDD_DISK2FDI, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 165
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 221
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New...",                     ID_FIL_NEW
+        MENUITEM "&Open...",                    ID_FIL_OPEN
+        MENUITEM "Open &Device...",             ID_FIL_OPENDEVICE
+        MENUITEM "&Close",                      ID_FIL_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "&Information...",             ID_FIL_INFORMATION
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_FIL_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "Select &All",                 ID_EDIT_SELECTALL
+        MENUITEM "Select &None",                ID_EDIT_SELECTNONE
+        MENUITEM "&Invert Selection",           ID_EDIT_INVERTSELECTION
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Refresh",                    ID_VIEW_REFRESH
+        MENUITEM "Undeletable Files",           ID_VIEW_SHOWUNDELETABLEFILES
+        , GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "New &Windows Lister",         ID_VIEW_NEWWINDOWSLISTER
+        MENUITEM SEPARATOR
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOL_BAR
+        MENUITEM "&Status Bar",                 ID_VIEW_THE_STATUSBAR
+    END
+    POPUP "&Action"
+    BEGIN
+        MENUITEM "&Up One Level",               ID_ACTION_UPONELEVEL
+        MENUITEM "&New Directory",              ID_ACTION_NEWDIRECTORY
+        MENUITEM SEPARATOR
+        MENUITEM "&Delete",                     ID_ACTION_DELETE
+        MENUITEM "Undelete",                    ID_ACTION_UNDELETE, GRAYED
+        MENUITEM "Re&name",                     ID_ACTION_RENAME
+        MENUITEM "&Properties...",              ID_ACTION_PROPERTIES, GRAYED
+    END
+    POPUP "&Tools"
+    BEGIN
+        MENUITEM "Text Viewer",                 ID_TOOLS_TEXT_VIEWER
+        MENUITEM SEPARATOR
+        MENUITEM "&Batch Converter...",         ID_TOOLS_BATCHCONVERTER
+        MENUITEM "Disk2FDI...",                 ID_TOOLS_DISK2FDI
+        MENUITEM SEPARATOR
+        MENUITEM "&Install (Make Bootable)",    ID_TOOLS_INSTALL, GRAYED
+        MENUITEM "Display Bootblock...",        ID_TOOLS_DISPLAYBOOTBLOCK
+        MENUITEM SEPARATOR
+        MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&Cascade",                    ID_WIN_CASCADE
+        MENUITEM "Tile &Horizontally",          ID_WIN_TILEHORIZONTAL
+        MENUITEM "Tile &Vertically",            ID_WIN_TILEVERTICAL
+        MENUITEM "&Arrange Icons",              ID_WIN_ARRANGEICONS
+        MENUITEM "Close &All",                  ID_WIN_CLOSEALL
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&Help Topics",                ID_HELP_HELPTOPICS
+        MENUITEM "&Main Window",                ID_HELP_MAIN
+        MENUITEM SEPARATOR
+        MENUITEM "&About...",                   ID_HELP_ABOUT
+    END
+END
+
+IDR_LISTERMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "Sel"
+    BEGIN
+        MENUITEM "Up One Level",                ID_ACTION_UPONELEVEL
+        MENUITEM SEPARATOR
+        MENUITEM "Select All",                  ID_EDIT_SELECTALL
+        MENUITEM "Select None",                 ID_EDIT_SELECTNONE
+        MENUITEM "Invert Selection",            ID_EDIT_INVERTSELECTION
+        MENUITEM SEPARATOR
+        MENUITEM "Properties",                  ID_ACTION_PROPERTIES, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Text Viewer",                 ID_TOOLS_TEXT_VIEWER, GRAYED
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN                ICON    DISCARDABLE     "Images\\ADFOpus.ico"
+IDI_WINFILE             ICON    DISCARDABLE     "Images\\WinFile.ico"
+IDI_AMIFILE             ICON    DISCARDABLE     "Images\\AmiFile.ico"
+IDI_WINDIR              ICON    DISCARDABLE     "Images\\WinDir.ico"
+IDI_AMIDIR              ICON    DISCARDABLE     "Images\\AmiDir.ico"
+IDI_WINLISTER           ICON    DISCARDABLE     "Images\\WinLister.ico"
+IDI_AMILISTER           ICON    DISCARDABLE     "Images\\AmiLister.ico"
+IDI_DRIVECD             ICON    DISCARDABLE     "Images\\DriveCDROM.ico"
+IDI_DRIVEFLOP35         ICON    DISCARDABLE     "Images\\DriveFloppy35.ico"
+IDI_DRIVEFLOP514        ICON    DISCARDABLE     "Images\\DriveFloppy525.ico"
+IDI_DRIVEHD             ICON    DISCARDABLE     "Images\\DriveHD.ico"
+IDI_DRIVENET            ICON    DISCARDABLE     "Images\\DriveNet.ico"
+IDI_ICON_ADF            ICON    DISCARDABLE     "Images\\adf.ico"
+IDI_ICON_ADZ            ICON    DISCARDABLE     "Images\\adz.ico"
+IDI_ICON_DMS            ICON    DISCARDABLE     "Images\\dms.ico"
+IDI_ICON_HDF            ICON    DISCARDABLE     "Images\\hdf.ico"
+IDI_ICON_DMP            ICON    DISCARDABLE     "Images\\dmp.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_LOGO                BITMAP  DISCARDABLE     "Images\\Logo.bmp"
+IDB_TBBUTTONS           BITMAP  DISCARDABLE     "Images\\Toolbar.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_POINTER_COPY        CURSOR  DISCARDABLE     "images\\ArrowCop.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDB_TBBUTTONS TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_BUTTON40099
+    BUTTON      ID_BUTTON40100
+    BUTTON      ID_BUTTON40101
+    BUTTON      ID_BUTTON40103
+    BUTTON      ID_BUTTON40104
+    BUTTON      ID_BUTTON40106
+    BUTTON      ID_BUTTON40107
+    BUTTON      ID_BUTTON40124
+    BUTTON      ID_BUTTON40123
+    BUTTON      ID_BUTTON40102
+    BUTTON      ID_BUTTON40105
+    BUTTON      ID_BUTTON40125
+    BUTTON      ID_BUTTON40113
+    BUTTON      ID_BUTTON40111
+    BUTTON      ID_BUTTON40114
+    BUTTON      ID_BUTTON40117
+    BUTTON      ID_BUTTON40119
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VERSION             "ADF Opus v1.2."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FIL_NEW              "Open the Create New Volume dialogue\nCreate new disk image"
+    ID_FIL_OPEN             "Open an existing disk image\nOpen an existing disk image"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FIL_INFORMATION      "Open the Volume Information dialogue\nOpen the Volume Information dialogue"
+END
+
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Australia) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DISPLAY_BOOTBLOCK DIALOGEX 0, 0, 238, 151
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Display Bootblock"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Help",IDC_BOOTBLOCK_HELP,122,133,50,15
+    DEFPUSHBUTTON   "OK",IDOK,181,133,50,15
+    EDITTEXT        IDC_EDIT_BOOTBLOCK,7,7,224,121,ES_MULTILINE | WS_VSCROLL
+END
+
+IDD_TEXT_VIEWER DIALOGEX 0, 0, 348, 260
+STYLE DS_CENTER | DS_CONTEXTHELP | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | 
+    WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_CONTEXTHELP
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,291,239,50,14
+    EDITTEXT        IDC_EDIT_TEXT,7,7,334,225,ES_MULTILINE | WS_VSCROLL | 
+                    WS_HSCROLL
+    PUSHBUTTON      "Help",IDC_TEXTVIEWER_HELP,235,239,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DISPLAY_BOOTBLOCK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 231
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 144
+    END
+
+    IDD_TEXT_VIEWER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 341
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 253
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_NEW                 BITMAP  DISCARDABLE     "images\\new.bmp"
+IDB_OPEN                BITMAP  DISCARDABLE     "images\\open.bmp"
+IDB_CLOSE               BITMAP  DISCARDABLE     "images\\close.bmp"
+IDB_RENAME              BITMAP  DISCARDABLE     "images\\rename.bmp"
+IDB_DELETE              BITMAP  DISCARDABLE     "images\\delete.bmp"
+IDB_CREATEDIR           BITMAP  DISCARDABLE     "images\\createdir.bmp"
+IDB_UPONELEVEL          BITMAP  DISCARDABLE     "images\\uponelev.bmp"
+IDB_INFO                BITMAP  DISCARDABLE     "images\\info.bmp"
+IDB_PROPERTIES          BITMAP  DISCARDABLE     "images\\properti.bmp"
+IDB_OPTIONS             BITMAP  DISCARDABLE     "images\\options.bmp"
+IDB_BATCH               BITMAP  DISCARDABLE     "images\\batch.bmp"
+IDB_DISK2FDI            BITMAP  DISCARDABLE     "images\\disk2fdi.bmp"
+IDB_INSTALL             BITMAP  DISCARDABLE     "images\\install.bmp"
+IDB_DISPLAY             BITMAP  DISCARDABLE     "images\\display.bmp"
+IDB_TILEHOR             BITMAP  DISCARDABLE     "images\\tilehor.bmp"
+IDB_TILEVER             BITMAP  DISCARDABLE     "images\\tilever.bmp"
+IDB_CASCADE             BITMAP  DISCARDABLE     "images\\cascade.bmp"
+IDB_HELP                BITMAP  DISCARDABLE     "images\\help.bmp"
+IDB_ABOUT               BITMAP  DISCARDABLE     "images\\about.bmp"
+IDB_UNDELETE            BITMAP  DISCARDABLE     "images\\undelete.bmp"
+IDB_SHOWUNDELETABLE     BITMAP  DISCARDABLE     "images\\showundel.bmp"
+IDB_TEXTVIEWER          BITMAP  DISCARDABLE     "images\\textviewer.bmp"
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,2,0,0
+ PRODUCTVERSION 1,2,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "0c0904b0"
+        BEGIN
+            VALUE "Comments", "Amiga Disk File Manager\0"
+            VALUE "CompanyName", " \0"
+            VALUE "FileDescription", "ADF Opus\0"
+            VALUE "FileVersion", "1, 2, 0, 0\0"
+            VALUE "InternalName", "ADFOpus\0"
+            VALUE "LegalCopyright", "Copyright © 1998-2003 Gary Harris, Dan Sutherland.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "ADFOpus.exe\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "ADF Opus\0"
+            VALUE "ProductVersion", "1, 2, 0, 0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0xc09, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // English (Australia) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

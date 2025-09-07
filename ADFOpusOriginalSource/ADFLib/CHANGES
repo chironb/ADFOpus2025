@@ -1,0 +1,99 @@
+17NOV02
+- Version 0.7.9d.
+- Doxygen documentation.
+- Documented all functions presented in ADFLib.h as "the API".
+- Added a copy of the GNU GPL to the docs dir, as this wasn't included.
+- Added several missing copyright headers.
+- Changed some return values declared in adf_dump.h to RETVAL to match the actual function declaration.
+- Re-enabled Laurent's original debug console output, allowing conditional compilation with:
+  #ifdef _DEBUG_PRINTF_
+     ...
+  #endif /*_DEBUG_PRINTF_*/
+
+  Declaring _DEBUG_PRINTF_ in your compiler's preprocessor definitions for ADFLib will enable
+  debug console output. This declaration is not made by default to avoid console problems
+  for those not using the console.
+- Some minor code cleanup.
+- Added a master HTML page to the root directory. This just mega-refreshes to the Doxygen
+  main page but avoids having to search through the doc directory heirarchy and brings together
+  all documentation in the package under one umbrella.
+- Added detailed documentation to struct declarations based on ADF and Amiga floppy disk
+  format docs.
+
+16OCT02
+- Version 0.7.9c.
+- Reinstated dynlib, dynunadf and staticunadf.
+- Release output files now go to Bin/Win32/Release, rather than Bin/Win32, for
+  symmetry and standardisation. Intermediate files still go to Release and Debug.
+- Debug dynunadf and staticunadf now use the debug libs, not the release ones,
+  to allow full debugger access.
+- Fixed a path setting problem which caused a failure to find adflibd.lib.
+- Removed C++ comment tags and replaced them with C tags across the board. ADFLib should
+  hopefully be pure C again now.
+- Removed a change implemented for Opus which was inadvertantly left in during earlier updates
+  i.e. a string added to struct nativeDevice in adf_nativ.h.
+
+10SEP00
+- ADFlib 0.7.9b refixes and Win32 code improvements by Gary Harris
+27FEB00
+- ADFlib 0.7.9a bug with hardfiles fixed some months ago by Dan Sutherland
+05SEP99
+- ADFlib 0.7.9 released. Docs updated.
+15AUG99
+- fix: bug in adfGetHashValue() : must use unsigned char...
+- unadf 1.0 : with multiple files and recursive extraction, pipe redirection
+01AUG99
+- adfGetDelEnt(), adfUndelEntry(), adfCheckEntry()
+??JUN99
+- fix: forgot the secType for the cache entry in adfCreateDir()
+- fix: adfRemoveEntry() with a dir did not remove the related cache blocks
+26MAY99
+- 0.7.8a released.
+- a minor buf was detected in the bootblock checksum checking
+24MAY99
+- 0.7.8 released. the 0.7.9 will have some links support. the next unadf version will have extraction (-x).
+- Win32 dynamic library makefile added
+- test scripts floppy.sh and bigdev.sh added
+- small bug fix in adfGetRDirEnt().
+20MAY99
+- the ENV_DECLARATION is put in the library (adf_env.c), and must be removed from the main() files.
+  Will be consistent will the .dll version.
+- unadf.c started : a unzip like utility for the .ADF files. Extraction not provided yet.
+- adfGetRDirEnt() added, adfFreeDirList() modified : to get recursively the entire directories entries tree.
+13MAY99
+- adfSetEntryAccess() and adfSetEntryComment() added
+- Win32 makefile added for the static library form
+06MAY99
+- adfGetVersionNumber() and adfGetVersionDate() added
+01MAY99
+- many date and time fields filled 
+- bug fix in adfCreateDir()
+- adfRenameEntry() already worked with two differents dirs, but it's verified now
+29APR
+- Hardfile support added (requested by Dan Sutherland)
+19APR
+- bug fix in cache routines
+- adfRenameEntry() works in the same directory, only
+6APR99
+- bug fix in adfWriteBootBlock() : disks can really be made bootable
+- bug fix around adfCreateDumpDevice()
+22MAR99
+- removed the fread() bug : fopen(,"rb")
+- removed the LSEG checking
+01FEB99
+- adfFlushFile()
+- dir cache support for files and directories
+- bugfix : adfCloseFile() when filesize==0
+- bugfix : parent field in file header block
+28JAN99
+- safier and proper error handling
+27JAN99
+- bugfix : adfGetFreeBlocks(), physical and logical block numbers confused
+24JAN99
+- adfRemoveEntry() : delete files and empty directories
+- modified Makefile : remplace links for Linux/ and
+  adf_nativ.h with gcc flags -I. -I..
+19JAN99
+- Remove most of signed/unsigned warning from MSVC
+- Error handling : test exe
+- Read only support

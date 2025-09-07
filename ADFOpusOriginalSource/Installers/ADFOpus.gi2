@@ -1,0 +1,81 @@
+<gi2project version="2.1">
+	<variables>
+		<var name="AppID" value="{248EEAC4-DFBC-11d6-8A76-81A410ACF721}"/>
+		<var name="AppName" value="ADF Opus"/>
+		<var name="CompanyName" value="Gary Harris"/>
+		<var name="OutputPath" value=""/>
+		<var name="Password" value=""/>
+		<var name="CompressionLevel" value="7"/>
+		<var name="Languages" value="Enu,Epo,Deu,Fra,Rus"/>
+		<var name="AutoSelectLanguage" value="1"/>
+		<var name="Uninstall" value="1"/>
+		<var name="ProgramGroup" value="%AppName%"/>
+		<var name="AppFolder" value="%ProgramsMenu%\%ProgramGroup%"/>
+		<var name="InstallPath" value="%ProgramFiles%\%AppName%"/>
+		<var name="Version" value="Version 1.2"/>
+	</variables>
+	<packages>
+		<package filename="Setup" main="1">
+			<plugins>
+				<plugin id="StdUI">
+					<config>
+						<paramgroup name="Config">
+							<param name="PreInstallDialogSequence" value="DLG_WELCOME,DLG_LICENSE,DLG_DIR,DLG_INSTALLTYPE,DLG_GROUP,DLG_START"/>
+							<param name="ShowMainWindow" value="1"/>
+							<param name="ShowDialogTitle" value="1"/>
+							<param name="ShowDialogSubTitle" value="1"/>
+							<param name="ShowFinalDialog" value="1"/>
+							<param name="GradientTopColor" value="$000000"/>
+							<param name="GradientBottomColor" value="$000000"/>
+							<param name="StretchBanner" value="0"/>
+							<param name="DialogFont" value="MS Sans Serif,8"/>
+							<param name="DialogBitmap" value="%Presetup%\gins.bmp"/>
+							<param name="DialogTitleFont" value="MS Sans Serif,10,$C08000,B"/>
+							<param name="DialogTitleShadow" value="0"/>
+							<param name="DialogTitleShadowColor" value="$C0C0C0"/>
+							<param name="DialogPosition" value="1,1"/>
+							<param name="DialogSubTitleFont" value="MS Sans Serif,8,$000000"/>
+						</paramgroup>
+						<paramgroup name="StaticBitmaps">
+							<param name="Bitmap1" value="..\Images\Logo.bmp,20,20,0"/>
+						</paramgroup>
+						<paramgroup name="Labels">
+							<param name="Title" value="%Version%,50,40,3,Times New Roman,70,$006633,B"/>
+							<param name="TitleShadow" value="%Version%,52,38,3,Times New Roman,70,$0000FF,B"/>
+						</paramgroup>
+						</config>
+				</plugin>
+			</plugins>
+	       <presetup>
+	          <file src="Presetup\*.*"/>
+	       </presetup>
+
+			<components>
+				<component id="Main">
+	               <files>
+	                  <file src="..\Release\ADFOpus.exe" dst="%InstallPath%\ADFOpus.exe"/>
+	                  <file src="..\Boot\stdboot3.bbk" dst="%InstallPath%\Boot\stdboot3.bbk"/>
+	               </files>
+	               <shortcuts>
+	                  <shortcut name="%ProgramsMenu%\%AppName%\%AppName%" cmdline="%InstallPath%\ADFOpus.exe"/>
+	                  <shortcut name="%ProgramsMenu%\%AppName%\Uninstall ADF Opus" cmdline="%InstallPath%\Uninstall.exe"/>
+	               </shortcuts>
+	               <registry>
+	                  <reg key="HKLM\Software\Microsoft\Windows\CurrentVersion\App Paths\ADFOpus.exe"
+	                    value='"%InstallPath%\ADFOpus.exe"' type="str"/>
+	                  <reg key="HKCU\Software\ADFOpus" param="Path" value="%InstallPath%" type="str"/>
+	               </registry>
+				</component>
+				<component id="Help">
+	               <files>
+	                  <file src="..\ADFOpus.hlp" dst="%InstallPath%\ADFOpus.hlp"/>
+	                  <file src="..\ADFOpus.cnt" dst="%InstallPath%\ADFOpus.cnt"/>
+	               </files>
+	               <shortcuts>
+	                  <shortcut name="%ProgramsMenu%\%AppName%\ADF Opus Help" cmdline="%InstallPath%\ADFOpus.hlp"/>
+	               </shortcuts>
+				</component>
+			</components>
+		</package>
+	</packages>
+</gi2project>

@@ -1,0 +1,28 @@
+:Base Adfopus>Opus_win
+:Title AdfOpus Help
+1 ADF Opus Help Topics
+2 Introduction
+3 Introduction=IDH_INTRODUCTION
+3 Installation=IDH_INSTALLATION
+2 Using ADF Opus
+3 The Main Window=IDH_MAIN
+3 Using The Program=IDH_USING_THE_PROGRAM
+3 Opus, File Types and the Shell=IDH_FILE_TYPES
+3 The Create New File Dialogue=IDH_CREATE_DIALOGUE
+3 The Volume Information Dialogue=IDH_INFORMATION_DIALOGUE_DEV
+3 The Batch Converter=IDH_BATCH_CONVERTER
+3 The Options Dialogue=IDH_OPTIONS
+3 The Select Volume Dialogue=IDH_VOLUME_SELECT
+3 The Properties Dialogues=IDH_PROPERTIES
+3 The Disk2FDI Dialogue=IDH_DISK2FDI
+3 The Display Bootblock Dialogue=IDH_BOOTBLOCK
+3 The Text Viewer Dialogue=IDH_TEXTVIEWER
+2 Additional Information
+3 UAE, Fellow and ADFs=IDH_UAE
+3 The Amiga File System=IDH_FILESYSTEM
+3 Registering File Types With Windows=IDH_FILE_REGISTERING
+3 Connecting Amiga Hard Drives Under NT, 2K and XP=IDH_HARDDRIVES
+3 Known Bugs/Limitations=IDH_BUGS
+3 Copyright/Legal Notice=IDH_COPYRIGHT
+3 Feedback=IDH_FEEDBACK
+3 History=IDH_HISTORY

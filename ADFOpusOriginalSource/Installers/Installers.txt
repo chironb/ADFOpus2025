@@ -1,0 +1,39 @@
+
+ADF Opus Installers
+-------------------
+
+To build the installers you will need the following software:
+
+
+GUiPeX
+http://www.blueorbsoft.com/guipex/
+
+UPX
+http://upx.sourceforge.net/
+
+GUiPeX is a front-end for the free UPX executable compresser. Before creating the release installer package,
+ADFOpus.exe is compressed with GUiPeX. Compression results in a 64% size reduction in version 1 of ADF Opus.
+Not compressing the executable will not effect creation of the installer package itself, you'll just have a
+bigger file.
+
+You could automate compression as a post-build step in VC++, using the smaller command line version of UPX
+if you like. I haven't done this at this stage so that compression remains optional but I may do so in the
+future and add UPX to the package. Who knows?
+
+
+Ghost Installer Free Edition
+http:/www.ginstall.com
+
+The package name defaults to Setup.exe. Once a package is created, I manually rename it to its release name to
+avoid it being overwritten by the other package. The free edition doesn't include this as an automatic option.
+
+
+
+The installer scripts search upwards through the directory heirarchy so that no file copying or duplication is
+required. Reproducing the release packages only requires you to install the source, build the release version,
+compress ADFOpus.exe and run the scripts. Don't forget to rename or move the first package you create before
+creating the second.
+
+Have fun,
+
+Gary.

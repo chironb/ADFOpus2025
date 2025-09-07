@@ -1,0 +1,2176 @@
+{\rtf1\ansi \deff0\deflang1024
+
+{\fonttbl
+{\f0\froman Times New Roman;}
+{\f1\froman Symbol;}
+{\f2\fswiss Arial;}
+{\f3\froman MS Serif;}
+{\f4\fswiss MS Sans Serif;}
+}
+
+@{\footnote
+
+Colour table: 	1=black
+				2=blue
+				3=light blue
+				4=bright green
+				5=violet
+				6=red
+				7=yellow
+				8=white
+				9=dark blue
+		       	10=mid green
+		       	11=dark green
+	    	   	12=purple
+		       	13=brown
+		       	14=olive green
+	    	   	15=dark grey
+	       		16=light grey
+}
+
+{\colortbl;
+\red0\green0\blue0;
+\red0\green0\blue255;
+\red0\green255\blue255;
+\red0\green255\blue0;
+\red255\green0\blue255;
+\red255\green0\blue0;
+\red255\green255\blue0;
+\red255\green255\blue255;
+\red0\green0\blue127;
+\red0\green127\blue127;
+\red0\green127\blue0;
+\red127\green0\blue127;
+\red127\green0\blue0;
+\red127\green127\blue0;
+\red127\green127\blue127;
+\red192\green192\blue192;
+}
+
+
+@{\footnote
+
+Help file for ADF Opus by Dan Sutherland written by Gary Harris <gharris@zip.com.au>.
+7-8/9/98. Updated for ADF Opus 1.0 Oct. 2002.
+
+ADF Opus  V1.0
+Help File V1.6
+
+Created using the Borland C++ V5.01-supplied Microsoft Help Workshop V4.00.0950.
+Updates from 1.3 onwards with VC++-supplied version 4.03.0002.
+}
+
+
+@{\footnote
+
+The main items, listed in the contents file.
+
+}
+
+
+
+@{\footnote
+
+The overview page. Shows a bitmap of the main programme window with hotspots for popups
+explaining all the features of the interface.
+
+}
+
+
+#{\footnote IDH_INTRODUCTION}
+${\footnote Adf_Opus_introduction}
+K{\footnote introduction;web;www;world wide web;page, web;dms support;DiskMasher;GZip}
+>{\footnote Opus_win}
++{\footnote :01}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f2\fs100\qc \cf12 ADF Opus \cf1
+\line
+\par \pard\plain \li120 \f4\fs20 \qc Copyright 1998-2003 by Dan Sutherland and Gary Harris.
+\line\pard\plain \li120 \f4\fs20 \qc Help file by Gary Harris.
+\par
+\par \pard\plain \li120 \f4\fs20 \qc Visit the ADF Opus web page: 
+{\uldb \cf2 http://adfopus.sourceforge.net/ \cf0}{\v %!ExecFile(http://adfopus.sourceforge.net/)}
+\par
+\par
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 Introduction \cf0
+
+\par \pard\plain \li120 \f4\fs20 ADF Opus is a management tool for the disk image files
+ used by Amiga emulators. These disk images take the form of a file with .adf suffix. Opus can
+ also access hardfiles, simulated hard-disks-in-a-file, also used by these emulators and can
+ access files stored on the Windows file system but accessed by an emulator as a hard drive.
+ Under Windows NT4, or possibly Windows 2000, it also allows you to access a real Amiga-formatted
+ hard drive attached to your PC.
+\par
+\par
+It allows you to perform most common tasks (like copying, renaming, deleting, etc.) with
+ your ADFs without having to go anywhere near an emulator. Features include long filename
+ support, support for OFS and FFS volumes, high speed file copying, a powerful MDI interface
+ (you can even copy files directly from one ADF to another), access to and conversion between
+ compressed disk image formats and lots of other cool stuff.
+\par
+\par
+Amiga emulators can directly access ADFs compressed with DiskMasher (DMS), an Amiga disk
+ cruncher, or with the industry-standard Gzip compression utility. ADF Opus can extract ADFs
+ compressed by either of these programmes, allowing you to read or modify their contents and
+ can (re)compress ADFs in the Gzip format. Compression to DMS format is not supported as the DMS
+ algorithm is subject to copyright. If this changes, support for DMS compression will more than
+ likely be added. Until then, either use DMS from within an emulator to compress disk images or
+ use the built-in Gzip support, which often creates smaller images. DMS for Amiga is freely
+ available on the net from {\uldb \cf2 Aminet \cf0}{\v %!ExecFile(http://us.aminet.net/~aminet/)}.
+\par
+\par
+ADF Opus can create new disk images of both double-density (880 KB) and high density (1.76 MB)
+ disks. It can also create hardfiles up to 512 MB in size.
+\par
+\par
+Best of all it's free, so enjoy it!
+\par
+\par
+\par
+\par
+For further information about obtaining, setting up and using Amiga emulators see my
+ {\uldb \cf2 Amiga Emulation FAQ \cf0}{\v %!ExecFile(http://jetjockey.fly.to/faq.html)},
+ the Frequently Asked Questions list for the alt.emulators.amiga newsgroup. This is also a great
+ place to go to ask questions, seek advice and is peopled by a good bunch of Amiga enthusiasts
+ (read fanatics :-) who are happy to help. You are welcome to add your own experiences to the
+ FAQ for the benefit of others.
+\par
+\par
+The source code for ADF Opus is also available from the ADF Opus web site, for those interested, under
+ the terms of the GNU GPL,
+\par
+\par
+\par
+\par{\uldb Installation}{\v IDH_INSTALLATION}
+\line{\uldb The Main Window}{\v IDH_MAIN}
+
+\page
+
+
+#{\footnote IDH_INSTALLATION}
+${\footnote Adf_Opus_installation}
+K{\footnote dlls;installation;shortcuts;setup}
+>{\footnote Opus_win}
++{\footnote :02}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 Installation \cf0
+
+\par \pard\plain \li120 \f4\fs20 ADF Opus is provided in an automated Ghost Installer package. To
+ install ADF Opus, simply run the installer and follow the instructions presented.
+\par
+\par You can install over the top of an existing installation but outdated files which have
+ no equivalent in the new package won't be uninstalled. On the one hand there are unlikely to
+ be many changes to the current file package, on the other it's probably better to uninstall
+ the old one if you want to be sure.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+
+#{\footnote IDH_MAIN}
+${\footnote Adf_Opus_main_window}
+K{\footnote adfs, viewing;windows;window, main;windows, sub-;buttons;menus;toolbar;status bar;
+attributes, file;file attributes;lister, Windows;Windows lister;Amiga file lister;lister, Amiga}
+>{\footnote Opus_win}
++{\footnote :03}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Main Window \cf0
+
+\par \pard\plain \li120 \f4\fs20 This is ADF Opus' main window view. Click on the
+ menu items, buttons and other elements for an explanation of their function and to view
+ the sub-windows. Click on items in the popup views for more details.
+\par
+\par
+\tab\tab\tab\{bmc AdfOpus.bmp\}
+\par
+\par
+\par
+\par{\uldb Using The Program}{\v IDH_USING_THE_PROGRAM}
+\line{\uldb The Create New File Dialogue}{\v IDH_CREATE_DIALOGUE}
+\line{\uldb The Information Dialogue}{\v IDH_INFORMATION_DIALOGUE_DEV}
+\line{\uldb The Batch Converter}{\v IDH_BATCH_CONVERTER}
+\line{\uldb The Options Dialogue}{\v IDH_OPTIONS}
+\line{\uldb The Select Volume Dialogue}{\v IDH_VOLUME_SELECT}
+\line{\uldb The Properties Dialogues}{\v IDH_PROPERTIES}
+\line{\uldb The Disk2FDI Dialogue}{\v IDH_DISK2FDI}
+\line{\uldb The Text Viewer Dialogue}{\v IDH_TEXTVIEWER}
+\page
+
+
+@{\footnote
+
+Display the Create Volume Dialogue bitmap. 
+
+}
+
+
+#{\footnote IDH_CREATE_DIALOGUE}
+${\footnote Adf_Opus_create_dialogue}
+K{\footnote adfs, creating;adzs, creating;creating blank disks;hardfiles, creating;disk creation;}
+>{\footnote Opus_win}
++{\footnote :06}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Create New Volume Dialogue \cf0
+\par
+\pard\plain \li120 \f4\fs20 Click on parts of the dialogue for help.
+\par 
+\par
+\par
+\tab\tab\tab\{bmc CreateNew.bmp\}
+\par
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Usage \cf0
+\par
+\par \pard\plain \li120 \f4\fs20
+Use this dialogue to create a new, empty disk image or hardfile. You can select the type,
+ capacity, {\uldb file system}{\v IDH_FILESYSTEM} flags and disk label for your creation using
+ the available options. Selecting the "Open after creating" option causes ADF Opus to open the
+ new image in a new child window after it has been created.
+\par
+\par
+Use the {\uldb Batch Converter}{\v IDH_BATCH_CONVERTER} to convert your new ADF to an ADZ, if
+ you want to compress it.
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+@{\footnote
+
+Display the Volume Information Dialogue bitmap. 
+Note 2 topics on this page to allow jumping between pics.
+}
+
+
+#{\footnote IDH_INFORMATION_DIALOGUE_DEV}
+${\footnote Adf_Opus_information_dialogue}
+K{\footnote information, volume}
+>{\footnote Opus_win}
++{\footnote :07}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Volume Information Dialogue \cf0
+\par
+\pard\plain \li120 \f4\fs20 Click on parts of the property pages for help.
+\par 
+
+\par \pard\plain \li120 \f4\fs22\b\cf11 The Device Tab \cf0
+\par
+\par
+\tab\tab\tab\{bmc OpusInfoDev.bmp\}
+\par
+\par
+
+#{\footnote IDH_INFORMATION_DIALOGUE_VOL}
+K{\footnote information, device}  
+
+\par \pard\plain \li120 \f4\fs22\b\cf11 The Volume Tab \cf0
+\par
+\par
+\tab\tab\tab\{bmc OpusInfoVol.bmp\}
+\par
+\par \plain \li120 \f4\fs20
+\par
+\par {\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+
+@{\footnote
+
+Display the Batch Converter Dialogue bitmap. 
+
+}
+
+
+#{\footnote IDH_BATCH_CONVERTER}
+${\footnote Adf_Opus_batch_converter}
+K{\footnote Batch Converter;adf;adz;dms;converting between formats;adfs, compressing;temporary files}
+>{\footnote Opus_win}
++{\footnote :08}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Batch Converter Dialogue \cf0
+\par
+\pard\plain \li120 \f4\fs20 Click on parts of the dialogue for help.
+\par 
+\par
+\par
+\tab\tab\tab\{bmc BatchConverter.bmp\}
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Usage \cf0
+\par
+\par \pard\plain \li120 \f4\fs20  Use the Batch Converter to convert between uncompressed ADFs and
+ other, compressed formats. The converter can compress ADFs to ADZ format, decompress ADZs to ADF format,
+ decompress DMS' to ADFs and convert DMS' to ADZs. Compression to DMS format is currently not available as
+ this format is subject to copyright restrictions.
+\par
+\par Select disk images for conversion using the \cf9 Add \cf0 button. These will be listed in
+ the upper window. Remove single files by selecting the file and clicking the \cf9 Remove \cf0 
+ button. The \cf9 Remove All \cf0 button will clear all files from the list.
+\par
+\par Select the output format using the \cf9 Output Type \cf0 buttons. Selecting the \cf9 Disk
+ Image (ADF) \cf0 button will convert listed files to ADF format. Selecting the \cf9 Compressed
+ Disk Image (ADZ) \cf0 button will convert listed files to ADZ format. 
+\par
+\par The button for a format that is unavailable for a particular conversion is disabled i.e.
+ The \cf9 Disk Image (ADF) \cf0 button will be disabled if an ADF is selected into the list and
+ the \cf9 Compressed Disk Image (ADZ) \cf0 button will be disabled if an ADZ is selected into
+ the list. This means that if you select both types, both buttons will be disabled. You should
+ select files of only one type or of different types that can be converted to the same output
+ type. For example a selection of ADZs and DMS' could all be converted to ADFs.
+\par
+\par You can reset the \cf9 Output Type \cf0 buttons by closing the Batch Converter and
+ reopening it.
+\par
+\par Start conversion by pressing the \cf9 Start \cf0 button. The converted file's name is removed
+ from the list on completion.
+\par
+\par For each attempted conversion, a status message is printed to the \cf9 Status \cf0
+ window reporting success or failure.
+\par
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Temporary Files \cf0
+\par
+\par \pard\plain \li120 \f4\fs20 When converting between DMS and ADZ formats, ADF Opus creates a
+ temporary, intermediate ADF in the \cf9 opustemp \cf0 directory, which is removed after conversion.
+ \cf9 opustemp \cf0 is created in the same directory as ADF Opus and is removed when it shuts down.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+#{\footnote IDH_OPTIONS}
+${\footnote Adf_Opus_options}
+K{\footnote options;preferences;label, setting default;deletion, confirming;Windows lister, setting
+ start directory;file types, registering}
+>{\footnote Opus_win}
++{\footnote :09}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Options Dialogue \cf0
+\par
+\pard\plain \li120 \f4\fs20 Click on parts of the dialogue for help.
+\par 
+\par
+\par
+\tab\tab\tab\{bmc Options.bmp\}
+\par
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Usage \cf0
+\par
+\par \pard\plain \li120 \f4\fs20
+Use the Options Dialogue to set your program preferences. You can set how you want the Windows
+ lister to start, the default label for new volumes, the level of confirmation required for
+ deletion and whether you want ADF Opus to make use of directory cache blocks when it can.
+\par
+\par
+Pressing the \cf9 Register Amiga disk file types with Windows Explorer \cf0 button
+ will register .adf, .adz, .dms, .dmp and .hdf files with Windows.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+#{\footnote IDH_VOLUME_SELECT}
+${\footnote Adf_Opus_volsel}
+K{\footnote volumes, selecting}
+>{\footnote Opus_win}
++{\footnote :10}
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Volume Selection Dialogue \cf0
+\par
+\pard\plain \li120 \f4\fs20 Click on parts of the dialogue for help.
+\par 
+\par
+\par
+\tab\tab\tab\{bmc VolSel.bmp\}
+\par
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Usage \cf0
+\par
+\par \pard\plain \li120 \f4\fs20
+This dialogue is displayed when you open a device that contains multiple volumes. Select the
+ volume you wish ADF Opus to open from the list.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+
+#{\footnote IDH_PROPERTIES}
+${\footnote Adf_Opus_file_properties}
+K{\footnote properties, file;flags;comment;file comment;file properties;attributes;property flags}
+>{\footnote Opus_win}
++{\footnote :11}
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Properties Dialogues \cf0
+\par
+\pard\plain \li120 \f4\fs20 Click on parts of the dialogue for help.
+\par
+\par
+\par
+\tab\tab\tab\{bmc PropsAmi.bmp\}\tab\{bmc PropsWin.bmp\}
+\par
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Usage \cf0
+\par
+\par \pard\plain \li120 \f4\fs20
+Use these dialogues to set the file properties of selected files. You can also set a comment for
+ Amiga files and directories. Comments are limited to 79 characters by ADFLib.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+
+#{\footnote IDH_DISK2FDI}
+${\footnote Adf_Opus_disk2fdi}
+K{\footnote disk2fdi;floppy disks, converting;converting floppy disks}
+>{\footnote Opus_win}
++{\footnote :12}
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Disk2FDI Dialogue \cf0
+\par
+\pard\plain \li120 \f4\fs20 Click on parts of the dialogue for help.
+\par 
+\par
+\par
+\tab\tab\tab\{bmc Disk2FDI.bmp\}
+\par
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Usage \cf0
+\par
+\par \pard\plain \li120 \f4\fs20
+The dialogue presents the same options as are available for Disk2FDI on the command line and Opus
+ simply builds the command line for you and runs Disk2FDI in a shell. This makes the creation of images
+ from actual Amiga disks convenient and easy and available within Opus itself. You can create ADFs
+ directly from your original disks and manage them within Opus immediately.
+\par\par DIsk2FDI now runs as a separate process which means that you can now either continue working in Opus
+ while it runs in the background or, if you are creating an ADF, you can choose to open the image in Opus
+ once Disk2FDI has finished. If you choose this option, you will not be able to do anything else with ADF Opus
+ until Disk2FDI finishes. For this reason, the default option is to let Disk2FDI run independently. Whichever
+ option you choose, you still need to close the Disk2FDI shell window once it has finished executing.
+\par\par It is not possible to run multiple instances of Disk2FDI creating ADFs simply because it requires
+ exclusive access to both floppy drives. It may be possible to run two instances in cases where you are
+ creating images for which only one floppy drive is required, I can't test this. If an instance of Disk2FDI
+ can't access the required resources it will fail politely and you'll just need to close its shell window.
+\par\par ADF Opus will disable the Disk2FDI menu item under Windows NT, 2K and XP since Disk2FDI itself
+ doesn't work on these platforms. On other versions, make sure that you check Disk2FDI's documentation and
+ that your system meets the requirements for it to operate e.g. you have two disk drives with one being
+ suitable to the media you wish to copy.
+\par\par Disk2FDI can be found at
+ {\uldb \cf2 http://www.oldskool.org/disk2fdi/ \cf0}{\v %!ExecFile(http://www.oldskool.org/disk2fdi/)}.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+#{\footnote IDH_BOOTBLOCK}
+${\footnote Adf_Opus_bootblock}
+K{\footnote bootblock, display;display bootblock}
+>{\footnote Opus_win}
++{\footnote :13}
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Display Bootblock Dialogue \cf0
+\par
+\pard\plain \li120 \f4\fs20 Click on parts of the dialogue for help.
+\par 
+\par
+\par
+\tab\tab\tab\{bmc Bootblock.bmp\}
+\par
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Usage \cf0
+\par
+\par \pard\plain \li120 \f4\fs20 This dialogue shows the bootblock that is currently installed, in ASCII
+ code. Some bootblocks, especially non-standard ones, contain readable text messages in this area which can
+ be interesting or informative. A standard AmigaOS bootblock shows the code "DOS", as above.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+#{\footnote IDH_TEXTVIEWER}
+${\footnote Adf_Opus_textviewer}
+K{\footnote text, display;text, view;display text;viewer;text viewer}
+>{\footnote Opus_win}
++{\footnote :14}
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Text Viewer Dialogue \cf0
+\par
+\pard\plain \li120 \f4\fs20 Click on parts of the dialogue for help.
+\par 
+\par
+\par
+\tab\tab\tab\{bmc TextViewer.bmp\}
+\par
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Usage \cf0
+\par
+\par \pard\plain \li120 \f4\fs20 This dialogue displays the contents of the selected file in ASCII code.
+ The text viewer is useful for viewing simple files, such as Startup-Sequence, that can't be run or opened
+ directly under Windows because they do not have a dot suffix, e.g. .txt, and therefore don't respond to Windows'
+ file association system. The viewer is only activated for files and will only display ASCII code. Binary or
+ other code will not be displayed. The displayed text can be copied but not edited. File types that are
+ registered with Windows can still be viewed using the viewer as long as they contain ASCII code. For ease
+ of viewing, the text viewer is fully resizable.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+#{\footnote IDH_USING_THE_PROGRAM}
+${\footnote Adf_Opus_using_the_program}
+K{\footnote files, opening;files, closing;files, navigating;files, Windows;files, viewing;
+files, copying;drive list;directories;directories, copying;directories, deleting;
+directories, renaming;directory;directory, levels;directory,listing;directory, properties;
+directory, new;properties;properties, directory;adfs, opening;adfs, closing;adfs, copying to 
+and from;adfs, navigating;drag and drop;file system, Windows}
+>{\footnote Opus_win}
++{\footnote :04}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 Using The Program \cf0
+
+\par \pard\plain \li120 \f4\fs22\b\cf11 Accessing The Windows File System \cf0
+
+\par \pard\plain \li120 \f4\fs20  When ADF Opus starts you will see a Windows lister already
+ open. This lister provides access to the files on your PC. You can choose whether this lister
+ should open with a list of drives or in a particular directory in the "Options" dialogue. To
+ open a new Windows lister, select \cf9 View|New Windows Lister \cf0.
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Opening A Disk Image \cf0
+
+\par \pard\plain \li120 \f4\fs20 To work with an ADF, ADZ or DMS file you must first open it.
+ You can open one by doing any of the following:
+\par
+\par\tab\'B7 select \cf9 Open... \cf0 from the \cf9 File \cf0 menu 
+\par\tab\'B7 click the \{bmc ButtonOpen.bmp \} button on the toolbar 
+\par\tab\'B7 press \cf9 Ctrl+O \cf0 
+\par
+\par 
+Then select the file from the dialogue box that appears. Note that it is possible to open more
+ than one disk image at a time - each will open in its own window.
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Navigating \cf0
+
+\par \pard\plain \li120 \f4\fs20 Navigation is simple - just like Windows Explorer. Double-
+click a directory to change into it and view its contents. To go back to the parent directory, 
+click the \{bmc ButtonUpOneLvl.bmp \} button on the toolbar.
+\par
+\par
+To change to a different drive in the Windows pane, just click the \{bmc ButtonUpOneLvl.bmp \} 
+button when you're already at the root directory. Icons for all drives will appear - just 
+double-click one to view its contents.
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Copying Files \cf0
+
+\par \pard\plain \li120 \f4\fs20 Copying is dead easy - just drag and drop the file
+ from one pane to another and it will be copied. 
+\par
+\par
+\cf6 Note: \cf0 drag and drop is not restricted to a single window - if you have two disk images
+ open at once you can copy files from one to another. To move files within a disk image you can
+ open two copies of a single disk image and drag files from one to the other. You can even copy
+ from one Windows directory to another (but you might be better off using Windows Explorer for
+ managing your Windows files). Go ahead and try it - knock yourself out! 
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Creating A New Directory \cf0
+
+\par \pard\plain \li120 \f4\fs20 To create a new directory, either select \cf9 Action|New
+ Directory \cf0 or click the \{bmc ButtonNewDir.bmp \} button on the toolbar. 
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Renaming Files And Directories \cf0
+
+\par \pard\plain \li120 \f4\fs20 You can rename a file or directory by selecting it and then
+ selecting \cf9 Action|Rename \cf0 or clicking the \{bmc ButtonRename.bmp \} button on the
+ toolbar.
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Deleting Files And Directories \cf0
+
+\par \pard\plain \li120 \f4\fs20 You can delete a file or directory by selecting it and then 
+selecting \cf9 Action|Delete \cf0 or clicking the \{bmc ButtonDelete.bmp \} button on the 
+toolbar. 
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Undeleting Files And Directories \cf0
+
+\par \pard\plain \li120 \f4\fs20 Undeleting files or directories is a two-step process. 
+ Firstly, with the parent ADF's window active, select \cf9 View|Undeletable Files \cf0 or
+ click the \{bmc ButtonShowUndel.bmp \} button on the toolbar. Opus will then display all
+ files available for undeletion or advise otherwise. Undeletable files are shown ghosted.
+ Undelete an entry by selecting it and then selecting \cf9 Action|Undelete \cf0 or
+ clicking the \{bmc ButtonUndelete.bmp \} button on the toolbar. 
+\par
+\par \cf6 Note: \cf0 ADFLib's undeletion routines are imperfect. All undeletable files are
+ notified at the root level as well as in the directory from which they were deleted. You
+ need to be in the correct directory for undeletion to succeed. You may have to find the correct
+ one by trial and error. Displaying all files at the root level actually acts as a summary of
+ available recoverable files, so it's not all bad. Some files that should be recoverable may not
+ be displayed. Some files that are displayed may not undelete successfully. Unfortunately, I can't
+ fix this. I still think that some level of recovery is useful, rather than having none. At least
+ you have some chance of being able to recover lost data.
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Creating A New Blank ADF \cf0
+
+\par \pard\plain \li120 \f4\fs20 Choose \cf9 File|New... \cf0 or click the
+ \{bmc ButtonNew.bmp \} button to open the Create New Volume dialogue. You can set the path,
+ label and other options from this dialogue. You can also choose whether to use 
+ {\uldb FFS}{\v IDH_FILESYSTEM}, {\uldb Directory Caching}{\v IDH_FILESYSTEM} and 
+ {\uldb International Mode}{\v IDH_FILESYSTEM} by selecting the appropriate checkboxes under
+ \cf9 Flags \cf0. You can make an ADF bootable by selecting \cf9 Install \cf0 from the \cf9 Tools \cf0
+ menu or clicking the \{bmc ButtonInstall.bmp \} button. 
+\par
+\par
+\cf6 Caution: \cf0  ADFLib can not detect whether an ADF is already bootable or the existing bootblock
+ is valid. To avoid losing anything of value, work on a copy of the ADF and check it within an emulator
+ before deleting the original.
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Creating A New Blank Hardfile \cf0
+
+\par \pard\plain \li120 \f4\fs20 Choose \cf9 File|New... \cf0 or click the 
+\{bmc ButtonNew.bmp \} button to open the Create New Volume dialogue. You can set the path,
+ label and other options from this dialogue. You can choose the size of the hardfile by
+ selecting \cf9 Preset Size \cf0 and selecting a size from 1 to 512MB from the lister, or
+ by selecting \cf9 Custom Size \cf0 and entering the required size manually. You can also opt
+ to use {\uldb FFS}{\v IDH_FILESYSTEM}, {\uldb Directory Caching}{\v IDH_FILESYSTEM} or 
+ {\uldb International Mode}{\v IDH_FILESYSTEM}, as for ADFs.
+\par
+\par
+\cf6 Note: \cf0 For maximim compatibility, especially with older versions of Workbench, leave 
+ {\uldb FFS}{\v IDH_FILESYSTEM} and {\uldb International Mode}{\v IDH_FILESYSTEM} turned off.
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Getting Information About A Disk Image \cf0
+
+\par \pard\plain \li120 \f4\fs20 Choose \cf9 Information... \cf0 from the \cf9 File \cf0
+ menu or click the \{bmc ButtonInfo.bmp \} button to view a summary of the current ADF such
+ as how much free space there is, what {\uldb file system}{\v IDH_FILESYSTEM} it uses, whether
+ it has been compressed and so on. See the {\uldb Volume Information Dialogue }
+{\v IDH_INFORMATION_DIALOGUE_DEV} section for  details.
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Getting Information About A File Or Directory \cf0
+
+\par \pard\plain \li120 \f4\fs20 Choose \cf9 Properties... \cf0 from the \cf9 Action \cf0
+ or context menus or click the \{bmc ButtonProps.bmp \} button to display the attributes or property
+ flags for a file or directory. If the selected item is an Amiga file or directory, its file
+ comment will also be displayed, if one exists. Comments are limited to 79 characters in
+ length by ADFLib. See the {\uldb Properties Dialogue }{\v IDH_PROPERTIES} section for 
+ details.
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Closing A Disk Image \cf0
+
+\par \pard\plain \li120 \f4\fs20 This is pretty obvious but when you're finished with a
+ disk image you need to close it before you use it in another program like UAE. To close an image
+ just select its window and click the \{bmc ButtonClose.bmp \} button on the toolbar (or select
+ \cf9 File|Close \cf0 ). If you don't close an ADZ you have made changes to, the changes will
+ be lost at program shutdown.  All changes to DMS files will be lost since ADF Opus can't
+ compress to DMS format (see {\uldb Introduction}{\v IDH_INTRODUCTION}). If you want to modify
+ a DMS file, convert it to ADZ and modify that.
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Running Or Opening Files \cf0
+
+\par \pard\plain \li120 \f4\fs20 You can run or open files listed in the file listers by double-clicking
+ the file. Files appearing in an Amiga lister will open as long as the file type is registered with
+ Windows and a suitable application exists which can handle that file type. For example, if you
+ double-click on a text file called myfile.txt and the .txt file type is registered to open in your text
+ editor, myfile.txt will open in the text editor. See
+ {\uldb Registering File Types With Windows}{\v IDH_FILE_REGISTERING}
+\par 
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Viewing Files Within ADF Opus\cf0
+
+\par \pard\plain \li120 \f4\fs20 Select the file and then choose \cf9 Tools|Text Viewer \cf0
+ or click the \{bmc ButtonTxtViewer.bmp \} button to display the text viewer. The viewer can also be
+ activated from the context menu. See the {\uldb Text Viewer Dialogue }{\v IDH_TEXTVIEWER} section
+ for details.
+\par 
+
+
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Temporary Files \cf0
+
+\par \pard\plain \li120 \f4\fs20 When ADF Opus opens a compressed disk image, it creates a
+ temporary, intermediate ADF in specially created directory called \cf9 opustemp \cf0. If the
+ image's child window is specifically closed, Opus recompresses an ADZ, or simply closes a DMS,
+ and deletes the related ADF from the \cf9 opustemp \cf0 directory. If ADF Opus is shut down with
+ child windows still open, any changes to an ADZ will be lost and the temporary ADF will not be deleted
+ normally. To avoid leaving ADFs in the \cf9 temp \cf0 directory, ADF Opus removes all ADF
+ files from the \cf9 opustemp \cf0 directory on shutdown.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+
+#{\footnote IDH_FILE_REGISTERING}
+${\footnote Adf_Opus_file_types}
+K{\footnote files, registering;Windows, registering files types with;shell usage}
+>{\footnote Opus_win}
++{\footnote :14}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 Registering File Types with Windows \cf0
+
+\par \pard\plain \li120 \f4\fs20
+If you have files in an ADF that you want to open under Windows and you get an error message when
+ you double-click on them, you need to register them with Windows. In order to be able to do this,
+ you must have a suitable Windows programme that handles the type. For example, an AmigaDOS command
+ will never open under Windows as the binary code is incompatible. Files that are specific to a
+ particular Amiga utility may not open. Most other files, such as text, picture and sound files
+ should be fine. If you don't currently have a compatible viewer or handler, you can probably find
+ one on the net.
+\par 
+\par Windows registers file types according to the last three letters of their name, the three after the dot.
+ This means that you may need to register a particular type of file more than once, if it can have different
+ file suffixes. A common case of this is the text file. Text files can have a huge range of file suffixes.
+ A common one used with text files circulated with Amiga programmes is .readme, which is not generally
+ used on Windows. To register text files with this suffix with Windows, copy one to your Windows file system,
+ or create one, left-click the file once to highlight its icon, hold down the Shift key and right-click on
+ the file. In the context menu that appears will be an item labelled \cf9 Open with... \cf0. Select this.
+ Select your text editor from the list that appears, check the box labelled \cf9 Always use this program
+ to open this type of file \cf0 and click \cf9 OK \cf0. If the text editor is not in the list, click
+ \cf9 Other... \cf0 and find it manually.
+\par 
+\par 
+\par 
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+#{\footnote IDH_FILE_TYPES}
+${\footnote Adf_Opus_file_types}
+K{\footnote files, registering;Windows, registering Amiga files with;shell usage}
+>{\footnote Opus_win}
++{\footnote :05}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 Opus, File Types and the Shell \cf0
+
+\par \pard\plain \li120 \f4\fs20 
+ADF Opus now allows you to register Amiga disk file types with Windows Explorer so that
+ double-clicking these files will open them in ADF Opus. You can also select multiple files,
+ using Shift or Ctrl and double-clicking on the final one, and they will all open in Opus.
+ Each file type has its own icon to distinguish it from the others. Right-clicking on a disk
+ file will now give you the option \cf9 Open with ADF Opus \cf0 along with the usual selection.
+\par
+\par
+Amiga disk files will be registered for you when you first run ADF Opus after installation
+ i.e. if no registry entry for ADF Opus' preferences exists. In case you haven't uninstalled
+ a previous version or wish to re-register the file types after their association has been
+ changed, you can register files by clicking the \cf9 Register Amiga file types with Windows
+ Explorer \cf0 button on the {\uldb Options Dialogue}{\v IDH_OPTIONS}. This writes the
+ registry entries required for Windows to recognise the files.
+\par
+\par
+Windows needs to know where to find Opus in order to open these files for you and since the
+ icons are held within ADF Opus' executable file. Therefore, you should also re-register file
+ types if you move ADF Opus to a new directory. Pressing the {\uldb Options Dialogue}
+{\v IDH_OPTIONS} button will rewrite the registry entries with the new path so that all works
+ as it should. You may not see the icons again until you next restart Windows.
+\par
+\par
+In addition, ADF Opus can now be run from the command line, under Windows, allowing its use
+ from file managers etc. This feature was necessary for file associations to work but was also
+ requested by Christian von Krogh. Entering "ADFOpus gaz.adf" will open gaz.adf in Opus. Entering
+ "ADFOpus gaz1.adf gaz2.adz gaz.dms" will open all three files in Opus at once. Entering just
+ "ADFOpus" will open the program by itself. Any amount of white space between file names is
+ acceptable. Anything not identifiable as a disk file will generate an ADFLib error.
+ Identifiable files are still opened.
+\par
+\par
+\par
+\par{\uldb The Main Window}{\v IDH_MAIN}
+\page
+
+
+#{\footnote IDH_FILESYSTEM}
+${\footnote Adf_Opus_filesystem}
+K{\footnote FFS;Fast File System;OFS;Original File System;DC;Directory Cache;file system, Amiga;
+	format;disks, formatting;disk capacity;International Mode;Workbench;Kickstart;
+	compatibility,Workbench;file system options}
+>{\footnote Opus_win}
++{\footnote :16}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 The Amiga File System \cf0
+
+\par \pard\plain \li120 \f4\fs20 
+To quote the Amiga A1200 manual in part:
+\par
+\par
+"Floppy disks may be formatted with the original Amiga file system (OFS) or the Fast File
+ System (FFS). You can also format disks with a directory caching option for faster response
+ in opening disk windows and reading disk directories. This option slightly decreases the amount
+ of space on the disk."
+\par
+\par
+"The following options are available for formatting disks in the Amiga's floppy drive."
+\par \cf09
+\line------------------------------------------------------------------------------------
+\line Amiga File System \tab Approximate Formatted Capacity 
+\line------------------------------------------------------------------------------------
+\cf0 
+ 
+\trgaph30 \cellx2000\cellx4000\cellx6000
+\intbl
+OFS\cell 837 KB\cell\row
+\intbl
+FFS\cell 879 KB\cell\row
+\intbl
+DC-OFS\cell 837 KB\cell\row
+\intbl
+DC-FFS\cell 879 KB\cell\row
+\pard
+
+\par
+"Disks formatted with the directory-caching option cannot be read by Amigas with earlier
+ versions of the system software. Do not format a disk with the directory-caching option if you
+ need to use the disk to transfer the files to an Amiga with Release 2 or earlier system
+ software."
+\par
+\par
+...and the Amiga OS3.1 Workbench manual:
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Fast File System \cf0
+\par \pard\plain \li120 \f4\fs20
+"Allows the Amiga to fit more information on a disk. It is faster than the standard file system.
+ Fast File System disks are incompatible with Workbench software releases prior to 2.0 and
+ should not be selected for disks that are also used on pre-Release 2 Amigas."
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 International Mode \cf0
+\par \pard\plain \li120 \f4\fs20
+"Fully supports international characters in file names. We recommend that you set this option on.
+ International Mode is incompatible with Workbench software releases prior to 2.0 and should not
+ be selected for disks that are also used on pre-Release 2 Amigas."
+\par
+\par \pard\plain \li120 \f4\fs22\b\cf11 Directory Cache \cf0
+\par \pard\plain \li120 \f4\fs20
+"Speeds up the opening of drawers, file requesters and listings. This option is off by default.
+ Disks using Directory Cache are incompatible with Workbench software releases prior to 3.0 and
+ should not be selected for disks that are also used on pre-Release 3 Amigas."
+\par
+\par
+So the message is don't use these options if you want to use your disk with older versions of
+ Kickstart or Workbench or you want others to have that facility.
+\page
+
+
+#{\footnote IDH_UAE}
+${\footnote Adf_Opus_uae}
+K{\footnote uae;emulation;platforms;ports;adfs, amiga disk files;.adf}
+>{\footnote Opus_win}
++{\footnote :17}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 UAE, Fellow and ADFs \cf0
+
+\par \pard\plain \li120 \f4\fs20 UAE, the Unix Amiga Emulator is a package which allows the 
+emulation of an Amiga computer on other platforms. Since most platforms can't read Amiga 
+floppy disks, the software emulates the floppy drive as well. It uses files with a .adf 
+suffix as replacement for floppy disks. Adf stands for Amiga Disk File. ADF Opus' reason 
+for being is to allow these disk files to be manipulated directly from Windows.
+\par
+\par
+UAE is available for a number of platforms including Mac, BeBox, NextStep, Amiga, pOS, 
+XFree86/OS2, Acorn RISC PC, Win32 and DOS. Further details can be obtained from one of the 
+UAE web sites. 
+\par
+\par
+WinUAE:
+\line\tab Bernd Schmidt
+\line\tab Available: 
+{\uldb \cf2 http://www.winuae.net/ \cf0}{\v %!ExecFile(http://www.winuae.net/)}
+\par
+\par
+DosUAE:
+\line\tab Gustavo Goedert ICQ 16667569
+\line\tab Available: 
+{\uldb \cf2 http://www.jackbox.com/users/ggoedert/dosuae/ \cf0}
+{\v %!ExecFile(http://www.jackbox.com/users/ggoedert/dosuae/)}
+
+\par
+\par
+Another worthy emulator is Fellow by Petter Schau. Fellow is written for MS-DOS, uses the
+ same ADF disk images and is also free. Unfortunately, both the official and unofficial sites are no longer
+ in evidence. Petter seems to have moved exclusively to WinFellow but even this has seen no development for
+ nearly a year. Try WinFellow or this download site:
+
+\par
+\par
+Fellow:
+\line\tab Petter Schau <pschau@online.no>
+\line\tab Available: 
+{\uldb \cf2 http://amiga.emucamp.com/emu_fellow.htm \cf0}{\v %!ExecFile(http://amiga.emucamp.com/emu_fellow.htm)}
+\par
+\par
+WinFellow:
+\line\tab WinFellow Team <andax@users.sourceforge.net>
+\line\tab Available: 
+{\uldb \cf2 http://fellow.sourceforge.net/ \cf0}{\v %!ExecFile(http://fellow.sourceforge.net/)}
+
+
+\par
+\par
+Some programmes run better on one emulator than the other, or will only currently run on 
+one of them. Some people prefer one over the other, we suggest that you try, and use, both.
+\par
+\par
+Our great thanks must go to the many people who maintain UAE and Fellow on all of these 
+platforms, for helping to keep the Amiga spirit alive. 
+\par
+\par
+Rock on!
+\page
+
+
+#{\footnote IDH_HARDDRIVES}
+${\footnote Adf_Opus_harddrives}
+K{\footnote connecting hard drives;hard drives, connecting;native hard drives;Amiga hard drives}
+>{\footnote Opus_win}
++{\footnote :18}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 Connecting Hard Drives Under NT, 2K and XP \cf0 
+\par \pard\plain \li120 \f4\fs20 
+
+\par Many users have asked about this feature of Windows NT, 2000 and XP and how to resolve problems
+ connecting and accessing their Amiga hard drives. Bjarke Viksoe, the author of ADF View, has written a small
+ utility to test access to native Amiga hard drives connected to your system. You can use the
+ utility to test whether your Amiga hard drive will be accessible from within ADF Opus.
+\par\par ADF View also uses ADFLib to access this feature and is implemented as a shell namespace extension.
+ It can access one Amiga HD and one partition. ADF Opus should be able to do at least the same, the
+ difficulties experienced are to do with setting up access under Windows. ADF View's help
+ contains some advice including the need to be logged in with administrator priveleges to be
+ able to access Amiga drives.
+\par\par ADF View can be used in conjunction with ADF Opus if you do not register the Amiga
+ disk file types with Opus. Once you do this, you will need to re-install ADF View to restore
+ the associations to it.
+\par\par ADF View and the test utility can be found at
+ {\uldb \cf2 http://www.viksoe.dk/adfview/ \cf0}{\v %!ExecFile(http://www.viksoe.dk/adfview/)}.
+\page
+
+
+#{\footnote IDH_BUGS}
+${\footnote Adf_Opus_bugs}
+K{\footnote limitations;bugs}
+>{\footnote Opus_win}
++{\footnote :19}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 Known Bugs/Limitations \cf0 
+\par \pard\plain \li120 \f4\fs20 
+
+\cf9 V1.0 \cf0
+\par
+\par\tab ADFLib doesn't recognise hardfiles smaller than 1802240 bytes (1.7 MB). This isn't an
+\par\tab issue as you would expect a hardfile to be larger than a floppy disk, anyway.
+\par
+\par
+\par
+\cf9 V1.2 \cf0
+\par
+\par\tab End of line markers show up in the text viewer as an ugly vertical black bar. I have
+\par\tab spent hours trying to trace the cause of this, even using MS example code and can't
+\par\tab find it yet.
+\page
+
+
+#{\footnote IDH_COPYRIGHT}
+${\footnote Adf_Opus_copyright}
+K{\footnote copyright;freeware;commercial use;limitations;distribution;redistribution
+;trademarks;warranty}
+>{\footnote Opus_win}
++{\footnote :20}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 Copyright/Legal Notice \cf0 
+
+\par \pard\plain \li120 \f4\fs20 
+ADF Opus - An Amiga emulator disk image manager for Windows.
+\par
+\par
+Copyright (C) 2002 Dan Sutherland and Gary Harris
+\par\par
+This program is free software; you can redistribute it and/or modify it under the
+ terms of the {\uldb GNU General Public License }{\v IDH_LICENCE}
+ as published by the {\uldb \cf2 Free Software Foundation}{\v %!ExecFile(http://www.fsf.org)},
+ either version 2 of the License, or (at your option) any later version.
+\par
+\par
+This program is distributed in the hope that it will be useful but WITHOUT ANY
+ WARRANTY, without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ PARTICULAR PURPOSE. See the {\uldb \cf2 GNU General Public License \cf0}
+{\v IDH_LICENCE} for more details.
+\par
+\par
+You should have received a copy of the
+ {\uldb \cf2 GNU General Public License \cf0}{\v IDH_LICENCE} along with this
+ program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite
+ 330, Boston, MA 02111-1307 USA.
+\par
+\par
+ADF Opus uses ADFlib which is Copyright 1997-2002 by Laurent Clevy and also released under the
+ GPL (not the GLPL). You can use ADFlib to write your own software which access ADFs and Amiga
+ devices - see the ADFlib documentation for more details. 
+\par
+\par
+ADF Opus also contains portions of xDMS written by Andre R. de la Rocha, and placed in the
+ Public Domain. xDMS is available on Aminet.
+\par
+\par
+ADF Opus uses ZLib 1.1.4 for its GZip compression support. ZLib is copyright (C) 1995-2002
+ Jean-loup Gailly and Mark Adler.
+\par
+\par
+Any trademarks mentioned are the property of their owners.
+\par
+\par
+If you include ADF Opus on a CD-ROM collection or coverdisk, etc. it'd be nice if you told me
+ about it, or even let me have a copy.
+\page
+
+
+
+#{\footnote IDH_FEEDBACK}
+${\footnote Adf_Opus_feedback}
+K{\footnote comments;suggestions;reports, bug;bug reports;address, email;email;feedback}
+>{\footnote Opus_win}
++{\footnote :21}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 Feedback \cf0 
+
+\par \pard\plain \li120 \f4\fs20 I heartily welcome any comments, suggestions, bug reports 
+and other feedback you may have. My e-mail address is
+ {\uldb \cf2 gharris@zip.com.au \cf0}{\v %!ExecFile(mailto:gharris@zip.com.au)}
+ If you include the words "ADF Opus" in the subject line it'd help me, since I can filter your
+ message from spam and frivolous personal e-mail.
+\par
+\par
+If reporting a bug, please include as many details as you can, e.g. steps required to repeat
+ it, your machine type, RAM, OS, ADF Opus version no., etc. Thanks.
+\par
+\par
+\page
+
+
+@{\footnote 
+
+These are the context string references from adfopus.bmp hotspots. 
+Menu items call their own popup bitmaps which, in turn, have popup descriptions.
+
+}
+
+#{\footnote IDH_ADF_TITLE}
+\pard\plain \li120 \f4\fs20 The name of and system path to the ADF in the active window.
+\page
+
+
+#{\footnote IDH_FILE_MENU}
+\{bml MenuFile.bmp\}
+\page
+
+
+#{\footnote IDH_EDIT_MENU}
+\{bml MenuEdit.bmp\}
+\page
+
+
+#{\footnote IDH_VIEW_MENU}
+\{bml MenuView.bmp\}
+\page
+
+
+#{\footnote IDH_ACTION_MENU}
+\{bml MenuAction.bmp\}
+\page
+
+
+#{\footnote IDH_TOOLS_MENU}
+\{bml MenuTools.bmp\}
+\page
+
+
+#{\footnote IDH_WINDOW_MENU}
+\{bml MenuWindow.bmp\}
+\page
+
+
+#{\footnote IDH_HELP_MENU}
+\{bml MenuHelp.bmp\}
+\page
+
+
+#{\footnote IDH_CONTEXT_MENU}
+\{bml MenuContext.bmp\}
+\page
+
+
+#{\footnote IDH_NEW_BUTTON}
+\pard\plain \li120 \f4\fs20 
+Open the {\uldb Create New Volume}{\v IDH_CREATE_DIALOGUE} dialogue.
+\page
+
+
+#{\footnote IDH_OPEN_BUTTON}
+\pard\plain \li120 \f4\fs20 Open an existing ADF, ADZ or DMS.
+\page
+
+
+#{\footnote IDH_CLOSE_BUTTON}
+\pard\plain \li120 \f4\fs20 Close the active directory window.
+\page
+
+
+
+#{\footnote IDH_RENAME_BUTTON}
+\pard\plain \li120 \f4\fs20 Rename a file or directory in the disk image or Windows drive.
+\page
+
+
+#{\footnote IDH_DELETE_BUTTON}
+\pard\plain \li120 \f4\fs20 Delete a file or directory in the disk image or Windows drive.
+\page
+
+
+#{\footnote IDH_NEW_DIR_BUTTON}
+\pard\plain \li120 \f4\fs20 Create a new directory in the disk image or Windows drive.
+\page
+
+
+#{\footnote IDH_UP_ONE_LEVEL}
+\pard\plain \li120 \f4\fs20 Click here to go up one directory level in your system or disk image
+ at a time. To get a list of the drives on your system, click here when in the system root
+ directory.
+\page
+
+
+#{\footnote IDH_INFO_BUTTON}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Volume Information}{\v IDH_INFORMATION_DIALOGUE_DEV}
+ dialogue window.
+\page
+
+
+#{\footnote IDH_PROPERTIES_BUTTON}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Properties}{\v IDH_PROPERTIES} dialogue.
+\page
+
+
+#{\footnote IDH_SHOW_UNDELETABLE_BUTTON}
+\pard\plain \li120 \f4\fs20 Show undeletable files on an Amiga volume. Use \cf9 Action|Undelete \cf0
+ or the \cf9 Undelete \cf0 \{bmc ButtonUndelete.bmp \} button to recover the files.
+\page
+
+
+#{\footnote IDH_UNDELETE_BUTTON}
+\pard\plain \li120 \f4\fs20 Undelete selected files. Use \cf9 View|Undeletable Files \cf0 or the
+ \cf9 Show Undeletable Files \cf0 \{bmc ButtonShowUndel.bmp \} button first to display recoverable files.
+\page
+
+
+#{\footnote IDH_TEXTVIEWER_BUTTON}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Text Viewer}{\v IDH_TEXTVIEWER} dialogue window.
+\page
+
+
+#{\footnote IDH_SYSTEM_CONTENTS_WINDOW}
+\pard\plain \li120 \f4\fs20 The name of the system directory you are currently viewing in
+ this directory listing window.
+\page
+
+
+#{\footnote IDH_ADF_CONTENTS_WINDOW}
+\pard\plain \li120 \f4\fs20 The name of the disk image directory you are currently viewing in
+ this directory listing window.
+\page
+
+
+#{\footnote IDH_SYSTEM_DIR_WINDOW}
+\pard\plain \li120 \f4\fs20 The current system directory listing. 
+ {\ul Right click}{\v IDH_CONTEXT_MENU} for menu shortcuts to the \cf9 Up One Directory
+ Level \cf0 and \cf9 Edit \cf0 menu commands.
+\page
+
+
+#{\footnote IDH_ADF_DIR_WINDOW}
+\pard\plain \li120 \f4\fs20 The current disk image directory listing.
+ {\ul Right click}{\v IDH_CONTEXT_MENU} for menu shortcuts to the \cf9 Up One Directory
+ Level \cf0 and \cf9 Edit \cf0 menu commands.
+\page
+
+
+#{\footnote IDH_STATUS_BAR}
+\pard\plain \li120 \f4\fs20 The status bar is not yet functional. Disabling it from the 
+view menu will give you more space for the directory listings.
+\page
+
+#{\footnote IDH_FILENAME}
+\pard\plain \li120 \f4\fs20 The names of all directories and files contained in the directory
+ being viewed.
+\page
+
+#{\footnote IDH_FILESIZE}
+\pard\plain \li120 \f4\fs20 The size of each listed directory or file.
+\page
+
+#{\footnote IDH_FILEFLAGS_PC}
+\pard\plain \li120 \f4\fs20 The Windows attributes that are set for each directory or file. If
+ blank, no attributes are set.
+\par
+\par \cf6 R \cf9 Read Only 
+\line \cf6 H \cf9 Hidden
+\line \cf6 A \cf9 Archive
+\line \cf6 S \cf9 System \cf0
+\par
+\par
+For details see windows Help.
+\page
+
+#{\footnote IDH_FILEFLAGS_AMIGA}
+\pard\plain \li120 \f4\fs20 The Amiga file flags that are set for each directory or file. If
+ blank, no flags are set.
+\par
+\par \cf6 H \cf9 Hold \cf0 -  If H, P, R, and E are set, the file can be made resident on first
+ load (OS 2.x and 3.0).
+\par
+\par \cf6 S \cf9 Script \cf0 - If set, the file is a script (a text file of AmigaDOS 
+ commands) and can be run without using the EXECUTE command.
+\par
+\par \cf6 P \cf9 Pure \cf0 - If set for a command, it can be made resident in memory.
+ This allows the command to be run without being reloaded from disk each time, reducing time
+ and memory use. To be made resident, a command should be both re-entrant and re-executable. A
+ re-entrant command can properly support independent use by two or more programs at the same
+ time. Just setting the Pure bit does not make a command or program pure. See the AmigaDOS
+ reference for more information. This bit is best left unchanged.
+\par
+\par \cf6 A \cf9 Archived \cf0 - This attribute is set by some backup programs to indicate that a
+ file or directory has been archived (backed up). It is cleared whenever the file is saved.
+\par
+\par \cf6 R \cf9 Readable \cf0 - If set, information in the file can be read. If this
+ attribute is clear, a tool will not run and a project cannot be loaded by its Default Tool.
+\par
+\par \cf6 W \cf9 Writable \cf0 - If set, information can be written into the file. Unless
+ Writable is set, you cannot make changes to the file.
+\par
+\par \cf6 E \cf9 Executable \cf0 - If set, the file is a tool that can be run from Workbench
+ or the Shell. If this attribute is clear, the tool cannot be run from the Shell.
+\par
+\par \cf6 D \cf9 Deletable \cf0 - If set, the drawer, project or tool can be erased from the
+ disk. If clear, the object is protected from deletion.
+\par
+\par Set these attributes from the Workbench Icon Information tool, the Shell command PROTECT
+ or ADF Opus' Properties dialogue. 
+\page
+
+#{\footnote IDH_FILE_COMMENT}
+\pard\plain \li120 \f4\fs20 The Amiga file comment, if one exists. A short informative text message.
+\page
+
+
+@{\footnote
+
+These are the hotspot references for the menu sub-popups.
+
+}
+
+
+#{\footnote IDH_FILE_NEW}
+\pard\plain \li120 \f4\fs20 Create a {\uldb new}{\v IDH_CREATE_DIALOGUE} ADF disk image.
+\page
+
+#{\footnote IDH_FILE_OPEN}
+\pard\plain \li120 \f4\fs20 Open an existing disk image, hardfile or disk dump.
+\page
+
+#{\footnote IDH_FILE_OPEN_DEVICE}
+\pard\plain \li120 \f4\fs20 On Windows NT4 or 2000, open an Amiga hard drive.
+\page
+
+#{\footnote IDH_FILE_CLOSE}
+\pard\plain \li120 \f4\fs20 Close the currently selected disk image and its child window.
+ Closing an ADZ will also recompress it.
+\page
+
+#{\footnote IDH_FILE_INFORMATION}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Information Dialogue}{\v IDH_INFORMATION_DIALOGUE_DEV}
+ for the selected disk image.
+\page
+
+#{\footnote IDH_FILE_EXIT}
+\pard\plain \li120 \f4\fs20 Exit ADF Opus.
+\page
+
+#{\footnote IDH_FILE_PROPERTIES}
+\pard\plain \li120 \f4\fs20 Open the Properties Dialogue.
+\page
+
+#{\footnote IDH_EDIT_SELECT_ALL}
+\pard\plain \li120 \f4\fs20 Select all items in the active window.
+\page
+
+#{\footnote IDH_EDIT_SELECT_NONE}
+\pard\plain \li120 \f4\fs20 Deselect all selected items in the active window.
+\page
+
+#{\footnote IDH_EDIT_INVERT_SELECTION}
+\pard\plain \li120 \f4\fs20 Invert the current selection in the active window. That is, 
+deselect all selected items and select any unselected items.
+\page
+
+#{\footnote IDH_VIEW_REFRESH}
+\pard\plain \li120 \f4\fs20 Refresh the current window.
+\page
+
+@{\footnote IDH_VIEW_UNDELETABLE
+This item is aliased to IDH_SHOW_UNDELETABLE_BUTTON
+}
+
+#{\footnote IDH_VIEW_WINLIST}
+\pard\plain \li120 \f4\fs20 Open a new Windows file lister.
+\page
+
+#{\footnote IDH_VIEW_TOOLBAR}
+\pard\plain \li120 \f4\fs20 Check this item to enable the toolbar. Unchecking it hides the 
+toolbar from view.
+\page
+
+#{\footnote IDH_VIEW_STATUS_BAR}
+\pard\plain \li120 \f4\fs20 Check this item to enable the status bar. Unchecking it hides the 
+status bar from view.
+\page
+
+#{\footnote IDH_ACTION_UP_ONE_LEVEL}
+\pard\plain \li120 \f4\fs20 Go up one directory level in the active disk image or Windows drive.
+\page
+
+#{\footnote IDH_ACTION_NEW_DIRECTORY}
+\pard\plain \li120 \f4\fs20 Create a new directory in the active disk image or Windows drive.
+\page
+
+#{\footnote IDH_ACTION_DELETE}
+\pard\plain \li120 \f4\fs20 Delete a file or directory in the active disk image or Windows drive.
+\page
+
+@{\footnote IDH_ACTION_UNDELETE
+This item is aliased to IDH_UNDELETE_BUTTON
+}
+
+#{\footnote IDH_ACTION_RENAME}
+\pard\plain \li120 \f4\fs20 Rename a file or directory in the active disk image or Windows drive.
+\page
+
+#{\footnote IDH_ACTION_PROPERTIES}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Properties Dialogue}{\v IDH_PROPERTIES} to set file flags.
+\page
+
+#{\footnote IDH_TOOLS_TEXTVIEWER}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Text Viewer}{\v IDH_TEXTVIEWER}.
+\page
+
+#{\footnote IDH_TOOLS_BATCH_CONVERTER}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Batch Converter}{\v IDH_BATCH_CONVERTER}.
+\page
+
+#{\footnote IDH_TOOLS_DISK2FDI}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Disk2FDI Dialogue}{\v IDH_DISK2FDI} to run Disk2FDI to create
+ disk images from original floppy disks.
+\page
+
+#{\footnote IDH_TOOLS_INSTALL}
+\pard\plain \li120 \f4\fs20 Install an Amiga floppy disk boot block to make a disk image bootable. See the
+ caution in {\uldb Using The Program}{\v IDH_USING_THE_PROGRAM} before installing.
+\page
+
+#{\footnote IDH_TOOLS_BOOTBLOCK}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Display Bootblock Dialogue}{\v IDH_BOOTBLOCK} to display the current
+ ADF's bootblock.
+\page
+
+#{\footnote IDH_TOOLS_OPTIONS}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Options Dialogue}{\v IDH_OPTIONS} to set programme preferences.
+\page
+
+#{\footnote IDH_VOLUME_NEW}
+\pard\plain \li120 \f4\fs20 
+Open the {\uldb Create New Volume}{\v IDH_CREATE_DIALOGUE} dialogue.
+\page
+
+#{\footnote IDH_VOLUME_OPEN}
+\pard\plain \li120 \f4\fs20 Open an existing disk image.
+\page
+
+#{\footnote IDH_VOLUME_CLOSE}
+\pard\plain \li120 \f4\fs20 Close the active directory window.
+\page
+
+#{\footnote IDH_VOLUME_INFORMATION}
+\pard\plain \li120 \f4\fs20 Open the {\uldb Volume Information}{\v IDH_INFORMATION_DIALOGUE_DEV}
+ dialogue window.
+\page
+
+#{\footnote IDH_WINDOW_CASCADE}
+\pard\plain \li120 \f4\fs20 Cascade the open windows.
+\page
+
+#{\footnote IDH_WINDOW_TILE_HORIZONTALLY}
+\pard\plain \li120 \f4\fs20 Tile the open windows horizontally.
+\page
+
+#{\footnote IDH_WINDOW_TILE_VERTICALLY}
+\pard\plain \li120 \f4\fs20 Tile the open windows vertically.
+\page
+
+#{\footnote IDH_WINDOW_ARRANGE_ICONS}
+\pard\plain \li120 \f4\fs20 Arrange minimized window icons at the bottom of the main window.
+\page
+
+#{\footnote IDH_WINDOW_CLOSE_ALL}
+\pard\plain \li120 \f4\fs20 Close all open windows.
+\page
+
+#{\footnote IDH_WINDOW_LIST}
+\pard\plain \li120 \f4\fs20 A list of all the open windows. Check the name of the window 
+you want to view to bring it to the front and make it the active window.
+\page
+
+#{\footnote IDH_HELP_TOPICS}
+\pard\plain \li120 \f4\fs20 Display the list of contents of the ADF Opus help file.
+\page
+
+#{\footnote IDH_HELP_OVERVIEW}
+\pard\plain \li120 \f4\fs20 Display the Main Window section of the ADF Opus help file.
+\page
+
+#{\footnote IDH_HELP_ABOUT}
+\pard\plain \li120 \f4\fs20 Open the About dialogue. I'll let you try this one. : -)
+\page
+
+
+
+@{\footnote
+
+List of hotspot targets from the Volume Information bitmap.
+
+}
+
+
+
+@{\footnote IDH_INFO_CLOSE
+This button is mapped to the IDH_INFO_CLOSE_BUTTON entry.
+}
+
+
+#{\footnote IDH_INFO_DEV_PATH}
+\pard\plain \li120 \f4\fs20 The path to the disk image.
+\page
+
+#{\footnote IDH_INFO_DEV_SIZE}
+\pard\plain \li120 \f4\fs20 The size of the final disk image. For an ADZ or DMS this is the
+ compressed size of the file. The original size of the image is found on the 
+{\uldb Volume }{\v IDH_INFORMATION_DIALOGUE_VOL} tab.
+\page
+
+#{\footnote IDH_INFO_DEV_TYPE}
+\pard\plain \li120 \f4\fs20 The type of file and its disk density. An ADZ is listed as
+ "Compressed" and a DMS as "Diskmashed".
+\page
+
+#{\footnote IDH_INFO_DEV_GEOMETRY}
+\pard\plain \li120 \f4\fs20 The number of cylinders per disk, read/write heads and sectors per
+ cylinder for this disk.
+\page
+
+#{\footnote IDH_INFO_DEV_VOLUMES}
+\pard\plain \li120 \f4\fs20 A list of the volumes appearing on this device. For each volume,
+ its ID, name and start and end block numbers are given.
+\page
+
+#{\footnote IDH_INFO_VOL_LABEL}
+\pard\plain \li120 \f4\fs20 The disk label of the disk image. You can change the label by
+ deleting the text in the edit window and entering the new name. Clicking \cf9 Close \cf0
+ will accept the change.
+\page
+
+#{\footnote IDH_INFO_VOL_FFS}
+\pard\plain \li120 \f4\fs20 Indicates whether the ADF was formatted using the Fast File 
+System (FFS) or the Old File System (OFS).
+\page
+
+#{\footnote IDH_INFO_VOL_INTL}
+\pard\plain \li120 \f4\fs20 Indicates whether the ADF was formatted using International Mode.
+\page
+
+#{\footnote IDH_INFO_VOL_DC}
+\pard\plain \li120 \f4\fs20 Indicates whether the ADF was formatted with directory cache 
+turned on or off.
+\page
+
+#{\footnote IDH_INFO_VOL_TOTAL}
+\pard\plain \li120 \f4\fs20 The total capacity of the uncompressed disk image, in kilobytes.
+\page
+
+#{\footnote IDH_INFO_VOL_USED}
+\pard\plain \li120 \f4\fs20 The amount of uncompressed disk space used, in kilobytes.
+\page
+
+#{\footnote IDH_INFO_VOL_FREE}
+\pard\plain \li120 \f4\fs20 The available, unused, uncompressed disk image disk space, in
+ kilobytes.
+\page
+
+#{\footnote IDH_INFO_VOL_FULL}
+\pard\plain \li120 \f4\fs20 The percentage of the uncompressed disk image's disk space used.
+\page
+
+#{\footnote IDH_INFO_CLOSE_BUTTON}
+\pard\plain \li120 \f4\fs20 Closes the Volume Information dialogue, accepting any change to 
+the disk label.
+\page
+
+@{\footnote 
+
+The IDH_INFO_HELP_BUTTON is mapped to the IDH_CREATE_HELP_BUTTON
+
+}
+
+
+@{\footnote
+
+These are the hotspot target popups for the Create New Volume dialogue bitmap.
+
+}
+
+
+@{\footnote IDH_CREATE_CLOSE
+This button is mapped to the IDH_CREATE_CANCEL_BUTTON entry.
+}
+
+
+#{\footnote IDH_CREATE_PATH_EDIT}
+\pard\plain \li120 \f4\fs20 Enter the path and name for the new file here or use the browse 
+button.
+\page
+
+
+#{\footnote IDH_CREATE_PATH_BROWSE}
+\pard\plain \li120 \f4\fs20 Select the path and name for the new file or enter it directly 
+into the edit control to the left.
+\page
+
+
+#{\footnote IDH_CREATE_TYPE_ADF}
+\pard\plain \li120 \f4\fs20 The new volume will be created as an ADF when this radio button is 
+selected.
+\page
+
+
+#{\footnote IDH_CREATE_TYPE_HD}
+\pard\plain \li120 \f4\fs20 If this box is checked, the new volume will be a high density 
+ADF simulating a high density floppy disk with 1.76MB capacity. If the box is unchecked, the 
+ADF will have the standard 880KB capacity.
+\page
+
+
+#{\footnote IDH_CREATE_TYPE_HARDFILE}
+\pard\plain \li120 \f4\fs20 The new volume will be created as a hardfile when this radio 
+button is selected.
+\page
+
+
+#{\footnote IDH_CREATE_TYPE_HARDFILE_PRESET}
+\pard\plain \li120 \f4\fs20 Selecting this radio button allows you to select the size of 
+the hardfile from the list of presets.
+\page
+
+
+#{\footnote IDH_CREATE_TYPE_HARDFILE_PRESET_SIZES}
+\pard\plain \li120 \f4\fs20 Select the size of the hardfile from 1 to 512 MB.
+\page
+
+
+#{\footnote IDH_CREATE_TYPE_HARDFILE_CUSTOM}
+\pard\plain \li120 \f4\fs20 Selecting this radio button allows you to enter a custom size 
+for the hardfile in the edit control.
+\page
+
+
+#{\footnote IDH_CREATE_TYPE_HARDFILE_CUSTOM_SIZE}
+\pard\plain \li120 \f4\fs20 Enter the desired custom hardfile size here.
+\page
+
+
+#{\footnote IDH_CREATE_FILESYSTEM_FFS}
+\pard\plain \li120 \f4\fs20 Check this box to use FFS in the new volume. If the box is 
+not checked, OFS will be used.
+\page
+
+#{\footnote IDH_CREATE_FILESYSTEM_DC}
+\pard\plain \li120 \f4\fs20 Check this box to create the new volume with Directory Cache Mode.
+\page
+
+#{\footnote IDH_CREATE_FILESYSTEM_IFS}
+\pard\plain \li120 \f4\fs20 Check this box to create the new volume with International Mode.
+\page
+
+#{\footnote IDH_CREATE_FILESYSTEM_BOOT}
+\pard\plain \li120 \f4\fs20 Check this box to make the new volume bootable.
+\page
+
+#{\footnote IDH_CREATE_LABEL}
+\pard\plain \li120 \f4\fs20 Enter the disk label for the new file.
+\page
+
+
+#{\footnote IDH_CREATE_OPEN}
+\pard\plain \li120 \f4\fs20 Check this box to open the new file after creation.
+\page
+
+#{\footnote IDH_CREATE_CREATE_BUTTON}
+\pard\plain \li120 \f4\fs20 Create the file with the selected settings.
+\page
+
+
+#{\footnote IDH_CREATE_HELP_BUTTON}
+\pard\plain \li120 \f4\fs20 Open the help topic for this dialogue.
+\page
+
+
+#{\footnote IDH_CREATE_CANCEL_BUTTON}
+\pard\plain \li120 \f4\fs20 Cancel file creation and close the dialogue.
+\page
+
+
+
+@{\footnote
+
+These are the hotspot target popups for the Batch Converter dialogue bitmap.
+
+}
+
+#{\footnote IDH_BATCH_SOURCE_LIST}
+\pard\plain \li120 \f4\fs20 The list of disk images to be converted.
+\page
+
+#{\footnote IDH_BATCH_ADD_BUTTON}
+\pard\plain \li120 \f4\fs20 Click this button to open the "Open Files" dialogue. Select files
+ here to add to the list to be converted.
+\page
+
+#{\footnote IDH_BATCH_REMOVE_BUTTON}
+\pard\plain \li120 \f4\fs20 Remove a disk image from the list. This button is only available
+ when a disk image is selected in the list.
+\page
+
+#{\footnote IDH_BATCH_REMOVE_ALL_BUTTON}
+\pard\plain \li120 \f4\fs20 Remove all disk images from the list.
+\page
+
+#{\footnote IDH_BATCH_DELETE_ORIGINAL}
+\pard\plain \li120 \f4\fs20 Check this check box if you want the original files to be deleted after
+ compression or extraction. 
+\page
+
+#{\footnote IDH_BATCH_ADF_BUTTON}
+\pard\plain \li120 \f4\fs20 Select this button if you want disk images to be converted to
+ uncompressed ADF format. This button is disabled if an ADF is selected into the conversion
+  list. To reset it, close the Batch Converter.
+\page
+
+#{\footnote IDH_BATCH_ADZ_BUTTON}
+\pard\plain \li120 \f4\fs20 Select this button if you want disk images to be converted to
+ compressed ADZ format. This button is disabled if an ADZ is selected into the conversion list.
+ To reset it, close the Batch Converter.
+\page
+
+#{\footnote IDH_BATCH_STATUS}
+\pard\plain \li120 \f4\fs20 A report is printed to this window for each image that is listed for
+ conversion, telling you whether the conversion is successful.
+\page
+
+#{\footnote IDH_BATCH_START_BUTTON}
+\pard\plain \li120 \f4\fs20 Select this button to convert all disk images in the list.
+\page
+
+#{\footnote IDH_BATCH_HELP_BUTTON}
+\pard\plain \li120 \f4\fs20 Open the help topic for this dialogue.
+\page
+
+#{\footnote IDH_BATCH_CLOSE_BUTTON}
+\pard\plain \li120 \f4\fs20 Close the Batch Converter.
+\page
+
+
+@{\footnote
+
+These are the hotspot target popups for the Options dialogue bitmap.
+
+}
+
+#{\footnote IDH_OPTIONS_WINLIST_DRIVE}
+\pard\plain \li120 \f4\fs20 Select this option if you want the Windows lister to open with a list
+ of all your drives.
+\page
+
+#{\footnote IDH_OPTIONS_WINLIST_DIR}
+\pard\plain \li120 \f4\fs20 Select this option if you want the Windows lister to open in a
+ particular directory. 
+\page
+
+#{\footnote IDH_OPTIONS_DIR}
+\pard\plain \li120 \f4\fs20 Enter the desired directory path that the Windows lister should
+ open in the edit box.
+\page
+
+#{\footnote IDH_OPTIONS_LABEL}
+\pard\plain \li120 \f4\fs20 Enter the default label that will appear in the \cf9 Label \cf0
+ field of the \cf9 Create New Volume \cf0 dialogue when creating disk images.
+\page
+
+#{\footnote IDH_OPTIONS_CONFIRM_COMDEL}
+\pard\plain \li120 \f4\fs20 Check this checkbox if you want ADF Opus to open a requester asking
+ for confirmation before deleting files.
+\page
+
+#{\footnote IDH_OPTIONS_CONFIRM_DELDIR}
+\pard\plain \li120 \f4\fs20 Check this checkbox if you want ADF Opus to open a requester asking
+ for confirmation before deleting directories.
+\page
+
+#{\footnote IDH_OPTIONS_MISC_DIRCACHE}
+\pard\plain \li120 \f4\fs20 Check this checkbox if you want ADF Opus to use directory cache
+ blocks.
+\page
+
+#{\footnote IDH_OPTIONS_REGISTER_BUTTON}
+\pard\plain \li120 \f4\fs20 Register Amiga file types with Windows Explorer. Disk files will
+ have their own icons and double-clicking a file will open it in ADF Opus.
+\page
+
+#{\footnote IDH_OPTIONS_OK_BUTTON}
+\pard\plain \li120 \f4\fs20 Close and save options.
+\page
+
+#{\footnote IDH_OPTIONS_APPLY_BUTTON}
+\pard\plain \li120 \f4\fs20 Save options without closing the dialogue.
+\page
+
+@{\footnote IDH_OPTIONS_HELP_BUTTON
+This button is mapped to the IDH_CREATE_HELP_BUTTON entry.
+}
+
+#{\footnote IDH_OPTIONS_CANCEL_BUTTON}
+\pard\plain \li120 \f4\fs20 Close dialogue without saving changes.
+\page
+
+
+
+@{\footnote
+
+These are the hotspot target popups for the Select Volume dialogue bitmap.
+
+}
+
+#{\footnote IDH_VOLSEL_LIST}
+\pard\plain \li120 \f4\fs20 A list of all the volumes present on the current device.Select the
+ volume you want ADF Opus to open from this list.
+\page
+
+#{\footnote IDH_VOLSEL_OPEN_BUTTON}
+\pard\plain \li120 \f4\fs20 Press this button to open the selected volume.
+\page
+
+@{\footnote IDH_VOLSEL_HELP_BUTTON
+This button is mapped to the IDH_CREATE_HELP_BUTTON entry.
+}
+
+#{\footnote IDH_VOLSEL_CANCEL_BUTTON}
+\pard\plain \li120 \f4\fs20 Press this button to cancel the operation without opening a volume.
+\page
+
+
+@{\footnote
+
+These are the hotspot target popups for the Windows Properties dialogue bitmap.
+
+}
+
+#{\footnote IDH_PROPERTIES_FILENAME_WIN}
+\pard\plain \li120 \f4\fs20 The name of the currently selected Windows file or
+ directory.
+\page
+
+#{\footnote IDH_PROPERTIES_WIN_READONLY}
+\pard\plain \li120 \f4\fs20 Check this box to set the Read Only flag for this file.
+ This prevents the file from being written to, changed or deleted.
+\page
+
+#{\footnote IDH_PROPERTIES_WIN_ARCHIVE}
+\pard\plain \li120 \f4\fs20 Check this box to set the Archive flag for this file.
+ This is used by some programs to determine whether the file should be archived.
+\page
+
+#{\footnote IDH_PROPERTIES_WIN_HIDDEN}
+\pard\plain \li120 \f4\fs20 Check this box to set the Hidden flag for this file.
+ Files with this flag set will be hidden from view unless you select "Show all files"
+ in Folder Properties.
+\page
+
+#{\footnote IDH_PROPERTIES_WIN_SYSTEM}
+\pard\plain \li120 \f4\fs20 Check this box to set the System flag for this file.
+ Files with this flag set are required by the system for its operation. You should
+ usually let Windows handle this.
+\page
+
+#{\footnote IDH_PROPERTIES_WIN_OK_BUTTON}
+\pard\plain \li120 \f4\fs20 Close and save selected file properties.
+\page
+
+@{\footnote IDH_PROPERTIES_WIN_HELP_BUTTON
+This button is mapped to the IDH_CREATE_HELP_BUTTON entry.
+}
+
+#{\footnote IDH_PROPERTIES_WIN_CANCEL_BUTTON}
+\pard\plain \li120 \f4\fs20 Close dialogue without saving changes.
+\page
+
+
+@{\footnote
+
+These are the hotspot target popups for the Amiga Properties dialogue bitmap.
+
+}
+
+#{\footnote IDH_PROPERTIES_FILENAME_AMI}
+\pard\plain \li120 \f4\fs20 The name of the currently selected Amiga file or
+ directory.
+\page
+
+#{\footnote IDH_PROPERTIES_AMI_READABLE}
+\pard\plain \li120 \f4\fs20 Check this box to set the Readable flag for this file.
+ If set, information in the file can be read. If this attribute is clear, a tool will
+ not run and a project cannot be loaded by its Default Tool.
+\page
+
+#{\footnote IDH_PROPERTIES_AMI_WRITABLE}
+\pard\plain \li120 \f4\fs20 Check this box to set the Writable flag for this file.
+ If set, information can be written into the file. Unless Writable is set, you cannot
+ make changes to the file.
+\page
+
+#{\footnote IDH_PROPERTIES_AMI_EXECUTABLE}
+\pard\plain \li120 \f4\fs20 Check this box to set the Executable flag for this file.
+ If set, the file is a tool that can be run from Workbench or the Shell. If this attribute
+ is clear, the tool cannot be run from the Shell.
+\page
+
+#{\footnote IDH_PROPERTIES_AMI_DELETABLE}
+\pard\plain \li120 \f4\fs20 Check this box to set the Deletable flag for this file.
+ If set, the drawer, project or tool can be erased from the disk. If clear, the object
+ is protected from deletion.
+\page
+
+#{\footnote IDH_PROPERTIES_AMI_SCRIPT}
+\pard\plain \li120 \f4\fs20 Check this box to set the Script flag for this file.
+ If set, the file is a script (a text file of AmigaDOS commands) and can be run without
+ using the EXECUTE command.
+\page
+
+#{\footnote IDH_PROPERTIES_AMI_ARCHIVE}
+\pard\plain \li120 \f4\fs20 Check this box to set the Archive flag for this file.
+ This attribute is set by some backup programs to indicate that a file or directory
+ has been archived (backed up). It is cleared whenever the file is saved.
+\page
+
+#{\footnote IDH_PROPERTIES_AMI_PURE}
+\pard\plain \li120 \f4\fs20 Check this box to set the Pure flag for this file.
+ If set for a command, it can be made resident in memory.
+ This allows the command to be run without being reloaded from disk each time, reducing time
+ and memory use. To be made resident, a command should be both re-entrant and re-executable. A
+ re-entrant command can properly support independent use by two or more programs at the same
+ time. Just setting the Pure bit does not make a command or program pure. See the AmigaDOS
+ reference for more information. This bit is best left unchanged.
+\page
+
+#{\footnote IDH_PROPERTIES_AMI_HOLDBIT}
+\pard\plain \li120 \f4\fs20 Check this box to set the Hold flag for this file.
+ If H, P, R, and E are set, the file can be made resident on first load (OS 2.x and 3.0).
+\page
+
+#{\footnote IDH_PROPERTIES_AMI_COMMENT}
+\pard\plain \li120 \f4\fs20 A file comment of up to 79 characters length.
+\page
+
+@{\footnote IDH_PROPERTIES_AMI_OK_BUTTON
+This button is mapped to the IDH_PROPERTIES_WIN_OK_BUTTON entry.
+}
+
+@{\footnote IDH_PROPERTIES_AMI_HELP_BUTTON
+This button is mapped to the IDH_CREATE_HELP_BUTTON entry.
+}
+
+@{\footnote IDH_PROPERTIES_AMI_CANCEL_BUTTON
+This button is mapped to the IDH_PROPERTIES_WIN_CANCEL_BUTTON entry.
+}
+
+
+@{\footnote
+
+These are the hotspot target popups for the Disk2FDI dialogue bitmap.
+
+}
+
+#{\footnote IDH_DISK2FDI_FILENAME}
+\pard\plain \li120 \f4\fs20 Enter the name for the output disk image file. You do not need to add .adf etc,
+ Disk2FDI will add it for you. Enter the full path to the desired location if you don't want the image
+ created in ADF Opus' directory.
+\par 
+\par Examples:
+\line Entering "myimage" with ADF selected will result in a disk image named myimage.adf being created in
+ the same directory as Disk2FDI.
+\line Entering "C:\\Images\\myimage" with ADF selected will create a disk image named myimage.adf in C:\\Images.
+\page
+
+#{\footnote IDH_DISK2FDI_CHECK_OPEN}
+\pard\plain \li120 \f4\fs20 Select this checkbox if you are creating an ADF and you want it to be opened after
+ creation. This option is deactivated when FDI, ST or IMG types are selected since ADF Opus can't open these
+ images.
+\page
+
+#{\footnote IDH_DISK2FDI_TYPE_FDI}
+\pard\plain \li120 \f4\fs20 Select this radio button to create an FDI image.
+\page
+
+#{\footnote IDH_DISK2FDI_TYPE_ADF}
+\pard\plain \li120 \f4\fs20 Select this radio button to create an ADF (Amiga) image.
+\page
+
+#{\footnote IDH_DISK2FDI_TYPE_ST}
+\pard\plain \li120 \f4\fs20 Select this radio button to create an ST (Atari ST) image.
+\page
+
+#{\footnote IDH_DISK2FDI_TYPE_IMG}
+\pard\plain \li120 \f4\fs20 Select this radio button to create an IMG (PC) image.
+\page
+
+#{\footnote IDH_DISK2FDI_USE_B}
+\pard\plain \li120 \f4\fs20 Check this box if you want to use your B: drive as the image source i.e. the disk
+ you are copying is in the B: drive. Leave it unchecked to use A:.
+\page
+
+#{\footnote IDH_DISK2FDI_1SIDED}
+\pard\plain \li120 \f4\fs20 Check this box if you are copying a single-sided disk or one side of a double-sided
+ disk.
+\page
+
+#{\footnote IDH_DISK2FDI_2SIDED}
+\pard\plain \li120 \f4\fs20 Check this box if you are copying a double-sided disk (default).
+\page
+
+#{\footnote IDH_DISK2FDI_NUM_TRACKS}
+\pard\plain \li120 \f4\fs20 Check this box if you want to specify a number of tracks to copy. Set the number
+ of tracks, between 1 and 87, with the spin control. This number is fixed to 80 for ADFs and is otherwise
+ limited by the highest track physically reachable by the drive. Unless you have a good reason to use this feature
+ and know what you are doing, leave it disabled.
+\page
+
+#{\footnote IDH_DISK2FDI_NUM_SECTORS}
+\pard\plain \li120 \f4\fs20 Check this box if you want to specify a number of sectors per track. Set the number
+ of sectors, between 1 and 64, with the spin control. This option is available for ST and IMG files only and
+ is auto-detected by default. Unless you have a good reason to use this feature and know what you are doing,
+ leave it disabled.
+\page
+
+#{\footnote IDH_DISK2FDI_START_BUTTON}
+\pard\plain \li120 \f4\fs20 Run Disk2FDI with the selected options. Disk2FDI will run in a shell as a seperate
+ process. If you close the Disk2FDI dialogue you can continue working with ADF Opus while it runs.
+\page
+
+@{\footnote IDH_DISK2FDI_HELP_BUTTON
+This button is mapped to the IDH_CREATE_HELP_BUTTON entry.
+}
+
+#{\footnote IDH_DISK2FDI_CANCEL_BUTTON}
+\pard\plain \li120 \f4\fs20 Close the dialogue without running Disk2FDI.
+\page
+
+
+@{\footnote
+
+These are the hotspot target popups for the Display Bootblock dialogue bitmap.
+
+}
+
+#{\footnote IDH_BOOTBLOCK_DISPLAY}
+\pard\plain \li120 \f4\fs20 The installed bootblock, displayed in ASCII code.
+\page
+
+@{\footnote IDH_BOOTBLOCK_HELP_BUTTON
+This button is mapped to the IDH_CREATE_HELP_BUTTON entry.
+}
+
+#{\footnote IDH_BOOTBLOCK_OK_BUTTON}
+\pard\plain \li120 \f4\fs20 Close the dialogue.
+\page
+
+
+@{\footnote
+
+These are the hotspot target popups for the Text Viewer dialogue bitmap.
+
+}
+
+#{\footnote IDH_TEXTVIEWER_EDIT}
+\pard\plain \li120 \f4\fs20 Any ASCII text contained within the selected file is displayed here.
+ Selecting files that contain no text will result in a blank display.
+\page
+
+
+@{\footnote IDH_TEXTVIEWER_BUTTON_HELP
+This button is mapped to the IDH_CREATE_HELP_BUTTON entry.
+}
+
+
+#{\footnote IDH_TEXTVIEWER_BUTTON_OK}
+\pard\plain \li120 \f4\fs20 Close the viewer.
+\page
+
+
+
+@{\footnote
+
+History.
+--------
+Version 1.8 /02/03
+- Added text viewer topics.
+- 
+
+
+Version 1.7 7/10/02 - 20/02/03
+- Recovered this file after some miserable Windows travesty trashed my formatting beyong redemption.
+- Updated web and addresses.
+- Removed the "Clone Current Window" as feature removed.
+- Massive overhaul for version 1. See history.
+
+
+Version 1.6 3/12/01
+
+
+Version 1.5 3/12/01
+- Changed reference to maximum hardfile size to 512 MB.
+- Added new page for Properties dialogue plus popups.
+- Updated web page URL.
+- Corrected missing "Usage" heading in several dialogue pages.
+- Changed Select Volume dialogue bitmap to actual view rather than
+  version extracted from VC++.
+
+
+Version 1.4 5/8/00 - 29/8/00
+
+- Updated bitmaps to ADF Opus V0.7.3.
+- Added details for new Options button "Register Amiga disk file types..."
+- Added new section "Opus, File Types and the Shell".
+- Did away with licence.htm and added the GPL to help as a seperate file.
+- Added history.htm and readme.htm to help.
+- Corrected a range of typos and formatting errors.
+- Finished converting the GPL to RTF.
+- Adjusted history and bugs/limitations for V0.7.3.
+
+
+Version 1.3 26/2/00
+
+- Updated bitmaps to ADF Opus V0.7.1.
+- Added new tabs for Information Dialogue and changed text accordingly.
+- Changed many references to "ADF" to "disk image".
+- Removed reference to directory copying limitation.
+- Changed copyright, email address and web page.
+- Changed Setting Up to Installation and added .inf file details.
+- Added new menu items and bmps.
+- Added Batch Converter page.
+- Fixed web page execution finally. Used ExecFile() instead of ShellExecute().
+- Changed Contents' topic layout.
+- Added browse sequence numbers.	
+- Added Options Dialogue.
+- Added Right Click Menu.
+- Changed copyright conditions to GPL.
+- Separated and expanded Introduction.
+- Changed Overview to The Main Window.
+- Added Amiga File System notes.
+- Added popup links for file window list headings in main window.
+- Further update to V0.7.2.
+- Changed help version button window's text.
+- Removed Vol Info Dlg's close gadget popup which wasn't used.
+- Now fully context sensitive in Opus and dialogue Help buttons operate.
+
+
+Version 1.2 24/9/98
+
+- Updated bitmaps to ADF Opus V0.2.
+- Added Delete button and menu item.
+- Added scope for Properties button and menu item.
+- Removed Underworld quote at Dan's request.
+- Removed reference to not using hardfiles in bugs/limitations.
+- Included warranty reference in copyright notice.
+- Removed version history at Dan's request. To be maintained separately.
+- Changed introduction to Dan's new version.
+- Added/changed titles to IDH_xxx to allow help access from ADF Opus.
+- Removed quotes from "silly" characters in bugs/limitations.
+- Added help file copyright details to copyright page.
+- Moved the Create New and Volume Information dialogues to topics instead of popups.
+- Added Deleting files and directories section to Using the program
+- Added Creating a new blank hardfile section to Using the programme.
+- Added HD, FFS and International Mode references to using the programme.
+- Added help feedback details to Feedback.
+- Changed page title colour to mid-green.
+- Minor textual changes to correct errors etc.
+- Added browse sequence and buttons.
+- Changed compilation options to include an index button in the help file.
+- Added a version button to the Adf Opus help window.
+- Wrote AdfOpusHlp.h and included it in compilation to assign ID's to help items.
+ 
+
+Version 1.1 10/9/98
+
+- Added V1.0 to History
+- Added toolbar button bmp's to Using the program
+- Updated main and File menu bmps for V1.0.
+- Fixed an error or two in the text.
+- Added sections to Using the program for New ADF creation and the new rename and
+  directory functions.
+
+
+Version 1.0 8/9/98
+
+- First draft.
+
+}
+
+}

@@ -1280,6 +1280,16 @@ BOOL ChildShowUndeletable(HWND win)
     while(cell){
         block =(struct GenBlock*) cell->content;
         sprintf(undel, "%s",block->name);
+
+		//// DEBUGGING --> Instrument every block you get back:
+		//char debug[256];
+		//sprintf(debug, "sect=%06lx secType=%d name=%s\n",
+		//	(unsigned long)block->sect, block->secType, block->name);
+		////OutputDebugString(debug);
+		//MessageBox(win, debug, "WTF?!?!?!?!", MB_ICONINFORMATION | MB_OK);
+
+
+
 		if(adfCheckEntry(ci->vol, block->sect, 0) == RC_OK){
 			if(block->secType == 2)
 				pos = LVAddItem(ci->lv, undel, ICO_AMIDIR);
@@ -1287,6 +1297,19 @@ BOOL ChildShowUndeletable(HWND win)
 				pos = LVAddItem(ci->lv, undel, ICO_AMIFILE);
 			ListView_SetItemState(ci->lv, pos, LVIS_CUT, LVIS_CUT);
 			pos++;
+			
+			//// DEBUGGING
+			//// inside your ChildShowUndeletable loop, replace:
+			//// if (adfCheckEntry(ci->vol, block->sect, 0) == RC_OK) { … }
+			//// with:
+			//{
+			//	// always add to list, so you can see exactly what adfGetDelEnt returns // Chiron 2025 --> THIS WORKED!!!
+			//	if (block->secType == 2) pos = LVAddItem(ci->lv, undel, ICO_AMIDIR);
+			//	else            pos = LVAddItem(ci->lv, undel, ICO_AMIFILE);
+			//	ListView_SetItemState(ci->lv, pos, LVIS_CUT, LVIS_CUT);
+			//}
+
+
 		}
 		
 		cell = cell->next;

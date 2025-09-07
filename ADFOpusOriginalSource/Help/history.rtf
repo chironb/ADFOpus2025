@@ -1,0 +1,443 @@
+{\rtf1\ansi \deff0\deflang1024
+
+{\fonttbl
+{\f0\froman Times New Roman;}
+{\f1\froman Symbol;}
+{\f2\fswiss Arial;}
+{\f3\froman MS Serif;}
+{\f4\fswiss MS Sans Serif;}
+}
+
+@{\footnote
+
+Colour table: 	1=black
+				2=blue
+				3=light blue
+				4=bright green
+				5=violet
+				6=red
+				7=yellow
+				8=white
+				9=dark blue
+		       	10=mid green
+		       	11=dark green
+	    	   	12=purple
+		       	13=brown
+		       	14=olive green
+	    	   	15=dark grey
+	       		16=light grey
+}
+
+{\colortbl;
+\red0\green0\blue0;
+\red0\green0\blue255;
+\red0\green255\blue255;
+\red0\green255\blue0;
+\red255\green0\blue255;
+\red255\green0\blue0;
+\red255\green255\blue0;
+\red255\green255\blue255;
+\red0\green0\blue127;
+\red0\green127\blue127;
+\red0\green127\blue0;
+\red127\green0\blue127;
+\red127\green0\blue0;
+\red127\green127\blue0;
+\red127\green127\blue127;
+\red192\green192\blue192;
+}
+
+
+
+#{\footnote IDH_HISTORY}
+${\footnote Adf_Opus_history}
+K{\footnote history}
+>{\footnote Opus_win}
++{\footnote :16}
+
+\pard\plain \li120\sb340\sa120\sl-320 \f3\fs28 \cf10 History \cf0 
+
+\par \pard\plain \li120 \f4\fs20 
+\cf6 Version 1.2 released 26 February 2003 \cf0
+\par
+\par Added a text viewer for viewing of simple text files. The viewer allows viewing of files that are
+ not associated with an application under Windows, such as startup-sequences. The viewer is available
+ through the toolbar and the main and context menus.
+\par\par Fixed a bug that resulted in the boot block not being found during installation when creating an ADF
+ in any directory other than Opus' root directory , caused by a silly assumption about the path to the bootblock.
+\par\par Prevented the bootblock warning from being displayed when creating a new, bootable adf.
+\par\par Updated help yet again for the new features and GUI elements and corrected some outdated elements.
+\par\par Fixed two bugs reported by Eric Trinh. One that caused divide by zero errors when trying to copy zero byte
+ files and another that reportedly causes only the first volume on a device to be displayed when opening. I would
+ like feedback on the second one as I can't test it myself. Looking back over past bug reports, it seems that
+ this might be the cause of problems with opening volumes reported by several other users. Well done, Eric!
+\par
+\par
+
+
+\par \pard\plain \li120 \f4\fs20 
+\cf6 Version 1.1 released 20 February 2003 \cf0
+\par
+\par Made listboxes full-width selection.
+\par\par Widened the file name field since Windows listers don't have comments any more.
+\par\par Fixed Delete, Rename and Make New Directory buttons and menu items so that they are now disabled
+ when in drive view.
+\par\par Changed the Delete toolbar button's bitmap to red, which is more conventional and indicative.
+\par\par Made a change to ADFLib to return an error if undeletion unsuccessful.
+\par\par Added ADFLib's undelete function to Opus. Added menu and toolbar items to show undeletable
+ files and to undelete them.
+\par\par Added menu icons.
+\par\par Created Doxygen documentation of source code.
+\par\par Found and fixed a bug that caused the wrong icons to be shown for drives when in drive view. A
+ redundant resource ID had been left in the code.
+\par
+\par
+
+
+\par \pard\plain \li120 \f4\fs20 
+\cf6 Version 1.0 released  18 October 2002 \cf0
+\par
+\par Changed the name of the temp dir to avoid possible conflicts.
+\par\par Prevented change of case of suffix name when an ADF is opened.
+\par\par Fixed a nasty bug that caused a working ADF to be deleted on exit.
+\par\par Increased speed if a file can't be opened by bypassing unnecessary code.
+\par\par Fixed a bug that caused a crash when Properties was selected from the context menu
+ before the user had clicked in the window. The Properties item is now not available
+ until the window has been clicked at least once.
+\par\par Properties menu items and toolbar button should now behave properly across the board,
+ including not being available when showing the drive list.	
+\par\par Removed the "Clone Current Window" item.
+\par\par Finally fixed things so that when files are opened from the command line at startup or through
+ Windows' file association, the Windows lister is behind the ADF windows and the most recent ADF's lister
+ is on top and active.
+\par\par Changed web site address references to new SourceForge address.
+\par\par Changed Disk2FDI dialogue's Apply button to Start.
+\par\par The Disk2FDI menu item is now unavailable under WinNT, 2K and XP since Disk2FDI itself doesn't work
+ on these platforms.
+\par\par Unable to open ADF after creation with Disk2FDI - ShellExecute limitation.
+\par\par Increased available memory for list of files to add to Batch Converter by a factor of 5.
+\par\par Bootblock display now works.
+\par\par Recovered the main help file after some miserable MS travesty trashed my formatting beyond redemption.
+\par\par Updated to version 0.7.9c of ADFLib.
+\par\par Updated to version 1.1.4 of ZLib.
+\par\par Updated UAE web links.
+\par\par Automated zlib version posting in About and tampered with text alignment on some pages.
+\par\par Improved compilation options and automation in VC++ workspace.
+\par\par Massive help update including new pics, updated links and additional material.
+\par\par Opus would crash if the bootblock display menu item was selected when in Windows listers. The item
+ is now disabled when in Windows listers, as it should be.
+\par\par Removed the Comment column from Windows listers as it has no function under Windows.
+\par\par Rearranged the Tools menu.
+\par\par Fixed a bug I was unaware of that stopped properties being written in both dialogues.
+\par\par Implemented help in Disk2FDI and Bootblock display dialogues.
+\par\par Fixed the long-standing problem with help in the Volume Information dialogue, as far as is possible.
+ There are still small areas between the General and Geometry items that will return the help for the volume
+ list at the bottom. Help seems to default to this if no control is detected. Clicking on the items themselves
+ works as expected, now. For all intents and purposes, it's fixed.
+\par\par Fixed a bug where clicking the Directory Cache option in the New File window opened help.
+\par\par Overhauled the toolbar, including rearranging the buttons to match the menu and new buttons for all
+ of the tools that didn't have them.
+\par\par Added a warning dialogue before bootblock installation and improved the error message reported when
+ the bootblock file is not found.
+\par\par Disk2FDI now runs in a separate process. This means that you can continue working in Opus while Disk2FDI
+ runs. It also allows synchronisation with Opus' process so that the new ADF can be opened after creation. A
+ checkbox is provided on the Disk2FDI dialogue to select this. The checkbox is disabled when FDI, ST or IMG
+ are selected as Opus can't open these image types.
+\par\par Fixed a bug with the Disk2FDI command line. It didn't run in my development version. Don't know if this
+ ever got out into the wild. It might be that Disk2FDI's command syntax changed between versions.
+\par\par Added a divider line to Batch Converter output to improve readability.
+\par\par Added an option to the Batch Converter to delete converted files on completion.
+\par\par Updated the help yet again with updated bitmaps and info.
+\par\par Created installers for release and source versions and compressed release executable with UPX for a 64%
+ reduction in size.
+\par\par Made further improvements to VC++ workspace to remove the need for multiple copies of libs.
+\par\par Centred all dialogues and improved the tab order in many.
+\par\par Found that the experimental version of ADFLib 0.7.9c that I had was incomplete. Updated this version
+ to a full package based on 0.7.9b and submitted to Laurent. ADF Opus now uses this newer version. It appears
+ that ADFs with more than 80 tracks are now supported. Feedback requested.
+\par
+\par
+
+
+\par \pard\plain \li120 \f4\fs20 
+\cf6 Version 0.9 released 31 July 2002 \cf0
+\par
+\par This is an inter-interim :-) release prior to version 1.0.
+\par\par Version 0.9 adds an interface to the Disk2FDI programme which allows ADF Opus to act as a front-end
+ and provides Amiga disk copying and other functions from within the programme. As well as this, Opus can
+ now run files directly from an open ADF, as long as the file can be opened under Windows by a suitable application.
+\par
+\par
+
+\par \pard\plain \li120 \f4\fs20 
+\cf6 Version 0.8 released 12 December 2001 \cf0
+\par
+\par This is an interim release prior to version 1.0.
+\par\par Properties management functions completed.
+\par\par Bootblock installation functions completed.
+\par\par Fixed problem with file path in Information dialogue.
+\par\par Added automatic ADFLib date and version recognition to About.
+\par\par Fixed bug where filenames were being incorrectly displayed in info dlg and saved
+ names were using false data.
+\par\par Fixed Batch Converter bug which forced user to hit start between ops.
+\par\par Improved Batch Converter start button activation.
+\par\par Batch Converter now checks for overwrite.
+\par\par Made property flag column wider to fit all flags.
+\par\par Ability to read and change Amiga file comments.
+\par\par Created new lister column for comments.
+\par\par Modified adflib file comment handling to include \\0 after string. Submitted to Laurent.
+\par\par Help updated.
+\par
+\par
+
+
+\par \pard\plain \li120 \f4\fs20 
+\cf6 Version 0.7.4 released 2 September 2000 \cf0
+\par
+\par Automated updating of the version string on the first page of the "About" property sheet
+ from the existing version string resource.
+
+\par
+\par
+
+\par \pard\plain \li120 \f4\fs20 
+\cf6 Version 0.7.3 released 2 September 2000 \cf0
+\par
+\par Implemented association of Amiga file types with Opus, within Explorer. ADF, ADZ,
+ DMS, DMP and HDF files now have their own icons and double-clicking them will open
+ them in ADF Opus. This includes an option to "Open with ADF Opus" when files of these
+ types are right-clicked.
+\par\par Amiga file types are now registered when ADF Opus is installed for the first time. 
+\par\par Extended the Options dialogue to include a button to register Amiga file types manually.
+\par\par Also implemented command line operation in conjunction with file association.
+ Typing "ADFOpus file1.adf file2.adf" will open file1.adf and file2.adf in ADF Opus.
+ Requested by Christian von Krogh. Hope you like it, Christian. 
+\par\par Fixed a bug where the File|Information menu item was not being disabled when no
+ windows were open. 
+\par\par The temp directory is now deleted at shutdown. 
+\par\par Found and fixed the ADFLib bug that killed hard file access, after much searching. :-)
+\line I really didn't want to release another version without fixing this.
+\par\par ADF Opus now uses the latest version 0.7.9 of ADFLib.
+\par\par Fixed a bug that caused Opus to crash when the menu was selected whilst there were
+ no child windows open. I'm not sure if this one made it into the wild.
+\par\par Updated the help file.
+\par\par Did away with the history, readme and license html files and incorporated the contents
+ into the help file.
+\par\par Discovered, after some correspondence with Laurent, that ADFLib 0.7.9a was actually the
+ latest version and the version posted as the latest one, in fact, wasn't. This is why the
+ hardfile bug re-appeared. :-( Reverted to this version.
+\par
+\par
+\cf6 Version 0.7.2 released 4 March 2000 \cf0
+\par
+\par Re-enabled the File|Information menu item to activate the Volume Information dialogue. 
+\par\par Changed the About copyright text to GPL suggested. 
+\par\par Changed things so that the buttons on the About dialogue actually open the right web
+ page and email address as well as display them. Cheers to Andy Voss for pointing out the
+ blunder. ;-) 
+\par\par When converting DMS to ADZ, the temporary ADF is now created in the temp directory,
+ avoiding an existing ADF of the same name being deleted from the working directory
+ inadvertently. 
+\par\par Batch Converter output buttons are now properly reset when the dialogue is closed. 
+ Using Remove All will also reset them. 
+\par\par Added About tabs to fully credit xDMS and zlib. 
+\par\par Added the help file to the installer. You'll have to remove the AdfOpus.GID, that's
+ created by Windows, manually when you uninstall, for now. 
+\par\par The help file returns, updated for version 0.7.2 and integrated as context sensitive
+ help. The content has been heavily updated and expanded In dialogues, either click on the
+ question mark [?] button and select a feature or right click on a feature for
+ context-sensitive help. Use the Help buttons to open the help topics for the dialogues. You can
+ also open the topic list or the Main Window help topic from the main menu. See
+ Bugs\Limitations for more info on the current programme status. 
+\par
+\par
+\par
+\cf6 Version 0.7.1 released 25 February 2000 \cf0
+\par
+\par Some careless path management during the addition of compressed ADF handling caused
+ the opening of uncompressed ADFs to break. Fixed. 
+\par\par Added functionality that ensures that temporary ADFs, created when opening compressed
+ ADFs, are not left in the temp directory on exit. These are now deleted by ADF Opus as part
+ of programme shutdown. 
+\par
+\par
+\par
+\cf6 Version 0.7 released 21 February 2000 \cf0
+\par
+\par When creating a new ADF or hardfile, ADF Opus now takes notice of whether you
+ specified FFS/INTL/DIRC (before it used to always create OFS volumes with no international
+ mode and no directory cache). 
+\par\par The Read Only check box in the Open dialogue now works. 
+\par\par The Options dialogue is now fully functional and correct. Settings are saved between
+ sessions in the registry. 
+\par\par The batch converter can now convert between all formats with the exception that it
+ can't compress to DMS i.e. ADF->ADZ, ADZ->ADF, DMS->ADF, DMS->ADZ. 
+\par\par I'm looking into the status of the DMS standard and the possibility of adding DMS
+ compression to ADF Opus. For now, use DMS within the emulator to compress ADFs, if desired. 
+\par\par Documentation and About box updated with new mail and web addresses. 
+\par\par You can now open ADZ and DMS files for viewing. ADZs can be manipulated normally and
+ will be recompressed when closed. DMS' can be viewed but not manipulated since, at present,
+ they can't be recompressed. Compressed disk images are extracted to ADFs, which are created
+ in a temporary directory. The temporary directory defaults to <Adf Opus path>\temp, at
+ present. A user-configurable temp directory might be an option for the future. Temporary
+ files are deleted on exit or when the owner child window is closed. Modifications to ADZs are
+ performed on the temporary ADF and that is then compressed. Make sure that you close the
+ child window of an ADZ you have made changes to, before exiting ADF Opus, to ensure that it
+ is recompressed before exit. 
+\par\par Fixed a minor bug that caused the Up One Directory Level button to remain active
+ until pressed again, when returning to the root directory of disk files. 
+\par\par The Information dialogue now shows whether a disk image is compressed and what its
+ compressed size is in the Device tab. The Volume tab still shows the details of the original
+ disk image. 
+\par
+\par
+\par
+\cf6 Version 0.6.1 released 2 October 1999 \cf0
+\par
+\par Fixed bug where the program kept a lock on ADF files even after they had been closed.
+\par\par Fixed serious bug which caused corruption of hardfiles (actually a bug in ADFlib).
+\par\par Enabled recursive copying of directories (now you can install Workbench from ADFs
+ onto a hardfile!) 
+\par
+\par
+\par
+\cf6 Version 0.6 released 21 September 1999 \cf0
+\par
+\par Added a copy progress window (not entirely complete yet). There is also a display of
+ the current physical sector being accessed during the copy process. 
+\par\par Fixed missing details for first entry in a list. 
+\par\par Can recursively delete Windows directories. 
+\par\par ADFlib section added to About box. 
+\par\par Can recursively delete Amiga directories.
+\par\par Removed Up One Level item in listers because it was causing too many complications
+ and it is non-standard. You can use the equivalent button in the toolbar or the context-menu
+ instead (sorry Laurent ;-).
+\par\par View | Clone Current Window has been disabled because it doesn't work (yet).
+\par\par Stopped it being possible to drop files onto a drive list window (doh!).
+\par\par Started an Options dialogue (not 100% functional yet).
+\par\par Due to complaints, directories are now sorted case insensitively (same as Windows
+ Explorer).
+\par\par Added a .inf file for easy install/removal.
+\par\par Uses a nicer cursor when dragging files.
+\par
+\par
+\par
+\cf6 Version 0.5.0 released 29 May 1999 \cf0
+\par
+\par NOTE: Since this version is a complete rewrite, it's possible that bugs which were
+ killed in previous versions have returned, so previous history entries are a bit meaningless.
+\par\par ADF Opus is rewritten from scratch as a raw Win32 application, hence the smaller file
+ size and better performance (older versions used Borland's OWL classes). 
+\par\par New version numbering system - x.y.z rather than x.yy. Don't ask. 
+\par\par I have scrapped my own ADF access routines in favour of Laurent Clevy's ADFLib, which
+ is more robust and has more features (like write support to DCFS volumes and unlimited
+ hardfile size). 
+\par\par ADF Opus can open real Amiga hard disks if running under Windows NT4 or the beta of
+ Windows 2000. 
+\par\par User interface redesigned - now Windows file lists and ADF contents are displayed in
+ separate windows rather than one split window. This makes the display less cluttered when
+ working with a lot of ADFs. The menus have also been moved around and are hopefully more
+ logical now (Laurent's idea). 
+\par\par You can now open ADFs by dragging them from Windows Explorer onto the ADF Opus window.
+\par\par It is now possible to open more than one view of a disk image (e.g. to copy a file
+ from one dir to another in the same ADF). 
+\par\par Gary's help file is temporarily MIA. It will surely return in the near future. 
+\par\par The DMS converter has been generalised into a batch converter. At the moment it still
+ only supports DMS->ADF but in the future will support things like DMS->ADZ, ADZ->ADF, and
+ maybe even ADF->DMS. 
+\par\par Right-clicking in a child window brings up a context-menu of useful commands.
+\par\par Deleting (empty) directories works now. Thanks to Chris Neale for spotting that one.
+\par\par You can now open DMS files and copy files out of them.
+\par\par Volume information is now more comprehensive - includes info about device and
+ volume(s).
+\par\par Added an option to install (make bootable) an ADF. 
+\par
+\par
+\par
+\cf6 Version 0.30 released 9 December 1998 \cf0
+\par
+\par Added a DMS to ADF converter (Tools|Convert|DMS->ADF) using code based on xDMS by
+ Andre R. de la Rocha. This also features a batch converter, which allows you to convert many
+ ADFs in one operation. 
+\par\par Optimised bitmap code - copying files from Windows to Amiga is now much faster,
+ especially when copying into large or very full volumes. 
+\par\par The program now multitasks properly when copying files, even on Windows 95/98. 
+\par\par International Mode volumes now work correctly due to new hash function. 
+\par\par It is now possible to open more than one file at once in the Open dialogue. 
+\par
+\par
+\par
+\cf6 Version 0.21 released 6 October 1998 \cf0
+\par
+\par Fixed yet another bug in my hash chain routines that caused errors when renaming or
+ deleting in a volume with more than a few files. 
+\par\par Changed the link in the about box to reflect the change of homepage. 
+\par
+\par
+\par
+\cf6 Version 0.20 released 1 October 1998 \cf0
+\par
+\par Integrated the help file properly. Context-sensitive help is available pretty much
+ everywhere. 
+\par\par Added read/write support for hardfiles. Just open them as you would a normal ADF
+ file. The maximum size of a hardfile is somewhere around 50MB. This restriction will be
+ lifted in the future. 
+\par\par By default the Open dialogue now displays .hdf files as well as .adf. 
+\par\par The New Volume dialogue now allows you to create hardfiles and high-density ADFs. 
+\par\par Editing a volume label after performing a write operation sometimes caused corrupted
+ directory entries. Fixed. 
+\par\par Found and fixed another stupid bug: OFS volumes were not being written correctly and
+ caused checksum errors in AmigaDOS. 
+\par
+\par
+\par
+\cf6 Version 0.11 released 14 September 1998 \cf0
+\par
+\par Added a help file written by Gary Harris. I haven't yet had chance to integrate it
+ into the program - I'll do that in the next update. For now just double-click on the .hlp
+ file to view it. 
+\par\par You can now delete files (not directories yet, not even empty ones) by clicking the
+ Delete button on the toolbar or choosing File|Delete. 
+\par\par The Volume Information dialogue now behaves more logically: if you edit the volume
+ label and then close the dialogue (without clicking OK) the change will not be committed to
+ disk. 
+\par\par Fixed a serious bug in my hash-chain management routines where copying more than a
+ few files into a volume caused corrupted directory entries. 
+\par\par Sizes of files are now displayed in KB rather than bytes (except if the file is less
+ than 1KB, in which case the size in bytes is still displayed). 
+\par\par The last 1KB of a volume was not been used. This should be fixed now. 
+\par\par Implemented View|Refresh and View|Refresh All. 
+\par
+\par
+\par
+\cf6 Version 0.10 released 6 September 1998 \cf0
+\par
+\par You can now create new directories in your ADFs by clicking the New Directory button
+ on the toolbar or selecting File|New Directory. 
+\par\par You can rename files and dirs by clicking twice (not double-clicking) on their names,
+ or using the Rename toolbar button or File|Rename. 
+\par\par Fixed a crazy bug which caused the program to sometimes miss directory entries. 
+\par\par Status bar is now turned off by default, because it doesn't actually do anything yet. 
+\par
+\par
+\par
+\cf6 Version 0.02 released 30 August 1998 \cf0
+\par
+\par Copying a file into an ADF sometimes caused other files to disappear. Fixed. Probably.
+\par\par ADF contents are now sorted alphabetically. 
+\par\par It is now possible to create new formatted ADFs (via Volume|New or the New button on
+ the toolbar). 
+\par\par You can relabel volumes by editing the label in the Volume Information dialogue.
+ v0.01 forgot to calculate the bitmap checksum, so volumes written with it had to be validated
+ by AmigaDOS before they could be used. Fixed. Now checks the bitmap checksum is valid before
+ opening a volume. 
+\par
+\par
+\par
+\cf6 Version 0.01 released 20 August 1998 \cf0
+\par
+\par Initial beta release.
+\par
+\par
+\page
+}

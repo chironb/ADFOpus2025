@@ -1,0 +1,36 @@
+D/Generic////
+D/Win32////
+/Makefile/1.1.1.1/Tue Aug  6 08:32:20 2002//
+/Makefile.bak/1.1.1.1/Tue Aug  6 08:26:36 2002//
+/myconf/1.1.1.1/Sun Jul 14 13:47:08 2002//
+/adf_bitm.c/1.3/Sun Nov 10 02:59:26 2002//
+/adf_bitm.h/1.3/Thu Nov  7 06:25:18 2002//
+/adf_blk.h/1.3/Tue Nov 12 05:01:08 2002//
+/adf_cache.c/1.3/Sun Nov 10 03:21:46 2002//
+/adf_cache.h/1.3/Thu Nov  7 06:25:30 2002//
+/adf_defs.h/1.3/Mon Nov 11 01:07:36 2002//
+/adf_dir.c/1.3/Sun Nov 10 02:57:16 2002//
+/adf_dir.h/1.3/Thu Nov  7 06:25:44 2002//
+/adf_disk.c/1.3/Mon Nov 11 03:47:18 2002//
+/adf_disk.h/1.3/Thu Nov  7 06:27:22 2002//
+/adf_dump.c/1.3/Mon Nov 11 03:50:28 2002//
+/adf_dump.h/1.3/Thu Nov  7 06:27:42 2002//
+/adf_env.c/1.3/Sun Nov 10 03:08:34 2002//
+/adf_env.h/1.3/Thu Nov  7 06:27:56 2002//
+/adf_err.h/1.2/Mon Nov 11 01:19:10 2002//
+/adf_file.c/1.3/Mon Nov 11 03:58:56 2002//
+/adf_file.h/1.3/Thu Nov  7 06:25:22 2002//
+/adf_hd.c/1.3/Sun Nov 10 03:06:08 2002//
+/adf_hd.h/1.3/Thu Nov  7 06:28:22 2002//
+/adf_link.c/1.3/Sun Nov 10 01:49:02 2002//
+/adf_link.h/1.3/Thu Nov  7 06:28:34 2002//
+/adf_raw.c/1.3/Sun Nov 10 02:01:34 2002//
+/adf_raw.h/1.3/Thu Nov  7 06:29:20 2002//
+/adf_salv.c/1.3/Sun Nov 10 03:06:24 2002//
+/adf_salv.h/1.3/Thu Nov  7 06:29:30 2002//
+/adf_str.h/1.3/Tue Nov 12 05:00:10 2002//
+/adf_util.c/1.3/Thu Nov  7 06:29:42 2002//
+/adf_util.h/1.3/Thu Nov  7 06:29:48 2002//
+/adflib.h/1.3/Mon Nov 11 10:19:42 2002//
+/hd_blk.h/1.3/Tue Nov 12 04:57:36 2002//
+/prefix.h/1.2/Mon Nov 11 12:20:04 2002//
