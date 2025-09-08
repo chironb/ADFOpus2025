@@ -161,6 +161,8 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 	int   ti;
 	int   i;
 
+
+
 	// 1) stash raw command line
 	strcpy_s(gstrCmdLineArgs,
 		sizeof gstrCmdLineArgs,
@@ -240,10 +242,18 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 		InitCommonControlsEx(&icex);
 	}
 
-	ghcurNormal = LoadCursor(NULL, IDC_ARROW);
-	ghcurNo = LoadCursor(NULL, IDC_NO);
-	ghcurDrag = LoadCursor(inst,
-		MAKEINTRESOURCE(IDC_POINTER_COPY));
+	ghcurNormal = LoadCursor(inst, MAKEINTRESOURCE(IDC_AMIGA_CURSOR));
+	ghcurNo     = LoadCursor(inst, MAKEINTRESOURCE(IDC_AMIGA_NO_CIRCLE_CURSOR));
+	ghcurDrag   = LoadCursor(inst, MAKEINTRESOURCE(IDC_POINTER_COPY));
+
+	if (!ghcurNormal) {
+		DWORD err = GetLastError();
+		char buf[128];
+		wsprintfA(buf,
+			"Failed to load Amiga cursor (ID=%d)\nGetLastError() = %u",
+			IDC_AMIGA_CURSOR, err);
+		MessageBoxA(NULL, buf, "Cursor Load Error", MB_OK | MB_ICONERROR);
+	}
 
 	ReadOptions();
 	adfEnvInitDefault();
@@ -272,7 +282,9 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 	UpdateWindow(ghwndFrame);
 	// … after ShowWindow/UpdateWindow …
 
-
+	// … after ShowWindow/UpdateWindow …
+	SetClassLong(ghwndFrame, GCL_HCURSOR, (LONG)ghcurNormal);
+	SetCursor(ghcurNormal);
 
 	// TODO: WTF?!?!?!?! This does nothing??!??!?!
 	// 5) spawn initial child windows
@@ -534,6 +546,18 @@ LRESULT CALLBACK MainWinProc(
 		CleanupMenuIcons();
 		PostQuitMessage(0);
 		return 0;
+
+	case WM_SETCURSOR:
+		// wParam == (HWND)window under the mouse
+		// lParam LOWORD gives hit-test code (HTCLIENT, HTCAPTION, etc.)
+		// Only override for the client area:
+		if (LOWORD(lParam) == HTCLIENT) {
+			SetCursor(ghcurNormal);
+			return TRUE;    // we’ve handled it
+		}
+		break;
+
+
 
 	default:
 		return DefFrameProc(hwndFrame,

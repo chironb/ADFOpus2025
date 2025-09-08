@@ -849,7 +849,10 @@ IDI_README              ICON                    "images\\readme.ico"
 // Cursor
 //
 
-IDC_POINTER_COPY        CURSOR                  "images\\ArrowCop.cur"
+IDC_POINTER_COPY                CURSOR          "images\\ArrowCop.cur"
+IDC_AMIGA_CURSOR                CURSOR          "images\\amiga.cur"
+IDC_AMIGA_NO_CIRCLE_CURSOR      CURSOR          "images\\amiga_no_circle.cur"
+
 
 
 /////////////////////////////////////////////////////////////////////////////
