@@ -157,29 +157,48 @@ char			gstrCmdLineArgs[MAX_PATH * 2];			// Command line argument string.
  *
  * Returns true if path now ends in ext, false if buffer was too small.
  */
-BOOL ensure_extension(char* path, size_t buffer_size, const char* ext)
+//BOOL ensure_extension(char* path, size_t buffer_size, const char* ext)
+//{
+//	size_t path_len = strlen(path);
+//	size_t ext_len = strlen(ext);
+//
+//	// already ends with ext?
+//	if (path_len >= ext_len
+//		&& strcmp(path + path_len - ext_len, ext) == 0)
+//	{
+//		return TRUE;
+//	}
+//
+//	// need room for ext plus NUL
+//	if (path_len + ext_len + 1 > buffer_size) {
+//		return FALSE;
+//	}
+//
+//	// append extension (copies the NUL too)
+//	memcpy(path + path_len, ext, ext_len + 1);
+//	return TRUE;
+//}
+//
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+bool ensure_extension(char* path, size_t bufsize, const char* ext)
 {
 	size_t path_len = strlen(path);
 	size_t ext_len = strlen(ext);
 
-	// already ends with ext?
 	if (path_len >= ext_len
-		&& strcmp(path + path_len - ext_len, ext) == 0)
+		&& _stricmp(path + path_len - ext_len, ext) == 0)
 	{
-		return TRUE;
+		return true;
 	}
-
-	// need room for ext plus NUL
-	if (path_len + ext_len + 1 > buffer_size) {
-		return FALSE;
+	if (path_len + ext_len + 1 > bufsize) {
+		return false;
 	}
-
-	// append extension (copies the NUL too)
 	memcpy(path + path_len, ext, ext_len + 1);
-	return TRUE;
+	return true;
 }
-
-
 
 
 int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show )
