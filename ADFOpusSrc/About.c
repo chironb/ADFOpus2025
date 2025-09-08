@@ -161,6 +161,7 @@ LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
                 DeleteObject(hBmp);
                 hBmp = NULL;
             }
+            SetWindowText(ghwndSB, "Idle"); // Needs: extern HWND ghwndSB;
             EndDialog(dlg, IDOK);
             return TRUE;
         }
@@ -173,6 +174,7 @@ LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
             DeleteObject(hBmp);
             hBmp = NULL;
         }
+        SetWindowText(ghwndSB, "Idle"); // Needs: extern HWND ghwndSB;
         EndDialog(dlg, IDCANCEL);
         return TRUE;
     }

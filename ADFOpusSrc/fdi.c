@@ -54,7 +54,7 @@ extern HWND ghwndSB; //SetWindowText(ghwndSB, "Reading directory...");
 
 extern char gstrFileName[MAX_PATH * 2];
 extern HWND	ghwndMDIClient;
-
+extern BOOL ensure_extension(char* path, size_t buffer_size, const char* ext);
 
 #include "ADFOpus.h"   // for 
 
@@ -210,6 +210,7 @@ LRESULT CALLBACK GreaseweazleProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 
 				case IDCANCEL:
+					SetWindowText(ghwndSB, "Idle"); // Needs: extern HWND ghwndSB;
 					EndDialog(dlg, TRUE);
 					return TRUE;
 				break;
@@ -221,6 +222,7 @@ LRESULT CALLBACK GreaseweazleProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 					if (RunGreaseweazle(dlg)) {
 						EndDialog(dlg, TRUE); // We ran it just fine, the user didn't try to overwrite an existing file. 
+						SetWindowText(ghwndSB, "Idle"); // Needs: extern HWND ghwndSB;
 						return TRUE;
 					} else {
 						// Stay in dialog, because the user tried to overwrite an existing file.
@@ -517,12 +519,14 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		switch (id)
 		{
 		case ID_GW_WRITE_CANCEL:
+			SetWindowText(ghwndSB, "Idle"); // Needs: extern HWND ghwndSB;
 			EndDialog(dlg, FALSE);
 			return TRUE;
 
 		case ID_GW_WRITE_START:
 			SetWindowText(ghwndSB, "Greaseweazle writing to floppy disk..."); // Needs: extern HWND ghwndSB;
 			RunGreaseweazleWrite(dlg);
+			SetWindowText(ghwndSB, "Idle"); // Needs: extern HWND ghwndSB;
 			EndDialog(dlg, TRUE);
 			return TRUE;
 		}
@@ -538,8 +542,6 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 	return FALSE;
 }
-
-
 
 
 
@@ -633,6 +635,11 @@ void RunGreaseweazleWrite(HWND dlg)
 		return;
 	}
 
+	// We don't want this here. We only want this when we are reading from the floppy drive to an ADF file.
+	//if (!ensure_extension(picked, sizeof(picked), ".adf")) {
+	//	fprintf(stderr, "Filename buffer too small to add .ADF extention.\n");
+	//	return;
+	//}
 
 	// .\gw.exe write --drive=A --format=amiga.amigados example_disk.adf
 	// -------- ----- --------- ----------------------- ---------------- 
@@ -805,6 +812,11 @@ BOOL RunGreaseweazle(HWND dlg)
 	// This will append “\” only if one isn’t already there.
 	// Returns a pointer to the backslash in the new string.
 	PathAddBackslashA(imagePath);
+
+	if (!ensure_extension(imageArg, sizeof(imageArg), ".adf")) {
+		fprintf(stderr, "Filename buffer too small to add .ADF extention.\n");
+		return 1;
+	}
 
 	// 5) Build the gw.exe argument string
 	// assumes that the end of hte path has a \ backslash
