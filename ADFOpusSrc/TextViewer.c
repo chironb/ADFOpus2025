@@ -186,12 +186,12 @@ LRESULT CALLBACK TextViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
             return TRUE;
 
         case IDC_TEXTVIEWER_HELP:
-            WinHelp(
-                dlg,
-                "ADFOpus.hlp",
-                HELP_CONTEXT,
-                IDH_TEXTVIEWER
-            );
+            //WinHelp(
+            //    dlg,
+            //    "ADFOpus.hlp",
+            //    HELP_CONTEXT,
+            //    IDH_TEXTVIEWER
+            //);
             return TRUE;
         }
         break;
@@ -205,21 +205,21 @@ LRESULT CALLBACK TextViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         return TRUE;
 
     case WM_HELP:
-        WinHelp(
-            ((LPHELPINFO)lp)->hItemHandle,
-            "ADFOpus.hlp",
-            HELP_WM_HELP,
-            (DWORD_PTR)aIds
-        );
+        //WinHelp(
+        //    ((LPHELPINFO)lp)->hItemHandle,
+        //    "ADFOpus.hlp",
+        //    HELP_WM_HELP,
+        //    (DWORD_PTR)aIds
+        //);
         return TRUE;
 
     case WM_CONTEXTMENU:
-        WinHelp(
-            (HWND)wp,
-            "ADFOpus.hlp",
-            HELP_CONTEXTMENU,
-            (DWORD_PTR)aIds
-        );
+        //WinHelp(
+        //    (HWND)wp,
+        //    "ADFOpus.hlp",
+        //    HELP_CONTEXTMENU,
+        //    (DWORD_PTR)aIds
+        //);
         return TRUE;
     }
 

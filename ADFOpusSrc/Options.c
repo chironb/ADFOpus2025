@@ -92,7 +92,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 		case IDC_OHELP:
 			// Implement help button.
-			WinHelp(dlg, "ADFOpus.hlp>Opus_win", HELP_CONTEXT, IDH_OPTIONS);
+			//WinHelp(dlg, "ADFOpus.hlp>Opus_win", HELP_CONTEXT, IDH_OPTIONS);
 			return TRUE;
 
 		}
@@ -103,13 +103,13 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 	// Context sensitive help.
     case WM_HELP: 
-        WinHelp(((LPHELPINFO) lp)->hItemHandle, "adfopus.hlp", 
-			HELP_WM_HELP, (DWORD) (LPSTR) aIds); 
+/*        WinHelp(((LPHELPINFO) lp)->hItemHandle, "adfopus.hlp", 
+			HELP_WM_HELP, (DWORD) (LPSTR) aIds);*/ 
         break; 
  
     case WM_CONTEXTMENU: 
-        WinHelp((HWND) wp, "adfopus.hlp", HELP_CONTEXTMENU, 
-            (DWORD) (LPVOID) aIds); 
+/*        WinHelp((HWND) wp, "adfopus.hlp", HELP_CONTEXTMENU, 
+            (DWORD) (LPVOID) aIds);*/ 
         break; 	
 
 	}

@@ -230,12 +230,12 @@ LRESULT CALLBACK HexViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         return TRUE;
 
     case WM_CONTEXTMENU:
-        WinHelp(
-            (HWND)wp,
-            "ADFOpus.hlp",
-            HELP_CONTEXTMENU,
-            (DWORD_PTR)aIds
-        );
+        //WinHelp(
+        //    (HWND)wp,
+        //    "ADFOpus.hlp",
+        //    HELP_CONTEXTMENU,
+        //    (DWORD_PTR)aIds
+        //);
         return TRUE;
     }
 

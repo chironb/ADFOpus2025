@@ -806,11 +806,11 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 	// Chiron 2025 TODO: Windows no longer supports hlp files. This should be removed. Maybe in the future something better can happen here. 
 	// Implement help menu items.
 	case ID_HELP_HELPTOPICS:
-		WinHelp(win, "ADFOpus.hlp>Opus_win", HELP_FINDER, 0L);
+		//WinHelp(win, "ADFOpus.hlp>Opus_win", HELP_FINDER, 0L);
 		return TRUE;
 	
 	case ID_HELP_MAIN:
-		WinHelp(win, "ADFOpus.hlp>Opus_win", HELP_CONTEXT, IDH_MAIN);
+		//WinHelp(win, "ADFOpus.hlp>Opus_win", HELP_CONTEXT, IDH_MAIN);
 		return TRUE;
 	
 	default:
@@ -862,7 +862,7 @@ VOID DestroyProc(HWND hwndFrame)
 	(void)_chdir(dirOpus);
 	(void)_rmdir(dirTemp);										// Remove "Temp" directory.
 	
-	WinHelp(hwndFrame, "ADFOpus.hlp", HELP_QUIT, 0L);		// Free help resources.
+	//WinHelp(hwndFrame, "ADFOpus.hlp", HELP_QUIT, 0L);		// Free help resources.
 //	DeleteObject(bmpMenu);									// Delete menu bitmap.
 
 	PostQuitMessage(0);

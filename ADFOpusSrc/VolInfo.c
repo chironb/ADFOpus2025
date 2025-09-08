@@ -82,7 +82,7 @@ LRESULT CALLBACK VolInfoDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 		case IDC_VOLINFO_HELP:
 			// Implement help button.
-			WinHelp(dlg, "ADFOpus.hlp>Opus_win", HELP_CONTEXT, IDH_INFORMATION_DIALOGUE_DEV);
+			//WinHelp(dlg, "ADFOpus.hlp>Opus_win", HELP_CONTEXT, IDH_INFORMATION_DIALOGUE_DEV);
 			return TRUE;
 
 
@@ -110,13 +110,13 @@ LRESULT CALLBACK VolInfoDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 		// Context sensitive help.
     case WM_HELP: 
-        WinHelp(((LPHELPINFO) lp)->hItemHandle, "adfopus.hlp", 
-			HELP_WM_HELP, (DWORD) (LPSTR) aIds); 
+   //     WinHelp(((LPHELPINFO) lp)->hItemHandle, "adfopus.hlp", 
+			//HELP_WM_HELP, (DWORD) (LPSTR) aIds); 
         break; 
  
     case WM_CONTEXTMENU: 
-        WinHelp((HWND) wp, "adfopus.hlp", HELP_CONTEXTMENU, 
-            (DWORD) (LPVOID) aIds); 
+        //WinHelp((HWND) wp, "adfopus.hlp", HELP_CONTEXTMENU, 
+        //    (DWORD) (LPVOID) aIds); 
         break; 	
 	}
 	return FALSE;

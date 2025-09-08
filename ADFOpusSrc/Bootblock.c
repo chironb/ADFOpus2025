@@ -343,17 +343,17 @@ LRESULT CALLBACK DisplayBootblockProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         return TRUE;
 
     case WM_HELP:
-        WinHelp(((LPHELPINFO)lp)->hItemHandle,
-            "adfopus.hlp",
-            HELP_WM_HELP,
-            (DWORD_PTR)aIds);
+        //WinHelp(((LPHELPINFO)lp)->hItemHandle,
+        //    "adfopus.hlp",
+        //    HELP_WM_HELP,
+        //    (DWORD_PTR)aIds);
         break;
 
     case WM_CONTEXTMENU:
-        WinHelp((HWND)wp,
-            "adfopus.hlp",
-            HELP_CONTEXTMENU,
-            (DWORD_PTR)aIds);
+        //WinHelp((HWND)wp,
+        //    "adfopus.hlp",
+        //    HELP_CONTEXTMENU,
+        //    (DWORD_PTR)aIds);
         break;
     }
 
