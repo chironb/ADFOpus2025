@@ -180,6 +180,7 @@
     <Image Include="ADFOpusSrc\Images\hdf.ico" />
     <Image Include="ADFOpusSrc\images\help.bmp" />
     <Image Include="ADFOpusSrc\images\help.ico" />
+    <Image Include="ADFOpusSrc\images\helpchm.ico" />
     <Image Include="ADFOpusSrc\images\hexviewer.bmp" />
     <Image Include="ADFOpusSrc\images\hexviewer.ico" />
     <Image Include="ADFOpusSrc\images\info.bmp" />

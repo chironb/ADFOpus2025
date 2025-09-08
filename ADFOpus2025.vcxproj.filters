@@ -939,6 +939,9 @@
     <Image Include="ADFOpusSrc\images\readme.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="ADFOpusSrc\images\helpchm.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="ADFOpusSrc\images\ArrowCop.cur">

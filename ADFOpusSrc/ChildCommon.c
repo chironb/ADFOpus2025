@@ -48,12 +48,14 @@ static LRESULT CALLBACK ListViewClampProc(
 	DWORD_PTR dwRefData
 )
 {
+
 	// Chiron 2025 - TODO: I think this is where there is a bug if you click down and 
 	//                     start dragging the mouse it shoots way over to the 
 	//                     bottom right corner of the screen. 
 	//                     I think that this code must be responsible. 
 	//                     There must be some math bug that causes this to happen.
 	//                     But I'm not sure. 
+	// UPDATE:             When I comment out this entire if statement, the bug remains. WTF?!?!?
 	if (uMsg == WM_MOUSEMOVE)
 	{
 		// 1) Let the ListView scroll/drag‐select as usual

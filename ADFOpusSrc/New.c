@@ -17,6 +17,8 @@
 #include "ChildCommon.h"
 #include "Help\AdfOpusHlp.h"
 #include "Install.h"
+#include <shlwapi.h>
+
 
 extern char gstrFileName[MAX_PATH * 2];
 extern HINSTANCE instance;
@@ -167,7 +169,9 @@ LRESULT CALLBACK NewDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 void NewCreate(HWND dlg)
 {
 	int iType;
-	char ts[30];
+	//char ts[30];
+	char ts[MAX_PATH];
+	char test_if_exists_path[MAX_PATH] = { 0 };
 
 	/* determine size of file to create (in SECTORS) */
 	iType = SendMessage(GetDlgItem(dlg, IDC_NEWADF), BM_GETCHECK, 0, 0l);
@@ -194,6 +198,20 @@ void NewCreate(HWND dlg)
 			"Error", MB_OK | MB_ICONERROR);
 		return;
 	}
+
+
+	GetDlgItemText(dlg, IDC_NEWPATH, test_if_exists_path, sizeof(test_if_exists_path));
+
+
+	// There is where I want to check is the file exists.
+	if (PathFileExistsA(test_if_exists_path)) {
+		MessageBoxA(dlg, "File already exists! Please choose another filename.", "Error", MB_OK | MB_ICONERROR);
+		Done = TRUE;
+		return;
+	}
+
+
+
 
 	/* create the file */
 	GetDlgItemText(dlg, IDC_NEWPATH, gstrFileName, sizeof(gstrFileName));
@@ -256,14 +274,28 @@ LRESULT CALLBACK NewProgressProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 	return FALSE;
 }
 
+#include <shlwapi.h> // For PathFileExistsA
+
+
 void NewCreateFile(void *lpVoid)
 {
 	struct Device	*dev;
-	char			tempStr[31];
+	char			tempStr[MAX_PATH]; // Chiron TODO: Shouldn't this be like this: char tempStr[MAX_PATH] = { 0 };
 	HWND			dlg = (HWND)lpVoid;
 	int				type = 0;
 	struct Volume	*vol;
 
+	// This is the filename. The user selected it in the New dialog.
+	// MessageBoxA(dlg, gstrFileName, "DEBUG:gstrFileName", MB_OK | MB_ICONERROR);
+
+	//// There is where I want to check is the file exists.
+	//// PathFileExistsA(szPath);
+	//if (PathFileExistsA(gstrFileName)) {
+	//	MessageBoxA(dlg, "File already exists! Please choose another filename.", "Error", MB_OK | MB_ICONERROR);
+	//	Done = TRUE;
+	//	return;
+	//}
+	//	
 	Percent = 0;
 
 	if (Size == 1760) /* 880KB Floppy */
@@ -283,6 +315,7 @@ void NewCreateFile(void *lpVoid)
 	if (SendMessage(GetDlgItem(dlg, IDC_NEWDIRC), BM_GETCHECK, 0, 0l) == BST_CHECKED)
 		type += FSMASK_DIRCACHE;
 	
+
 	if ((Size == 1760) || (Size == 1760 * 2)){
 		adfCreateFlop(dev, tempStr, type);
 		// Install bootblock if "Bootable" selected.

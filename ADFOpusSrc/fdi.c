@@ -9,6 +9,11 @@
  *  \brief Disk2FDI functions.
  *
  * FDI.c - routines to handle the Disk2FDI dialogue.
+ * 
+ * Chiron 2025 - The DISK2FDI functionality is being replaced with Greaseweazle functionality.
+ * Feeling cute. Since FDI could mean Floppy Disk Interface,
+*  I'm leaving the file name as fdi.c for now. Might change later
+ * 
  */
 
     
@@ -41,96 +46,7 @@ extern HWND	ghwndMDIClient;
 
 
 
-
-
-
-
 #include "ChildCommon.h"   // for CHILDINFO
-
-
-
-//static BOOL CALLBACK EnumOpenFiles(HWND hwndChild, LPARAM lParam)
-//{
-//	// 1) Only consider windows with your MDI‐child class
-//	char cls[32] = { 0 };
-//	GetClassNameA(hwndChild, cls, sizeof(cls));
-//	if (strcmp(cls, "ADFOpusAmigaFileList") != 0)
-//		return TRUE;  // skip non‐MDI children
-//
-//	// 2) Grab your child‐info pointer
-//	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndChild, GWLP_USERDATA);
-//	// Guard against NULL or insanely low addresses
-//	if (!ci || (ULONG_PTR)ci < 0x10000)
-//		return TRUE;
-//
-//	// 3) Finally, safe to read orig_path
-//	if (ci->orig_path && ci->orig_path[0])
-//	{
-//		HWND hCombo = (HWND)lParam;
-//		SendMessageA(hCombo, CB_ADDSTRING, 0, (LPARAM)ci->orig_path);
-//	}
-//	return TRUE;
-//}
-
-//static BOOL CALLBACK EnumOpenFiles(HWND hwndChild, LPARAM lParam)
-//{
-//	char cls[64] = { 0 };
-//	GetClassNameA(hwndChild, cls, sizeof(cls));
-//
-//	// Debug: show every child’s HWND and class name
-//	{
-//		char buf[128];
-//		wsprintfA(buf,
-//			"EnumOpenFiles Debug\n\n"
-//			"HWND: 0x%p\n"
-//			"Class: %s",
-//			hwndChild,
-//			cls);
-//		MessageBoxA(NULL, buf, "EnumOpenFiles", MB_OK);
-//	}
-//
-//	// Your existing filter—replace "MDIChildClassName" once you know the real one
-//	if (strcmp(cls, "ADFOpusAmigaFileList") != 0)
-//		return TRUE;
-//
-//	// Now grab the user‐data pointer
-//	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndChild, GWLP_USERDATA);
-//
-//	// Debug: show what pointer you got back
-//	{
-//		char buf[128];
-//		wsprintfA(buf,
-//			"After filtering by class, USERDATA = 0x%p",
-//			ci);
-//		MessageBoxA(NULL, buf, "EnumOpenFiles", MB_OK);
-//	}
-//
-//	// Guard and then add the path
-//	if (!ci || (ULONG_PTR)ci < 0x10000)
-//		return TRUE;
-//
-//	if (ci->orig_path && ci->orig_path[0])
-//	{
-//		HWND hCombo = (HWND)lParam;
-//
-//		// Debug: show the path you’re about to add
-//		{
-//			char buf[MAX_PATH + 32];
-//			wsprintfA(buf,
-//				"Adding to combo:\n%s",
-//				ci->orig_path);
-//			MessageBoxA(NULL, buf, "EnumOpenFiles", MB_OK);
-//		}
-//
-//		SendMessageA(hCombo,
-//			CB_ADDSTRING,
-//			0,
-//			(LPARAM)ci->orig_path);
-//	}
-//
-//	return TRUE;
-//}
-//
 
 
 
@@ -286,26 +202,18 @@ LRESULT CALLBACK GreaseweazleProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 				case IDGWSTART:
 
-					//MessageBox(
-					//	dlg,
-					//	TEXT("This feature, launching Greaseweazle from within\n")
-					//	TEXT("ADF Opus 2025, is not yet implemented.\n\n")
-					//	TEXT("Thanks for your patience!"),
-					//	TEXT("Not Implemented"),
-					//	MB_OK | MB_ICONINFORMATION
-					//);
+					
 
-					//MessageBox(
-					//	dlg,
-					//	TEXT("We are about to try launching the command line!"),
-					//	TEXT("Testing..."),
-					//	MB_OK | MB_ICONINFORMATION
-					//);
+					if (RunGreaseweazle(dlg)) {
+						EndDialog(dlg, TRUE); // We ran it just fine, the user didn't try to overwrite an existing file. 
+						return TRUE;
+					} else {
+						// Stay in dialog, because the user tried to overwrite an existing file.
+						return TRUE;
+					}
 
-					RunGreaseweazle(dlg);
-
-					EndDialog(dlg, TRUE);
-					return TRUE;
+					//EndDialog(dlg, TRUE);
+					//return TRUE;
 
 				break;
 
@@ -422,56 +330,6 @@ static BOOL CALLBACK _AddAmigaChildren(HWND hwndChild, LPARAM lParam)
 
 
 
-
-
-//-----------------------------------------------------------------------------
-// callback for EnumChildWindows: for each ADF window, show a MessageBox
-static BOOL CALLBACK _ShowAmigaDensity(HWND hwndChild, LPARAM lParam)
-{
-	// 1) Filter to only your ADF‐lister windows
-	char cls[64];
-	GetClassNameA(hwndChild, cls, sizeof(cls));
-	if (strcmp(cls, "ADFOpusAmigaFileList") != 0)
-		return TRUE;   // not an ADF window, keep enumerating
-	
-	// 2) Grab your CHILDINFO* from GWLP_USERDATA
-	CHILDINFO* ci = (CHILDINFO*)GetWindowLong(hwndChild, 0);
-	 
-	if (!ci || !ci->dev)
-		return TRUE;   // missing data, skip
-	 
-	// 3) Map devType → human string
-	char tempStr[50];
-	switch (ci->dev->devType)
-	{
-	case DEVTYPE_FLOPDD:
-		strcpy(tempStr, "Double Density Floppy (880KB ADF)");
-		break;
-	case DEVTYPE_FLOPHD:
-		strcpy(tempStr, "High Density Floppy (1760KB ADF)");
-		break;
-	case DEVTYPE_HARDDISK:
-		strcpy(tempStr, "Hard disk dump");
-		break;
-	case DEVTYPE_HARDFILE:
-		strcpy(tempStr, "Hardfile");
-		break;
-	default:
-		strcpy(tempStr, "Unknown (!)");
-		break;
-	}
-
-	// 4) Pop up the box (lParam is your dialog HWND)
-	MessageBoxA(
-		(HWND)lParam,
-		tempStr,
-		"Disk Density",
-		MB_OK | MB_ICONINFORMATION);
-
-	return TRUE;  // continue enumerating if there are more windows
-}
-
-
 #include <windows.h>
 
 // params we’ll pass as lParam to EnumChildWindows
@@ -534,12 +392,7 @@ static BOOL CALLBACK _ShowAmigaDensityFromPath(HWND hwndChild, LPARAM lParam)
 		break;
 	}
 
-	//// 6) pop the MessageBox (parented to your dialog)
-	//MessageBoxA(
-	//	p->dlg,
-	//	tempStr,
-	//	"Disk Density",
-	//	MB_OK | MB_ICONINFORMATION);
+
 
 	// 7) also update the static control in your dialog
 	SetDlgItemTextA(
@@ -555,6 +408,10 @@ static BOOL CALLBACK _ShowAmigaDensityFromPath(HWND hwndChild, LPARAM lParam)
 // Greaseweazle “Write” dialog proc
 LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 {
+
+	// Check for the existence of the file to write and warn if the user might overwrite it. 
+
+
 	switch (msg)
 	{
 	case WM_INITDIALOG:
@@ -576,14 +433,8 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 			SendMessage(hCombo, CB_SETCURSEL, 0, 0);
 
 
-		//// Now enumerate and pop the density for each open ADF window:
-		//EnumChildWindows(
-		//	ghwndMDIClient,     // your MDI client window
-		//	_ShowAmigaDensity,  // the callback above
-		//	(LPARAM)dlg         // passed to the callback as lParam
-		//);
 
-// 1) pull the selected path out of the combo
+		// 1) pull the selected path out of the combo
 		char picked[MAX_PATH] = { 0 };
 		// HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
 		int  sel = (int)SendMessage(hCombo, CB_GETCURSEL, 0, 0);
@@ -679,6 +530,7 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 //-----------------------------------------------------------------------------
 // Builds the gw.exe command line and launches it
+// This is what runs to write the ADF to a floppy drive.
 void RunGreaseweazleWrite(HWND dlg)
 {
 	HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
@@ -695,6 +547,7 @@ void RunGreaseweazleWrite(HWND dlg)
 	}
 
 	char picked[MAX_PATH] = { 0 };
+
 	SendMessageA(
 		hCombo,
 		CB_GETLBTEXT,
@@ -733,20 +586,6 @@ void RunGreaseweazleWrite(HWND dlg)
 
 
 
-	// "Double Density Floppy (880KB ADF)"
-	// "High Density Floppy (1760KB ADF)"
-	// IDC_GW_SHOWDENSITY == "Double Density Floppy (880KB ADF)"
-
-	// drive arg
-	//char formatArg[32] = "--format=amiga.amigados";
-	//if (SendDlgItemMessage(
-	//	dlg, IDC_GW_RADIO_WRITE_DRIVE_B,
-	//	BM_GETCHECK, 0, 0) == BST_CHECKED)
-	//{
-	//	strcpy_s(driveArg, sizeof driveArg, "--format=amiga.amigados_hd");
-	//}
-
-
 
 	char formatArg[32] = { 0 };
 	char densityText[64] = { 0 };
@@ -779,11 +618,6 @@ void RunGreaseweazleWrite(HWND dlg)
 	}
 
 
-	// Now you can pass formatArg to your formatting routine:
-	// MessageBoxA(dlg, formatArg, "Format Arg", MB_OK);
-
-
-
 	// .\gw.exe write --drive=A --format=amiga.amigados example_disk.adf
 	// -------- ----- --------- ----------------------- ---------------- 
 	
@@ -798,86 +632,7 @@ void RunGreaseweazleWrite(HWND dlg)
 		driveArg, formatArg, picked
 	);
 
-	//// launch
-	//STARTUPINFOA        si = { sizeof(si) };
-	//PROCESS_INFORMATION pi;
-	//ZeroMemory(&pi, sizeof(pi));
-	//if (!CreateProcessA(
-	//	gwPath, cmdLine,
-	//	NULL, NULL, FALSE,
-	//	CREATE_NEW_CONSOLE,
-	//	NULL, NULL, &si, &pi))
-	//{
-	//	MessageBoxA(
-	//		dlg,
-	//		"Failed to launch Greaseweazle.",
-	//		"Error",
-	//		MB_OK | MB_ICONERROR
-	//	);
-	//	//MessageBoxA(
-	//	//	dlg,
-	//	//	gwPath,
-	//	//	"gwPath",
-	//	//	MB_OK | MB_ICONERROR
-	//	//);
-	//	//MessageBoxA(
-	//	//	dlg,
-	//	//	cmdLine,
-	//	//	"cmdLine",
-	//	//	MB_OK | MB_ICONERROR
-	//	//);
-	//	return;
-	//}
-
-
-	//// launch BLOCKING the main app until it's done
-	//// (so the user can't try to do something else while it's running)
-	//STARTUPINFOA        si = { sizeof(si) };
-	//PROCESS_INFORMATION pi;
-	//ZeroMemory(&pi, sizeof(pi));
-	//if (!CreateProcessA(
-	//	gwPath, cmdLine,
-	//	NULL, NULL, FALSE,
-	//	CREATE_NEW_CONSOLE,
-	//	NULL, NULL, &si, &pi))
-	//{
-	//	MessageBox(
-	//		dlg,
-	//		"Failed to launch Greaseweazle.",
-	//		"Error",
-	//		MB_OK | MB_ICONERROR
-	//	);
-	//	//MessageBoxA(
-	//	//	dlg,
-	//	//	gwPath,
-	//	//	"gwPath",
-	//	//	MB_OK | MB_ICONERROR
-	//	//);
-	//	//MessageBoxA(
-	//	//	dlg,
-	//	//	cmdLine,
-	//	//	"cmdLine",
-	//	//	MB_OK | MB_ICONERROR
-	//	//);
-	//	return;
-	//}
-
-
-	//CloseHandle(pi.hProcess);
-	//CloseHandle(pi.hThread);
-
-
-		// launch BLOCKING the main app until it's done
-	// (so the user can't try to do something else while it's running)
-	// because if they changed a disk while it's being written, that would be bad.
-
-		//if ( !CreateProcessA(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
-	//if (!CreateProcess(gwPath, cmdLine, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi)) {
-
-	//	MessageBoxA(dlg, "Can't access the Greaseweazle application! Check the path...", "Failed!:", MB_OK | MB_ICONERROR);
-	//	MessageBoxA(dlg, gwPath, "Failed! Check gwPath:", MB_OK | MB_ICONERROR);
-
-	//}
+	
 
 	STARTUPINFOA        si = { sizeof(si) };
 	PROCESS_INFORMATION pi;
@@ -912,295 +667,51 @@ void RunGreaseweazleWrite(HWND dlg)
 
 
 
-//LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
-//{
-//	/* Placeholder until I can create the Greaseweazle functionality to replace DISK2FDI. */
-//
-//	static DWORD aIds[] = {
-//		IDCANCEL,				IDCANCEL,
-//		0,0
-//	};
-//
-//	switch (msg) {
-//
-//	case WM_INITDIALOG:
-//	
-//		//  HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
-//
-//		//// Sample filenames
-//		//const char* files[] = {
-//		//	"example1.adf",
-//		//	"demo_disk.adf",
-//		//	"test_image.adf"
-//		//};
-//		//int count = sizeof(files) / sizeof(files[0]);
-//
-//		//for (int i = 0; i < count; i++)
-//		//{
-//		//	SendMessageA(
-//		//		hCombo,
-//		//		CB_ADDSTRING,
-//		//		0,
-//		//		(LPARAM)files[i]
-//		//	);
-//		//}
-//
-//		//HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
-//		//SendMessageA(hCombo, CB_ADDSTRING, 0, (LPARAM)"Please select an open disk image...");
-//
-//		//// Select the first item by default
-//		//SendMessage(hCombo, CB_SETCURSEL, 0, 0);
-//
-//
-//			// ... your existing setup code ...
-//
-//	// 1) Grab the combo control
-//		HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
-//
-//		// 2) Clear any old entries
-//		SendMessage(hCombo, CB_RESETCONTENT, 0, 0);
-//
-//		// 3) Walk every MDI child and add its filename
-//		//    ghwndMDIClient is your MDI client HWND
-//		EnumChildWindows(ghwndMDIClient, EnumOpenFiles, (LPARAM)hCombo);
-//
-//		// 4) Optionally select the first item if any
-//		if (SendMessage(hCombo, CB_GETCOUNT, 0, 0) > 0)
-//			SendMessage(hCombo, CB_SETCURSEL, 0, 0);
-//
-//		return TRUE;
-//
-//
-//	
-//
-//		// Radio Pair #2 - Source Drive
-//		CheckRadioButton(dlg,
-//			IDC_GW_RADIO_WRITE_DRIVE_A,  // first ID in group
-//			IDC_GW_RADIO_WRITE_DRIVE_B,  // last ID in group
-//			IDC_GW_RADIO_WRITE_DRIVE_A   // ID to select
-//		);
-//
-//
-//
-//		return TRUE;
-//
-//		break;
-//
-//	case WM_COMMAND:
-//		switch ((int)LOWORD(wp)) {
-//
-//
-//
-//		case ID_GW_WRITE_CANCEL:
-//			EndDialog(dlg, TRUE);
-//			return TRUE;
-//			break;
-//
-//		case ID_GW_WRITE_START:
-//
-//			RunGreaseweazleWrite(dlg);
-//
-//			EndDialog(dlg, TRUE);
-//			return TRUE;
-//
-//			break;
-//
-//		}/*end-switch*/
-//		break;
-//
-//		//IDGWSTART
-//
-//
-//	case WM_CLOSE:
-//		EndDialog(dlg, TRUE);
-//		return TRUE;
-//		break;
-//
-//	}/*end-switch*/
-//
-//	return FALSE;
-//
-//}
-//
-//
-//
-//void RunGreaseweazleWrite(HWND dlg)
-//{
-//
-//	//// THIS WORKS EVEN IF TEH PROGRAM IS IN A FOLDER PATH WITH SPACE FUCK YEAH!
-//	//// must be mutable buffers, not literals
-//	//char TESTexePath[MAX_PATH] = "C:\\Program Files\\Greaseweazle\\gw.exe";
-//	//char TESTcmdArgs[256] = " write --drive=A --format=amiga.amigados C:\\Users\\micro\\Example_Disk.adf";
-//	//// you need the space so the program name is separated from its args
-//
-//	//STARTUPINFOA TESTsi = { sizeof(TESTsi) };
-//	//PROCESS_INFORMATION TESTpi;
-//
-//	////strcpy(gstrFileName, imageFullPath); // I think the gstrFileName is the last disk image loaded?
-//
-//	//MessageBoxA(dlg, gstrFileName, "DEBUG: gstrFileName", MB_OK | MB_ICONERROR);
-//
-//	//// pass exePath in lpApplicationName, args only in lpCommandLine
-//	//if (!CreateProcessA(
-//	//	TESTexePath,        // launches gw.exe directly
-//	//	TESTcmdArgs,        // its argv[1]…argv[n]
-//	//	NULL, NULL,
-//	//	FALSE,
-//	//	CREATE_NEW_CONSOLE,
-//	//	NULL, NULL,
-//	//	&TESTsi, &TESTpi
-//	//))
-//	//{
-//	//	MessageBoxA(dlg,
-//	//	"Launch failed",
-//	//	"Error", MB_OK | MB_ICONERROR);
-//	//}
-//	//else
-//	//{
-//	//	CloseHandle(TESTpi.hProcess);
-//	//	CloseHandle(TESTpi.hThread);
-//	//}
-//
-//
-//	// 1) Configurable at runtime (load from your options later)
-//
-//	char greaseweazlePATH[MAX_PATH] = "C:\\Program Files\\Greaseweazle";
-//	char greaseweazleEXE[MAX_PATH] = "gw.exe";
-//
-//	// 3) Build the on‐disk path to the Greaseweazle .exe
-//	CHAR batchFullPath[MAX_PATH];
-//	if (!PathCombineA(batchFullPath, greaseweazlePATH, greaseweazleEXE))
-//	{
-//		MessageBoxA(
-//			dlg,
-//			"Failed to combine Greaseweazle path.\n"
-//			"Check your greaseweazlePATH and greaseweazleEXE settings.",
-//			"Error",
-//			MB_OK | MB_ICONERROR
-//		);
-//
-//		return;
-//	}
-//
-//	// batchFullPath is now wrapped in quotes if it contains spaces
-//	PathQuoteSpacesA(batchFullPath);
-//
-//	// 4) Arguments you’ll pass to gw.exe
-//	// .\gw.exe read --drive=A --format=amiga.amigados example_disk.adf
-//	// -------- ---- --------- ----------------------- ---------------- 
-//	char rwArg[32]           = "write";
-//	char driveArg[32]        = "--drive=A";
-//	char formatArg[32]       = "--format=amiga.amigados";
-//	char imagePath[MAX_PATH] = "C:\\Program Files\\Greaseweazle";
-//	char imageArg[MAX_PATH]  = "gw.exe";
-//
-//	// Drive A Selection
-//	if (SendDlgItemMessage(dlg, IDC_GW_RADIO_WRITE_DRIVE_A, BM_GETCHECK, 0L, 0L) == BST_CHECKED) {
-//		strcpy(driveArg, "--drive=A");
-//	}
-//
-//	// Drive B Selection
-//	if (SendDlgItemMessage(dlg, IDC_GW_RADIO_WRITE_DRIVE_B, BM_GETCHECK, 0L, 0L) == BST_CHECKED) {
-//		strcpy(driveArg, "--drive=B");
-//	}
-//
-//
-//
-//
-//	// Disk Image Path for Greaseweazle
-//	// This is where I need to like pull it in from somewhere...
-//
-//
-//	// This will append “\” only if one isn’t already there.
-//	// Returns a pointer to the backslash in the new string.
-//	PathAddBackslashA(imagePath);
-//
-//
-//
-//
-//	// Get selected file to write from the dialog box -->IDC_GW_COMBO_FILETOWRITE
-//	//char selected[MAX_PATH];
-//	//HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
-//	//int idx = (int)SendMessage(hCombo, CB_GETCURSEL, 0, 0);
-//	//if (idx != CB_ERR)
-//	//{
-//	//	
-//	//	SendMessageA(
-//	//		hCombo,
-//	//		CB_GETLBTEXT,
-//	//		(WPARAM)idx,
-//	//		(LPARAM)selected
-//	//	);
-//	//	// 'selected' now holds the filename user picked
-//	//}
-//
-//	char picked[MAX_PATH];
-//
-//	HWND hCombo = GetDlgItem(dlg, IDC_GW_COMBO_FILETOWRITE);
-//	int  idx = (int)SendMessage(hCombo, CB_GETCURSEL, 0, 0);
-//	if (idx != CB_ERR)
-//	{
-//		SendMessageA(hCombo, CB_GETLBTEXT, (WPARAM)idx, (LPARAM)picked);
-//		// 'picked' now holds the full path they chose
-//		// copy to gstrFileName or pass to RunGreaseweazle…
-//		strcpy(gstrFileName, picked);
-//	}
-//
-//
-//	// 5) Build the gw.exe argument string
-//	// assumes that the end of hte path has a \ backslash
-//	// .\gw.exe read --drive=A --format=amiga.amigados example_disk.adf
-//	// -------- ---- --------- ----------------------- ----------------
-//	// also there needs to be an extra space before the args that get appened after gw.exe
-//	CHAR gwArgs[256] = "";
-//	sprintf_s(gwArgs, sizeof gwArgs,
-//		" %s %s %s \"%s\"",
-//		rwArg,
-//		driveArg,
-//		formatArg,
-//		picked /* "C:\\Users\\micro\\Example_Disk.adf" */
-//	);
-//
-//	// 1) Combine the dir + exe
-//	//CHAR batchFullPath[MAX_PATH];
-//	PathCombineA(batchFullPath, greaseweazlePATH, greaseweazleEXE);
-//
-//	MessageBoxA(dlg, batchFullPath, "batchFullPath", MB_OK | MB_ICONERROR);
-//	MessageBoxA(dlg, gwArgs, "gwArgs", MB_OK | MB_ICONERROR);
-//
-//	// 8) Launch cmd.exe in a new console so you can watch output
-//	STARTUPINFOA        si = { sizeof(si) };
-//	PROCESS_INFORMATION pi;
-//	ZeroMemory(&si, sizeof(si));
-//	si.dwFlags = STARTF_USESHOWWINDOW;
-//	si.wShowWindow = SW_SHOWNORMAL;
-//	HANDLE hProc;
-//
-//
-//	//if ( !CreateProcessA(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
-//	if (!CreateProcess(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi)) {
-//
-//		MessageBoxA(dlg, "Can't access the Greaseweazle application! Check the path...", "Failed!:", MB_OK | MB_ICONERROR);
-//		MessageBoxA(dlg, batchFullPath, "Failed! Check batchFullPath:", MB_OK | MB_ICONERROR);
-//
-//	}
-//	else
-//	{
-//		CloseHandle(pi.hProcess);
-//		CloseHandle(pi.hThread);
-//	}
-//
-//
-//
-//}
-//
 
 
-
-
-
-void RunGreaseweazle(HWND dlg)
+// This is what probably should be called RunGreaseweazleRead 
+// This is what runs to read the ADF to a new disk image .adf file.
+BOOL RunGreaseweazle(HWND dlg)
 {
+
+	// Check if the file exists. If it does, warn the user and do not proceed.
+	// That means we return FALSE meaning we did NOT run Greaseweazle 
+	// and therefore the dialog should remain open for the user to change the filename.
+	char test_if_exists_path[MAX_PATH] = { 0 };
+	char imagePath[MAX_PATH] = "";
+	char imageArg[MAX_PATH] = "";
+
+	// Disk Image Path for Greaseweazle
+	GetDlgItemTextA(
+		dlg,
+		IDC_GW_EDIT_PATH,
+		imagePath,
+		MAX_PATH
+	);
+
+	// Disk Image Path for Greaseweazle
+	SendDlgItemMessageA(
+		dlg,
+		IDC_GW_EDIT_FILENAME,  // control ID
+		WM_GETTEXT,            // the message to get text
+		(WPARAM)(MAX_PATH),    // max chars including NULL
+		(LPARAM)imageArg       // your buffer
+	);
+
+	// now check imageArg[0] or strlen(imageArg)
+	if (imageArg[0] == '\0') {
+		strcpy(imageArg, defaultGreaseweazleFilename);
+	}
+
+	// Combine the path and filename into one string.
+	PathCombineA(test_if_exists_path, imagePath, imageArg);
+
+	// There is where I want to check is the file exists.
+	if (PathFileExistsA(test_if_exists_path)) {
+		MessageBoxA(dlg, "File already exists! Please choose another filename.", "Error", MB_OK | MB_ICONERROR);
+		return FALSE; // We do NOT run Greaseweazle, so keep the dialog open.
+	}
+
 	// 1) Configurable at runtime (load from your options later)
 	 
 	char greaseweazlePATH[MAX_PATH] = "C:\\Program Files\\Greaseweazle";
@@ -1218,7 +729,7 @@ void RunGreaseweazle(HWND dlg)
 			MB_OK | MB_ICONERROR
 		);
 
-		return;
+		return FALSE;
 	}
 
 	// batchFullPath is now wrapped in quotes if it contains spaces
@@ -1230,8 +741,8 @@ void RunGreaseweazle(HWND dlg)
 	char rwArg[32]           = "read";
 	char driveArg[32]        = "--drive=A";
 	char formatArg[32]       = "--format=amiga.amigados";
-	char imagePath[MAX_PATH] = "";
-	char imageArg[MAX_PATH]  = "";
+	//char imagePath[MAX_PATH] = "";
+	//char imageArg[MAX_PATH]  = "";
 
 	// Drive A Selection
 	if (SendDlgItemMessage(dlg, IDC_GW_RADIO_DRIVE_A, BM_GETCHECK, 0L, 0L) == BST_CHECKED) {
@@ -1298,9 +809,6 @@ void RunGreaseweazle(HWND dlg)
 	//CHAR batchFullPath[MAX_PATH];
 	PathCombineA(batchFullPath, greaseweazlePATH, greaseweazleEXE);
 
-	//char TESTexePath[MAX_PATH] = "C:\\Program Files\\Greaseweazle\\gw.exe";
-	//char TESTcmdArgs[256] = " read --drive=A --format=amiga.amigados example_disk.adf";
-
 	// 8) Launch cmd.exe in a new console so you can watch output
 	STARTUPINFOA        si = { sizeof(si) };
 	PROCESS_INFORMATION pi;
@@ -1309,19 +817,6 @@ void RunGreaseweazle(HWND dlg)
 	si.wShowWindow = SW_SHOWNORMAL;
 	HANDLE hProc;
 
-	//MessageBoxA(
-	//	dlg,
-	//	batchFullPath,
-	//	"batchFullPath",
-	//	MB_OK | MB_ICONERROR
-	//);
-	//MessageBoxA(
-	//	dlg,
-	//	gwArgs,
-	//	"gwArgs",
-	//	MB_OK | MB_ICONERROR
-	//);
-
 	//if ( !CreateProcessA(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
 	if ( !CreateProcess(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
 
@@ -1329,25 +824,7 @@ void RunGreaseweazle(HWND dlg)
 		MessageBoxA( dlg, batchFullPath, "Failed! Check batchFullPath:", MB_OK | MB_ICONERROR );
 	
 	}
-	//else
-	//{
-	//	// close handles if you don't need to wait
-	//	CloseHandle(pi.hProcess);
-	//	CloseHandle(pi.hThread);
-	//}
-
-	//sprintf(szCommandLine, "%s%s", szCommand, szCommandLineArgs);
-	//memset(&s_info, 0, sizeof(s_info));
-	//s_info.cb = sizeof(s_info);
-
-	//if ( !CreateProcess(NULL, szCommandLine, NULL, NULL, FALSE, 0, NULL, NULL, &s_info, &p_info)) {
-	//	
-	//	MessageBox(dlg,
-	//		"Disk2FDI was not found in the command path. See help for further details.",
-	//		"ADF Opus Error",
-	//		MB_ICONSTOP);
-	//	return;
-	//}
+	
 
 	// Prep full path and filename so we can open it right away in ADF Opus 2025!
 	CHAR imageFullPath[256] = "";
@@ -1367,55 +844,9 @@ void RunGreaseweazle(HWND dlg)
 		EndDialog(dlg, TRUE);
 		CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
 	}
-	return;
+	return TRUE;
 
 
 }
-
-
-
-//MessageBoxA(
-//	dlg,
-//	greaseweazlePATH,
-//	"DEBUG:greaseweazlePATH",
-//	MB_OK | MB_ICONERROR
-//);
-
-
-
-
-
-
-// THIS WORKS EVEN IF TEH PROGRAM IS IN A FOLDER PATH WITH SPACE FUCK YEAH!
-//// must be mutable buffers, not literals
-//char TESTexePath[MAX_PATH] = "C:\\Program Files\\Greaseweazle\\gw.exe";
-//char TESTcmdArgs[256] = " read --drive=A --format=amiga.amigados example_disk.adf";
-//// you need the space so the program name is separated from its args
-//
-//STARTUPINFOA TESTsi = { sizeof(si) };
-//PROCESS_INFORMATION TESTpi;
-//
-//// pass exePath in lpApplicationName, args only in lpCommandLine
-//if (!CreateProcessA(
-//	TESTexePath,        // launches gw.exe directly
-//	TESTcmdArgs,        // its argv[1]…argv[n]
-//	NULL, NULL,
-//	FALSE,
-//	CREATE_NEW_CONSOLE,
-//	NULL, NULL,
-//	&TESTsi, &TESTpi
-//))
-//{
-//	MessageBoxA(dlg,
-//		"Launch failed",
-//		"Error", MB_OK | MB_ICONERROR);
-//}
-//else
-//{
-//	CloseHandle(TESTpi.hProcess);
-//	CloseHandle(TESTpi.hThread);
-//}
-
-
 
 
