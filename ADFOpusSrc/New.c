@@ -299,6 +299,44 @@ void NewCreate(HWND dlg)
 }
 
 
+#include <string.h>
+#include <stdbool.h>
+#include <stddef.h>
+
+/*
+ * ensure_extension
+ *
+ * Ensures that `path` ends with the given `ext` (e.g. ".adf" or ".hdf").
+ * If it already has that suffix, nothing changes. Otherwise ext is appended.
+ *
+ * path:        in/out buffer holding a NUL-terminated file name
+ * buffer_size: total size of the `path` buffer, in bytes
+ * ext:         extension to enforce, including the leading dot
+ *
+ * Returns true if path now ends in ext, false if buffer was too small.
+ */
+bool ensure_extension(char* path, size_t buffer_size, const char* ext)
+{
+	size_t path_len = strlen(path);
+	size_t ext_len = strlen(ext);
+
+	// already ends with ext?
+	if (path_len >= ext_len
+		&& strcmp(path + path_len - ext_len, ext) == 0)
+	{
+		return true;
+	}
+
+	// need room for ext plus NUL
+	if (path_len + ext_len + 1 > buffer_size) {
+		return false;
+	}
+
+	// append extension (copies the NUL too)
+	memcpy(path + path_len, ext, ext_len + 1);
+	return true;
+}
+
 void NewCreateFile(void* lpVoid)
 {
 	struct Device* dev;
@@ -306,10 +344,26 @@ void NewCreateFile(void* lpVoid)
 	HWND			dlg = (HWND)lpVoid;
 	int				type = 0;
 	struct Volume* vol;
+	char file_extension[5] = { 0 };
+	Done = FALSE;
 
 	Percent = 0;
 
+	if (type_of_image == IMAGE_TYPE_ADF_DD || type_of_image == IMAGE_TYPE_ADF_HD) {
+		strcpy(file_extension, ".adf");
+	} else if (type_of_image == IMAGE_TYPE_HDF) {
+		strcpy(file_extension, ".hdf");
+	} else {
+		// This should never happen.
+		MessageBox(dlg, "An unknown error occurred determining the image type.", "Error", MB_OK | MB_ICONERROR);
+		Done = TRUE;
+		return;
+	}
 
+	if (!ensure_extension(gstrFileName, sizeof(gstrFileName), file_extension)) {
+		fprintf(stderr, "Filename buffer too small to add .ADF extention.\n");
+		return 1;
+	}
 
 	if (type_of_image == IMAGE_TYPE_ADF_DD) {					/* DD Floppy 880KB */
 		dev = adfCreateDumpDevice(gstrFileName, 80, 2, 11);
