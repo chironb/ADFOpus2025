@@ -469,9 +469,11 @@ LRESULT CALLBACK MainWinProc(
 			SendMessage(ghwndMDIClient, WM_MDICASCADE, 0, 0);
 			bCmdLineArgs = FALSE;
 		}
+		// Chiron TODO: Should the MDITILE_VERTICAL thing below go here instead of where it is? 
 		PaintProc(hwndFrame);
-		SendMessage(ghwndMDIClient, WM_MDITILE,
-			MDITILE_VERTICAL, 0);
+		// Chiron TODO: Make this an option!
+		// I'm pretty sure this is what I added that needs to be an option!
+		SendMessage(ghwndMDIClient, WM_MDITILE, MDITILE_VERTICAL, 0); 
 		break;
 
 	case WM_SIZE:
