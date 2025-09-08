@@ -947,5 +947,11 @@
     <None Include="ADFOpusSrc\images\ArrowCop.cur">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ADFOpusSrc\images\amiga.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ADFOpusSrc\images\amiga_no_circle.cur">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

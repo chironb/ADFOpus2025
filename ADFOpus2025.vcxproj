@@ -230,6 +230,8 @@
     <Image Include="ADFOpusSrc\Images\WinLister.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ADFOpusSrc\images\amiga.cur" />
+    <None Include="ADFOpusSrc\images\amiga_no_circle.cur" />
     <None Include="ADFOpusSrc\images\ArrowCop.cur" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
