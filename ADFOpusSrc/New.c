@@ -1,4 +1,4 @@
-/* ADF Opus Copyright 1998-2002 by 
+﻿/* ADF Opus Copyright 1998-2002 by 
  * Dan Sutherland <dan@chromerhino.demon.co.uk> and Gary Harris <gharris@zip.com.au>.	
  *
  */
@@ -17,7 +17,9 @@
 #include "ChildCommon.h"
 #include "Help\AdfOpusHlp.h"
 #include "Install.h"
-#include <shlwapi.h>
+#include <shlwapi.h> // For PathFileExistsA
+
+
 
 
 extern char gstrFileName[MAX_PATH * 2];
@@ -66,22 +68,36 @@ LRESULT CALLBACK NewDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		0,0 
 	}; 	
 
-	
 	switch(msg) {
 	case WM_INITDIALOG:
 		SendMessage(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), TBM_SETRANGE, TRUE, MAKELONG(0, 9));
 		SendMessage(GetDlgItem(dlg, IDC_NEWADF), BM_SETCHECK, BST_CHECKED, 0l);
+		SendMessage(GetDlgItem(dlg, IDC_NEWHD), BM_SETCHECK, BST_UNCHECKED, 0l);
+		SendMessage(GetDlgItem(dlg, IDC_NEWHARDFILE), BM_SETCHECK, BST_UNCHECKED, 0l);
 		SendMessage(GetDlgItem(dlg, IDC_NEWPRESET), BM_SETCHECK, BST_CHECKED, 0l);
 		SendMessage(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), BM_SETCHECK, BST_CHECKED, 0l);
 		SendMessage(GetDlgItem(dlg, IDC_NEWPRESETSIZE), BM_SETCHECK, BST_CHECKED, 0l);
+		
+		// 3) Disable *all* HDF‐related controls
+		EnableWindow(GetDlgItem(dlg, IDC_NEWPRESET), FALSE);
+		EnableWindow(GetDlgItem(dlg, IDC_NEWCUSTOM), FALSE);
+		EnableWindow(GetDlgItem(dlg, IDC_NEWCUSTOMSIZE), FALSE);
+		EnableWindow(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), FALSE);
+		EnableWindow(GetDlgItem(dlg, IDC_NEWPRESETSIZE), FALSE);
+
 		SetDlgItemText(dlg, IDC_NEWPATH, "adfopus_new_default.adf");
 		SetDlgItemText(dlg, IDC_NEWLABEL, Options.defaultLabel);
+
 		// Open in ADF Opus after creation
-		CheckDlgButton(
-			dlg,                // HWND of the dialog
-			IDC_NEWOPEN,    // control ID
-			BST_CHECKED         // set it checked
-		);
+		CheckDlgButton( dlg, IDC_NEWOPEN, BST_CHECKED); // set it checked
+		
+		EnableWindow(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), FALSE);
+
+		newPos = SendMessage(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), TBM_GETPOS, 0, 0l);
+		itoa(2 << newPos, size, 10);
+		strcat(size, " MB");
+		SetWindowText(GetDlgItem(dlg, IDC_NEWPRESETSIZE), size);
+
 		return TRUE;
 
 	case WM_COMMAND:
@@ -96,7 +112,28 @@ LRESULT CALLBACK NewDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 			NewSelectFile(dlg);
 			return TRUE;
 		case IDC_NEWADF:
-			EnableWindow(GetDlgItem(dlg, IDC_NEWHD), TRUE);
+			// range: first ID in group … last ID in group … which one to check
+			CheckRadioButton(
+				dlg,
+				IDC_NEWADF,      // first in group
+				IDC_NEWHARDFILE, // last in group
+				LOWORD(wp)       // the one the user clicked
+			);    
+			EnableWindow(GetDlgItem(dlg, IDC_NEWPRESET), FALSE);
+			EnableWindow(GetDlgItem(dlg, IDC_NEWCUSTOM), FALSE);
+			EnableWindow(GetDlgItem(dlg, IDC_NEWCUSTOMSIZE), FALSE);
+			EnableWindow(GetDlgItem(dlg, IDC_NEWPRESETSIZE), FALSE);
+			EnableWindow(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), FALSE);
+			EnableWindow(GetDlgItem(dlg, IDC_NEWBOOTABLE), TRUE);
+			return TRUE;
+		case IDC_NEWHD:
+			// range: first ID in group … last ID in group … which one to check
+			CheckRadioButton(
+				dlg,
+				IDC_NEWADF,      // first in group
+				IDC_NEWHARDFILE, // last in group
+				LOWORD(wp)       // the one the user clicked
+			);
 			EnableWindow(GetDlgItem(dlg, IDC_NEWPRESET), FALSE);
 			EnableWindow(GetDlgItem(dlg, IDC_NEWCUSTOM), FALSE);
 			EnableWindow(GetDlgItem(dlg, IDC_NEWCUSTOMSIZE), FALSE);
@@ -105,7 +142,13 @@ LRESULT CALLBACK NewDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 			EnableWindow(GetDlgItem(dlg, IDC_NEWBOOTABLE), TRUE);
 			return TRUE;
 		case IDC_NEWHARDFILE:
-			EnableWindow(GetDlgItem(dlg, IDC_NEWHD), FALSE);
+			// range: first ID in group … last ID in group … which one to check
+			CheckRadioButton(
+				dlg,
+				IDC_NEWADF,      // first in group
+				IDC_NEWHARDFILE, // last in group
+				LOWORD(wp)       // the one the user clicked
+			);
 			EnableWindow(GetDlgItem(dlg, IDC_NEWPRESET), TRUE);
 			EnableWindow(GetDlgItem(dlg, IDC_NEWCUSTOM), TRUE);
 			EnableWindow(GetDlgItem(dlg, IDC_NEWBOOTABLE), FALSE);
@@ -146,8 +189,8 @@ LRESULT CALLBACK NewDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 	case TB_LINEDOWN:
 	case TB_LINEUP:
 		newPos = SendMessage(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), TBM_GETPOS, 0, 0l);
-		itoa(1 << newPos, size, 10);
-		strcat(size, "MB");
+		itoa(2 << newPos, size, 10);
+		strcat(size, " MB");
 		SetWindowText(GetDlgItem(dlg, IDC_NEWPRESETSIZE), size);
 		return TRUE;
 
@@ -166,6 +209,17 @@ LRESULT CALLBACK NewDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 	return FALSE;
 }
 
+
+// Type of the image to create.
+enum {
+	IMAGE_TYPE_INVALID, // Invalid type (used for error checking).
+	IMAGE_TYPE_ADF_DD,  // Double Density ADF
+	IMAGE_TYPE_ADF_HD,  // High Density ADF
+	IMAGE_TYPE_HDF      // Hard Disk File HDF
+};
+int type_of_image = IMAGE_TYPE_INVALID; // Invalid
+
+
 void NewCreate(HWND dlg)
 {
 	int iType;
@@ -173,35 +227,57 @@ void NewCreate(HWND dlg)
 	char ts[MAX_PATH];
 	char test_if_exists_path[MAX_PATH] = { 0 };
 
-	/* determine size of file to create (in SECTORS) */
-	iType = SendMessage(GetDlgItem(dlg, IDC_NEWADF), BM_GETCHECK, 0, 0l);
-	if (iType == BST_CHECKED) {
-		/* it is a adf file */
-		Size = (SendMessage(GetDlgItem(dlg, IDC_NEWHD), BM_GETCHECK, 0, 0l)
-			== BST_CHECKED) ? 1760 << 1 : 1760;		
-	} else {
-		/* hardfile */
-		if (SendMessage(GetDlgItem(dlg, IDC_NEWPRESET), BM_GETCHECK, 0, 0l)
-			== BST_CHECKED) {
-			/* one of the preset sizes */
-			Size = (2 << SendMessage(GetDlgItem(dlg, IDC_NEWPRESETSLIDER),
-				TBM_GETPOS, 0, 0l)) * 1024;
-		} else {
-			/* custom size */
-			GetDlgItemText(dlg, IDC_NEWCUSTOMSIZE, ts, sizeof(ts));
-			Size = atol(ts) << 1;
+
+	int ids[] = { IDC_NEWADF, IDC_NEWHD, IDC_NEWHARDFILE };
+	int checked = 0;
+	for (int i = 0; i < 3; ++i) {
+		if (IsDlgButtonChecked(dlg, ids[i]) == BST_CHECKED) {
+			checked = ids[i];
+			break;
 		}
 	}
 
-	if (! Size) {
-		MessageBox(dlg, "The custom size you specified is not valid",
-			"Error", MB_OK | MB_ICONERROR);
+
+
+	switch (checked) {
+	case IDC_NEWADF:						// 880KB
+		type_of_image = IMAGE_TYPE_ADF_DD;
+		Size = 1760;            
+		break;
+
+	case IDC_NEWHD:							// 1.76MB
+		type_of_image = IMAGE_TYPE_ADF_HD;
+		Size = 1760 * 2;        
+		break;
+
+	case IDC_NEWHARDFILE:
+		type_of_image = IMAGE_TYPE_HDF;		// Hardfile
+		if (SendMessage(GetDlgItem(dlg, IDC_NEWPRESET), BM_GETCHECK, 0, 0l) == BST_CHECKED) {
+			/* one of the preset sizes */
+			Size = (2 << SendMessage(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), TBM_GETPOS, 0, 0l)) * 1024;
+		}
+		else {
+			/* custom size */
+			GetDlgItemText(dlg, IDC_NEWCUSTOMSIZE, ts, sizeof(ts));
+			Size = atol(ts);
+		}
+		break;
+
+	default:
+		MessageBox(dlg, "Please select a valid image type.", "Error", MB_OK | MB_ICONERROR);
 		return;
 	}
 
+	//char buf[32];
+	//sprintf(buf, "Size is:%d in NewCreate", Size);              // or _itoa_s(Size, buf, sizeof(buf), 10);
+	//MessageBoxA(dlg, buf, "Size:", MB_OK | MB_ICONERROR);
+
+	if (type_of_image == IMAGE_TYPE_HDF && Size < 2048) {
+		MessageBox(dlg, "The custom size you specified is less than the minimum size of 2048 KB / 2 MB. Please choose a larger size.", "Error:", MB_OK | MB_ICONERROR);
+		return;
+	}
 
 	GetDlgItemText(dlg, IDC_NEWPATH, test_if_exists_path, sizeof(test_if_exists_path));
-
 
 	// There is where I want to check is the file exists.
 	if (PathFileExistsA(test_if_exists_path)) {
@@ -209,9 +285,6 @@ void NewCreate(HWND dlg)
 		Done = TRUE;
 		return;
 	}
-
-
-
 
 	/* create the file */
 	GetDlgItemText(dlg, IDC_NEWPATH, gstrFileName, sizeof(gstrFileName));
@@ -225,30 +298,79 @@ void NewCreate(HWND dlg)
 			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
 }
 
-void NewSelectFile(HWND dlg)
+
+void NewCreateFile(void* lpVoid)
 {
-	OPENFILENAME ofn;
+	struct Device* dev;
+	char			tempStr[MAX_PATH]; // Chiron TODO: Shouldn't this be like this: char tempStr[MAX_PATH] = { 0 };
+	HWND			dlg = (HWND)lpVoid;
+	int				type = 0;
+	struct Volume* vol;
 
-	strcpy(gstrFileName, "");
+	Percent = 0;
 
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = dlg;
-	ofn.hInstance = NULL;
-	ofn.lpstrFilter = "Amiga Disk File (*.adf)\0*.adf\0Hard Disk File (*.hdf)\0*.hdf\0Any file\0*.*\0";
-	ofn.lpstrCustomFilter = NULL;
-	ofn.nMaxCustFilter = 0;
-	ofn.lpstrFile = gstrFileName;
-	ofn.nMaxFile = sizeof(gstrFileName);
-	ofn.lpstrFileTitle = NULL;
-	ofn.lpstrInitialDir = NULL;
-	ofn.lpstrTitle = "Save disk image";
-	ofn.Flags = OFN_SHAREAWARE | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
-	ofn.lpstrDefExt = NULL;
 
-	if (GetSaveFileName(&ofn)) {
-		SetDlgItemText(dlg, IDC_NEWPATH, gstrFileName);
+
+	if (type_of_image == IMAGE_TYPE_ADF_DD) {					/* DD Floppy 880KB */
+		dev = adfCreateDumpDevice(gstrFileName, 80, 2, 11);
 	}
+	else if (type_of_image == IMAGE_TYPE_ADF_HD) {				/* HD Floppy 1.76MB */
+		dev = adfCreateDumpDevice(gstrFileName, 80, 2, 22);
+	}
+	else if (type_of_image == IMAGE_TYPE_HDF) {					/* Hardfile */
+
+		//char buf[32];
+		//sprintf(buf, "Size is:%d in NewCreateFile just before the adfCreateDumpDevice line.", Size);              // or _itoa_s(Size, buf, sizeof(buf), 10);
+		//MessageBoxA(dlg, buf, "Size:", MB_OK | MB_ICONERROR);
+
+		dev = adfCreateDumpDevice(gstrFileName, Size*2, 1, 1);	// Create large file: 1 head, 1 sector per track, and many cylinders.
+																// Also why in the hell does this need to be Size*2 here? Is it because the block is 512 KB or something so you need to double it up? Or like a math thing? Anyway... this works fuck it!
+	}															
+	else if (type_of_image == IMAGE_TYPE_INVALID) {				// Invalid type (used for error checking).
+		MessageBox(dlg, "Please select a valid image type.", "Error", MB_OK | MB_ICONERROR);
+		Done = TRUE;
+		return;
+	}
+	else {														// This should never happen.
+		MessageBox(dlg, "An unknown error occurred determining the image type.", "Error", MB_OK | MB_ICONERROR);
+		Done = TRUE;
+		return;
+	}
+
+	GetDlgItemText(dlg, IDC_NEWLABEL, tempStr, sizeof(tempStr));
+
+	if (SendMessage(GetDlgItem(dlg, IDC_NEWFFS), BM_GETCHECK, 0, 0l) == BST_CHECKED)
+		type += FSMASK_FFS;
+	if (SendMessage(GetDlgItem(dlg, IDC_NEWINTL), BM_GETCHECK, 0, 0l) == BST_CHECKED)
+		type += FSMASK_INTL;
+	if (SendMessage(GetDlgItem(dlg, IDC_NEWDIRC), BM_GETCHECK, 0, 0l) == BST_CHECKED)
+		type += FSMASK_DIRCACHE;
+
+	if (type_of_image == IMAGE_TYPE_ADF_DD || type_of_image == IMAGE_TYPE_ADF_HD) { // IF the type is DD or HD ADF
+		
+		adfCreateFlop(dev, tempStr, type);
+		
+		// Install bootblock if "Bootable" selected.
+		if (SendMessage(GetDlgItem(dlg, IDC_NEWBOOTABLE), BM_GETCHECK, 0, 0l) == BST_CHECKED) {
+			vol = adfMount(dev, 0, FALSE);
+			InstallBootBlock(dlg, vol, TRUE);
+		}
+
+	} else if (type_of_image == IMAGE_TYPE_HDF) {
+		adfCreateHdFile(dev, tempStr, type);
+	} else {
+		// This should never happen.
+		MessageBox(dlg, "An unknown error occurred determining the image type.", "Error", MB_OK | MB_ICONERROR);
+		Done = TRUE;
+		return;
+	}
+
+
+	adfUnMountDev(dev);
+
+	Done = TRUE;
 }
+
 
 LRESULT CALLBACK NewProgressProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 {
@@ -274,60 +396,28 @@ LRESULT CALLBACK NewProgressProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 	return FALSE;
 }
 
-#include <shlwapi.h> // For PathFileExistsA
 
-
-void NewCreateFile(void *lpVoid)
+void NewSelectFile(HWND dlg)
 {
-	struct Device	*dev;
-	char			tempStr[MAX_PATH]; // Chiron TODO: Shouldn't this be like this: char tempStr[MAX_PATH] = { 0 };
-	HWND			dlg = (HWND)lpVoid;
-	int				type = 0;
-	struct Volume	*vol;
+	OPENFILENAME ofn;
 
-	// This is the filename. The user selected it in the New dialog.
-	// MessageBoxA(dlg, gstrFileName, "DEBUG:gstrFileName", MB_OK | MB_ICONERROR);
+	strcpy(gstrFileName, "");
 
-	//// There is where I want to check is the file exists.
-	//// PathFileExistsA(szPath);
-	//if (PathFileExistsA(gstrFileName)) {
-	//	MessageBoxA(dlg, "File already exists! Please choose another filename.", "Error", MB_OK | MB_ICONERROR);
-	//	Done = TRUE;
-	//	return;
-	//}
-	//	
-	Percent = 0;
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = dlg;
+	ofn.hInstance = NULL;
+	ofn.lpstrFilter = "Amiga Disk File (*.adf)\0*.adf\0Hard Disk File (*.hdf)\0*.hdf\0Any file\0*.*\0";
+	ofn.lpstrCustomFilter = NULL;
+	ofn.nMaxCustFilter = 0;
+	ofn.lpstrFile = gstrFileName;
+	ofn.nMaxFile = sizeof(gstrFileName);
+	ofn.lpstrFileTitle = NULL;
+	ofn.lpstrInitialDir = NULL;
+	ofn.lpstrTitle = "Save disk image";
+	ofn.Flags = OFN_SHAREAWARE | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+	ofn.lpstrDefExt = NULL;
 
-	if (Size == 1760) /* 880KB Floppy */
-		dev = adfCreateDumpDevice(gstrFileName, 80, 2, 11);
-	else
-		if (Size == (1760 * 2)) /* HD Floppy */
-			dev = adfCreateDumpDevice(gstrFileName, 80, 2, 22);
-		else /* hardfile */
-			dev = adfCreateDumpDevice(gstrFileName, Size, 1, 1);
-
-	GetDlgItemText(dlg, IDC_NEWLABEL, tempStr, sizeof(tempStr));
-
-	if (SendMessage(GetDlgItem(dlg, IDC_NEWFFS), BM_GETCHECK, 0, 0l) == BST_CHECKED)
-		type += FSMASK_FFS;
-	if (SendMessage(GetDlgItem(dlg, IDC_NEWINTL), BM_GETCHECK, 0, 0l) == BST_CHECKED)
-		type += FSMASK_INTL;
-	if (SendMessage(GetDlgItem(dlg, IDC_NEWDIRC), BM_GETCHECK, 0, 0l) == BST_CHECKED)
-		type += FSMASK_DIRCACHE;
-	
-
-	if ((Size == 1760) || (Size == 1760 * 2)){
-		adfCreateFlop(dev, tempStr, type);
-		// Install bootblock if "Bootable" selected.
-		if(SendMessage(GetDlgItem(dlg, IDC_NEWBOOTABLE), BM_GETCHECK, 0, 0l) == BST_CHECKED){
-			vol = adfMount(dev, 0, FALSE);
-			InstallBootBlock(dlg, vol, TRUE);
-		}
+	if (GetSaveFileName(&ofn)) {
+		SetDlgItemText(dlg, IDC_NEWPATH, gstrFileName);
 	}
-	else
-		adfCreateHdFile(dev, tempStr, type);
-
-	adfUnMountDev(dev);
-
-	Done = TRUE;
 }
