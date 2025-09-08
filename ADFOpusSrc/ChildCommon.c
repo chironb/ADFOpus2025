@@ -796,7 +796,8 @@ void ChildUpdate(HWND win)
 	else
 		SetWindowText(ci->sb, ci->curDir);
 	UpdateToolbar();
-	SetWindowText(ghwndSB, "Idle");
+	//SetWindowText(ghwndSB, "Idle");
+	SetWindowText(ghwndSB, "Welcome to ADF Opus 2025!");
 
 }
 

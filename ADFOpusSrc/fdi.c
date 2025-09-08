@@ -39,8 +39,22 @@
 
 #include <commdlg.h>
 
+#include "MenuIcons.h"
+#include "ListView.h"
+#include "Utils.h"
+#include "VolSelect.h"
+#include "Options.h"
+#include "ADFLib.h"
+#include "ADF_err.h"
+#include "xDMS.h"
+#include "BatchConvert.h"
+#include "zLib.h"
+#include <stdlib.h> 
+extern HWND ghwndSB; //SetWindowText(ghwndSB, "Reading directory...");
+
 extern char gstrFileName[MAX_PATH * 2];
 extern HWND	ghwndMDIClient;
+
 
 #include "ADFOpus.h"   // for 
 
@@ -202,7 +216,8 @@ LRESULT CALLBACK GreaseweazleProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 				case IDGWSTART:
 
-					
+					// Update the statusbar in the main window.
+					SetWindowText(ghwndSB, "Greaseweazle reading from floppy disk..."); // Needs: extern HWND ghwndSB;
 
 					if (RunGreaseweazle(dlg)) {
 						EndDialog(dlg, TRUE); // We ran it just fine, the user didn't try to overwrite an existing file. 
@@ -506,6 +521,7 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 			return TRUE;
 
 		case ID_GW_WRITE_START:
+			SetWindowText(ghwndSB, "Greaseweazle writing to floppy disk..."); // Needs: extern HWND ghwndSB;
 			RunGreaseweazleWrite(dlg);
 			EndDialog(dlg, TRUE);
 			return TRUE;
@@ -824,7 +840,6 @@ BOOL RunGreaseweazle(HWND dlg)
 		MessageBoxA( dlg, batchFullPath, "Failed! Check batchFullPath:", MB_OK | MB_ICONERROR );
 	
 	}
-	
 
 	// Prep full path and filename so we can open it right away in ADF Opus 2025!
 	CHAR imageFullPath[256] = "";

@@ -3,10 +3,12 @@
 #include "ChildCommon.h"
 #include <windows.h>
 #include <shellapi.h>   // ShellExecuteA
-#include <string.h>     // strrchr, strcpy_s, strcat_s, strncpy_s
+#include <string.h>     // strrchr, strcpy_s, strcat_s, strncpy_s`
 #include <winver.h>     // version‐info APIs
 
 #pragma comment(lib, "Version.lib")  // link in GetFileVersionInfo* and VerQueryValue
+
+extern HWND ghwndSB;
 
 // About dialog procedure
 LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -103,7 +105,10 @@ LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
                 __DATE__, __TIME__
             );
         }
+
         SetDlgItemTextA(dlg, IDC_STATIC_BUILD, buildText);
+
+        SetWindowText(ghwndSB, "Visit ADF Opus 2025 on GitHub!"); // Needs: extern HWND ghwndSB;
 
         return TRUE;
     }
@@ -133,7 +138,9 @@ LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
                 // fallback if path lookup fails
                 ShellExecuteA(dlg, "open", "Credits.txt", NULL, NULL, SW_SHOWNORMAL);
             }
+
             return TRUE;
+
         }
 
         case IDC_BTN_WEBSITE:
