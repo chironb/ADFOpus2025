@@ -1,10 +1,12 @@
 # ADFOpus2025
 
-![ADF Opus 2025 v1.0.0 Screenshot](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/ADF_Opus_2025_Logo.png?raw=true)
+![ADF Opus 2025 Logo](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/ADF_Opus_2025_Logo.png?raw=true)
 
 ADF Opus is a free, Open-Source GPL v2 licenced, Windows application that lets you open, browse, and manage Amiga .ADF disk-images natively without an emulator. With Greaseweazle support built-in you can read and write to real floppy disks with the compatible hardware and software. This new 2025 edition by Chiron Bramberger is a refresh and revive of this application for Windows users in 2025!
 
-![ADF Opus 2025 v1.0.0 Screenshot](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme.png?raw=true)
+![ADF Opus 2025 Screenshot 1](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme.png?raw=true)
+
+![ADF Opus 2025 Screenshot 2](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme2.png?raw=true)
 
 New features in the 2025 edition include: 
 - The power to copy, rename, delete and transfer files directly between disk images and your PC’s filesystem.
@@ -20,7 +22,8 @@ New features in the 2025 edition include:
 - UI refresh brings rich icon support, an updated toolbar, and a redesigned look and feel across the application.
 - New logo design and application icon design! I tried to create a modern logo with a vintage 80's flare while at the same time honouring the original logo design language and colors!
 - Removes unsupported legacy DISK2FDI. This tech requires a PC motherboard with on-board dual floppy disk drive support which is no longer supported on modern systems. This feature is replaced with support for the far more flexible and modern Greaseweazle!
-- Legacy help .HLP system removed. A new modern .CHM help system has replaced it with the original context decompiled and recompiled for the modern format.    
+- Legacy help .HLP system removed. A new modern .CHM help system has replaced it with the original context decompiled and recompiled for the modern format.
+- Uses classic Amiga mouse cursor design in the file viewer windows!  
 - Downloads as a (hopefully) turnkey Visual Studio 2022 solution for effortless cloning, building, and contribution.
 
 I consider this to be all the essentials I wanted to cover in updating this app for 2025! Woot! I hope you find using ADF Opus 2025 to be as enjoyable as I do! It's not perfect but it's got you covered.
