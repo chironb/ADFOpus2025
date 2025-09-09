@@ -733,11 +733,12 @@ HWND CreateListView(HWND win)
 		return NULL;
 
 	// Add your columns
-	LVAddColumn(lv, "Name", 200, 0);
+	LVAddColumn(lv, "Name", 150, 0); // Chiron 2025 - Kludgey fix for the MOUSE SHOOTS OFF bug! Changed the width of the Name column from 200 to 150.
 	LVAddColumn(lv, "Size", 70, 1);
 	LVAddColumn(lv, "Flags", 75, 2);
 	if (GetWindowLong(win, GWL_USERDATA) != CHILD_WINLISTER)
-		LVAddColumn(lv, "Comment", 605, 3);
+		LVAddColumn(lv, "Comment", 75, 3); // Chiron 2025 - Kludgey fix for the MOUSE SHOOTS OFF bug! Changed the width of the Name column from 605 to 75.
+	// Chiron TODO: This is where we could add the date and time? I dunno maybe. LVAddColumn(lv, "Date", 75, 4);
 
 	// Image list + full-row selection
 	ListView_SetImageList(lv, ghwndImageList, LVSIL_SMALL);
