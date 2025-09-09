@@ -280,12 +280,63 @@ void NewCreate(HWND dlg)
 
 	GetDlgItemText(dlg, IDC_NEWPATH, test_if_exists_path, sizeof(test_if_exists_path));
 
-	// There is where I want to check is the file exists.
-	if (PathFileExistsA(test_if_exists_path)) {
-		MessageBoxA(dlg, "File already exists! Please choose another filename.", "Error", MB_OK | MB_ICONERROR);
-		Done = TRUE;
-		return;
+	//// There is where I want to check is the file exists.
+	//if (type_of_image == IMAGE_TYPE_ADF_DD || type_of_image == IMAGE_TYPE_ADF_HD) {
+	//	if (!ensure_extension(test_if_exists_path, sizeof(test_if_exists_path), ".adf")) {
+	//		MessageBoxA(dlg, "File already exists! Please choose another filename.", "Error", MB_OK | MB_ICONERROR);
+	//		Done = TRUE;
+	//		return;
+	//	}
+	//}
+	//else if (type_of_image == IMAGE_TYPE_HDF) {
+	//	if (!ensure_extension(test_if_exists_path, sizeof(test_if_exists_path), ".hdf")) {
+	//		MessageBoxA(dlg, "File already exists! Please choose another filename.", "Error", MB_OK | MB_ICONERROR);
+	//		Done = TRUE;
+	//		return;
+	//	}
+	//}
+	// 
+	// 
+	
+
+	if (type_of_image == IMAGE_TYPE_ADF_DD || type_of_image == IMAGE_TYPE_ADF_HD) {
+
+		// Suppose test_path[MAX_PATH] holds what the user typed, without or with “.adf”
+		if (!MakeGoodOutputFilename(
+			dlg,                     // dialog HWND
+			test_if_exists_path,               // buffer to normalize
+			sizeof test_if_exists_path,        // should be MAX_PATH
+			".adf"                   // required extension
+		))
+		{
+			// error message was already shown; keep dialog open
+			return FALSE;
+		}
+		// at this point test_path == "C:\\somefile.adf" (or original if user typed .adf),
+		// and if we get here then we know that file does in-fact exist.
+
 	}
+	else if (type_of_image == IMAGE_TYPE_HDF) {
+
+		// Suppose test_path[MAX_PATH] holds what the user typed, without or with “.adf”
+		if (!MakeGoodOutputFilename(
+			dlg,                     // dialog HWND
+			test_if_exists_path,               // buffer to normalize
+			sizeof test_if_exists_path,        // should be MAX_PATH
+			".hdf"                   // required extension
+		))
+		{
+			// error message was already shown; keep dialog open
+			return FALSE;
+		}
+		// at this point test_path == "C:\\somefile.adf" (or original if user typed .adf),
+		// and if we get here then we know that file does in-fact exist.
+
+	};/*end-if*/
+
+
+
+
 
 	/* create the file */
 	GetDlgItemText(dlg, IDC_NEWPATH, gstrFileName, sizeof(gstrFileName));

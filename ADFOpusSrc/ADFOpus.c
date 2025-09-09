@@ -201,6 +201,55 @@ bool ensure_extension(char* path, size_t bufsize, const char* ext)
 }
 
 
+#include <windows.h>
+#include <string.h>    // strlen, _stricmp, memcpy
+
+// Appends ext (e.g. ".adf") if missing, then checks that the final path
+// doesn’t already exist. On any error, pops up an MB and returns false.
+BOOL MakeGoodOutputFilename(
+	HWND        hwndDlg,    // parent window for MessageBox
+	char* path,       // in/out buffer holding “C:\\somefile” or “C:\\somefile.adf”
+	size_t      bufsize,    // total size of path[]
+	const char* ext         // required extension, including the dot, e.g. ".adf"
+) {
+	size_t   len = strlen(path);
+	size_t   extlen = strlen(ext);
+
+	// 1) If it already ends with ext (case-insensitive), skip append
+	if (len < extlen || _stricmp(path + len - extlen, ext) != 0)
+	{
+		// need to append → ensure there’s room for ext plus NUL
+		if (len + extlen + 1 > bufsize)
+		{
+			MessageBoxA(
+				hwndDlg,
+				"Filename too long; cannot append the required extension.",
+				"Error",
+				MB_OK | MB_ICONERROR
+			);
+			return false;
+		}
+
+		// append ext and terminating NUL
+		memcpy(path + len, ext, extlen + 1);
+		len += extlen;
+	}
+
+	// 2) Check that the file doesn’t already exist
+	if (GetFileAttributesA(path) != INVALID_FILE_ATTRIBUTES)
+	{
+		MessageBoxA(
+			hwndDlg,
+			"File already exists! Please choose another filename.",
+			"Error",
+			MB_OK | MB_ICONERROR
+		);
+		return false;
+	}
+
+	return true;
+}
+
 int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show )
 {
 	MSG   msg;

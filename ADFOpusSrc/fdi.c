@@ -62,6 +62,12 @@ extern HWND ghwndSB; //SetWindowText(ghwndSB, "Reading directory...");
 extern char gstrFileName[MAX_PATH * 2];
 extern HWND	ghwndMDIClient;
 extern BOOL ensure_extension(char* path, size_t buffer_size, const char* ext);
+extern BOOL MakeGoodOutputFilename(
+	HWND        hwndDlg,    // parent window for MessageBox
+	char* path,       // in/out buffer holding “C:\\somefile” or “C:\\somefile.adf”
+	size_t      bufsize,    // total size of path[]
+	const char* ext         // required extension, including the dot, e.g. ".adf"
+);
 
 #include "ADFOpus.h"   // for 
 
@@ -765,11 +771,26 @@ BOOL RunGreaseweazle(HWND dlg)
 	// Combine the path and filename into one string.
 	PathCombineA(test_if_exists_path, imagePath, imageArg);
 
-	// There is where I want to check is the file exists.
-	if (PathFileExistsA(test_if_exists_path)) {
-		MessageBoxA(dlg, "File already exists! Please choose another filename.", "Error", MB_OK | MB_ICONERROR);
-		return FALSE; // We do NOT run Greaseweazle, so keep the dialog open.
+	//// There is where I want to check is the file exists.
+	//if (!ensure_extension(test_if_exists_path, sizeof(test_if_exists_path), ".adf")) {
+	//	MessageBoxA(dlg, "File already exists! Please choose another filename.", "Error", MB_OK | MB_ICONERROR);
+	//	return FALSE; // We do NOT run Greaseweazle, so keep the dialog open.
+	//}
+
+	// Suppose test_path[MAX_PATH] holds what the user typed, without or with “.adf”
+	if (!MakeGoodOutputFilename(
+		dlg,                     // dialog HWND
+		test_if_exists_path,               // buffer to normalize
+		sizeof test_if_exists_path,        // should be MAX_PATH
+		".adf"                   // required extension
+	))
+	{
+		// error message was already shown; keep dialog open
+		return FALSE;
 	}
+	// at this point test_path == "C:\\somefile.adf" (or original if user typed .adf),
+	// and if we get here then we know that file does in-fact exist.
+
 
 	// 1) Configurable at runtime (load from your options later)
 	 
