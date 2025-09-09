@@ -245,6 +245,9 @@
 #define IDC_BTN_WEBSITE                 1174
 #define IDC_STATIC_BUILD                1175
 #define IDC_EDIT1                       1177
+#define IDC_PROPERTIES_DATE_AMI         1177
+#define IDC_EDIT2                       1178
+#define IDC_PROPERTIES_SIZE_AMI         1178
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -375,9 +378,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        240
+#define _APS_NEXT_RESOURCE_VALUE        244
 #define _APS_NEXT_COMMAND_VALUE         40136
-#define _APS_NEXT_CONTROL_VALUE         1178
+#define _APS_NEXT_CONTROL_VALUE         1179
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

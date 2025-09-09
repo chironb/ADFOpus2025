@@ -1,4 +1,4 @@
-/* ADF Opus Copyright 1998-2002 by 
+﻿/* ADF Opus Copyright 1998-2002 by 
  * Dan Sutherland <dan@chromerhino.demon.co.uk> and Gary Harris <gharris@zip.com.au>.	
  *
  * This code by Gary Harris.
@@ -227,9 +227,156 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
 		i++;
 	}
 
-
 	amiFile = adfOpenFile(ci->vol, DirPtr->name, "r");
+
+	// 1) Write comment to dialog.
 	SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, WM_SETTEXT, 0, (LPARAM)amiFile->fileHdr->comment);
+
+	// 2) Convert Amiga date/time to local Windows date/time and write to dialog.
+	{
+		// 1) Grab the raw Amiga date/time fields
+		LONG days = amiFile->fileHdr->days;   // days since 1978-01-01
+		LONG mins = amiFile->fileHdr->mins;   // minutes since midnight
+		LONG ticks = amiFile->fileHdr->ticks;  // 1/50ths of a second
+
+		// 2) Build a FILETIME for the base date 1978-01-01 00:00:00
+		SYSTEMTIME stBase = { 0 };
+		stBase.wYear = 1978;
+		stBase.wMonth = 1;
+		stBase.wDay = 1;
+		// wHour, wMinute, wSecond, wMilliseconds all zero
+
+		FILETIME ftBase;
+		SystemTimeToFileTime(&stBase, &ftBase);
+
+		// 3) Promote to 64-bit and add days, mins, ticks in 100ns units
+		ULARGE_INTEGER uli;
+		uli.LowPart = ftBase.dwLowDateTime;
+		uli.HighPart = ftBase.dwHighDateTime;
+
+		const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
+		const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
+		const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
+
+		uli.QuadPart += (ULONGLONG)days * DAY_100NS;
+		uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
+		uli.QuadPart += (ULONGLONG)ticks * TICK_100NS;
+
+		// 4) Convert back to FILETIME
+		FILETIME ftTarget;
+		ftTarget.dwLowDateTime = uli.LowPart;
+		ftTarget.dwHighDateTime = uli.HighPart;
+
+		// 5) Convert to local SYSTEMTIME
+		FILETIME ftLocal;
+		SYSTEMTIME stTarget;
+		FileTimeToLocalFileTime(&ftTarget, &ftLocal);
+		FileTimeToSystemTime(&ftLocal, &stTarget);
+
+		// 6) Format as "YYYY-MM-DD HH:MM:SS"
+		char dateBuf[64];
+		wsprintfA(
+			dateBuf,
+			"%04u-%02u-%02u %02u:%02u:%02u",
+			stTarget.wYear,
+			stTarget.wMonth,
+			stTarget.wDay,
+			stTarget.wHour,
+			stTarget.wMinute,
+			stTarget.wSecond
+		);
+
+		// … after you’ve obtained `stTarget` from FileTimeToSystemTime …
+
+		{
+			char dateBuf[64];
+			char datePart[32];
+			char timePart[32];
+
+			// Format “August 2, 2025”
+			// pattern “MMMM d, yyyy” → full month, day(no leading 0), 4-digit year
+			GetDateFormatA(
+				LOCALE_USER_DEFAULT,
+				0,
+				&stTarget,
+				"MMMM d, yyyy",
+				datePart,
+				ARRAYSIZE(datePart)
+			);
+
+			// Format “10:52:18 PM”
+			// pattern “h:mm:ss tt” → 12-hour, no leading 0 on hour, seconds, AM/PM
+			GetTimeFormatA(
+				LOCALE_USER_DEFAULT,
+				0,
+				&stTarget,
+				"h:mm:ss tt",
+				timePart,
+				ARRAYSIZE(timePart)
+			);
+
+			// Combine with a comma
+			wsprintfA(
+				dateBuf,
+				"%s, %s",
+				datePart,
+				timePart
+			);
+
+			SendDlgItemMessageA(
+				dlg,
+				IDC_PROPERTIES_DATE_AMI,
+				WM_SETTEXT,
+				0,
+				(LPARAM)dateBuf
+			);
+		}
+
+
+	}
+
+	{
+		unsigned long bytes = amiFile->fileHdr->byteSize;
+		char buf[64];
+
+		const unsigned long KB = 1024UL;
+		const unsigned long MB = 1024UL * KB;
+		const unsigned long GB = 1024UL * MB;
+
+		if (bytes < KB) {
+			// under 1 KB: raw bytes
+			wsprintfA(buf, "%lu bytes", bytes);
+		}
+		else if (bytes < MB) {
+			// 1 KB–1 MB: show KB with one decimal
+			unsigned long whole = bytes / KB;
+			unsigned long frac = (bytes % KB) * 10 / KB;  // tenths
+			wsprintfA(buf, "%lu.%lu KB (%lu bytes)", whole, frac, bytes);
+		}
+		else if (bytes < GB) {
+			// 1 MB–1 GB: show MB with one decimal
+			unsigned long whole = bytes / MB;
+			unsigned long frac = (bytes % MB) * 10 / MB;
+			wsprintfA(buf, "%lu.%lu MB (%lu bytes)", whole, frac, bytes);
+		}
+		else {
+			// 1 GB+: show GB with one decimal
+			unsigned long whole = bytes / GB;
+			unsigned long frac = (bytes % GB) * 10 / GB;
+			wsprintfA(buf, "%lu.%lu GB (%lu bytes)", whole, frac, bytes);
+		}
+
+		SendDlgItemMessageA(
+			dlg,
+			IDC_PROPERTIES_SIZE_AMI,
+			WM_SETTEXT,
+			0,
+			(LPARAM)buf
+		);
+	}
+
+	
+
     adfCloseFile(amiFile);
 
 }
