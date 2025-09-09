@@ -524,6 +524,19 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 			return TRUE;
 
 		case ID_GW_WRITE_START:
+
+			// Confirm before commencing a floppy drive write.
+			if (MessageBox(
+				dlg,
+				"Writing to a floppy disk will destroy what's on it right now.\nAre you sure you want to write an image to your floppy disk?",
+				"Question",
+				MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) 
+			{
+
+				return;
+
+			}
+
 			SetWindowText(ghwndSB, "Greaseweazle writing to floppy disk..."); // Needs: extern HWND ghwndSB;
 			RunGreaseweazleWrite(dlg);
 			SetWindowText(ghwndSB, "Idle"); // Needs: extern HWND ghwndSB;
