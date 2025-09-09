@@ -1158,51 +1158,138 @@ extern HWND      ghwndFrame;
 extern BOOL      bDirClicked, bFileClicked;
 //extern ContextInfo* ci;
 
-void DisplayContextMenu(HWND winLister, POINT pt)
+//void DisplayContextMenu(HWND winLister, POINT pt)
+//{
+//	// 1) Load the bar resource and get its first submenu
+//	HMENU menu = LoadMenu(instance, MAKEINTRESOURCE(IDR_LISTERMENU));
+//	if (!menu) return;
+//	HMENU popup = GetSubMenu(menu, 0);
+//	if (!popup) { DestroyMenu(menu); return; }
+//
+//	// 2) Reserve the icon/check gutter on the popup itself
+//	MENUINFO mi = { sizeof(mi) };
+//	GetMenuInfo(popup, &mi);
+//	mi.fMask = MIM_STYLE;
+//	mi.dwStyle = mi.dwStyle | MNS_CHECKORBMP;
+//	SetMenuInfo(popup, &mi);
+//
+//	// 3) Owner-draw setup (loads the icons & marks the IDs you mapped)
+//	InitMenuIcons(instance, popup);
+//
+//	// 4) Enable/disable your items on that same popup
+//	EnableMenuItem(popup,
+//		ID_ACTION_PROPERTIES,
+//		(bDirClicked || bFileClicked) ? MF_ENABLED : MF_GRAYED
+//	);
+//	// …and the rest of your logic…
+//
+//	// 5) Make sure the frame is foreground (necessary for ContextMenus)
+//	SetForegroundWindow(ghwndFrame);
+//
+//	// 6) Show the popup *with* the frame as the owner
+//	TrackPopupMenuEx(
+//		popup,
+//		TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+//		pt.x, pt.y,
+//		ghwndFrame,    // ← IMPORTANT: frame handles Measure/Draw
+//		NULL
+//	);
+//
+//	// 7) Post a zero-msg so the menu will dismiss correctly
+//	PostMessage(ghwndFrame, WM_NULL, 0, 0);
+//
+//	// 8) Cleanup
+//	CleanupMenuIcons();
+//	DestroyMenu(menu);
+//}
+
+
+
+void DisplayContextMenu(HWND winLister, POINT ptScreen)
 {
-	// 1) Load the bar resource and get its first submenu
+	// ---- Smart right-click selection: preserve multi-select or clear on empty ----
+	{
+		POINT pt = ptScreen;
+		ScreenToClient(ci->lv, &pt);
+
+		LVHITTESTINFO hti = { 0 };
+		hti.pt = pt;
+		ListView_SubItemHitTest(ci->lv, &hti);
+
+		if (hti.iItem < 0) {
+			// clicked empty space → clear all selection
+			ListView_SetItemState(ci->lv,
+				-1,
+				0,
+				LVIS_SELECTED | LVIS_FOCUSED);
+			bDirClicked = bFileClicked = FALSE;
+			buf[0] = '\0';
+		}
+		else {
+			// clicked on an item
+			UINT state = ListView_GetItemState(ci->lv,
+				hti.iItem,
+				LVIS_SELECTED);
+			if (!(state & LVIS_SELECTED)) {
+				// it wasn’t selected → clear others and select this one
+				ListView_SetItemState(ci->lv,
+					-1,
+					0,
+					LVIS_SELECTED | LVIS_FOCUSED);
+				ListView_SetItemState(ci->lv,
+					hti.iItem,
+					LVIS_SELECTED | LVIS_FOCUSED,
+					LVIS_SELECTED | LVIS_FOCUSED);
+			}
+
+			// populate buf for downstream dialogs
+			LVGetItemCaption(ci->lv, buf, sizeof(buf), hti.iItem);
+
+			// set flags for EnableMenuItem logic
+			int img = LVGetItemImageIndex(ci->lv, hti.iItem);
+			bFileClicked = (img == ICO_AMIFILE || img == ICO_WINFILE);
+			bDirClicked = !bFileClicked;
+		}
+	}
+	// ------------------------------------------------------------------------------
+
+	// 1) Load the menu resource and grab its first submenu
 	HMENU menu = LoadMenu(instance, MAKEINTRESOURCE(IDR_LISTERMENU));
 	if (!menu) return;
 	HMENU popup = GetSubMenu(menu, 0);
 	if (!popup) { DestroyMenu(menu); return; }
 
-	// 2) Reserve the icon/check gutter on the popup itself
+	// 2) Reserve the icon/check gutter
 	MENUINFO mi = { sizeof(mi) };
 	GetMenuInfo(popup, &mi);
 	mi.fMask = MIM_STYLE;
 	mi.dwStyle = mi.dwStyle | MNS_CHECKORBMP;
 	SetMenuInfo(popup, &mi);
 
-	// 3) Owner-draw setup (loads the icons & marks the IDs you mapped)
+	// 3) Owner-draw setup
 	InitMenuIcons(instance, popup);
 
-	// 4) Enable/disable your items on that same popup
+	// 4) Enable/disable items based on the (possibly multi-)selection
 	EnableMenuItem(popup,
 		ID_ACTION_PROPERTIES,
-		(bDirClicked || bFileClicked) ? MF_ENABLED : MF_GRAYED
-	);
-	// …and the rest of your logic…
+		(bDirClicked || bFileClicked)
+		? MF_ENABLED
+		: MF_GRAYED);
+	// …rest of your EnableMenuItem calls…
 
-	// 5) Make sure the frame is foreground (necessary for ContextMenus)
+	// 5) Show the popup
 	SetForegroundWindow(ghwndFrame);
-
-	// 6) Show the popup *with* the frame as the owner
-	TrackPopupMenuEx(
-		popup,
+	TrackPopupMenuEx(popup,
 		TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-		pt.x, pt.y,
-		ghwndFrame,    // ← IMPORTANT: frame handles Measure/Draw
-		NULL
-	);
-
-	// 7) Post a zero-msg so the menu will dismiss correctly
+		ptScreen.x, ptScreen.y,
+		ghwndFrame,
+		NULL);
 	PostMessage(ghwndFrame, WM_NULL, 0, 0);
 
-	// 8) Cleanup
+	// 6) Cleanup
 	CleanupMenuIcons();
 	DestroyMenu(menu);
 }
-
 
 void ChildDelete(HWND win)
 /* delete selected files
