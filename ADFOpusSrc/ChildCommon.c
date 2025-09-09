@@ -16,13 +16,81 @@
 #include <stdio.h>      // for sprintf
 
 
+	
+#include "ADFOpus.h"     // <-- must define CHILDINFO, newWinType, etc.
+#include <windows.h>
+#include <commctrl.h>    // for SetWindowSubclass / DefSubclassProc
+#include <windowsx.h>    // for GET_X_LPARAM / GET_Y_LPARAM macros
 
 
 #include <windows.h>
 
 
 
+
+
 #include "MenuIcons.h"
+
+#include <windows.h>
+#include <commctrl.h>
+#include <windowsx.h>
+
+#include "ADFOpus.h"        // for newWinType, CHILD_WINLISTER, etc.
+#include "ChildCommon.h"    // <-- declares typedef struct _CHILDINFO {...} CHILDINFO
+
+
+
+// Chiron 2025: This is part of fixed to address an annoying issue that I suspect is 
+// either a problem with the way the original codebase was setup or, it's Win32 issues.
+// In any case if you left-click a file in one windows, and then right click a file
+// in another window, it acts like you're trying to get the properies of the previous file.
+// It's a stupid bug. Basically I tried to get it fixed so it's like every
+// right-click triggers something like a left-click first. Like as if the user 
+// left-clicked and then right-clicked. But nothing worked and it just broken everything. 
+// So instead as you hover it automatically picks the window you're hovering over. 
+// That means if you right-click a file your mouse is hovering over that windows 
+// so it *HAS* to be selecting the correct file from the correct place. 
+// 
+// This is a KLUDGE of a fix! But it works and I've spent a lot of energy trying to 
+// fix it "properly" in a way that matches modern file manager behaviour. 
+// I've given up for now I have no idea what to do. 
+// I'm new to Win32, Visual Studio 2022, and this codebase, so... I got nothin'!
+// This works well enough and prevents behaviour that might lead to files being 
+// damaged or deleted by accident or something so overall it's going to have to do!
+//
+// Unique ID for our hover subclass
+#define HOVER_SUBCLASS_ID  0x100
+
+static LRESULT CALLBACK
+ListViewHoverProc(
+	HWND      hwnd,        // the ListView window
+	UINT      msg,
+	WPARAM    wp,
+	LPARAM    lp,
+	UINT_PTR  uIdSubclass,
+	DWORD_PTR dwRefData    // we pass CHILDINFO* here
+)
+{
+	if (msg == WM_MOUSEMOVE)
+	{
+		// dwRefData is our CHILDINFO*
+		CHILDINFO* ci = (CHILDINFO*)dwRefData;
+		HWND       hChild = GetParent(hwnd);   // MDI‐child
+		HWND       hMDI = GetParent(hChild); // MDI‐client
+
+		// Only activate if it’s not already active
+		HWND hActive = (HWND)SendMessage(hMDI, WM_MDIGETACTIVE, 0, 0);
+		if (hActive != hChild)
+		{
+			SendMessage(hMDI, WM_MDIACTIVATE, (WPARAM)hChild, 0);
+		}
+	}
+
+	return DefSubclassProc(hwnd, msg, wp, lp);
+}
+
+
+
 extern HINSTANCE instance;    // or however you name your HINSTANCE
 extern HWND      ghwndFrame;  // your main window handle
 extern BOOL      bDirClicked;
@@ -42,6 +110,15 @@ extern BOOL      bFileClicked;
 #include <windows.h>
 #include <commctrl.h>           // for SetWindowSubclass
 #pragma comment(lib, "comctl32.lib")
+
+
+
+
+
+#include <windows.h>
+#include <commctrl.h>   // for SetWindowSubclass / DefSubclassProc
+
+
 
 // Subclass callback – clamps the cursor after every WM_MOUSEMOVE
 static LRESULT CALLBACK ListViewClampProc(
@@ -306,8 +383,16 @@ LRESULT ChildOnCreate(HWND win)
 	// 4) common post‐init
 	ci->readOnly = ReadOnly;
 
-	// create the ListView inside this child
+	// … after setting up ci …
 	ci->lv = CreateListView(win);
+
+	// Install hover-activate subclass on this ListView
+	SetWindowSubclass(
+		ci->lv,                   // the ListView HWND
+		ListViewHoverProc,        // our subclass proc
+		HOVER_SUBCLASS_ID,        // unique ID
+		(DWORD_PTR)ci             // pass CHILDINFO* into dwRefData
+	);
 
 	// create the status bar at top of the child
 	ci->sb = CreateWindow(
@@ -457,6 +542,12 @@ void ChildOnDestroy(HWND win)
 	hMenu = GetMenu(ghwndFrame);
 	EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
 	SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_PROPERTIES, MAKELONG(FALSE, 0));
+
+	RemoveWindowSubclass(
+		ci->lv,
+		ListViewHoverProc,
+		HOVER_SUBCLASS_ID
+	);
 
 	/* free the extra info we allocated when the window was created */
 	free(ci);
