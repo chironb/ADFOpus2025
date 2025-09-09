@@ -1516,6 +1516,11 @@ BOOL ChildRename(HWND win, LV_DISPINFO *di)
 			return FALSE;
 		} else {
 			ListView_SetItemText(ci->lv, di->item.iItem, 0, newName);
+			// Rebuild both the LV and your ci->content list. 
+			// This fixes the bug where you rename a file and then copy the renamed file 
+			// but it crashes everything when I tries to do it because 
+			// it's trying to copy the old filename. 
+			ChildUpdate(win);
 		}
 	}
 
@@ -1526,6 +1531,11 @@ BOOL ChildRename(HWND win, LV_DISPINFO *di)
 			return FALSE;
 		} else {
 			ListView_SetItemText(ci->lv, di->item.iItem, 0, newName);
+			// Rebuild both the LV and your ci->content list. 
+			// This fixes the bug where you rename a file and then copy the renamed file 
+			// but it crashes everything when I tries to do it because 
+			// it's trying to copy the old filename. 
+			ChildUpdate(win);
 		}
 	}
 	return TRUE;
