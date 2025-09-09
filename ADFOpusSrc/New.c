@@ -86,7 +86,7 @@ LRESULT CALLBACK NewDlgProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		EnableWindow(GetDlgItem(dlg, IDC_NEWPRESETSLIDER), FALSE);
 		EnableWindow(GetDlgItem(dlg, IDC_NEWPRESETSIZE), FALSE);
 
-		SetDlgItemText(dlg, IDC_NEWPATH, "adfopus_new_default.adf");
+		SetDlgItemText(dlg, IDC_NEWPATH,  Options.defaultNewFilename);
 		SetDlgItemText(dlg, IDC_NEWLABEL, Options.defaultLabel);
 
 		// Open in ADF Opus after creation

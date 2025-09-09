@@ -31,18 +31,20 @@ extern struct Env adfEnv; /* this should not be here - Laurent's fault */
 LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 {
 	static DWORD aIds[] = { 
-		IDC_ODRIVELIST,	IDH_OPTIONS_WINLIST_DRIVE,
-		IDC_OTHISDIR,	IDH_OPTIONS_WINLIST_DIR,	
-		IDC_ODIR,		IDH_OPTIONS_DIR,	
-		IDC_OLABEL,		IDH_OPTIONS_LABEL,
-		IDC_ODELETE,	IDH_OPTIONS_CONFIRM_COMDEL,
-		IDC_ODELDIR,	IDH_OPTIONS_CONFIRM_DELDIR,
-		IDC_ODIRCACHE,	IDH_OPTIONS_MISC_DIRCACHE,
-		IDC_OREGISTER,	IDH_OPTIONS_REGISTER_BUTTON,
-		IDC_OOK,		IDH_OPTIONS_OK_BUTTON,
-		IDC_OAPPLY,		IDH_OPTIONS_APPLY_BUTTON,
-		IDC_OHELP,		IDH_OPTIONS_HELP_BUTTON,
-		IDCANCEL,		IDH_OPTIONS_CANCEL_BUTTON,
+		IDC_ODRIVELIST,	   IDH_OPTIONS_WINLIST_DRIVE,
+		IDC_OTHISDIR,	   IDH_OPTIONS_WINLIST_DIR,	
+		IDC_ODIR,		   IDH_OPTIONS_DIR,	
+		IDC_OLABEL,		   IDH_OPTIONS_LABEL,
+		IDC_ODELETE,	   IDH_OPTIONS_CONFIRM_COMDEL,
+		IDC_ODELDIR,	   IDH_OPTIONS_CONFIRM_DELDIR,
+		IDC_ODIRCACHE,	   IDH_OPTIONS_MISC_DIRCACHE,
+		IDC_OREGISTER,	   IDH_OPTIONS_REGISTER_BUTTON,
+		IDC_OOK,		   IDH_OPTIONS_OK_BUTTON,
+		IDC_OAPPLY,		   IDH_OPTIONS_APPLY_BUTTON,
+		IDC_OHELP,		   IDH_OPTIONS_HELP_BUTTON,
+		IDCANCEL,		   IDH_OPTIONS_CANCEL_BUTTON,
+		IDC_ONEWFILENAME,  IDC_OGREASEWEAZLEFILENAME,
+		IDC_OAUTOHORITILE, IDC_OAUTOPANEONHOVER,
 		0,0 
 	}; 	
 
@@ -50,10 +52,16 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 	switch(msg) {
 	case WM_INITDIALOG:
 		SetDlgItemText(dlg, IDC_OLABEL, Options.defaultLabel);
+		SetDlgItemText(dlg, IDC_ONEWFILENAME, Options.defaultNewFilename);
+		SetDlgItemText(dlg, IDC_OGREASEWEAZLEFILENAME, Options.defaultGreaseweazleFilename);
 		SetDlgItemText(dlg, IDC_ODIR, Options.defaultDir);
+		
 		SendMessage(GetDlgItem(dlg, IDC_ODIRCACHE), BM_SETCHECK, (Options.useDirCache ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_ODELETE), BM_SETCHECK, (Options.confirmDelete ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_ODELDIR), BM_SETCHECK, (Options.confirmDeleteDirs ? BST_CHECKED : 0), 0l);
+		SendMessage(GetDlgItem(dlg, IDC_OAUTOHORITILE), BM_SETCHECK, (Options.autoHoriTile ? BST_CHECKED : 0), 0l);
+		SendMessage(GetDlgItem(dlg, IDC_OAUTOPANEONHOVER), BM_SETCHECK, (Options.autoPaneOnHover ? BST_CHECKED : 0), 0l);
+
 		SendMessage(GetDlgItem(dlg, Options.defDriveList ? IDC_ODRIVELIST : IDC_OTHISDIR), BM_SETCHECK, BST_CHECKED, 0l);
 		
 		EnableWindow(GetDlgItem(dlg, IDC_ODIR), ! Options.defDriveList);
@@ -65,6 +73,14 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		case IDC_ODIRCACHE:
 		case IDC_ODIR:
 		case IDC_OLABEL:
+		case IDC_OAUTOHORITILE:
+		case IDC_OAUTOPANEONHOVER:
+			OptionsChanged(dlg);
+			return TRUE;
+		case IDC_ONEWFILENAME:
+			OptionsChanged(dlg);
+			return TRUE;
+		case IDC_OGREASEWEAZLEFILENAME:
 			OptionsChanged(dlg);
 			return TRUE;
 		case IDC_ODRIVELIST:
@@ -122,9 +138,13 @@ void SetDefaultOptions()
 	Options.confirmDelete = TRUE;
 	Options.confirmDeleteDirs = TRUE;
 	strcpy(Options.defaultDir, "C:\\"); // Chiron 2025 TODO: This doesn't do anything???
-	strcpy(Options.defaultLabel, "Created with ADF Opus"); // Chiron 2025 TODO: This doesn't do anything???
+	strcpy(Options.defaultLabel, "default_label"); // Chiron 2025 TODO: This doesn't do anything???
+	strcpy(Options.defaultNewFilename, "default_filename.adf");
+	strcpy(Options.defaultGreaseweazleFilename, "default_greaseweazle.adf");
 	Options.useDirCache = TRUE;
 	Options.defDriveList = FALSE;
+	Options.autoHoriTile = TRUE;
+	Options.autoPaneOnHover = TRUE;
 }
 
 void ReadOptions()
@@ -170,7 +190,20 @@ void WriteOptions()
 
 void ApplyOptions(HWND dlg)
 {
+
+	// Chiron 2025: TODO: Check if any of the default label or default filename are empty or invalid.
+	// If they are then warn the user and replace them with something hard coded as a default. 
+	// Like whatever the default default thing is. Like the value is the default but it starts
+	// with a value which is that's default's default. You know? 
+	// Oh by-the-way: It should also check and make sure there's a .adf on the end. 
+	// Chiron TODO: There's a function I think I even copy and pasted somewhere that does this... so...
+	// ...yeah that should be a global function!
+	// Wait... no... I think it should leave it off actually because they might be making 
+	// a hard file so it'll just create like somefile.adf.hdf and that sucks. 
+
 	GetDlgItemText(dlg, IDC_OLABEL, Options.defaultLabel, sizeof(Options.defaultLabel));
+	GetDlgItemText(dlg, IDC_ONEWFILENAME, Options.defaultNewFilename, sizeof(Options.defaultNewFilename));
+	GetDlgItemText(dlg, IDC_OGREASEWEAZLEFILENAME, Options.defaultGreaseweazleFilename, sizeof(Options.defaultGreaseweazleFilename));
 	GetDlgItemText(dlg, IDC_ODIR, Options.defaultDir, sizeof(Options.defaultDir));
 	if (Options.defaultDir[strlen(Options.defaultDir) - 1] != '\\')
 		strcat (Options.defaultDir, "\\");
@@ -179,6 +212,9 @@ void ApplyOptions(HWND dlg)
 	Options.useDirCache = (SendMessage(GetDlgItem(dlg, IDC_ODIRCACHE), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.confirmDelete = (SendMessage(GetDlgItem(dlg, IDC_ODELETE), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.confirmDeleteDirs = (SendMessage(GetDlgItem(dlg, IDC_ODELDIR), BM_GETCHECK, 0, 0l) == BST_CHECKED);
+	Options.autoHoriTile = (SendMessage(GetDlgItem(dlg, IDC_OAUTOHORITILE), BM_GETCHECK, 0, 0l) == BST_CHECKED);
+	Options.autoPaneOnHover = (SendMessage(GetDlgItem(dlg, IDC_OAUTOPANEONHOVER), BM_GETCHECK, 0, 0l) == BST_CHECKED);
+
 	Options.defDriveList = (SendMessage(GetDlgItem(dlg, IDC_ODRIVELIST), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 
 	adfEnv.useDirCache = Options.useDirCache;

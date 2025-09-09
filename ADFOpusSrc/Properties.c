@@ -462,11 +462,14 @@ void SetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
 	// Update file properties.
 	adfSetEntryAccess(ci->vol, ci->vol->curDirPtr, DirPtr->name, longPropertyFlags);
 
+	
+
 	// If file comment text has changed, update file comment.
 	if(SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETMODIFY, 0, 0)){
 		iNumChars = SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, WM_GETTEXTLENGTH, 0, 0);
 		SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETLINE, iNumChars + 1, (LPARAM)szComment);
 		szComment[iNumChars]= '\0';
+		// MessageBoxA(dlg, szComment, "DEBUG:szComment", MB_OK | MB_ICONERROR);
 		adfSetEntryComment(ci->vol, ci->vol->curDirPtr, DirPtr->name, szComment);
 	}
 

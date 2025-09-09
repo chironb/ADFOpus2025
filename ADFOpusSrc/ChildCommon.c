@@ -39,6 +39,9 @@
 #include "ChildCommon.h"    // <-- declares typedef struct _CHILDINFO {...} CHILDINFO
 
 
+#include "Options.h"
+extern struct OPTIONS Options;
+
 
 // Chiron 2025: This is part of fixed to address an annoying issue that I suspect is 
 // either a problem with the way the original codebase was setup or, it's Win32 issues.
@@ -386,13 +389,15 @@ LRESULT ChildOnCreate(HWND win)
 	// … after setting up ci …
 	ci->lv = CreateListView(win);
 
-	// Install hover-activate subclass on this ListView
-	SetWindowSubclass(
-		ci->lv,                   // the ListView HWND
-		ListViewHoverProc,        // our subclass proc
-		HOVER_SUBCLASS_ID,        // unique ID
-		(DWORD_PTR)ci             // pass CHILDINFO* into dwRefData
-	);
+	if (Options.autoPaneOnHover) {
+		// Install hover-activate subclass on this ListView
+		SetWindowSubclass(
+			ci->lv,                   // the ListView HWND
+			ListViewHoverProc,        // our subclass proc
+			HOVER_SUBCLASS_ID,        // unique ID
+			(DWORD_PTR)ci             // pass CHILDINFO* into dwRefData
+		);
+	};/*end-if*/
 
 	// create the status bar at top of the child
 	ci->sb = CreateWindow(

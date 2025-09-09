@@ -98,7 +98,9 @@
 #define IDC_VOLLABEL                    1030
 #define IDC_OLABEL                      1030
 #define IDC_NEWDIRC                     1031
+#define IDC_ONEWFILENAME                1031
 #define ID_LOGO                         1032
+#define IDC_OGREASEWEAZLEFILENAME       1032
 #define IDC_CREATEPROGRESS              1033
 #define IDC_CURRENTFILE                 1034
 #define IDC_NEWBROWSE                   1035
@@ -246,8 +248,10 @@
 #define IDC_STATIC_BUILD                1175
 #define IDC_EDIT1                       1177
 #define IDC_PROPERTIES_DATE_AMI         1177
-#define IDC_EDIT2                       1178
 #define IDC_PROPERTIES_SIZE_AMI         1178
+#define IDC_OAUTOHORITILE               1179
+#define IDC_CHECK2                      1180
+#define IDC_OAUTOPANEONHOVER            1180
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -380,7 +384,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        244
 #define _APS_NEXT_COMMAND_VALUE         40136
-#define _APS_NEXT_CONTROL_VALUE         1179
+#define _APS_NEXT_CONTROL_VALUE         1181
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

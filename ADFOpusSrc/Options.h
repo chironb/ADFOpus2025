@@ -11,9 +11,13 @@ struct OPTIONS {
 	BOOL useDirCache;
 	char defaultDir[MAX_PATH];
 	char defaultLabel[31];
+	char defaultNewFilename[MAX_PATH];
+	char defaultGreaseweazleFilename[MAX_PATH];
 	BOOL confirmDelete;
 	BOOL confirmDeleteDirs;
 	BOOL defDriveList;
+	BOOL autoHoriTile;
+	BOOL autoPaneOnHover;
 };
 
 LRESULT CALLBACK OptionsProc(HWND, UINT, WPARAM, LPARAM);

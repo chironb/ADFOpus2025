@@ -473,7 +473,8 @@ LRESULT CALLBACK MainWinProc(
 		PaintProc(hwndFrame);
 		// Chiron TODO: Make this an option!
 		// I'm pretty sure this is what I added that needs to be an option!
-		SendMessage(ghwndMDIClient, WM_MDITILE, MDITILE_VERTICAL, 0); 
+		if (Options.autoHoriTile) SendMessage(ghwndMDIClient, WM_MDITILE, MDITILE_VERTICAL, 0); 
+
 		break;
 
 	case WM_SIZE:

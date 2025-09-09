@@ -50,6 +50,13 @@
 #include "BatchConvert.h"
 #include "zLib.h"
 #include <stdlib.h> 
+
+#include <string.h>     // for strcpy or strcpy_s
+
+#include "Options.h"
+extern struct OPTIONS Options;
+
+
 extern HWND ghwndSB; //SetWindowText(ghwndSB, "Reading directory...");
 
 extern char gstrFileName[MAX_PATH * 2];
@@ -62,14 +69,18 @@ extern BOOL ensure_extension(char* path, size_t buffer_size, const char* ext);
 
 #include "ChildCommon.h"   // for CHILDINFO
 
-
-
-const char* defaultGreaseweazleFilename = "adfopus_greaseweazle_default.adf";
-
-
 #include <windows.h>
 #include <shobjidl.h>   // for IFileOpenDialog, IID_IFileOpenDialog
 #pragma comment(lib, "Ole32.lib")
+
+
+//const char* defaultGreaseweazleFilename = "adfopus_greaseweazle_default.adf";
+char defaultGreaseweazleFilename[MAX_PATH];
+
+
+
+
+
 
 void OnBrowseFolder(HWND dlg)
 {
@@ -147,6 +158,12 @@ LRESULT CALLBACK GreaseweazleProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 				g_defaultLocalPath     // e.g. "C:\\Users\\micro\\…\\"
 			);
 
+			strncpy(
+				defaultGreaseweazleFilename,
+				Options.defaultGreaseweazleFilename,
+				MAX_PATH - 1
+			);
+			defaultGreaseweazleFilename[MAX_PATH - 1] = '\0';
 
 
 			// Filename - Set Default Filename for Greaseweazle Imaged Disk
@@ -156,8 +173,6 @@ LRESULT CALLBACK GreaseweazleProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 				//TEXT("ADFOpus_Greaseweazle.adf")
 				defaultGreaseweazleFilename
 			);
-
-		
 
 			// Open in ADF Opus after creation
 			CheckDlgButton(
@@ -533,7 +548,7 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 				MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) 
 			{
 
-				return;
+				return TRUE;
 
 			}
 
@@ -733,6 +748,14 @@ BOOL RunGreaseweazle(HWND dlg)
 		(WPARAM)(MAX_PATH),    // max chars including NULL
 		(LPARAM)imageArg       // your buffer
 	);
+
+	strncpy(
+		defaultGreaseweazleFilename,
+		Options.defaultGreaseweazleFilename,
+		MAX_PATH - 1
+	);
+	defaultGreaseweazleFilename[MAX_PATH - 1] = '\0';
+
 
 	// now check imageArg[0] or strlen(imageArg)
 	if (imageArg[0] == '\0') {
