@@ -10,6 +10,11 @@
  */
 
 
+#include <windows.h>
+#include <commctrl.h>
+#include <direct.h>     // for _chdir, _mkdir
+#include <stdio.h>      // for sprintf
+
 
 
 
@@ -490,35 +495,55 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 	ci = (CHILDINFO *)GetWindowLong(win, 0);			
 	hMenu = GetMenu(ghwndFrame);
 	switch(nmhdr->code){
+		
 		case NM_CLICK:
-			// An item was single-clicked.
-			// Find out which file.
-			index = LVGetItemFocused(ci->lv);
+		{
+			// NMITEMACTIVATE gives us the clicked row and point
+			LPNMITEMACTIVATE pnmia = (LPNMITEMACTIVATE)nmhdr;
+			index = pnmia->iItem;
+			if (index < 0)
+				break;  // clicked empty area
+
+			// refine with hit-test
+			LVHITTESTINFO hti = { 0 };
+			hti.pt = pnmia->ptAction;
+			ListView_SubItemHitTest(ci->lv, &hti);
+			index = hti.iItem;
+			if (index < 0)
+				break;  // still empty
+
+			// now existing single-click logic
 			LVGetItemCaption(ci->lv, buf, sizeof(buf), index);
-			// Return if a drive icon was clicked.
 			iSelectedType = LVGetItemImageIndex(ci->lv, index);
-			switch (iSelectedType){
-				case ICO_DRIVEHD:
-				case ICO_DRIVECD:
-				case ICO_DRIVENET:
-				case ICO_DRIVEFLOP35:
-				case ICO_DRIVEFLOP514:
-					return TRUE;
-				// Selected item is a file or dir for text viewer purposes.
-				case ICO_AMIDIR:
-				case ICO_WINDIR:
-					bIsFile = FALSE;							
-					break;
-				case ICO_AMIFILE:
-				case ICO_WINFILE:
-					bIsFile = TRUE;							
+
+			// drives return immediately
+			switch (iSelectedType) {
+			case ICO_DRIVEHD:
+			case ICO_DRIVECD:
+			case ICO_DRIVENET:
+			case ICO_DRIVEFLOP35:
+			case ICO_DRIVEFLOP514:
+				return TRUE;
 			}
-			// Item is a deleted file.
-			if(ListView_GetItemState(ci->lv, index, LVIS_CUT)){
-				// Enable menu and toolbar items for undelete.
+
+			// file vs. dir
+			switch (iSelectedType) {
+			case ICO_AMIDIR:
+			case ICO_WINDIR:
+				bIsFile = FALSE;
+				break;
+			case ICO_AMIFILE:
+			case ICO_WINFILE:
+				bIsFile = TRUE;
+				break;
+			}
+
+			// deleted‐file state
+			if (ListView_GetItemState(ci->lv, index, LVIS_CUT)) {
+				// enable Undelete
 				EnableMenuItem(hMenu, ID_ACTION_UNDELETE, MF_ENABLED);
 				SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_UNDELETE, MAKELONG(TRUE, 0));
-				// Disable properties, rename, delete, text viewer.
+				// disable everything else
 				EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_GRAYED);
 				EnableMenuItem(hMenu, ID_ACTION_RENAME, MF_GRAYED);
 				EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
@@ -530,137 +555,131 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 				SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(FALSE, 0));
 				bUndeleting = TRUE;
 			}
-			else{	// Not a deleted file.
+			else {
+				// normal item state
 				EnableMenuItem(hMenu, ID_ACTION_UNDELETE, MF_GRAYED);
 				SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_UNDELETE, MAKELONG(FALSE, 0));
-				// Activate Properties items if not a drive.
-				if(ListView_GetSelectedCount(ci->lv) > 0){
-//					bClicked = TRUE;
-					// Enable properties, rename, delete, text viewer.
+
+				if (ListView_GetSelectedCount(ci->lv) > 0) {
+					// enable Delete/Rename/Properties
 					EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_ENABLED);
 					EnableMenuItem(hMenu, ID_ACTION_RENAME, MF_ENABLED);
 					EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_ENABLED);
 					SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_DELETE, MAKELONG(TRUE, 0));
 					SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_RENAME, MAKELONG(TRUE, 0));
 					SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_PROPERTIES, MAKELONG(TRUE, 0));
-					// Enable text viewer if file selected, else disable.
-					switch (iSelectedType){
-						// Selected item is a file or dir for text viewer purposes.
-						case ICO_AMIDIR:
-						case ICO_WINDIR:
-							SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(FALSE, 0));
-							EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_GRAYED);
-							SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_HEX_VIEWER, MAKELONG(FALSE, 0));
-							EnableMenuItem(hMenu, ID_TOOLS_HEX_VIEWER, MF_GRAYED);
-							bDirClicked = TRUE;
-							bFileClicked = FALSE;
-							break;
-						case ICO_AMIFILE:
-						case ICO_WINFILE:
-							SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(TRUE, 0));
-							EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
-							SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_HEX_VIEWER, MAKELONG(TRUE, 0));
-							EnableMenuItem(hMenu, ID_TOOLS_HEX_VIEWER, MF_ENABLED);
-							bDirClicked = FALSE;
-							bFileClicked = TRUE;							
+
+					if (!bIsFile) {
+						// directory clicked
+						SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(FALSE, 0));
+						EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_GRAYED);
+						SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_HEX_VIEWER, MAKELONG(FALSE, 0));
+						EnableMenuItem(hMenu, ID_TOOLS_HEX_VIEWER, MF_GRAYED);
+						bDirClicked = TRUE;
+						bFileClicked = FALSE;
 					}
-
-
+					else {
+						// file clicked
+						SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_TEXT_VIEWER, MAKELONG(TRUE, 0));
+						EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_ENABLED);
+						SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_TOOLS_HEX_VIEWER, MAKELONG(TRUE, 0));
+						EnableMenuItem(hMenu, ID_TOOLS_HEX_VIEWER, MF_ENABLED);
+						bDirClicked = FALSE;
+						bFileClicked = TRUE;
+					}
 				}
 				bUndeleting = FALSE;
 			}
+			return TRUE;
+		}
 
-			break;
-	
 		case NM_DBLCLK:
-			/* an item was double-clicked, find out which one */
-			/*** THIS IS A KLUDGE - it will return the focused
-				item even if the user double clicks an empty
-				part of the listview control! */
-			index = LVGetItemFocused(ci->lv);
-			// Item is a deleted file, return.
-			if(ListView_GetItemState(ci->lv, index, LVIS_CUT))
+		{
+			LPNMITEMACTIVATE pnmia = (LPNMITEMACTIVATE)nmhdr;
+			index = pnmia->iItem;
+			if (index < 0)
+				break;
+
+			LVHITTESTINFO hti = { 0 };
+			hti.pt = pnmia->ptAction;
+			ListView_SubItemHitTest(ci->lv, &hti);
+			index = hti.iItem;
+			if (index < 0)
+				break;
+
+			// ignore deleted files
+			if (ListView_GetItemState(ci->lv, index, LVIS_CUT))
 				return TRUE;
+
 			LVGetItemCaption(ci->lv, buf, sizeof(buf), index);
-			// Deactivate the Properties context and main menu items and toolbar button.
+			// disable Properties while opening
 			EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
 			SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_PROPERTIES, MAKELONG(FALSE, 0));
-//			bClicked = FALSE;
-			bDirClicked = bFileClicked = FALSE;					// Reset the context menu items.
+
+			bDirClicked = bFileClicked = FALSE;
 
 			switch (LVGetItemImageIndex(ci->lv, index)) {
-				case ICO_WINFILE:
-					strcpy(szWinFile, ci->curDir);
-					strcat(szWinFile, buf);
-					iError = (int)ShellExecute(win, "open", szWinFile, NULL, NULL, SW_SHOWNORMAL);
-					ChildUpdate(win);
-					break;
-			
-				case ICO_WINDIR:
-					/* it is a dir, append the name to the
-					   current directory */
-					strcat(ci->curDir, buf);
-					strcat(ci->curDir, "\\");
-					ci->atRoot = FALSE;
+			case ICO_WINFILE:
+				strcpy(szWinFile, ci->curDir);
+				strcat(szWinFile, buf);
+				iError = (int)ShellExecute(win, "open", szWinFile, NULL, NULL, SW_SHOWNORMAL);
+				ChildUpdate(win);
+				break;
 
-					ChildUpdate(win);
-					break;
-				case ICO_AMIFILE:
-					// Get the file and copy it to the temp dir.
-					if(_chdir(dirTemp) == -1){						// Change to temp dir.
-						(void)_mkdir(dirTemp);							// Create if doesn't yet exist.
-						(void)_chdir(dirTemp);
-					}
-					if(GetFileFromADF(ci->vol, buf) < 0){
-						sprintf(szError, "Error extracting %s from %s.", buf, ci->orig_path);
-						MessageBox(win, szError, "ADF Opus Error", MB_ICONSTOP);
-						break;
-					}
-					// Run the file.
-					iError = (int)ShellExecute(win, "open", buf, NULL, NULL, SW_SHOWNORMAL);
-					(void)_chdir(dirOpus);								// Change back to Opus dir.
-					
-					if(iError == SE_ERR_NOASSOC){		// No file asociation.
-						sprintf(szError,
-								"ADF Opus is unable to open %s because no application is "
-								 "associated with this file type under Windows. See Help for how "
-								 "to register this file type with Windows and then try again, "
-								 "or use the built-in text viewer.",
-								 buf);
-						MessageBox(win, szError, "ADF Opus Error", MB_ICONINFORMATION);
-					}
-					else if(iError <= 32){				// Other error.
-						sprintf(szError, "Unable to open %s under Windows.", buf);
-						MessageBox(win, szError, "ADF Opus Error", MB_ICONEXCLAMATION);
-					}
+			case ICO_WINDIR:
+				strcat(ci->curDir, buf);
+				strcat(ci->curDir, "\\");
+				ci->atRoot = FALSE;
+				ChildUpdate(win);
+				break;
 
-					ChildUpdate(win);
+			case ICO_AMIFILE:
+				if (_chdir(dirTemp) == -1) {
+					_mkdir(dirTemp);
+					_chdir(dirTemp);
+				}
+				if (GetFileFromADF(ci->vol, buf) < 0) {
+					sprintf(szError, "Error extracting %s from %s.", buf, ci->orig_path);
+					MessageBox(win, szError, "ADF Opus Error", MB_ICONSTOP);
 					break;
-				
-				case ICO_AMIDIR:
-					strcat(ci->curDir, buf);
-					strcat(ci->curDir, "/");
-					ci->atRoot = FALSE;
-					adfChangeDir(ci->vol, buf);
+				}
+				iError = (int)ShellExecute(win, "open", buf, NULL, NULL, SW_SHOWNORMAL);
+				_chdir(dirOpus);
+				if (iError == SE_ERR_NOASSOC) {
+					sprintf(szError,
+						"No association for %s. Register it in Windows or use the built-in viewer.",
+						buf);
+					MessageBox(win, szError, "ADF Opus Error", MB_ICONINFORMATION);
+				}
+				else if (iError <= 32) {
+					sprintf(szError, "Unable to open %s under Windows.", buf);
+					MessageBox(win, szError, "ADF Opus Error", MB_ICONEXCLAMATION);
+				}
+				ChildUpdate(win);
+				break;
 
-					ChildUpdate(win);
-					break;
+			case ICO_AMIDIR:
+				strcat(ci->curDir, buf);
+				strcat(ci->curDir, "/");
+				ci->atRoot = FALSE;
+				adfChangeDir(ci->vol, buf);
+				ChildUpdate(win);
+				break;
 
-				case ICO_DRIVEHD:
-				case ICO_DRIVECD:
-				case ICO_DRIVENET:
-				case ICO_DRIVEFLOP35:
-				case ICO_DRIVEFLOP514:
-					/* it is a drive, set the current dir
-					to the root dir of the drive */
-					strcpy(ci->curDir, buf);
-					strcat(ci->curDir, ":\\");
-					ci->atRoot = FALSE;
-
-					ChildUpdate(win);
-					break;
+			case ICO_DRIVEHD:
+			case ICO_DRIVECD:
+			case ICO_DRIVENET:
+			case ICO_DRIVEFLOP35:
+			case ICO_DRIVEFLOP514:
+				strcpy(ci->curDir, buf);
+				strcat(ci->curDir, ":\\");
+				ci->atRoot = FALSE;
+				ChildUpdate(win);
+				break;
 			}
-			break;
+			return TRUE;
+		}
+
 		case NM_KILLFOCUS:
 			// Disable properties menu item and toolbar button when the current window loses
 			// focus, in case they've been left active.
