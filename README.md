@@ -25,6 +25,14 @@ New features in the 2025 edition include:
 - Legacy help .HLP system removed. A new modern .CHM help system has replaced it with the original context decompiled and recompiled for the modern format.
 - Uses classic Amiga mouse cursor design in the file viewer windows!  
 - Downloads as a (hopefully) turnkey Visual Studio 2022 solution for effortless cloning, building, and contribution.
+- File Properties for Amiga files now show: Filename, Size, Date, Flags, and Comments. I really like this! File size is shown in a nice way with KB or MB instead of just raw byte size, as well as showing the date in a nice format like this: August 2, 2025, 10:52:18 PM for example. Also made the layout a little nicer looking with a that's more consistent with the rest of the program's dialog boxes. Cool!
+- Options: You can set defaults for: new disk image files, and new labels for disk image files. Also made an option to enable or disable Auto Horizontal Tile which I personally really like but I'm sure others would like the option. There's also an option for Activate Pane on Hover which means the window under the mouse automatically becomes active when the mouse hovers over it. 
+- Additional warnings when you try to overwrite files.
+- Added a warning before writing to disk with Greaseweazle to let the user make sure they know they are about to blow away a physical floppy disk! Brings up a yes/no dialog box for confirmation.
+- The Greaseweazle Create Floppy Disk dialog box is now not as wide and looks a little better!
+- When using Greaseweazle it updates the status bar to let you know that it's running. This functionality also purposely prevents you from using the program, so you don't make any changes while a disk is being written. Also, this allows the program to wait for reading a disk, so that it can automatically open the disk image in ADF Opus. 
+- There was a bug where if you rename a file and then try to copy it the program crashes. However, if you rename a file and then refresh and then try to copy it then it works. This bug is fixed now! The view is automatically refreshed whenever a file is renamed.
+- There was another bug: If you double click on the empty area of the list view the program opens the last file that had been clicked on. These weird quirky UI issues are much better now! There are several fixes that should smooth over the experience!
 
 I consider this to be all the essentials I wanted to cover in updating this app for 2025! Woot! I hope you find using ADF Opus 2025 to be as enjoyable as I do! It's not perfect but it's got you covered.
 
