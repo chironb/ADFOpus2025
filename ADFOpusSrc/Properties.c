@@ -466,11 +466,16 @@ void SetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
 
 	// If file comment text has changed, update file comment.
 	if(SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETMODIFY, 0, 0)){
+		
 		iNumChars = SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, WM_GETTEXTLENGTH, 0, 0);
-		SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETLINE, iNumChars + 1, (LPARAM)szComment);
+		// SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETLINE, iNumChars + 1, (LPARAM)szComment); // This was a bug in the original code I think. 
+		GetDlgItemTextA(dlg, IDC_EDIT_COMMENT, szComment, ARRAYSIZE(szComment));
 		szComment[iNumChars]= '\0';
+
 		// MessageBoxA(dlg, szComment, "DEBUG:szComment", MB_OK | MB_ICONERROR);
+		
 		adfSetEntryComment(ci->vol, ci->vol->curDirPtr, DirPtr->name, szComment);
+	
 	}
 
 	// Update MDI window childinfo data and listview.	
