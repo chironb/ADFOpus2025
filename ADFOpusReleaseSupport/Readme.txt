@@ -2,7 +2,7 @@ Welcome to ADF Opus 2025!
 
 -----
 
-Original Version: Copyright © 1998-2002 Dan Sutherland && Gary Harris
+Original Version: Copyright © 1998-2002 Dan Sutherland & Gary Harris
 New Version:      Copyright © 2025 Chiron Bramberger
 Website:          https://github.com/chironb/ADFOpus2025
 Licence:          GNU GPL v2
