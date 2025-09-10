@@ -842,6 +842,23 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 		DialogBox(instance, MAKEINTRESOURCE(IDD_ABOUT), win, (DLGPROC)AboutDlgProc);
 		break;
 
+	case IDM_HELP_LICENCE:
+	{
+		char exeDir[MAX_PATH], fullPath[MAX_PATH];
+		if (GetModuleFileNameA(NULL, exeDir, MAX_PATH)) {
+			char* slash = strrchr(exeDir, '\\');
+			if (slash) *(slash + 1) = '\0';
+			strcpy_s(fullPath, sizeof(fullPath), exeDir);
+			strcat_s(fullPath, sizeof(fullPath), "Licence.txt");
+			ShellExecuteA(win, "open", fullPath, NULL, NULL, SW_SHOWNORMAL);
+		}
+		else {
+			ShellExecuteA(win, "open", "README.txt", NULL, NULL, SW_SHOWNORMAL);
+		}
+		return TRUE;
+	}
+
+
 	case IDM_HELP_README:
 	{
 		char exeDir[MAX_PATH], fullPath[MAX_PATH];
@@ -849,7 +866,7 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 			char* slash = strrchr(exeDir, '\\');
 			if (slash) *(slash + 1) = '\0';
 			strcpy_s(fullPath, sizeof(fullPath), exeDir);
-			strcat_s(fullPath, sizeof(fullPath), "README.txt");
+			strcat_s(fullPath, sizeof(fullPath), "Readme.txt");
 			ShellExecuteA(win, "open", fullPath, NULL, NULL, SW_SHOWNORMAL);
 		}
 		else {

@@ -292,27 +292,27 @@ BEGIN
     CONTROL         "Progress1",IDC_CREATEPROGRESS,"msctls_progress32",WS_BORDER,5,5,245,10
 END
 
-IDD_OPTIONS DIALOGEX 0, 0, 227, 258
+IDD_OPTIONS DIALOGEX 0, 0, 227, 260
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Preferences"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    GROUPBOX        "Ask for confirmation before:",IDC_STATIC,7,133,213,34
+    GROUPBOX        "Ask for confirmation before:",IDC_STATIC,7,133,213,36
     CONTROL         "Commencing delete",IDC_ODELETE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,144,195,10
     CONTROL         "Deleting directories",IDC_ODELDIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,154,195,10
-    GROUPBOX        "Miscellaneous",IDC_STATIC,7,170,213,25
+    GROUPBOX        "Miscellaneous",IDC_STATIC,7,172,213,25
     CONTROL         "Use directory cache blocks where possible",IDC_ODIRCACHE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,180,205,10
-    GROUPBOX        "File Types",IDC_STATIC,7,198,213,31
-    PUSHBUTTON      "Register Amiga disk file types with Windows Explorer",IDC_OREGISTER,12,211,203,14
-    DEFPUSHBUTTON   "OK",IDC_OOK,170,236,50,15
-    PUSHBUTTON      "Apply",IDC_OAPPLY,115,236,50,15,WS_DISABLED
-    PUSHBUTTON      "Close",IDCANCEL,7,236,50,15
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,182,188,10
+    GROUPBOX        "File Types",IDC_STATIC,7,200,213,31
+    PUSHBUTTON      "Register Amiga disk file types with Windows Explorer",IDC_OREGISTER,12,213,203,14
+    DEFPUSHBUTTON   "OK",IDC_OOK,170,238,50,15
+    PUSHBUTTON      "Apply",IDC_OAPPLY,115,238,50,15,WS_DISABLED
+    PUSHBUTTON      "Close",IDCANCEL,7,238,50,15
     GROUPBOX        "Default filename for new files",IDC_STATIC,7,8,213,25
     EDITTEXT        IDC_ONEWFILENAME,14,18,199,12,ES_AUTOHSCROLL
     GROUPBOX        "Default label for new volumes",IDC_STATIC,7,36,213,25
     EDITTEXT        IDC_OLABEL,14,46,199,12,ES_AUTOHSCROLL
-    GROUPBOX        "Default label for Greaseweazle files",IDC_STATIC,7,65,213,25
+    GROUPBOX        "Default filename for Greaseweazle files",IDC_STATIC,7,65,213,25
     EDITTEXT        IDC_OGREASEWEAZLEFILENAME,14,75,199,12,ES_AUTOHSCROLL
     GROUPBOX        "User Interface",IDC_STATIC,7,93,213,37
     CONTROL         "Auto Horizontal Tile",IDC_OAUTOHORITILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,104,77,10
@@ -434,7 +434,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMEN
 CAPTION "Greaseweazle - Create Image"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    EDITTEXT        IDC_GW_EDIT_FILENAME,8,18,158,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_GW_EDIT_FILENAME,14,18,145,14,ES_AUTOHSCROLL
     CONTROL         "Open in ADF Opus after creation:",IDC_GW_CHECK_OPEN,
                     "Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,27,183,115,10
     CONTROL         "DD 880 KB",IDC_GW_RADIO_DOUBLEDENSITY,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,15,134,66,10
@@ -447,9 +447,9 @@ BEGIN
     CONTROL         "Drive A",IDC_GW_RADIO_DRIVE_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,19,103,39,10
     CONTROL         "Drive B",IDC_GW_RADIO_DRIVE_B,"Button",BS_AUTORADIOBUTTON,91,102,39,10
     LTEXT           "Click ""Start"" to run Greaseweazle to image or create a floppy disk!",IDC_STATIC,18,156,138,17
-    EDITTEXT        IDC_GW_EDIT_PATH,7,53,158,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "Browse...",IDC_GW_BTN_BROWSE,116,66,50,15
-    GROUPBOX        "Path:",IDC_STATIC,7,42,165,44,BS_LEFT
+    EDITTEXT        IDC_GW_EDIT_PATH,14,53,145,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_GW_BTN_BROWSE,110,66,50,15
+    GROUPBOX        "Path:",IDC_STATIC,7,42,159,44,BS_LEFT
 END
 
 IDD_GREASEWEAZLE_WRITE DIALOGEX 0, 0, 513, 78
@@ -579,7 +579,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 220
         TOPMARGIN, 7
-        BOTTOMMARGIN, 251
+        BOTTOMMARGIN, 253
     END
 
     IDD_ABOUTPAGE4, DIALOG
@@ -716,6 +716,7 @@ BEGIN
     POPUP "&Help"
     BEGIN
         MENUITEM "View &Help",                  IDM_HELP_CHM
+        MENUITEM "View Licence",                IDM_HELP_LICENCE
         MENUITEM "View &Readme",                IDM_HELP_README
         MENUITEM SEPARATOR
         MENUITEM "&About...",                   ID_HELP_ABOUT
@@ -730,20 +731,27 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&New Directory",              ID_ACTION_NEWDIRECTORY
         MENUITEM SEPARATOR
-        MENUITEM "&Delete",                     ID_ACTION_DELETE
+        MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER
+        MENUITEM "&HEX Viewer",                 ID_TOOLS_HEX_VIEWER
+        MENUITEM SEPARATOR
         MENUITEM "&Rename",                     ID_ACTION_RENAME
+        MENUITEM "&Delete",                     ID_ACTION_DELETE
         MENUITEM SEPARATOR
         MENUITEM "&Select All",                 ID_EDIT_SELECTALL
         MENUITEM "&Unselect All",               ID_EDIT_SELECTNONE
         MENUITEM "&Invert Selection",           ID_EDIT_INVERTSELECTION
         MENUITEM SEPARATOR
-        MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER
-        MENUITEM "&HEX Viewer",                 ID_TOOLS_HEX_VIEWER
+        MENUITEM "&Properties",                 ID_ACTION_PROPERTIES
         MENUITEM SEPARATOR
+        MENUITEM "Batch Converter",             ID_TOOLS_BATCHCONVERTER
+        MENUITEM "Greaseweazle Read",           ID_TOOLS_GREASEWEAZLE
+        MENUITEM "Greaseweazle Write",          ID_TOOLS_GREASEWEAZLEWRITE
+        MENUITEM SEPARATOR
+        MENUITEM "Close",                       ID_FIL_CLOSE
+        MENUITEM "Install Bootblock",           ID_TOOLS_INSTALL
         MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
-        MENUITEM "Disk &Information",           ID_FIL_INFORMATION
         MENUITEM SEPARATOR
-        MENUITEM "File &Properties",            ID_ACTION_PROPERTIES
+        MENUITEM "Disk &Information",           ID_FIL_INFORMATION
     END
 END
 
@@ -1019,13 +1027,13 @@ BEGIN
     PUSHBUTTON      "Save as Binary",IDC_BOOTBLOCK_SAVEBINARY,185,231,66,14
 END
 
-IDD_TEXT_VIEWER DIALOGEX 0, 0, 323, 253
+IDD_TEXT_VIEWER DIALOGEX 0, 0, 357, 254
 STYLE DS_SETFONT | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Text File Viewer"
 FONT 10, "Courier New", 400, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,266,232,50,14
-    EDITTEXT        IDC_EDIT_TEXT,7,7,309,225,ES_MULTILINE | ES_READONLY | WS_VSCROLL | WS_HSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,300,233,50,14
+    EDITTEXT        IDC_EDIT_TEXT,7,7,343,225,ES_MULTILINE | ES_READONLY | WS_VSCROLL | WS_HSCROLL
 END
 
 IDD_HEX_VIEWER DIALOGEX 0, 0, 323, 253
@@ -1057,9 +1065,9 @@ BEGIN
     IDD_TEXT_VIEWER, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 316
+        RIGHTMARGIN, 350
         TOPMARGIN, 7
-        BOTTOMMARGIN, 246
+        BOTTOMMARGIN, 247
     END
 
     IDD_HEX_VIEWER, DIALOG
@@ -1100,8 +1108,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,13,0,0
- PRODUCTVERSION 2,13,0,0
+ FILEVERSION 2,14,0,0
+ PRODUCTVERSION 2,14,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1119,12 +1127,12 @@ BEGIN
             VALUE "Comments", "File Manager for Amiga Disk Image Files"
             VALUE "CompanyName", "www.Chiron-Studios.com"
             VALUE "FileDescription", "ADF Opus 2025"
-            VALUE "FileVersion", "2.13.0.0"
+            VALUE "FileVersion", "2.14.0.0"
             VALUE "InternalName", "ADFOpus"
             VALUE "LegalCopyright", "Original Copyright (c) 1998-2003 Gary Harris, Dan Sutherland - Updates Copyright (c) 2025 Chiron Bramberger - GNU GPL v2.0"
             VALUE "OriginalFilename", "ADFOpus.exe"
             VALUE "ProductName", "ADF Opus 2025"
-            VALUE "ProductVersion", "2.13.0.0"
+            VALUE "ProductVersion", "2.14.0.0"
         END
     END
     BLOCK "VarFileInfo"

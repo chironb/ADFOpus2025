@@ -297,14 +297,14 @@ void UpdateMenuItems(HMENU menu)
 
 	// If we're in the drives window, disable the Delete, Rename and Make New Directory menu items.
 	if(ci == NULL || strcmp(ci->curDir, "") == 0){
-		EnableMenuItem(menu, ID_ACTION_DELETE, MF_GRAYED);
+		EnableMenuItem(menu, ID_ACTION_DELETE, MF_BYCOMMAND | MF_GRAYED);
 		EnableMenuItem(menu, ID_ACTION_RENAME, MF_GRAYED);
 		EnableMenuItem(menu, ID_ACTION_NEWDIRECTORY, MF_GRAYED);
 	}
 	// If not an undeletable file, set as per iNewState.
 	else if(!bUndeleting){
 		EnableMenuItem(menu, ID_ACTION_NEWDIRECTORY, iNewState);
-		EnableMenuItem(menu, ID_ACTION_DELETE, iNewState);
+		EnableMenuItem(menu, ID_ACTION_DELETE, MF_BYCOMMAND | iNewState);
 		EnableMenuItem(menu, ID_ACTION_RENAME, iNewState);
 	}
 

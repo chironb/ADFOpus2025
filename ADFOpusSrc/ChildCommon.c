@@ -42,6 +42,21 @@
 #include "Options.h"
 extern struct OPTIONS Options;
 
+extern HIMAGELIST ghwndImageList;
+extern HINSTANCE instance;
+extern HWND ghwndFrame;
+extern BOOL gbIsDragging;
+extern HWND ghwndDragSource;
+extern HWND ghwndSB;
+extern HWND	ghwndTB;
+extern char gstrFileName[MAX_PATH * 2];
+extern BOOL ReadOnly;
+
+extern HCURSOR ghcurNormal;
+extern HCURSOR ghcurNo;
+
+extern int volToOpen;
+extern struct OPTIONS Options;
 
 // Chiron 2025: This is part of fixed to address an annoying issue that I suspect is 
 // either a problem with the way the original codebase was setup or, it's Win32 issues.
@@ -86,6 +101,10 @@ ListViewHoverProc(
 		if (hActive != hChild)
 		{
 			SendMessage(hMDI, WM_MDIACTIVATE, (WPARAM)hChild, 0);
+			EnableMenuItem(hMenu, ID_ACTION_RENAME, MF_GRAYED); // <-- This doesn't work fuck you I hate you so much fuck! I've spent way too long trying to get these stupid fucking things to grey-out themselves! 
+			EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_GRAYED); // <-- This doesn't work fuck you I hate you so much fuck! I've spent way too long trying to get these stupid fucking things to grey-out themselves! 
+			SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_RENAME, MAKELONG(FALSE, 0));
+			SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_DELETE, MAKELONG(FALSE, 0));
 		}
 	}
 
@@ -199,25 +218,11 @@ static LRESULT CALLBACK ListViewClampProc(
 #include <string.h>    // strcpy_s, strncpy_s
 
 
-extern HIMAGELIST ghwndImageList;
-extern HINSTANCE instance;
-extern HWND ghwndFrame;
-extern BOOL gbIsDragging;
-extern HWND ghwndDragSource;
-extern HWND ghwndSB;
-extern HWND	ghwndTB;
-extern char gstrFileName[MAX_PATH * 2];
-extern BOOL ReadOnly;
 
-extern HCURSOR ghcurNormal;
-extern HCURSOR ghcurNo;
-
-extern int volToOpen;
-extern struct OPTIONS Options;
 
 //BOOL	bClicked = FALSE;
-BOOL	bDirClicked = FALSE, bFileClicked = FALSE;		// File or dir selection flags.
-BOOL	bUndeleting = FALSE;							// Undeletion flag.
+BOOL	bDirClicked = FALSE, bFileClicked = FALSE, bNothingClicked = FALSE;		// File or dir or nothing selection flags.
+BOOL	bUndeleting = FALSE;	// Undeletion flag.
 
 ///////// could maybe do without this
 long newWinType;
@@ -640,7 +645,7 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 				EnableMenuItem(hMenu, ID_ACTION_UNDELETE, MF_ENABLED);
 				SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_UNDELETE, MAKELONG(TRUE, 0));
 				// disable everything else
-				EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_GRAYED);
+				EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_BYCOMMAND | MF_GRAYED);
 				EnableMenuItem(hMenu, ID_ACTION_RENAME, MF_GRAYED);
 				EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_GRAYED);
 				EnableMenuItem(hMenu, ID_TOOLS_TEXT_VIEWER, MF_GRAYED);
@@ -658,7 +663,7 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 
 				if (ListView_GetSelectedCount(ci->lv) > 0) {
 					// enable Delete/Rename/Properties
-					EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_ENABLED);
+					EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_BYCOMMAND | MF_ENABLED);
 					EnableMenuItem(hMenu, ID_ACTION_RENAME, MF_ENABLED);
 					EnableMenuItem(hMenu, ID_ACTION_PROPERTIES, MF_ENABLED);
 					SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_DELETE, MAKELONG(TRUE, 0));
@@ -830,10 +835,10 @@ HWND CreateListView(HWND win)
 
 	// Add your columns
 	LVAddColumn(lv, "Name", 150, 0); // Chiron 2025 - Kludgey fix for the MOUSE SHOOTS OFF bug! Changed the width of the Name column from 200 to 150.
-	LVAddColumn(lv, "Size", 70, 1);
+	LVAddColumn(lv, "Size", 55, 1);
 	LVAddColumn(lv, "Flags", 75, 2);
 	if (GetWindowLong(win, GWL_USERDATA) != CHILD_WINLISTER)
-		LVAddColumn(lv, "Comment", 75, 3); // Chiron 2025 - Kludgey fix for the MOUSE SHOOTS OFF bug! Changed the width of the Name column from 605 to 75.
+		LVAddColumn(lv, "Comment", 65, 3); // Chiron 2025 - Kludgey fix for the MOUSE SHOOTS OFF bug! Changed the width of the Name column from 605 to 75.
 	// Chiron TODO: This is where we could add the date and time? I dunno maybe. LVAddColumn(lv, "Date", 75, 4);
 
 	// Image list + full-row selection
@@ -1252,7 +1257,7 @@ BOOL ChildOnContextMenu(HWND win, int x, int y)
 
 extern HINSTANCE instance;
 extern HWND      ghwndFrame;
-extern BOOL      bDirClicked, bFileClicked;
+extern BOOL      bDirClicked, bFileClicked, bNothingClicked;
 //extern ContextInfo* ci;
 
 //void DisplayContextMenu(HWND winLister, POINT pt)
@@ -1320,6 +1325,7 @@ void DisplayContextMenu(HWND winLister, POINT ptScreen)
 				0,
 				LVIS_SELECTED | LVIS_FOCUSED);
 			bDirClicked = bFileClicked = FALSE;
+			bNothingClicked = TRUE;
 			buf[0] = '\0';
 		}
 		else {
@@ -1346,6 +1352,7 @@ void DisplayContextMenu(HWND winLister, POINT ptScreen)
 			int img = LVGetItemImageIndex(ci->lv, hti.iItem);
 			bFileClicked = (img == ICO_AMIFILE || img == ICO_WINFILE);
 			bDirClicked = !bFileClicked;
+			bNothingClicked = FALSE;
 		}
 	}
 	// ------------------------------------------------------------------------------
@@ -1408,6 +1415,139 @@ void DisplayContextMenu(HWND winLister, POINT ptScreen)
 		? MF_ENABLED
 		: MF_GRAYED
 	);
+
+	//  [0] MENUITEM SEPARATOR
+//  [1] MENUITEM "&New Directory",              ID_ACTION_NEWDIRECTORY
+//  [2] MENUITEM SEPARATOR
+//  [3] MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER
+//  [4] MENUITEM "&HEX Viewer",                 ID_TOOLS_HEX_VIEWER
+//  [5] MENUITEM SEPARATOR
+//  [6] MENUITEM "&Rename",                     ID_ACTION_RENAME
+//  [7] MENUITEM "&Delete",                     ID_ACTION_DELETE
+//  [8] MENUITEM SEPARATOR
+//  [9] MENUITEM "&Select All",                 ID_EDIT_SELECTALL
+// [10] MENUITEM "&Unselect All",               ID_EDIT_SELECTNONE
+// [11] MENUITEM "&Invert Selection",           ID_EDIT_INVERTSELECTION
+// [12] MENUITEM SEPARATOR
+// [13] MENUITEM "&Properties",                 ID_ACTION_PROPERTIES
+// [14] MENUITEM SEPARATOR
+// [15] MENUITEM "Batch Converter",             ID_TOOLS_BATCHCONVERTER
+// [16] MENUITEM "Greaseweazle Read",           ID_TOOLS_GREASEWEAZLE
+// [17] MENUITEM "Greaseweazle Write",          ID_TOOLS_GREASEWEAZLEWRITE
+// [18]MENUITEM SEPARATOR
+// [19]MENUITEM "Close",                       ID_FIL_CLOSE
+// [20]MENUITEM "Install Bootblock",           ID_TOOLS_INSTALL
+// [21]MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
+// [22]MENUITEM SEPARATOR
+// [23]MENUITEM "Disk &Information",           ID_FIL_INFORMATION
+
+
+	// FILE CONTEXT MENU
+	if (bFileClicked == TRUE && bDirClicked == FALSE && bNothingClicked == FALSE) {
+		
+		//MessageBoxA(winLister, "FILE CONTEXT MENU", "DEBUG:", MB_OK | MB_ICONERROR);
+		
+		// Remove any separators first because you can only remove them 
+		// by position and not by name. And you can't name them... WTF?
+		// We only really know their position reliably if we remove them first.
+		DeleteMenu(popup,  3 - 0, MF_BYPOSITION);	// The first one we remove is normally at position 6.
+		DeleteMenu(popup, 15 - 1, MF_BYPOSITION);	// The second one we remove is normally at position 13, but now it's at 12 because we removed one above. (VisualStudio 2022 literally suggested this comment and it's freak as fuck! I don't know how I feel about it.)
+		DeleteMenu(popup, 19 - 2, MF_BYPOSITION); 	// The third one we remove is normally at position 16, but now it's at 14 because we removed two above. (Ugh... VisualStudio 2022's AI must have heard me... it didn't suggest this comment and I had to write it all myself!)
+		DeleteMenu(popup, 23 - 3, MF_BYPOSITION);
+
+		DeleteMenu(popup, ID_ACTION_NEWDIRECTORY, MF_BYCOMMAND);
+
+		DeleteMenu(popup, ID_TOOLS_BATCHCONVERTER, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_GREASEWEAZLE, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_GREASEWEAZLEWRITE, MF_BYCOMMAND);
+
+		DeleteMenu(popup, ID_FIL_CLOSE, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_INSTALL, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_DISPLAYBOOTBLOCK, MF_BYCOMMAND);
+
+		DeleteMenu(popup, ID_FIL_INFORMATION, MF_BYCOMMAND);
+
+		EnableMenuItem(hMenu, ID_ACTION_RENAME, MF_GRAYED);
+		EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_GRAYED);
+		SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_RENAME, MAKELONG(TRUE, 0));
+		SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_DELETE, MAKELONG(TRUE, 0));
+
+	};/*end-if*/
+
+
+	// FOLDER CONTEXT MENU
+	if (bFileClicked == FALSE && bDirClicked == TRUE && bNothingClicked == FALSE) {
+		
+		//MessageBoxA(winLister, "FOLDER CONTEXT MENU", "DEBUG:", MB_OK | MB_ICONERROR);
+		
+		// Remove any separators first because you can only remove them 
+		// by position and not by name. And you can't name them... WTF?
+		// We only really know their position reliably if we remove them first.
+		DeleteMenu(popup,  3 - 0, MF_BYPOSITION);	// The first one we remove is normally at position 6.
+		DeleteMenu(popup,  6 - 1, MF_BYPOSITION);	// The second one we remove is normally at position 13, but now it's at 12 because we removed one above. (VisualStudio 2022 literally suggested this comment and it's freak as fuck! I don't know how I feel about it.)
+		DeleteMenu(popup, 15 - 2, MF_BYPOSITION);	// The third one we remove is normally at position 16, but now it's at 14 because we removed two above. (Ugh... VisualStudio 2022's AI must have heard me... it didn't suggest this comment and I had to write it all myself!)
+		DeleteMenu(popup, 19 - 3, MF_BYPOSITION);
+		DeleteMenu(popup, 23 - 4, MF_BYPOSITION);
+
+		DeleteMenu(popup, ID_ACTION_NEWDIRECTORY, MF_BYCOMMAND);
+
+		DeleteMenu(popup, ID_TOOLS_TEXT_VIEWER, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_HEX_VIEWER, MF_BYCOMMAND);
+
+		DeleteMenu(popup, ID_TOOLS_BATCHCONVERTER, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_GREASEWEAZLE, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_GREASEWEAZLEWRITE, MF_BYCOMMAND);
+
+		DeleteMenu(popup, ID_FIL_CLOSE, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_INSTALL, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_DISPLAYBOOTBLOCK, MF_BYCOMMAND);
+
+		DeleteMenu(popup, ID_FIL_INFORMATION, MF_BYCOMMAND);
+
+		EnableMenuItem(hMenu, ID_ACTION_RENAME, MF_GRAYED); // <-- This doesn't work fuck you I hate you so much fuck! I've spent way too long trying to get these stupid fucking things to grey-out themselves! 
+		EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_GRAYED); // <-- This doesn't work fuck you I hate you so much fuck! I've spent way too long trying to get these stupid fucking things to grey-out themselves! 
+		SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_RENAME, MAKELONG(TRUE, 0));
+		SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_DELETE, MAKELONG(TRUE, 0));
+
+	};/*end-if*/
+
+	// BACKGROUND NO SELECTION CONTEXT MENU
+	if (bFileClicked == FALSE && bDirClicked == FALSE && bNothingClicked == TRUE) {
+		
+		//MessageBoxA(winLister, "BACKGROUND NO SELECTION CONTEXT MENU", "DEBUG:", MB_OK | MB_ICONERROR);
+		
+		// Remove any separators first because you can only remove them 
+		// by position and not by name. And you can't name them... WTF?
+		// We only really know their position reliably if we remove them first.
+		DeleteMenu(popup,  6 - 0, MF_BYPOSITION);	// The first one we remove is normally at position 6.
+		DeleteMenu(popup,  9 - 1, MF_BYPOSITION);	// The second one we remove is normally at position 13, but now it's at 12 because we removed one above. (VisualStudio 2022 literally suggested this comment and it's freak as fuck! I don't know how I feel about it.)	
+		DeleteMenu(popup, 15 - 2, MF_BYPOSITION);	// The third one we remove is normally at position 16, but now it's at 14 because we removed two above. (Ugh... VisualStudio 2022's AI must have heard me... it didn't suggest this comment and I had to write it all myself!)
+
+		DeleteMenu(popup, ID_TOOLS_TEXT_VIEWER, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_TOOLS_HEX_VIEWER, MF_BYCOMMAND);
+
+		DeleteMenu(popup, ID_ACTION_RENAME, MF_BYCOMMAND);
+		DeleteMenu(popup, ID_ACTION_DELETE, MF_BYCOMMAND);
+
+		DeleteMenu(popup, ID_ACTION_PROPERTIES, MF_BYCOMMAND);
+
+		EnableMenuItem(hMenu, ID_ACTION_RENAME, MF_ENABLED); // <-- This doesn't work fuck you I hate you so much fuck! I've spent way too long trying to get these stupid fucking things to grey-out themselves! 
+		EnableMenuItem(hMenu, ID_ACTION_DELETE, MF_ENABLED); // <-- This doesn't work fuck you I hate you so much fuck! I've spent way too long trying to get these stupid fucking things to grey-out themselves! 
+		SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_RENAME, MAKELONG(FALSE, 0));
+		SendMessage(ghwndTB, TB_ENABLEBUTTON, ID_ACTION_DELETE, MAKELONG(FALSE, 0));
+
+	};/*end-if*/
+
+
+
+	//if (bNothingClicked == TRUE) 
+	//	MessageBoxA(winLister, "bNothingClicked == TRUE", "DEBUG:", MB_OK | MB_ICONERROR);
+	//else if (bNothingClicked == FALSE) 
+	//	MessageBoxA(winLister, "bNothingClicked == FALSE", "DEBUG:", MB_OK | MB_ICONERROR);
+	//else
+	//	MessageBoxA(winLister, "bNothingClicked == DA FUCK?!??!!", "DEBUG:", MB_OK | MB_ICONERROR);
+
+
 
 
 	// 5) Show the popup

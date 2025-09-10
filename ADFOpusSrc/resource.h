@@ -325,14 +325,23 @@
 #define IDB_SELECTNONE                  40135
 #define IDM_HELP_README                 40135
 #define IDB_INVERTSELECTION             40136
+#define ID_SEL_BATCHCONVERTER           40136
 #define ID_TOOLS_GREASEWEAZLE           40137
+#define ID_SEL_GREASEWEAZLEREAD         40137
 #define IDB_GREASEWEAZLE                40138
+#define ID_SEL_GREASEWEAZLEWRITE        40138
 #define ID_TOOLS_GREASEWEAZLEWRITE      40139
+#define ID_SEL_CLOSE                    40139
 #define IDB_GREASEWEAZLEWRITE           40140
+#define ID_SEL_VIEWBOOTBLOCK            40140
 #define IDB_HEXVIEWER                   40141
+#define ID_SEL_INSTALLBOOTBLOCK         40141
 #define IDB_RAWWRITEBOOTBLOCK           40142
+#define D_TOOLS_GREASEWEAZLEWRITE       40142
 #define IDC_UPDATELABEL                 40143
+#define ID_HELP_VIEWLICENCE             40143
 #define IDB_EXIT                        40144
+#define IDM_HELP_LICENCE                40144
 #define IDB_NEWLIST                     40145
 #define IDB_TOOLS_WRITE_RAW_BOOTBLOCK   40146
 #define IDB_NEW_ABOUT_GRAPHIC           40147
@@ -383,7 +392,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        244
-#define _APS_NEXT_COMMAND_VALUE         40136
+#define _APS_NEXT_COMMAND_VALUE         40145
 #define _APS_NEXT_CONTROL_VALUE         1181
 #define _APS_NEXT_SYMED_VALUE           102
 #endif

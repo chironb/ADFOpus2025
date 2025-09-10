@@ -54,6 +54,7 @@ static const MenuIconEntry menuIconMap[] = {
 
     // Help menu
     { ID_HELP_ABOUT,                IDI_ABOUT },
+	{ IDM_HELP_LICENCE,             IDI_README },
     { IDM_HELP_README,              IDI_README },
     { IDM_HELP_CHM,                 IDI_HELP_CHM }             
 };

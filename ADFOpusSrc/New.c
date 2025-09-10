@@ -27,6 +27,7 @@ extern HINSTANCE instance;
 extern HWND ghwndFrame;
 extern HWND ghwndMDIClient;
 extern BOOL ensure_extension(char* path, size_t buffer_size, const char* ext);
+extern BOOL MakeGoodOutputFilename(HWND hwndDlg, char* path, size_t bufsize, const char* ext);
 
 /* globals */
 extern int Done;
@@ -310,7 +311,7 @@ void NewCreate(HWND dlg)
 		))
 		{
 			// error message was already shown; keep dialog open
-			return FALSE;
+			return;
 		}
 		// at this point test_path == "C:\\somefile.adf" (or original if user typed .adf),
 		// and if we get here then we know that file does in-fact exist.
@@ -327,7 +328,7 @@ void NewCreate(HWND dlg)
 		))
 		{
 			// error message was already shown; keep dialog open
-			return FALSE;
+			return;
 		}
 		// at this point test_path == "C:\\somefile.adf" (or original if user typed .adf),
 		// and if we get here then we know that file does in-fact exist.
