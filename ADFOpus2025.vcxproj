@@ -233,6 +233,11 @@
     <None Include="ADFOpusSrc\images\amiga.cur" />
     <None Include="ADFOpusSrc\images\amiga_no_circle.cur" />
     <None Include="ADFOpusSrc\images\ArrowCop.cur" />
+    <None Include="ADFOpusSrc\images\wave1.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="ADFOpusSrc\Sounds\ADFOpus_Sound1.wav" />
+    <Media Include="ADFOpusSrc\Sounds\ADFOpus_Sound2.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

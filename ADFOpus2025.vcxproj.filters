@@ -953,5 +953,16 @@
     <None Include="ADFOpusSrc\images\amiga_no_circle.cur">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ADFOpusSrc\images\wave1.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="ADFOpusSrc\Sounds\ADFOpus_Sound1.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="ADFOpusSrc\Sounds\ADFOpus_Sound2.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

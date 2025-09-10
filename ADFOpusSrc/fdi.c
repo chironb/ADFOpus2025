@@ -546,12 +546,20 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 		case ID_GW_WRITE_START:
 
+			HINSTANCE hInst = GetModuleHandle(NULL);
+			// hInst is the HINSTANCE passed into WinMain <-- This works here too!
+			PlaySound(
+				MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+				hInst,
+				SND_RESOURCE | SND_ASYNC
+			);
+
 			// Confirm before commencing a floppy drive write.
 			if (MessageBox(
 				dlg,
 				"Writing to a floppy disk will destroy what's on it right now.\nAre you sure you want to write an image to your floppy disk?",
 				"Question",
-				MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) 
+				MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)  // I removed MB_ICONQUESTION for the custom sound!
 			{
 
 				return TRUE;

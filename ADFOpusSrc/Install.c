@@ -103,8 +103,18 @@ int InstallBootBlock(HWND win, struct Volume* vol, BOOL bNewAdf)
     FILE* fp;
     // DWORD          read;
 
+
+    HINSTANCE hInst = GetModuleHandle(NULL);
+    // hInst is the HINSTANCE passed into WinMain <-- This works here too!
+    PlaySound(
+        MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+        hInst,
+        SND_RESOURCE | SND_ASYNC
+    );
+
     // If this is a new ADF or user confirms overwrite...
-    if (bNewAdf || MessageBoxA(win, szWarning, "ADF Opus Warning!", MB_YESNO | MB_ICONWARNING) == IDYES)
+    //if (bNewAdf || MessageBoxA(win, szWarning, "ADF Opus Warning!", MB_YESNO | MB_ICONWARNING) == IDYES)
+    if (bNewAdf || MessageBoxA(win, szWarning, "ADF Opus Warning!", MB_YESNO ) == IDYES)
     {
         // Build default "Boot" subfolder path
         lstrcpyA(initialDir, dirOpus);

@@ -74,6 +74,8 @@
 #define IDD_GREASEWEAZLE_WRITE          231
 #define IDD_HEX_FILE_VIEWER             232
 #define IDD_HEX_VIEWER                  233
+#define IDR_WAVE1                       247
+#define IDR_NOTIFICATION_WAVE_2         247
 #define IDC_NEWPATH                     1004
 #define IDC_NEWADF                      1005
 #define IDC_NEWHARDFILE                 1006
@@ -387,13 +389,14 @@
 #define IDI_SELECTNONE                  50032
 #define IDI_INVERTSELECTION             50033
 #define IDI_README                      50034
+#define IDR_NOTIFICATION_WAVE_1         60001
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        244
+#define _APS_NEXT_RESOURCE_VALUE        248
 #define _APS_NEXT_COMMAND_VALUE         40145
 #define _APS_NEXT_CONTROL_VALUE         1182
 #define _APS_NEXT_SYMED_VALUE           102

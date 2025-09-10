@@ -53,6 +53,16 @@ END
 
 IDB_TOOLS_WRITE_RAW_BOOTBLOCK BITMAP                  "images\\bitmap1.bmp"
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+IDR_NOTIFICATION_WAVE_1 WAVE                    "Sounds\\ADFOpus_Sound1.wav"
+
+IDR_NOTIFICATION_WAVE_2 WAVE                    "Sounds\\ADFOpus_Sound2.wav"
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

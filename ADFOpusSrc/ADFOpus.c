@@ -62,6 +62,16 @@
 #include <windows.h>
 #include <commctrl.h>
 #pragma comment(lib, "comctl32.lib")
+
+
+
+#include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
+
+
+
 // tell this .c file that ghwndFrame exists somewhere else
 extern HWND ghwndFrame;
 #include "MenuIcons.h"
@@ -263,6 +273,14 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 	int   inQuote;
 	int   ti;
 	int   i;
+
+	//// hInst is the HINSTANCE passed into WinMain <-- This works here!
+	//PlaySound(
+	//	MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+	//	inst,
+	//	SND_RESOURCE | SND_ASYNC
+	//);
+
 
 	// Must load BEFORE the dialog is created
 	LoadLibraryA("Riched20.dll");

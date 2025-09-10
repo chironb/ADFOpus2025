@@ -19,6 +19,7 @@ LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
     {
+
         // 1) Load and display the bitmap graphic
         HINSTANCE hInst = GetModuleHandle(NULL);
         hBmp = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_NEW_ABOUT_GRAPHIC));
@@ -32,6 +33,13 @@ LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
                 (LPARAM)hBmp
             );
         }
+
+        // hInst is the HINSTANCE passed into WinMain <-- This works here too!
+        PlaySound(
+            MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_2),
+            hInst,
+            SND_RESOURCE | SND_ASYNC
+        );
 
         // 2) Retrieve the FileVersion string from VERSIONINFO
         char versionStr[64] = "";
