@@ -1366,13 +1366,49 @@ void DisplayContextMenu(HWND winLister, POINT ptScreen)
 	// 3) Owner-draw setup
 	InitMenuIcons(instance, popup);
 
+
 	// 4) Enable/disable items based on the (possibly multi-)selection
+
+	// Delete
+	EnableMenuItem(popup,
+		ID_ACTION_DELETE,
+		(bDirClicked || bFileClicked)
+		? MF_ENABLED
+		: MF_GRAYED
+	);
+
+	// Rename
+	EnableMenuItem(popup,
+		ID_ACTION_RENAME,
+		(bDirClicked || bFileClicked)
+		? MF_ENABLED
+		: MF_GRAYED
+	);
+
+	// Text Viewer
+	EnableMenuItem(popup,
+		ID_TOOLS_TEXT_VIEWER,
+		bFileClicked
+		? MF_ENABLED
+		: MF_GRAYED
+	);
+
+	// Hex Viewer
+	EnableMenuItem(popup,
+		ID_TOOLS_HEX_VIEWER,
+		bFileClicked
+		? MF_ENABLED
+		: MF_GRAYED
+	);
+
+	// Properties
 	EnableMenuItem(popup,
 		ID_ACTION_PROPERTIES,
 		(bDirClicked || bFileClicked)
 		? MF_ENABLED
-		: MF_GRAYED);
-	// …rest of your EnableMenuItem calls…
+		: MF_GRAYED
+	);
+
 
 	// 5) Show the popup
 	SetForegroundWindow(ghwndFrame);
