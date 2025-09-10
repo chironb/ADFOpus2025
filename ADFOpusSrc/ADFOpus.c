@@ -57,6 +57,7 @@
 #include "ADFLib.h"
 #include "Help\AdfOpusHlp.h"
 
+
 // Chiron 2025
 #include <windows.h>
 #include <commctrl.h>
@@ -263,7 +264,8 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 	int   ti;
 	int   i;
 
-
+	// Must load BEFORE the dialog is created
+	LoadLibraryA("Riched20.dll");
 
 	// 1) stash raw command line
 	strcpy_s(gstrCmdLineArgs,

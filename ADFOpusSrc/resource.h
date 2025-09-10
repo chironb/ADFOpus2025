@@ -252,6 +252,8 @@
 #define IDC_OAUTOHORITILE               1179
 #define IDC_CHECK2                      1180
 #define IDC_OAUTOPANEONHOVER            1180
+#define IDC_CHECK1                      1181
+#define IDC_WORD_WRAP                   1181
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -393,7 +395,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        244
 #define _APS_NEXT_COMMAND_VALUE         40145
-#define _APS_NEXT_CONTROL_VALUE         1181
+#define _APS_NEXT_CONTROL_VALUE         1182
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

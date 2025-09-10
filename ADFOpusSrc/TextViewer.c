@@ -1,184 +1,269 @@
-﻿#include "Pch.h"
+﻿// TextViewer.c
+
+#include <windows.h>
+#include <direct.h>
+#include "Pch.h"
 #include "ADFOpus.h"
 #include "TextViewer.h"
 #include "ChildCommon.h"
 #include "Utils.h"
 #include "ListView.h"
 #include "Help\\AdfOpusHlp.h"
-#include <direct.h>
 
-static DWORD aIds[] = {
-    IDC_EDIT_TEXT,           IDH_TEXTVIEWER_EDIT,
-    IDC_TEXTVIEWER_HELP,     IDH_TEXTVIEWER_BUTTON_HELP,
-    IDOK,                    IDH_TEXTVIEWER_BUTTON_OK,
-    0, 0
-};
+// Global state
+static char* g_textBuf = NULL;   // full file text (with real CR+LFs)
+static HWND   g_hEdit = NULL;   // dynamic EDIT control
+static HFONT  g_hFont = NULL;   // custom font
+static HBRUSH g_hBkgBrush = NULL;   // custom background brush
 
 LRESULT CALLBACK TextViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 {
-    static HBRUSH hBrush = NULL;
-    char    buf[MAX_PATH];
-    char    szError[MAX_PATH];
-    char    lpFileName[MAX_PATH];
+    char   fileName[MAX_PATH], err[MAX_PATH], fullPath[MAX_PATH];
     FILE* fp;
 
     switch (msg)
     {
     case WM_INITDIALOG:
     {
-        HWND hEdit = GetDlgItem(dlg, IDC_EDIT_TEXT);
+        // 1) Build full path
+        int idx = LVGetItemFocused(ci->lv);
+        LVGetItemCaption(ci->lv, fileName, sizeof(fileName), idx);
 
-        // Build the full path of the selected file
-        int iIndex = LVGetItemFocused(ci->lv);
-        LVGetItemCaption(ci->lv, buf, sizeof(buf), iIndex);
-
-        switch (LVGetItemImageIndex(ci->lv, iIndex))
+        if (LVGetItemImageIndex(ci->lv, idx) == ICO_AMIFILE)
         {
-        case ICO_WINFILE:
-            strcpy(lpFileName, ci->curDir);
-            strcat(lpFileName, buf);
-            break;
-
-        case ICO_AMIFILE:
-            if (_chdir(dirTemp) == -1) {
-                _mkdir(dirTemp);
-                _chdir(dirTemp);
-            }
-            if (GetFileFromADF(ci->vol, buf) < 0) {
-                sprintf(szError,
-                    "Error extracting %s from %s.",
-                    buf, ci->orig_path);
-                MessageBox(dlg, szError, "ADF Opus Error",
-                    MB_ICONSTOP);
+            if (_chdir(dirTemp) == -1) { _mkdir(dirTemp); _chdir(dirTemp); }
+            if (GetFileFromADF(ci->vol, fileName) < 0)
+            {
+                sprintf(err, "Error extracting %s from %s.",
+                    fileName, ci->orig_path);
+                MessageBoxA(dlg, err, "ADF Opus Error", MB_ICONERROR);
                 _chdir(dirOpus);
                 EndDialog(dlg, TRUE);
                 return TRUE;
             }
-            strcpy(lpFileName, dirTemp);
-            strcat(lpFileName, buf);
+            strcpy(fullPath, dirTemp);
+            strcat(fullPath, fileName);
             _chdir(dirOpus);
-            break;
+        }
+        else
+        {
+            strcpy(fullPath, ci->curDir);
+            strcat(fullPath, fileName);
+        }
 
-        default:
+        // 2) Read file into raw[]
+        fp = fopen(fullPath, "rb");
+        if (!fp)
+        {
+            MessageBoxA(dlg, "Unable to open file.", "Error", MB_ICONERROR);
             EndDialog(dlg, TRUE);
             return TRUE;
         }
+        fseek(fp, 0, SEEK_END);
+        long size = ftell(fp);
+        rewind(fp);
+        char* raw = malloc(size + 1);
+        fread(raw, 1, size, fp);
+        raw[size] = '\0';
+        fclose(fp);
 
-        // Make the edit control multiline & scrollable
+        // 3) Build g_textBuf with real CR+LFs only
+        g_textBuf = malloc(size * 2 + 2);
         {
-            DWORD style = GetWindowLong(hEdit, GWL_STYLE);
-            style |= ES_MULTILINE
-                | ES_AUTOVSCROLL
-                | ES_AUTOHSCROLL
-                | WS_VSCROLL;
-            SetWindowLong(hEdit, GWL_STYLE, style);
-        }
-
-        // Read file binary, expand lone '\n' to "\r\n"
-        fp = fopen(lpFileName, "rb");
-        if (fp)
-        {
-            fseek(fp, 0, SEEK_END);
-            long fileSize = ftell(fp);
-            rewind(fp);
-
-            char* raw = malloc(fileSize + 1);
-            if (raw)
+            char* s = raw, * d = g_textBuf;
+            while (*s)
             {
-                fread(raw, 1, fileSize, fp);
-                raw[fileSize] = '\0';
-            }
-            fclose(fp);
-
-            if (raw)
-            {
-                char* conv = malloc(fileSize * 2 + 1);
-                char* src = raw, * dst = conv;
-                while (*src)
+                if (*s == '\r')
+                    s++;
+                else if (*s == '\n')
                 {
-                    if (*src == '\r') {
-                        // skip stray CR
-                        src++;
-                    }
-                    else if (*src == '\n') {
-                        *dst++ = '\r';
-                        *dst++ = '\n';
-                        src++;
-                    }
-                    else {
-                        *dst++ = *src++;
-                    }
+                    *d++ = '\r';
+                    *d++ = '\n';
+                    s++;
                 }
-                *dst = '\0';
-
-                SetDlgItemText(dlg, IDC_EDIT_TEXT, conv);
-                free(raw);
-                free(conv);
+                else
+                    *d++ = *s++;
             }
+            *d = '\0';
+        }
+        free(raw);
+
+        // 4) Remove design-time EDITTEXT and get its rectangle
+        HWND hOld = GetDlgItem(dlg, IDC_EDIT_TEXT);
+        RECT rc;
+        GetWindowRect(hOld, &rc);
+        MapWindowPoints(NULL, dlg, (LPPOINT)&rc, 2);
+        DestroyWindow(hOld);
+
+        // 5) Create the EDIT (unwrapped by default)
+        {
+            DWORD style = WS_CHILD | WS_VISIBLE
+                | WS_BORDER | WS_TABSTOP
+                | ES_LEFT | ES_MULTILINE
+                | ES_READONLY | ES_AUTOVSCROLL
+                | WS_VSCROLL | WS_HSCROLL;
+
+            g_hEdit = CreateWindowExA(
+                WS_EX_CLIENTEDGE,
+                "EDIT", NULL,
+                style,
+                rc.left, rc.top,
+                rc.right - rc.left,
+                rc.bottom - rc.top,
+                dlg,
+                (HMENU)(INT_PTR)IDC_EDIT_TEXT,
+                GetModuleHandle(NULL),
+                NULL
+            );
         }
 
-        // Create background brush (if you paint the edit’s bg later)
-        hBrush = CreateSolidBrush(RGB(0, 0, 255));
+        // 6) Create custom font (Courier New, 10pt) and background brush
+        {
+            HDC hdc = GetDC(dlg);
+            LOGFONT lf = { 0 };
+            lf.lfHeight = -MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+            strcpy(lf.lfFaceName, "Courier New");
+            g_hFont = CreateFontIndirect(&lf);
+            ReleaseDC(dlg, hdc);
 
+            g_hBkgBrush = CreateSolidBrush(RGB(255, 255, 224));
+            SendMessageA(g_hEdit, WM_SETFONT, (WPARAM)g_hFont, TRUE);
+        }
+
+        // 7) Load text, focus edit, init checkbox
+        SetWindowTextA(g_hEdit, g_textBuf);
+        SetFocus(g_hEdit);
+        SendDlgItemMessage(dlg, IDC_WORD_WRAP,
+            BM_SETCHECK, BST_UNCHECKED, 0);
         return TRUE;
     }
 
     case WM_SIZE:
     {
-        HWND hEdit = GetDlgItem(dlg, IDC_EDIT_TEXT);
-        HWND hButtonOK = GetDlgItem(dlg, IDOK);
-        HWND hButtonHelp = GetDlgItem(dlg, IDC_TEXTVIEWER_HELP);
-        RECT lpRect;
+        int w = LOWORD(lp), h = HIWORD(lp);
 
-        int nWidth = LOWORD(lp);
-        int nHeight = HIWORD(lp);
+        HWND btnOK = GetDlgItem(dlg, IDOK);
+        HWND btnHelp = GetDlgItem(dlg, IDC_TEXTVIEWER_HELP);
+        HWND chkWrap = GetDlgItem(dlg, IDC_WORD_WRAP);
 
-        // Recompute margins & sizes in dialog units
-        lpRect = (RECT){ 0,0,7,6 };
-        MapDialogRect(dlg, &lpRect);
-        int marginOKR = lpRect.right, marginOKB = lpRect.bottom;
+        RECT rc;
+        // button size
+        rc = (RECT){ 0,0,50,14 };
+        MapDialogRect(dlg, &rc);
+        int bw = rc.right, bh = rc.bottom;
 
-        lpRect = (RECT){ 0,0,63,6 };
-        MapDialogRect(dlg, &lpRect);
-        int marginHelpR = lpRect.right, marginHelpB = lpRect.bottom;
+        // OK margins
+        rc = (RECT){ 0,0,7,6 };
+        MapDialogRect(dlg, &rc);
+        int mOKR = rc.right, mOKB = rc.bottom;
 
-        lpRect = (RECT){ 0,0,7,28 };
-        MapDialogRect(dlg, &lpRect);
-        int marginEditR = lpRect.right, marginEditB = lpRect.bottom;
+        // Help margins
+        rc = (RECT){ 0,0,63,6 };
+        MapDialogRect(dlg, &rc);
+        int mHR = rc.right, mHB = rc.bottom;
 
-        lpRect = (RECT){ 0,0,50,14 };
-        MapDialogRect(dlg, &lpRect);
-        int btnW = lpRect.right, btnH = lpRect.bottom;
+        // Edit margins
+        rc = (RECT){ 0,0,7,28 };
+        MapDialogRect(dlg, &rc);
+        int mER = rc.right, mEB = rc.bottom;
 
-        // OK button
-        MoveWindow(
-            hButtonOK,
-            nWidth - btnW - marginOKR,
-            nHeight - btnH - marginOKB,
-            btnW, btnH, TRUE
-        );
+        // Wrap checkbox position & size
+        rc = (RECT){ 0,0,11,0 };
+        MapDialogRect(dlg, &rc);
+        int mWrapL = rc.right;
 
-        // Help button
-        MoveWindow(
-            hButtonHelp,
-            nWidth - btnW - marginHelpR,
-            nHeight - btnH - marginHelpB,
-            btnW, btnH, TRUE
-        );
+        rc = (RECT){ 0,0,0,9 };
+        MapDialogRect(dlg, &rc);
+        int mWrapB = rc.bottom;
 
-        // Edit control
-        MoveWindow(
-            hEdit,
-            7, // left margin
-            7, // top margin
-            nWidth - marginEditR - 7,
-            nHeight - marginEditB - 7,
-            TRUE
-        );
+        rc = (RECT){ 0,0,52,10 };
+        MapDialogRect(dlg, &rc);
+        int wWrap = rc.right, hWrap = rc.bottom;
+
+        // Move OK
+        MoveWindow(btnOK,
+            w - bw - mOKR,
+            h - bh - mOKB,
+            bw, bh, TRUE);
+
+        // Move Help
+        MoveWindow(btnHelp,
+            w - bw - mHR,
+            h - bh - mHB,
+            bw, bh, TRUE);
+
+        // Move Wrap checkbox
+        MoveWindow(chkWrap,
+            mWrapL,
+            h - hWrap - mWrapB,
+            wWrap, hWrap, TRUE);
+
+        // Move Edit
+        MoveWindow(g_hEdit,
+            7, 7,
+            w - mER - 7,
+            h - mEB - 7,
+            TRUE);
+
         return TRUE;
     }
 
+    case WM_MOUSEWHEEL:
+        SendMessage(g_hEdit, WM_MOUSEWHEEL, wp, lp);
+        return TRUE;
+
+    case WM_CTLCOLOREDIT:
+    {
+        HDC  hdc = (HDC)wp;
+        HWND hwndEd = (HWND)lp;
+        if (hwndEd == g_hEdit)
+        {
+            SetTextColor(hdc, RGB(0, 0, 128));
+            SetBkColor(hdc, RGB(255, 255, 224));
+            return (INT_PTR)g_hBkgBrush;
+        }
+        break;
+    }
+
     case WM_COMMAND:
+        if (LOWORD(wp) == IDC_WORD_WRAP && HIWORD(wp) == BN_CLICKED)
+        {
+            BOOL wrapOn = (IsDlgButtonChecked(dlg, IDC_WORD_WRAP) == BST_CHECKED);
+
+            // Save and destroy old EDIT
+            RECT r;
+            GetWindowRect(g_hEdit, &r);
+            MapWindowPoints(NULL, dlg, (LPPOINT)&r, 2);
+            DestroyWindow(g_hEdit);
+
+            // Build new style
+            DWORD style = WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP
+                | ES_LEFT | ES_MULTILINE | ES_READONLY
+                | ES_AUTOVSCROLL | WS_VSCROLL
+                | (wrapOn ? 0 : WS_HSCROLL);
+
+            // Recreate EDIT
+            g_hEdit = CreateWindowExA(
+                WS_EX_CLIENTEDGE,
+                "EDIT", NULL,
+                style,
+                r.left, r.top,
+                r.right - r.left,
+                r.bottom - r.top,
+                dlg,
+                (HMENU)(INT_PTR)IDC_EDIT_TEXT,
+                GetModuleHandle(NULL),
+                NULL
+            );
+
+            // Restore font & text
+            SendMessageA(g_hEdit, WM_SETFONT, (WPARAM)g_hFont, TRUE);
+            SetWindowTextA(g_hEdit, g_textBuf);
+            SetFocus(g_hEdit);
+
+            return TRUE;
+        }
+
         switch (LOWORD(wp))
         {
         case IDOK:
@@ -186,40 +271,16 @@ LRESULT CALLBACK TextViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
             return TRUE;
 
         case IDC_TEXTVIEWER_HELP:
-            //WinHelp(
-            //    dlg,
-            //    "ADFOpus.hlp",
-            //    HELP_CONTEXT,
-            //    IDH_TEXTVIEWER
-            //);
+            // WinHelp(dlg, "ADFOpus.hlp", HELP_CONTEXT, IDH_TEXTVIEWER);
             return TRUE;
         }
         break;
 
     case WM_CLOSE:
-        if (hBrush) {
-            DeleteObject(hBrush);
-            hBrush = NULL;
-        }
+        if (g_hFont) { DeleteObject(g_hFont);     g_hFont = NULL; }
+        if (g_hBkgBrush) { DeleteObject(g_hBkgBrush); g_hBkgBrush = NULL; }
+        if (g_textBuf) { free(g_textBuf);           g_textBuf = NULL; }
         EndDialog(dlg, TRUE);
-        return TRUE;
-
-    case WM_HELP:
-        //WinHelp(
-        //    ((LPHELPINFO)lp)->hItemHandle,
-        //    "ADFOpus.hlp",
-        //    HELP_WM_HELP,
-        //    (DWORD_PTR)aIds
-        //);
-        return TRUE;
-
-    case WM_CONTEXTMENU:
-        //WinHelp(
-        //    (HWND)wp,
-        //    "ADFOpus.hlp",
-        //    HELP_CONTEXTMENU,
-        //    (DWORD_PTR)aIds
-        //);
         return TRUE;
     }
 

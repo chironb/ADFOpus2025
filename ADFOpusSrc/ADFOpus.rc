@@ -1029,11 +1029,13 @@ END
 
 IDD_TEXT_VIEWER DIALOGEX 0, 0, 357, 254
 STYLE DS_SETFONT | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_APPWINDOW
 CAPTION "Text File Viewer"
-FONT 10, "Courier New", 400, 0, 0x0
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
+    EDITTEXT        IDC_EDIT_TEXT,4,4,343,225,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    CONTROL         "Word Wrap",IDC_WORD_WRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,235,52,10
     DEFPUSHBUTTON   "OK",IDOK,300,233,50,14
-    EDITTEXT        IDC_EDIT_TEXT,7,7,343,225,ES_MULTILINE | ES_READONLY | WS_VSCROLL | WS_HSCROLL
 END
 
 IDD_HEX_VIEWER DIALOGEX 0, 0, 323, 253
@@ -1108,8 +1110,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,14,0,0
- PRODUCTVERSION 2,14,0,0
+ FILEVERSION 2,15,0,0
+ PRODUCTVERSION 2,15,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1127,12 +1129,12 @@ BEGIN
             VALUE "Comments", "File Manager for Amiga Disk Image Files"
             VALUE "CompanyName", "www.Chiron-Studios.com"
             VALUE "FileDescription", "ADF Opus 2025"
-            VALUE "FileVersion", "2.14.0.0"
+            VALUE "FileVersion", "2.15.0.0"
             VALUE "InternalName", "ADFOpus"
             VALUE "LegalCopyright", "Original Copyright (c) 1998-2003 Gary Harris, Dan Sutherland - Updates Copyright (c) 2025 Chiron Bramberger - GNU GPL v2.0"
             VALUE "OriginalFilename", "ADFOpus.exe"
             VALUE "ProductName", "ADF Opus 2025"
-            VALUE "ProductVersion", "2.14.0.0"
+            VALUE "ProductVersion", "2.15.0.0"
         END
     END
     BLOCK "VarFileInfo"
