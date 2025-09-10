@@ -8,6 +8,10 @@ ADF Opus is a free, Open-Source GPL v2 licenced, Windows application that lets y
 
 ![ADF Opus 2025 Screenshot 2](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme2.png?raw=true)
 
+![ADF Opus 2025 Screenshot 2](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme3.png?raw=true)
+
+![ADF Opus 2025 Screenshot 2](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme4.png?raw=true)
+
 New features in the 2025 edition include: 
 - The power to copy, rename, delete and transfer files directly between disk images and your PC’s filesystem.
 - Greaseweazle floppy read/write integration! Read and write your .ADF images to and from real floppy disks using the Greaseweazle hardware and software solution! Make sure you've got the hardware, software and drivers setup for Greaseweazle and then make sure it's installed in: "C:\Program Files\Greaseweazle\gw.exe" and you're good to go!
