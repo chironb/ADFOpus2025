@@ -133,6 +133,7 @@ LRESULT CALLBACK TextViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
         // 7) Load text, focus edit, init checkbox
         SetWindowTextA(g_hEdit, g_textBuf);
         SetFocus(g_hEdit);
+        HideCaret(g_hEdit);
         SendDlgItemMessage(dlg, IDC_WORD_WRAP,
             BM_SETCHECK, BST_UNCHECKED, 0);
         return TRUE;
@@ -260,6 +261,7 @@ LRESULT CALLBACK TextViewerProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
             SendMessageA(g_hEdit, WM_SETFONT, (WPARAM)g_hFont, TRUE);
             SetWindowTextA(g_hEdit, g_textBuf);
             SetFocus(g_hEdit);
+            HideCaret(g_hEdit);
 
             return TRUE;
         }
