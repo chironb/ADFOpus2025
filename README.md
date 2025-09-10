@@ -12,7 +12,7 @@ ADF Opus is a free, Open-Source GPL v2 licenced, Windows application that lets y
 
 ![ADF Opus 2025 Screenshot 4](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme4.png?raw=true)
 
-![ADF Opus 2025 Screenshot 5](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme4.png?raw=true)
+![ADF Opus 2025 Screenshot 5](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme5.png?raw=true)
 
 New features in the 2025 edition include: 
 - The power to copy, rename, delete and transfer files directly between disk images and your PC’s filesystem.
