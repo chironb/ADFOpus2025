@@ -44,6 +44,10 @@
 // 10000001 changes the flags to H---RWE-
 // H and D are flipped. Do this with 0|ACCMASK_H|ACCMASK_D (F&!0ACCMASK_H&!ACCMASK_D).
 
+#include <windows.h>
+#include <shlwapi.h>    // for StrFormatByteSize
+#pragma comment(lib, "Shlwapi.lib")
+
 
 #include "Properties.h"
 
@@ -82,6 +86,62 @@ LRESULT CALLBACK PropertiesProcWin(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		
 		// Fill the appropriate checkboxes.
 		GetPropertiesWin(dlg, DirPtr);
+
+		// Fill the date and time field.
+		WIN32_FILE_ATTRIBUTE_DATA fad;
+		if (GetFileAttributesEx(DirPtr->name, GetFileExInfoStandard, &fad))
+		{
+			// Convert to local SYSTEMTIME
+			FILETIME ftLocal;
+			FileTimeToLocalFileTime(&fad.ftLastWriteTime, &ftLocal);
+
+			SYSTEMTIME st;
+			FileTimeToSystemTime(&ftLocal, &st);
+
+			// Format date as "MMMM d, yyyy" => "September 8, 2025"
+			TCHAR dateBuf[64];
+			GetDateFormat(
+				LOCALE_USER_DEFAULT,
+				0,
+				&st,
+				TEXT("MMMM d, yyyy"),
+				dateBuf,
+				ARRAYSIZE(dateBuf)
+			);
+
+			// Format time as "h:mm:ss tt" => "4:03:23 AM"
+			TCHAR timeBuf[64];
+			GetTimeFormat(
+				LOCALE_USER_DEFAULT,
+				0,
+				&st,
+				TEXT("h:mm:ss tt"),
+				timeBuf,
+				ARRAYSIZE(timeBuf)
+			);
+
+			// Combine and dump into your static control
+			TCHAR dateTimeBuf[128];
+			wsprintf(dateTimeBuf, TEXT("%s, %s"), dateBuf, timeBuf);
+			SetDlgItemText(dlg, IDC_PROPERTIES_DATE_WIN, dateTimeBuf);
+		}
+
+		// 4) New: retrieve & format the file size
+
+		{
+			// Combine High/Low dwords into a 64-bit size
+			ULONGLONG fileSize = ((ULONGLONG)fad.nFileSizeHigh << 32)
+				| fad.nFileSizeLow;
+
+			// Convert to a friendly string: "1.2 MB", "512 bytes", etc.
+			TCHAR sizeBuf[64];
+			StrFormatByteSize(fileSize, sizeBuf, ARRAYSIZE(sizeBuf));
+
+			// And dump into your static control
+			SetDlgItemText(dlg, IDC_PROPERTIES_SIZE_WIN, sizeBuf);
+		}
+
+
 		return TRUE;
 
 	case WM_COMMAND:

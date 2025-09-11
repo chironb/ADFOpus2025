@@ -442,6 +442,30 @@ CLEANUP:
 }
 
 
+#include <windows.h>
+
+// Call this after CreateWindow/ShowWindow (once you know your final window size)
+static void CenterWindow(HWND hwnd, int winWidth, int winHeight)
+{
+	// Get the primary monitor work‐area (excludes taskbar)
+	RECT rcWork;
+	SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWork, 0);
+
+	int screenW = rcWork.right - rcWork.left;
+	int screenH = rcWork.bottom - rcWork.top;
+
+	// Calculate top-left so the window is centered
+	int x = rcWork.left + (screenW - winWidth) / 2;
+	int y = rcWork.top + (screenH - winHeight) / 2;
+
+	// Move & resize
+	SetWindowPos(hwnd,
+		NULL,
+		x, y,
+		winWidth, winHeight,
+		SWP_NOZORDER);
+}
+
 
 
 #include <windows.h>
@@ -471,8 +495,8 @@ LRESULT CALLBACK MainWinProc(
 
 	case WM_CREATE:
 		CreateProc(hwndFrame);
-		SetWindowPos(hwndFrame, NULL, 0, 0, 800, 600,
-			SWP_NOZORDER | SWP_NOMOVE);
+		// SetWindowPos(hwndFrame, NULL, 0, 0, 800, 600, SWP_NOZORDER | SWP_NOMOVE);
+		SetWindowPos(hwndFrame, NULL, 0, 0, 1024, 768, SWP_NOZORDER | SWP_NOMOVE);
 
 		if (!gbFirstTime)
 		{
@@ -1141,212 +1165,703 @@ void doCopy(void *arse)
 	Done = TRUE;
 }
 
-void CopyAmi2Win(char *fileName, char *destPath, struct Volume *vol, long fileSize)
+//void CopyAmi2Win(char *fileName, char *destPath, struct Volume *vol, long fileSize)
+//{
+//	struct File *amiFile;
+//	long act;
+//	DWORD dwActual;
+//	unsigned char buf[600];
+//	HANDLE winFile;
+//	long bread = 0l;
+//
+//	HINSTANCE hInst = GetModuleHandle(NULL);
+//
+//	// Prevent divide by zero and other errors.
+//	if(fileSize <= 0){
+//		MessageBox(ghwndFrame, "Can't copy zero byte file", "ADF Opus Error", MB_OK | MB_ICONERROR);
+//		return;
+//	}
+//
+//	winFile = CreateFile(destPath, GENERIC_WRITE, 0, NULL,
+//		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+//		if (winFile == INVALID_HANDLE_VALUE) {
+//		// Play Sound 1 --> Warning! / Error!
+//		// HINSTANCE hInst = GetModuleHandle(NULL);
+//		if (Options.playSounds)
+//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//		/*end-if*/
+//		MessageBox(ghwndFrame, "Couldn't create destination file.",
+//		"Error", MB_OK);
+//		return;
+//	}
+//
+//	amiFile = adfOpenFile(vol, fileName, "r");
+//	if (! amiFile) {
+//		CloseHandle(winFile);
+//		// Play Sound 1 --> Warning! / Error!
+//		// HINSTANCE hInst = GetModuleHandle(NULL);
+//		if (Options.playSounds)
+//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//		/*end-if*/
+//		MessageBox(ghwndFrame, "Error opening source file (probably"
+//			" a bug)", "Error", MB_OK );
+//		return;
+//	}
+//
+//	/* copy data */
+//	while (! adfEndOfFile(amiFile)) {
+//		act = adfReadFile(amiFile, sizeof(buf), buf);
+//		bread += sizeof(buf);
+//		if (! WriteFile(winFile, buf, act, &dwActual, NULL)) {
+//			CloseHandle(winFile);
+//			// Play Sound 1 --> Warning! / Error!
+//			// HINSTANCE hInst = GetModuleHandle(NULL);
+//			if (Options.playSounds)
+//				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//			/*end-if*/
+//			MessageBox(ghwndFrame, "Error writing destination"
+//			" file (disk full, maybe?)", "Error", MB_OK );
+//			return;
+//		}
+//		Percent = (100 * bread) / fileSize;
+//	}
+//
+//
+//
+//	// Copy Date and Time (longs)
+//	//destFile->fileHdr->days = srcFile->fileHdr->days;	//long	days;  /* Date of last change (days since 1 jan 78).			    */
+//	//destFile->fileHdr->mins = srcFile->fileHdr->mins;	//long	mins;  /* Time of last change (mins since midnight).			    */
+//	//destFile->fileHdr->ticks = srcFile->fileHdr->ticks;	//long	ticks; /* Time of last change (1/50ths of a second since last min). */
+//
+//	// amiFile->fileHdr->days  ;	//long	days;  /* Date of last change (days since 1 jan 78).			    */
+//
+//	// MessageBox(ghwndFrame, amiFile->fileHdr->days "amiFile->fileHdr->days", "Error", MB_OK);
+//
+//	long days = amiFile->fileHdr->days;
+//
+//	// Buffer must be big enough for “-2147483648” plus NUL
+//	TCHAR tempbuf[16];
+//
+//	// If you’re building UNICODE:
+//	wsprintf(tempbuf, TEXT("%ld"), days);
+//
+//	MessageBox(ghwndFrame, tempbuf, TEXT("Days"), MB_OK);
+//
+//	// amiFile->fileHdr->days
+//	// amiFile->fileHdr->mins
+//	// amiFile->fileHdr->ticks
+//
+//
+//	adfCloseFile(amiFile);
+//	CloseHandle(winFile);
+//}
+
+
+
+
+
+
+#include <windows.h>
+
+// Helper: convert Amiga date (days since 1 Jan 1978), minutes since midnight,
+// and ticks (1/50 s) into a SYSTEMTIME.
+static void AmiDateToSystemTime(
+	LONG days,
+	LONG mins,
+	LONG ticks,
+	SYSTEMTIME* pSt
+)
 {
-	struct File *amiFile;
+	// 1 Jan 1978 epoch
+	int year = 1978;
+	LONG dayCount = days;
+
+	// Roll forward year by year
+	while (true)
+	{
+		bool leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+		int daysInYear = leap ? 366 : 365;
+		if (dayCount >= daysInYear)
+		{
+			dayCount -= daysInYear;
+			++year;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	// Month/day within that year
+	static const int mdays[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+	int month = 1;
+	for (int i = 0; i < 12; ++i)
+	{
+		int dim = mdays[i];
+		if (i == 1 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))
+			dim = 29;
+		if (dayCount >= dim)
+		{
+			dayCount -= dim;
+			++month;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	int day = (int)dayCount + 1;
+	int hour = (int)(mins / 60);
+	int minute = (int)(mins % 60);
+	int second = (int)(ticks / 50);
+	int msec = (int)((ticks % 50) * 20);  // each tick = 20 ms
+
+	pSt->wYear = (WORD)year;
+	pSt->wMonth = (WORD)month;
+	pSt->wDay = (WORD)day;
+	pSt->wHour = (WORD)hour;
+	pSt->wMinute = (WORD)minute;
+	pSt->wSecond = (WORD)second;
+	pSt->wMilliseconds = (WORD)msec;
+	pSt->wDayOfWeek = 0;  // not required for FileTime conversion
+}
+
+void CopyAmi2Win(char* fileName, char* destPath, struct Volume* vol, long fileSize)
+{
+	struct File* amiFile;
 	long act;
 	DWORD dwActual;
 	unsigned char buf[600];
 	HANDLE winFile;
 	long bread = 0l;
-
 	HINSTANCE hInst = GetModuleHandle(NULL);
 
-	// Prevent divide by zero and other errors.
-	if(fileSize <= 0){
-		MessageBox(ghwndFrame, "Can't copy zero byte file", "ADF Opus Error", MB_OK | MB_ICONERROR);
+	if (fileSize <= 0)
+	{
+		MessageBox(ghwndFrame,
+			"Can't copy zero byte file",
+			"ADF Opus Error",
+			MB_OK | MB_ICONERROR);
 		return;
 	}
 
-	winFile = CreateFile(destPath, GENERIC_WRITE, 0, NULL,
-		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (winFile == INVALID_HANDLE_VALUE) {
-		// Play Sound 1 --> Warning! / Error!
-		// HINSTANCE hInst = GetModuleHandle(NULL);
+	winFile = CreateFile(destPath,
+		GENERIC_WRITE,
+		0,
+		NULL,
+		CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL,
+		NULL);
+	if (winFile == INVALID_HANDLE_VALUE)
+	{
 		if (Options.playSounds)
-			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-		/*end-if*/
-		MessageBox(ghwndFrame, "Couldn't create destination file.",
-		"Error", MB_OK);
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+				hInst,
+				SND_RESOURCE | SND_ASYNC);
+
+		MessageBox(ghwndFrame,
+			"Couldn't create destination file.",
+			"Error",
+			MB_OK);
 		return;
 	}
 
 	amiFile = adfOpenFile(vol, fileName, "r");
-	if (! amiFile) {
+	if (!amiFile)
+	{
 		CloseHandle(winFile);
-		// Play Sound 1 --> Warning! / Error!
-		// HINSTANCE hInst = GetModuleHandle(NULL);
 		if (Options.playSounds)
-			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-		/*end-if*/
-		MessageBox(ghwndFrame, "Error opening source file (probably"
-			" a bug)", "Error", MB_OK );
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+				hInst,
+				SND_RESOURCE | SND_ASYNC);
+
+		MessageBox(ghwndFrame,
+			"Error opening source file (probably a bug)",
+			"Error",
+			MB_OK);
 		return;
 	}
 
-	/* copy data */
-	while (! adfEndOfFile(amiFile)) {
+	// copy data
+	while (!adfEndOfFile(amiFile))
+	{
 		act = adfReadFile(amiFile, sizeof(buf), buf);
-		bread += sizeof(buf);
-		if (! WriteFile(winFile, buf, act, &dwActual, NULL)) {
+		bread += act;
+		if (!WriteFile(winFile, buf, act, &dwActual, NULL))
+		{
 			CloseHandle(winFile);
-			// Play Sound 1 --> Warning! / Error!
-			// HINSTANCE hInst = GetModuleHandle(NULL);
 			if (Options.playSounds)
-				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-			/*end-if*/
-			MessageBox(ghwndFrame, "Error writing destination"
-			" file (disk full, maybe?)", "Error", MB_OK );
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+					hInst,
+					SND_RESOURCE | SND_ASYNC);
+
+			MessageBox(ghwndFrame,
+				"Error writing destination file (disk full?)",
+				"Error",
+				MB_OK);
+			adfCloseFile(amiFile);
 			return;
 		}
 		Percent = (100 * bread) / fileSize;
 	}
+
+	// === NEW: Set creation and modified timestamps ===
+	{
+		SYSTEMTIME stLocal;
+		AmiDateToSystemTime(amiFile->fileHdr->days,
+			amiFile->fileHdr->mins,
+			amiFile->fileHdr->ticks,
+			&stLocal);
+
+		// Local SYSTEMTIME -> local FILETIME -> UTC FILETIME
+		FILETIME ftLocal, ftUTC;
+		SystemTimeToFileTime(&stLocal, &ftLocal);
+		LocalFileTimeToFileTime(&ftLocal, &ftUTC);
+
+		// Apply the same timestamp to creation, access, and write times
+		SetFileTime(winFile, &ftUTC, &ftUTC, &ftUTC);
+	}
+
 	adfCloseFile(amiFile);
 	CloseHandle(winFile);
 }
 
-void CopyWin2Ami(char *fileName, char *srcPath, struct Volume *vol, long fileSize)
-{
-	struct File *amiFile;
-	HANDLE winFile;
-	unsigned char buf[600];
-	DWORD act;
-	char errMess[200];
-	long bread = 0, bn;
-	
-	HINSTANCE hInst = GetModuleHandle(NULL);
 
-	// Prevent divide by zero and other errors.
-	if(fileSize <= 0){
-		MessageBox(ghwndFrame, "Can't copy zero byte file", "ADF Opus Error", MB_OK | MB_ICONERROR);
+
+
+
+
+
+
+//void CopyWin2Ami(char *fileName, char *srcPath, struct Volume *vol, long fileSize)
+//{
+//	struct File *amiFile;
+//	HANDLE winFile;
+//	unsigned char buf[600];
+//	DWORD act;
+//	char errMess[200];
+//	long bread = 0, bn;
+//	
+//	HINSTANCE hInst = GetModuleHandle(NULL);
+//
+//	// Prevent divide by zero and other errors.
+//	if(fileSize <= 0){
+//		MessageBox(ghwndFrame, "Can't copy zero byte file", "ADF Opus Error", MB_OK | MB_ICONERROR);
+//		return;
+//	}
+//
+//	bn = adfFileRealSize(fileSize, LOGICAL_BLOCK_SIZE, NULL, NULL);
+//	if (adfCountFreeBlocks(vol) < bn) {
+//		// Play Sound 1 --> Warning! / Error!
+//		// HINSTANCE hInst = GetModuleHandle(NULL);
+//		if (Options.playSounds)
+//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//		/*end-if*/
+//		MessageBox(ghwndFrame, "Could not copy file. There is insufficient "
+//			"free space on the destination volume.", "Error", MB_OK);
+//		return;
+//	}
+//
+//	/* open source file */
+//	winFile = CreateFile(srcPath, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+//		0, NULL);
+//	if (winFile == INVALID_HANDLE_VALUE) {
+//		// Play Sound 1 --> Warning! / Error!
+//		// HINSTANCE hInst = GetModuleHandle(NULL);
+//		if (Options.playSounds)
+//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//		/*end-if*/
+//		MessageBox(ghwndFrame, "Couldn't open source file.",
+//		"Error", MB_OK );
+//		return;
+//	}
+//
+//	/* open dest file */
+//	amiFile = adfOpenFile(vol, fileName, "w");
+//
+//	if (! amiFile) {
+//		CloseHandle(winFile);
+//		// Play Sound 1 --> Warning! / Error!
+//		// HINSTANCE hInst = GetModuleHandle(NULL);
+//		if (Options.playSounds)
+//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//		/*end-if*/
+//		MessageBox(ghwndFrame, "Error opening destination file (volume"
+//			" full perhaps?)", "Error", MB_OK);
+//		return;
+//	}
+//
+//	/* write the file */
+//	act = 1;
+//	while (act > 0) {
+//		(void)ReadFile(winFile, buf, sizeof(buf), &act, NULL);
+//		bread += sizeof(buf);
+//		if (adfWriteFile(amiFile, act, buf) != (long)act) {
+//			CloseHandle(winFile);
+//			adfCloseFile(amiFile);
+//			// Play Sound 1 --> Warning! / Error!
+//			// HINSTANCE hInst = GetModuleHandle(NULL);
+//			if (Options.playSounds)
+//				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//			/*end-if*/
+//			sprintf(errMess, "Could not write file '%s'.  Not enough free space on volume.", fileName);
+//			MessageBox(ghwndFrame, errMess, "Error", MB_OK);
+//			return;
+//		}
+//		Percent = (100 * bread) / fileSize;
+//	}
+//
+//	adfCloseFile(amiFile);
+//	CloseHandle(winFile);
+//}
+
+
+
+#include <windows.h>
+
+// Helper: convert a LOCAL SYSTEMTIME into Amiga days/mins/ticks
+static void SystemTimeToAmiDate(
+	const SYSTEMTIME* st,
+	LONG* outDays,
+	LONG* outMins,
+	LONG* outTicks
+)
+{
+	// 1 Jan 1978 epoch
+	LONG days = 0;
+	for (int y = 1978; y < st->wYear; ++y)
+	{
+		bool leap = (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0));
+		days += leap ? 366 : 365;
+	}
+
+	static const int mdays[12] =
+	{ 31,28,31,30,31,30,31,31,30,31,30,31 };
+	bool isLeap = (st->wYear % 4 == 0 &&
+		(st->wYear % 100 != 0 || st->wYear % 400 == 0));
+	for (int m = 1; m < st->wMonth; ++m)
+	{
+		int dim = mdays[m - 1];
+		if (m == 2 && isLeap) dim = 29;
+		days += dim;
+	}
+
+	days += (st->wDay - 1);
+
+	*outDays = days;
+	*outMins = st->wHour * 60 + st->wMinute;
+	*outTicks = st->wSecond * 50 + (st->wMilliseconds / 20);
+}
+
+void CopyWin2Ami(
+	char* fileName,
+	char* srcPath,
+	struct Volume* vol,
+	long         fileSize
+)
+{
+	struct File* amiFile;
+	HANDLE       winFile;
+	unsigned char buf[600];
+	DWORD         act;
+	char          errMess[200];
+	long          bread = 0, bn;
+	HINSTANCE     hInst = GetModuleHandle(NULL);
+
+	if (fileSize <= 0)
+	{
+		MessageBox(ghwndFrame,
+			"Can't copy zero byte file",
+			"ADF Opus Error",
+			MB_OK | MB_ICONERROR);
 		return;
 	}
 
 	bn = adfFileRealSize(fileSize, LOGICAL_BLOCK_SIZE, NULL, NULL);
-	if (adfCountFreeBlocks(vol) < bn) {
-		// Play Sound 1 --> Warning! / Error!
-		// HINSTANCE hInst = GetModuleHandle(NULL);
+	if (adfCountFreeBlocks(vol) < bn)
+	{
 		if (Options.playSounds)
-			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-		/*end-if*/
-		MessageBox(ghwndFrame, "Could not copy file. There is insufficient "
-			"free space on the destination volume.", "Error", MB_OK);
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+				hInst,
+				SND_RESOURCE | SND_ASYNC);
+
+		MessageBox(ghwndFrame,
+			"Could not copy file. There is insufficient free space on the destination volume.",
+			"Error",
+			MB_OK);
 		return;
 	}
 
-	/* open source file */
-	winFile = CreateFile(srcPath, GENERIC_READ, 0, NULL, OPEN_EXISTING,
-		0, NULL);
-	if (winFile == INVALID_HANDLE_VALUE) {
-		// Play Sound 1 --> Warning! / Error!
-		// HINSTANCE hInst = GetModuleHandle(NULL);
+	// 1) Open the source Windows file
+	winFile = CreateFile(srcPath,
+		GENERIC_READ,
+		0,
+		NULL,
+		OPEN_EXISTING,
+		0,
+		NULL);
+	if (winFile == INVALID_HANDLE_VALUE)
+	{
 		if (Options.playSounds)
-			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-		/*end-if*/
-		MessageBox(ghwndFrame, "Couldn't open source file.",
-		"Error", MB_OK );
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+				hInst,
+				SND_RESOURCE | SND_ASYNC);
+
+		MessageBox(ghwndFrame,
+			"Couldn't open source file.",
+			"Error",
+			MB_OK);
 		return;
 	}
 
-	/* open dest file */
-	amiFile = adfOpenFile(vol, fileName, "w");
+	// 2) Read its Creation time and convert to Amiga date fields
+	{
+		FILETIME ftCreate, ftAccess, ftWrite;
+		if (GetFileTime(winFile, &ftCreate, &ftAccess, &ftWrite))
+		{
+			// UTC FILETIME -> local FILETIME -> SYSTEMTIME (local)
+			FILETIME   ftLocal;
+			SYSTEMTIME stLocal;
+			FileTimeToLocalFileTime(&ftCreate, &ftLocal);
+			FileTimeToSystemTime(&ftLocal, &stLocal);
 
-	if (! amiFile) {
-		CloseHandle(winFile);
-		// Play Sound 1 --> Warning! / Error!
-		// HINSTANCE hInst = GetModuleHandle(NULL);
-		if (Options.playSounds)
-			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-		/*end-if*/
-		MessageBox(ghwndFrame, "Error opening destination file (volume"
-			" full perhaps?)", "Error", MB_OK);
-		return;
+			LONG days, mins, ticks;
+			SystemTimeToAmiDate(&stLocal, &days, &mins, &ticks);
+
+			// 3) Open (or create) the Amiga file and set its header
+			amiFile = adfOpenFile(vol, fileName, "w");
+			if (!amiFile)
+			{
+				CloseHandle(winFile);
+				if (Options.playSounds)
+					PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+						hInst,
+						SND_RESOURCE | SND_ASYNC);
+
+				MessageBox(ghwndFrame,
+					"Error opening destination file (volume full perhaps?)",
+					"Error",
+					MB_OK);
+				return;
+			}
+
+			amiFile->fileHdr->days = days;
+			amiFile->fileHdr->mins = mins;
+			amiFile->fileHdr->ticks = ticks;
+		}
+		else
+		{
+			// Fallback: still need to open the Amiga file if timestamp fetch fails
+			amiFile = adfOpenFile(vol, fileName, "w");
+			if (!amiFile)
+			{
+				CloseHandle(winFile);
+				MessageBox(ghwndFrame,
+					"Error opening destination file after time fetch failed.",
+					"Error",
+					MB_OK);
+				return;
+			}
+		}
 	}
 
-	/* write the file */
+	// 4) Copy data from Windows file into Amiga file
 	act = 1;
-	while (act > 0) {
-		(void)ReadFile(winFile, buf, sizeof(buf), &act, NULL);
-		bread += sizeof(buf);
-		if (adfWriteFile(amiFile, act, buf) != (long)act) {
+	while (act > 0)
+	{
+		ReadFile(winFile, buf, sizeof(buf), &act, NULL);
+		bread += act;
+		if (adfWriteFile(amiFile, act, buf) != (long)act)
+		{
 			CloseHandle(winFile);
 			adfCloseFile(amiFile);
-			// Play Sound 1 --> Warning! / Error!
-			// HINSTANCE hInst = GetModuleHandle(NULL);
 			if (Options.playSounds)
-				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-			/*end-if*/
-			sprintf(errMess, "Could not write file '%s'.  Not enough free space on volume.", fileName);
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+					hInst,
+					SND_RESOURCE | SND_ASYNC);
+
+			sprintf(errMess,
+				"Could not write file '%s'. Not enough free space on volume.",
+				fileName);
 			MessageBox(ghwndFrame, errMess, "Error", MB_OK);
 			return;
 		}
 		Percent = (100 * bread) / fileSize;
 	}
 
-	adfCloseFile(amiFile);
+	// 5) Close handles (adfCloseFile will write out your updated date fields)
+	adfCloseFileNoDate(amiFile);
 	CloseHandle(winFile);
+
 }
 
-void CopyWin2Win(char *srcPath, char *destPath)
-{
-	HANDLE srcFile, destFile;
-	unsigned char buf[600];
-	DWORD read, written, crap;
-	long fileSize, bread = 0;
 
+
+//void CopyWin2Win(char *srcPath, char *destPath)
+//{
+//	HANDLE srcFile, destFile;
+//	unsigned char buf[600];
+//	DWORD read, written, crap;
+//	long fileSize, bread = 0;
+//
+//	HINSTANCE hInst = GetModuleHandle(NULL);
+//
+//	/* open source file */
+//	srcFile = CreateFile(srcPath, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+//	if (srcFile == INVALID_HANDLE_VALUE) {
+//		// Play Sound 1 --> Warning! / Error!
+//		// HINSTANCE hInst = GetModuleHandle(NULL);
+//		if (Options.playSounds)
+//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//		/*end-if*/
+//		MessageBox(ghwndFrame, "Couldn't open source file.",
+//		"Error", MB_OK);
+//		return;
+//	}
+//
+//	fileSize = GetFileSize(srcFile, &crap);
+//
+//	/* open dest file */
+//	destFile = CreateFile(destPath, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+//		0, NULL);
+//	if (destFile == INVALID_HANDLE_VALUE) {
+//		CloseHandle(srcFile);
+//		// Play Sound 1 --> Warning! / Error!
+//		// HINSTANCE hInst = GetModuleHandle(NULL);
+//		if (Options.playSounds)
+//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//		/*end-if*/
+//		MessageBox(ghwndFrame, "Couldn't create destination file.",
+//		"Error", MB_OK);
+//		return;
+//	}
+//
+//	/* copy data */
+//	read = 1;
+//	while (read) {
+//		(void)ReadFile(srcFile, buf, sizeof(buf), &read, NULL);
+//		bread += sizeof(buf);
+//		WriteFile(destFile, buf, read, &written, NULL);
+//		if (written != read) {
+//			// Play Sound 1 --> Warning! / Error!
+//			// HINSTANCE hInst = GetModuleHandle(NULL);
+//			if (Options.playSounds)
+//				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+//			/*end-if*/
+//			MessageBox(ghwndFrame, "Error writing destination "
+//				"file.  Maybe disk full?", "Error", MB_OK);
+//			CloseHandle(srcFile);
+//			CloseHandle(destFile);
+//			return;
+//		}
+//		Percent = (100 * bread) / fileSize;
+//	}
+//
+//	CloseHandle(srcFile);
+//	CloseHandle(destFile);
+//}
+
+
+
+
+
+
+
+#include <windows.h>
+
+void CopyWin2Win(char* srcPath, char* destPath)
+{
+	HANDLE    srcFile, destFile;
+	unsigned char buf[600];
+	DWORD     readBytes = 1, written = 0, highSize = 0;
+	long      fileSize, bread = 0;
+	FILETIME  ftCreate, ftAccess, ftWrite;
 	HINSTANCE hInst = GetModuleHandle(NULL);
 
-	/* open source file */
-	srcFile = CreateFile(srcPath, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+	// 1) Open source file for reading
+	srcFile = CreateFile(
+		srcPath,
+		GENERIC_READ,
+		FILE_SHARE_READ,
+		NULL,
+		OPEN_EXISTING,
+		0,
+		NULL
+	);
 	if (srcFile == INVALID_HANDLE_VALUE) {
-		// Play Sound 1 --> Warning! / Error!
-		// HINSTANCE hInst = GetModuleHandle(NULL);
 		if (Options.playSounds)
-			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-		/*end-if*/
-		MessageBox(ghwndFrame, "Couldn't open source file.",
-		"Error", MB_OK);
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+				hInst,
+				SND_RESOURCE | SND_ASYNC);
+		MessageBox(ghwndFrame,
+			"Couldn't open source file.",
+			"Error",
+			MB_OK);
 		return;
 	}
 
-	fileSize = GetFileSize(srcFile, &crap);
+	// 2) Grab the source file's timestamps
+	if (!GetFileTime(srcFile, &ftCreate, &ftAccess, &ftWrite)) {
+		// If timestamp retrieval fails, zero them (destFile will get "now")
+		ZeroMemory(&ftCreate, sizeof(ftCreate));
+		ZeroMemory(&ftAccess, sizeof(ftAccess));
+		ZeroMemory(&ftWrite, sizeof(ftWrite));
+	}
 
-	/* open dest file */
-	destFile = CreateFile(destPath, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
-		0, NULL);
+	// 3) Determine source file size (for progress calculation)
+	fileSize = (long)GetFileSize(srcFile, &highSize);
+
+	// 4) Create destination file for writing
+	destFile = CreateFile(
+		destPath,
+		GENERIC_WRITE | FILE_WRITE_ATTRIBUTES,
+		0,
+		NULL,
+		CREATE_ALWAYS,
+		0,
+		NULL
+	);
 	if (destFile == INVALID_HANDLE_VALUE) {
 		CloseHandle(srcFile);
-		// Play Sound 1 --> Warning! / Error!
-		// HINSTANCE hInst = GetModuleHandle(NULL);
 		if (Options.playSounds)
-			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-		/*end-if*/
-		MessageBox(ghwndFrame, "Couldn't create destination file.",
-		"Error", MB_OK);
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+				hInst,
+				SND_RESOURCE | SND_ASYNC);
+		MessageBox(ghwndFrame,
+			"Couldn't create destination file.",
+			"Error",
+			MB_OK);
 		return;
 	}
 
-	/* copy data */
-	read = 1;
-	while (read) {
-		(void)ReadFile(srcFile, buf, sizeof(buf), &read, NULL);
-		bread += sizeof(buf);
-		WriteFile(destFile, buf, read, &written, NULL);
-		if (written != read) {
-			// Play Sound 1 --> Warning! / Error!
-			// HINSTANCE hInst = GetModuleHandle(NULL);
+	// 5) Copy the data
+	while (readBytes > 0) {
+		ReadFile(srcFile, buf, sizeof(buf), &readBytes, NULL);
+		if (readBytes == 0) break;
+
+		if (!WriteFile(destFile, buf, readBytes, &written, NULL)
+			|| written != readBytes) {
 			if (Options.playSounds)
-				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-			/*end-if*/
-			MessageBox(ghwndFrame, "Error writing destination "
-				"file.  Maybe disk full?", "Error", MB_OK);
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
+					hInst,
+					SND_RESOURCE | SND_ASYNC);
+			MessageBox(ghwndFrame,
+				"Error writing destination file. Maybe disk full?",
+				"Error",
+				MB_OK);
 			CloseHandle(srcFile);
 			CloseHandle(destFile);
 			return;
 		}
+		bread += readBytes;
 		Percent = (100 * bread) / fileSize;
 	}
 
+	// 6) Apply the original timestamps to the new file
+	SetFileTime(destFile, &ftCreate, &ftAccess, &ftWrite);
+
+	// 7) Clean up
 	CloseHandle(srcFile);
 	CloseHandle(destFile);
 }

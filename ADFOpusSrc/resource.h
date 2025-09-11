@@ -257,6 +257,8 @@
 #define IDC_CHECK1                      1181
 #define IDC_WORD_WRAP                   1181
 #define IDC_OPLAYSOUNDS                 1181
+#define IDC_PROPERTIES_DATE_WIN         1182
+#define IDC_PROPERTIES_SIZE_WIN         1183
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -397,9 +399,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        249
+#define _APS_NEXT_RESOURCE_VALUE        250
 #define _APS_NEXT_COMMAND_VALUE         40145
-#define _APS_NEXT_CONTROL_VALUE         1182
+#define _APS_NEXT_CONTROL_VALUE         1184
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif
