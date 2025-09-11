@@ -74,8 +74,8 @@
 #define IDD_GREASEWEAZLE_WRITE          231
 #define IDD_HEX_FILE_VIEWER             232
 #define IDD_HEX_VIEWER                  233
-#define IDR_WAVE1                       247
 #define IDR_NOTIFICATION_WAVE_2         247
+#define IDR_NOTIFICATION_WAVE_3         248
 #define IDC_NEWPATH                     1004
 #define IDC_NEWADF                      1005
 #define IDC_NEWHARDFILE                 1006
@@ -256,6 +256,7 @@
 #define IDC_OAUTOPANEONHOVER            1180
 #define IDC_CHECK1                      1181
 #define IDC_WORD_WRAP                   1181
+#define IDC_OPLAYSOUNDS                 1181
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -396,7 +397,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        248
+#define _APS_NEXT_RESOURCE_VALUE        249
 #define _APS_NEXT_COMMAND_VALUE         40145
 #define _APS_NEXT_CONTROL_VALUE         1182
 #define _APS_NEXT_SYMED_VALUE           102

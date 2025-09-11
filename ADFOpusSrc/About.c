@@ -10,6 +10,9 @@
 
 extern HWND ghwndSB;
 
+#include <Options.h>
+extern struct OPTIONS Options;
+
 // About dialog procedure
 LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -34,12 +37,11 @@ LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
             );
         }
 
-        // hInst is the HINSTANCE passed into WinMain <-- This works here too!
-        PlaySound(
-            MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_2),
-            hInst,
-            SND_RESOURCE | SND_ASYNC
-        );
+        // Play Sound 2 --> Everything Okay! / Task Complete!
+        //HINSTANCE hInst = GetModuleHandle(NULL);
+        if (Options.playSounds)
+            PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_2), hInst, SND_RESOURCE | SND_ASYNC);
+        /*end-if*/
 
         // 2) Retrieve the FileVersion string from VERSIONINFO
         char versionStr[64] = "";

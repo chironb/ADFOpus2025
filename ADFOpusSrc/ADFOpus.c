@@ -249,11 +249,16 @@ BOOL MakeGoodOutputFilename(
 	// 2) Check that the file doesn’t already exist
 	if (GetFileAttributesA(path) != INVALID_FILE_ATTRIBUTES)
 	{
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBoxA(
 			hwndDlg,
 			"File already exists! Please choose another filename.",
 			"Error",
-			MB_OK | MB_ICONERROR
+			MB_OK
 		);
 		return false;
 	}
@@ -274,16 +279,10 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 	int   ti;
 	int   i;
 
-	//// hInst is the HINSTANCE passed into WinMain <-- This works here!
-	//PlaySound(
-	//	MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
-	//	inst,
-	//	SND_RESOURCE | SND_ASYNC
-	//);
-
-
+	// Chiron TODO: Do we need this anymore? I think the Text Viewer is using just a regular viewer!
+	// DONE: I guess not!
 	// Must load BEFORE the dialog is created
-	LoadLibraryA("Riched20.dll");
+	// LoadLibraryA("Riched20.dll");
 
 	// 1) stash raw command line
 	strcpy_s(gstrCmdLineArgs,
@@ -983,17 +982,33 @@ VOID DestroyProc(HWND hwndFrame)
  */
 VOID ADFError(char *strMessage)
 {
-	MessageBox(ghwndFrame, strMessage, "ADFLib Error", MB_OK | MB_ICONERROR);
+	// Play Sound 1 --> Warning! / Error!
+	HINSTANCE hInst = GetModuleHandle(NULL);
+	if (Options.playSounds)
+		PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+	/*end-if*/
+	MessageBox(ghwndFrame, strMessage, "ADFLib Error", MB_OK );
 }
 
 VOID ADFWarning(char *strMessage)
 {
-	MessageBox(ghwndFrame, strMessage, "ADFLib Warning", MB_OK | MB_ICONWARNING);
+	// Play Sound 1 --> Warning! / Error!
+	HINSTANCE hInst = GetModuleHandle(NULL);
+	if (Options.playSounds)
+		PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+	/*end-if*/
+	MessageBox(ghwndFrame, strMessage, "ADFLib Warning", MB_OK );
 }
 
 VOID ADFVerbose(char *strMessage)
 {
-	MessageBox(ghwndFrame, strMessage, "ADFLib Message", MB_OK | MB_ICONINFORMATION);
+	// Play Sound 1 --> Warning! / Error!
+	HINSTANCE hInst = GetModuleHandle(NULL);
+	if (Options.playSounds)
+		PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+	/*end-if*/
+
+	MessageBox(ghwndFrame, strMessage, "ADFLib Message", MB_OK );
 }
 
 void ADFAccess(SECTNUM physical, SECTNUM logical, BOOL write) // ABOUT THAT WARNING *** NOTE THIS OFTEN THROWS AN ERROR BUT LIKE LEAVE IT ALONE FOR NOW! IT'S FINE... I think... Warning: 'typedef ': ignored on left of 'unsigned __int64' when no variable is declared
@@ -1181,6 +1196,8 @@ void CopyWin2Ami(char *fileName, char *srcPath, struct Volume *vol, long fileSiz
 	DWORD act;
 	char errMess[200];
 	long bread = 0, bn;
+	
+	HINSTANCE hInst = GetModuleHandle(NULL);
 
 	// Prevent divide by zero and other errors.
 	if(fileSize <= 0){
@@ -1190,8 +1207,13 @@ void CopyWin2Ami(char *fileName, char *srcPath, struct Volume *vol, long fileSiz
 
 	bn = adfFileRealSize(fileSize, LOGICAL_BLOCK_SIZE, NULL, NULL);
 	if (adfCountFreeBlocks(vol) < bn) {
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Could not copy file. There is insufficient "
-			"free space on the destination volume.", "Error", MB_OK | MB_ICONERROR);
+			"free space on the destination volume.", "Error", MB_OK);
 		return;
 	}
 
@@ -1199,8 +1221,13 @@ void CopyWin2Ami(char *fileName, char *srcPath, struct Volume *vol, long fileSiz
 	winFile = CreateFile(srcPath, GENERIC_READ, 0, NULL, OPEN_EXISTING,
 		0, NULL);
 	if (winFile == INVALID_HANDLE_VALUE) {
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Couldn't open source file.",
-		"Error", MB_OK | MB_ICONERROR);
+		"Error", MB_OK );
 		return;
 	}
 
@@ -1209,8 +1236,13 @@ void CopyWin2Ami(char *fileName, char *srcPath, struct Volume *vol, long fileSiz
 
 	if (! amiFile) {
 		CloseHandle(winFile);
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Error opening destination file (volume"
-			" full perhaps?)", "Error", MB_OK | MB_ICONERROR);
+			" full perhaps?)", "Error", MB_OK);
 		return;
 	}
 
@@ -1222,8 +1254,13 @@ void CopyWin2Ami(char *fileName, char *srcPath, struct Volume *vol, long fileSiz
 		if (adfWriteFile(amiFile, act, buf) != (long)act) {
 			CloseHandle(winFile);
 			adfCloseFile(amiFile);
+			// Play Sound 1 --> Warning! / Error!
+			// HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds)
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			/*end-if*/
 			sprintf(errMess, "Could not write file '%s'.  Not enough free space on volume.", fileName);
-			MessageBox(ghwndFrame, errMess, "Error", MB_OK | MB_ICONERROR);
+			MessageBox(ghwndFrame, errMess, "Error", MB_OK);
 			return;
 		}
 		Percent = (100 * bread) / fileSize;
@@ -1240,11 +1277,18 @@ void CopyWin2Win(char *srcPath, char *destPath)
 	DWORD read, written, crap;
 	long fileSize, bread = 0;
 
+	HINSTANCE hInst = GetModuleHandle(NULL);
+
 	/* open source file */
 	srcFile = CreateFile(srcPath, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
 	if (srcFile == INVALID_HANDLE_VALUE) {
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Couldn't open source file.",
-		"Error", MB_OK | MB_ICONERROR);
+		"Error", MB_OK);
 		return;
 	}
 
@@ -1255,8 +1299,13 @@ void CopyWin2Win(char *srcPath, char *destPath)
 		0, NULL);
 	if (destFile == INVALID_HANDLE_VALUE) {
 		CloseHandle(srcFile);
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Couldn't create destination file.",
-		"Error", MB_OK | MB_ICONERROR);
+		"Error", MB_OK);
 		return;
 	}
 
@@ -1267,9 +1316,13 @@ void CopyWin2Win(char *srcPath, char *destPath)
 		bread += sizeof(buf);
 		WriteFile(destFile, buf, read, &written, NULL);
 		if (written != read) {
+			// Play Sound 1 --> Warning! / Error!
+			// HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds)
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			/*end-if*/
 			MessageBox(ghwndFrame, "Error writing destination "
-				"file.  Maybe disk full?", "Error", MB_OK |
-				MB_ICONERROR);
+				"file.  Maybe disk full?", "Error", MB_OK);
 			CloseHandle(srcFile);
 			CloseHandle(destFile);
 			return;
@@ -1289,17 +1342,28 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 	long bread = 0;
 	long bn;
 
+	HINSTANCE hInst = GetModuleHandle(NULL);
 
 	// Prevent divide by zero and other errors.
 	if(fileSize <= 0){
-		MessageBox(ghwndFrame, "Can't copy zero byte file", "ADF Opus Error", MB_OK | MB_ICONERROR);
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
+		MessageBox(ghwndFrame, "Can't copy zero byte file", "ADF Opus Error", MB_OK);
 		return;
 	}
 
 	bn = adfFileRealSize(fileSize, LOGICAL_BLOCK_SIZE, NULL, NULL);
 	if (adfCountFreeBlocks(destVol) < bn) {
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Could not copy file. There is insufficient "
-			"free space on the destination volume.", "Error", MB_OK | MB_ICONERROR);
+			"free space on the destination volume.", "Error", MB_OK);
 		return;
 	}
 
@@ -1307,8 +1371,13 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 	srcFile = adfOpenFile(srcVol, fileName, "r");
 
 	if (! srcFile) {
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Error opening source file (probably"
-			" a bug).", "Error", MB_OK | MB_ICONERROR);
+			" a bug).", "Error", MB_OK);
 		return;
 	}
 
@@ -1317,8 +1386,13 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 
 	if (! destFile) {
 		adfCloseFile(srcFile);
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Error opening destination file"
-			" (probably a bug).", "Error", MB_OK | MB_ICONERROR);
+			" (probably a bug).", "Error", MB_OK);
 		return;
 	}
 
@@ -1330,8 +1404,13 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 		if (written != read) {
 			adfCloseFile(srcFile);
 			adfCloseFile(destFile);
+			// Play Sound 1 --> Warning! / Error!
+			// HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds)
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			/*end-if*/
 			MessageBox(ghwndFrame, "Error writing destination file (volume full?).",
-				"ADF Opus Error", MB_OK | MB_ICONERROR);
+				"ADF Opus Error", MB_OK);
 		}
 		Percent = (100 * bread) / fileSize;
 	}

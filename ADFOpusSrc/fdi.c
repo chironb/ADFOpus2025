@@ -546,13 +546,11 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 		case ID_GW_WRITE_START:
 
+			// Play Sound 3 --> Alert / Are You Sure? 
 			HINSTANCE hInst = GetModuleHandle(NULL);
-			// hInst is the HINSTANCE passed into WinMain <-- This works here too!
-			PlaySound(
-				MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
-				hInst,
-				SND_RESOURCE | SND_ASYNC
-			);
+			if (Options.playSounds)
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+			/*end-if*/
 
 			// Confirm before commencing a floppy drive write.
 			if (MessageBox(
@@ -597,11 +595,16 @@ void RunGreaseweazleWrite(HWND dlg)
 	int  idx = (int)SendMessage(hCombo, CB_GETCURSEL, 0, 0);
 	if (idx == CB_ERR)
 	{
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBoxA(
 			dlg,
 			"Please select an Amiga disk image (.adf) to write.",
 			"No File Selected",
-			MB_OK | MB_ICONWARNING
+			MB_OK
 		);
 		return;
 	}
@@ -624,6 +627,11 @@ void RunGreaseweazleWrite(HWND dlg)
 	CHAR gwPath[MAX_PATH];
 	if (!PathCombineA(gwPath, gwDir, gwExe))
 	{
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBoxA(
 			dlg,
 			"Failed to locate Greaseweazle executable.",
@@ -670,6 +678,11 @@ void RunGreaseweazleWrite(HWND dlg)
 			"--format=amiga.amigados_hd");
 	}
 	else {		
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		// If we get here, something’s wrong. This means it's a weird format.
 		MessageBoxA(dlg, "Error: Format unrecognized. Can't run Greaseweazle!", "Error:", MB_OK);
 		
@@ -708,6 +721,11 @@ void RunGreaseweazleWrite(HWND dlg)
 		CREATE_NEW_CONSOLE,
 		NULL, NULL, &si, &pi))
 	{
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 
 		MessageBoxA(dlg, "Can't access the Greaseweazle application! Check the path...", "Failed!:", MB_OK | MB_ICONERROR);
 		MessageBoxA(dlg, gwPath, "Failed! Check gwPath:", MB_OK | MB_ICONERROR);
@@ -718,6 +736,11 @@ void RunGreaseweazleWrite(HWND dlg)
 	hProc = OpenProcess(SYNCHRONIZE, FALSE, pi.dwProcessId);
 	WaitForSingleObject(hProc, INFINITE);
 	CloseHandle(hProc);
+	// Play Sound 2 --> Everything Okay! / Task Complete!
+	HINSTANCE hInst = GetModuleHandle(NULL);
+	if (Options.playSounds)
+		PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_2), hInst, SND_RESOURCE | SND_ASYNC);
+	/*end-if*/
 	EndDialog(dlg, TRUE);
 
 
@@ -809,6 +832,11 @@ BOOL RunGreaseweazle(HWND dlg)
 	CHAR batchFullPath[MAX_PATH];
 	if (!PathCombineA(batchFullPath, greaseweazlePATH, greaseweazleEXE))
 	{
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBoxA(
 			dlg,
 			"Failed to combine Greaseweazle path.\n"
@@ -913,8 +941,18 @@ BOOL RunGreaseweazle(HWND dlg)
 	//if ( !CreateProcessA(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
 	if ( !CreateProcess(batchFullPath, gwArgs, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi) ) {
 
-		MessageBoxA( dlg, "Can't access the Greaseweazle application! Check the path...", "Failed!:", MB_OK | MB_ICONERROR);
-		MessageBoxA( dlg, batchFullPath, "Failed! Check batchFullPath:", MB_OK | MB_ICONERROR );
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
+		MessageBox( dlg, "Can't access the Greaseweazle application! Check the path...", "Failed!:", MB_OK );
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
+		MessageBox( dlg, batchFullPath, "Failed! Check batchFullPath:", MB_OK );
 	
 	}
 
@@ -935,6 +973,11 @@ BOOL RunGreaseweazle(HWND dlg)
 		CloseHandle(hProc);
 		EndDialog(dlg, TRUE);
 		CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+		// Play Sound 2 --> Everything Okay! / Task Complete!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_2), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 	}
 	return TRUE;
 

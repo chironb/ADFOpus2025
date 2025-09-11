@@ -18,6 +18,8 @@
  /* externs from your codebase */
 extern char dirOpus[MAX_PATH];
 
+#include <Options.h>
+extern struct OPTIONS Options;
 
 //#include "Install.h"
 //
@@ -103,17 +105,19 @@ int InstallBootBlock(HWND win, struct Volume* vol, BOOL bNewAdf)
     FILE* fp;
     // DWORD          read;
 
-
+// Play Sound 3 --> Alert / Are You Sure? 
     HINSTANCE hInst = GetModuleHandle(NULL);
-    // hInst is the HINSTANCE passed into WinMain <-- This works here too!
-    PlaySound(
-        MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1),
-        hInst,
-        SND_RESOURCE | SND_ASYNC
-    );
+    if (Options.playSounds)
+        PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+    /*end-if*/
 
     // If this is a new ADF or user confirms overwrite...
     //if (bNewAdf || MessageBoxA(win, szWarning, "ADF Opus Warning!", MB_YESNO | MB_ICONWARNING) == IDYES)
+    // Play Sound 3 --> Alert / Are You Sure? 
+    //HINSTANCE hInst = GetModuleHandle(NULL);
+    if (Options.playSounds)
+        PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+    /*end-if*/
     if (bNewAdf || MessageBoxA(win, szWarning, "ADF Opus Warning!", MB_YESNO ) == IDYES)
     {
         // Build default "Boot" subfolder path
@@ -143,6 +147,11 @@ int InstallBootBlock(HWND win, struct Volume* vol, BOOL bNewAdf)
         // Read exactly 1024 bytes
         if (fread(bootcode, 1, sizeof(bootcode), fp) != sizeof(bootcode)) {
             fclose(fp);
+            // Play Sound 1 --> Warning! / Error!
+            HINSTANCE hInst = GetModuleHandle(NULL);
+            if (Options.playSounds)
+                PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+            /*end-if*/
             MessageBoxA(win, "Failed to read 1024 bytes from the file.", "ADF Opus Error", MB_OK | MB_ICONERROR);
             return 1;
         }
@@ -186,11 +195,32 @@ int RawWriteBootBlock(HWND win, struct Volume* vol, BOOL bNewAdf)
     size_t         got;
 
     // If not a fresh ADF, warn the user
-    if (!bNewAdf
-        && MessageBoxA(win, szPrompt, "ADF Opus Warning", MB_YESNO | MB_ICONWARNING) != IDYES)
-    {
-        return 1;
-    }
+    // Chiron TODO: Need to rework for playing an alert sound here!
+    //if (!bNewAdf
+    //    && MessageBoxA(win, szPrompt, "ADF Opus Warning", MB_YESNO | MB_ICONWARNING) != IDYES)
+    //{
+    //    return 1;
+    //}
+    if (!bNewAdf) {
+        
+        // Play Sound 3 --> Alert / Are You Sure? 
+        HINSTANCE hInst = GetModuleHandle(NULL);
+        if (Options.playSounds) {
+            PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+        };/*end-if*/
+
+        BOOL result = MessageBoxA(win, szPrompt, "ADF Opus Warning", MB_YESNO);
+        
+        if (result != IDYES) {
+            return 1;
+        };/*end-if*/
+    
+    };/*end-if*/
+        
+
+    
+
+
 
     // Build default “Boot” folder path
     lstrcpyA(initialDir, dirOpus);
@@ -211,12 +241,22 @@ int RawWriteBootBlock(HWND win, struct Volume* vol, BOOL bNewAdf)
     // Open and read exactly 1024 bytes
     fp = fopen(fileName, "rb");
     if (!fp) {
+        // Play Sound 1 --> Warning! / Error!
+        HINSTANCE hInst = GetModuleHandle(NULL);
+        if (Options.playSounds)
+            PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+        /*end-if*/
         MessageBoxA(win, szFileError, "ADF Opus Error", MB_OK | MB_ICONERROR);
         return 1;
     }
     got = fread(bootcode, 1, sizeof(bootcode), fp);
     fclose(fp);
     if (got != sizeof(bootcode)) {
+        // Play Sound 1 --> Warning! / Error!
+        HINSTANCE hInst = GetModuleHandle(NULL);
+        if (Options.playSounds)
+            PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+        /*end-if*/
         MessageBoxA(win, szReadError, "ADF Opus Error", MB_OK | MB_ICONERROR);
         return 1;
     }
@@ -225,6 +265,11 @@ int RawWriteBootBlock(HWND win, struct Volume* vol, BOOL bNewAdf)
     if (adfWriteBlock(vol, 0, bootcode) != RC_OK
         || adfWriteBlock(vol, 1, bootcode + 512) != RC_OK)
     {
+        // Play Sound 1 --> Warning! / Error!
+        HINSTANCE hInst = GetModuleHandle(NULL);
+        if (Options.playSounds)
+            PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+        /*end-if*/
         MessageBoxA(win, szWriteError, "ADF Opus Error", MB_OK | MB_ICONERROR);
         return 1;
     }

@@ -45,6 +45,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		IDCANCEL,		   IDH_OPTIONS_CANCEL_BUTTON,
 		IDC_ONEWFILENAME,  IDC_OGREASEWEAZLEFILENAME,
 		IDC_OAUTOHORITILE, IDC_OAUTOPANEONHOVER,
+		IDC_OPLAYSOUNDS,
 		0,0 
 	}; 	
 
@@ -61,6 +62,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		SendMessage(GetDlgItem(dlg, IDC_ODELDIR), BM_SETCHECK, (Options.confirmDeleteDirs ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_OAUTOHORITILE), BM_SETCHECK, (Options.autoHoriTile ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_OAUTOPANEONHOVER), BM_SETCHECK, (Options.autoPaneOnHover ? BST_CHECKED : 0), 0l);
+		SendMessage(GetDlgItem(dlg, IDC_OPLAYSOUNDS), BM_SETCHECK, (Options.playSounds ? BST_CHECKED : 0), 0l);
 
 		SendMessage(GetDlgItem(dlg, Options.defDriveList ? IDC_ODRIVELIST : IDC_OTHISDIR), BM_SETCHECK, BST_CHECKED, 0l);
 		
@@ -75,6 +77,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		case IDC_OLABEL:
 		case IDC_OAUTOHORITILE:
 		case IDC_OAUTOPANEONHOVER:
+		case IDC_OPLAYSOUNDS:
 			OptionsChanged(dlg);
 			return TRUE;
 		case IDC_ONEWFILENAME:
@@ -141,10 +144,11 @@ void SetDefaultOptions()
 	strcpy(Options.defaultLabel, "default_label"); // Chiron 2025 TODO: This doesn't do anything???
 	strcpy(Options.defaultNewFilename, "default_filename.adf");
 	strcpy(Options.defaultGreaseweazleFilename, "default_greaseweazle.adf");
-	Options.useDirCache = TRUE;
-	Options.defDriveList = FALSE;
-	Options.autoHoriTile = TRUE;
+	Options.useDirCache     = TRUE;
+	Options.defDriveList    = FALSE;
+	Options.autoHoriTile    = TRUE;
 	Options.autoPaneOnHover = TRUE;
+	Options.playSounds      = TRUE;
 }
 
 void ReadOptions()
@@ -157,12 +161,22 @@ void ReadOptions()
 		/* read into struct options */
 		size = sizeof(Options);
 		if (RegQueryValueEx(key, "Settings", 0L, &type, (void *)&Options, &size) != ERROR_SUCCESS) {
+			// Play Sound 1 --> Warning! / Error!
+			HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds)
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			/*end-if*/
 			MessageBox(NULL, "An error occured reading settings from the registry. Possibly the"
 				" registry has been corrupted or modified. Using default settings.", "ADF Opus - Error", MB_OK |
 				MB_ICONERROR);
 			SetDefaultOptions();
 		}
 	} else {
+		// Play Sound 3 --> Alert / Are You Sure? 
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(NULL, "It seems this is the first time you have run ADF Opus. Now is a good time"
 			" to remind you that this program comes with ABSOLUTELY NO WARRANTY. See the Readme and"
 			" license files for more information.\n\n"
@@ -183,6 +197,11 @@ void WriteOptions()
 	REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &key, &disp) == ERROR_SUCCESS) {
 		RegSetValueEx(key, "Settings", 0, REG_BINARY, (void *)&Options, sizeof(Options));
 	} else {
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(NULL, "An error occured writing user preferences to the registry.", "ADF Opus: Error",
 			MB_OK | MB_ICONERROR);
 	}
@@ -214,6 +233,7 @@ void ApplyOptions(HWND dlg)
 	Options.confirmDeleteDirs = (SendMessage(GetDlgItem(dlg, IDC_ODELDIR), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.autoHoriTile = (SendMessage(GetDlgItem(dlg, IDC_OAUTOHORITILE), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.autoPaneOnHover = (SendMessage(GetDlgItem(dlg, IDC_OAUTOPANEONHOVER), BM_GETCHECK, 0, 0l) == BST_CHECKED);
+	Options.playSounds = (SendMessage(GetDlgItem(dlg, IDC_OPLAYSOUNDS), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 
 	Options.defDriveList = (SendMessage(GetDlgItem(dlg, IDC_ODRIVELIST), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 

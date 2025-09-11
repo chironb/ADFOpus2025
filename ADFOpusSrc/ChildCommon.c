@@ -1575,11 +1575,19 @@ void ChildDelete(HWND win)
 	int i, icon;
 	BOOL doit;
 
+	HINSTANCE hInst = GetModuleHandle(NULL);
+
 	/* confirm before commencing delete (unless user has disabled it) */
-	if (Options.confirmDelete)
+	if (Options.confirmDelete) {
+		// Play Sound 3 --> Alert / Are You Sure? 
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		if (MessageBox(win, "Are you sure you want to delete the selected item(s)?",
-		"Question", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)
+			"Question", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)
 			return;
+	}
 
 	/* delete windows files */
 	if (GetWindowLong(win, GWL_USERDATA) == CHILD_WINLISTER) {
@@ -1592,19 +1600,34 @@ void ChildDelete(HWND win)
 					strcat(path, nam);
 					if (icon == ICO_WINFILE) {
 						if (! DeleteFile(path)) {
+							// Play Sound 1 --> Warning! / Error!
+							// HINSTANCE hInst = GetModuleHandle(NULL);
+							if (Options.playSounds)
+								PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+							/*end-if*/
 							sprintf(msg, "Couldn't delete file '%s'.  Maybe it is in use or the device is write-protected.", path);
 							MessageBox(win, msg, "Error", MB_OK | MB_ICONERROR);
 						}
 					} else {
 						if (Options.confirmDeleteDirs) {
+							// Play Sound 3 --> Alert / Are You Sure? 
+							// HINSTANCE hInst = GetModuleHandle(NULL);
+							if (Options.playSounds)
+								PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+							/*end-if*/
 							sprintf(msg, "'%s' is a directory. Are you sure you want to delete it and all its contents?", path);
 							doit = (MessageBox(win, msg, "Question", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES);
 						} else
 							doit = TRUE;
 						if (doit)
 							if (! RemoveDirectoryRecursive(path)) {
+								// Play Sound 1 --> Warning! / Error!
+								// HINSTANCE hInst = GetModuleHandle(NULL);
+								if (Options.playSounds)
+									PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+								/*end-if*/
 								sprintf(msg, "Deletion of directory '%s' was not entirely successful.", path);
-								MessageBox(win, msg, "Error", MB_OK | MB_ICONERROR);
+								MessageBox(win, msg, "Error", MB_OK );
 							}
 					}
 				}
@@ -1626,6 +1649,11 @@ void ChildDelete(HWND win)
 						}
 					} else {
 						if (Options.confirmDeleteDirs) {
+							// Play Sound 3 --> Alert / Are You Sure? 
+// HINSTANCE hInst = GetModuleHandle(NULL);
+							if (Options.playSounds)
+								PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+							/*end-if*/
 							sprintf(msg, "'%s' is a directory. Are you sure you want to delete it and all its contents?", path);
 							doit = (MessageBox(win, msg, "Question", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES);
 						} else
@@ -1660,8 +1688,13 @@ BOOL ChildShowUndeletable(HWND win)
 	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(win, 0); // Chiron TODO: Look at original non-ported code!
 	cell = list = adfGetDelEnt(ci->vol);
 	if(cell == NULL){
+		// Play Sound 3 --> Alert / Are You Sure? 
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(win, "There are no undeletable files or directories on this volume.", "Undelete Message", 
-					MB_ICONINFORMATION|MB_OK);
+					MB_OK);
 		return FALSE;
 	}
 	// Read undeletable files list.

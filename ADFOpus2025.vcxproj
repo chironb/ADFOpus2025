@@ -238,6 +238,7 @@
   <ItemGroup>
     <Media Include="ADFOpusSrc\Sounds\ADFOpus_Sound1.wav" />
     <Media Include="ADFOpusSrc\Sounds\ADFOpus_Sound2.wav" />
+    <Media Include="ADFOpusSrc\Sounds\ADFOpus_Sound3.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

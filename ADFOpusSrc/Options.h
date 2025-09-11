@@ -18,6 +18,7 @@ struct OPTIONS {
 	BOOL defDriveList;
 	BOOL autoHoriTile;
 	BOOL autoPaneOnHover;
+	BOOL playSounds;
 };
 
 LRESULT CALLBACK OptionsProc(HWND, UINT, WPARAM, LPARAM);

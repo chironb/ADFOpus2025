@@ -266,6 +266,11 @@ void NewCreate(HWND dlg)
 		break;
 
 	default:
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(dlg, "Please select a valid image type.", "Error", MB_OK | MB_ICONERROR);
 		return;
 	}
@@ -275,6 +280,11 @@ void NewCreate(HWND dlg)
 	//MessageBoxA(dlg, buf, "Size:", MB_OK | MB_ICONERROR);
 
 	if (type_of_image == IMAGE_TYPE_HDF && Size < 2048) {
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(dlg, "The custom size you specified is less than the minimum size of 2048 KB / 2 MB. Please choose a larger size.", "Error:", MB_OK | MB_ICONERROR);
 		return;
 	}
@@ -376,6 +386,11 @@ void NewCreateFile(void* lpVoid)
 		strcpy(file_extension, ".hdf");
 	} else {
 		// This should never happen.
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(dlg, "An unknown error occurred determining the image type.", "Error", MB_OK | MB_ICONERROR);
 		Done = TRUE;
 		return;
@@ -402,11 +417,21 @@ void NewCreateFile(void* lpVoid)
 																// Also why in the hell does this need to be Size*2 here? Is it because the block is 512 KB or something so you need to double it up? Or like a math thing? Anyway... this works fuck it!
 	}															
 	else if (type_of_image == IMAGE_TYPE_INVALID) {				// Invalid type (used for error checking).
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(dlg, "Please select a valid image type.", "Error", MB_OK | MB_ICONERROR);
 		Done = TRUE;
 		return;
 	}
 	else {														// This should never happen.
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(dlg, "An unknown error occurred determining the image type.", "Error", MB_OK | MB_ICONERROR);
 		Done = TRUE;
 		return;
@@ -435,6 +460,11 @@ void NewCreateFile(void* lpVoid)
 		adfCreateHdFile(dev, tempStr, type);
 	} else {
 		// This should never happen.
+		// Play Sound 1 --> Warning! / Error!
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(dlg, "An unknown error occurred determining the image type.", "Error", MB_OK | MB_ICONERROR);
 		Done = TRUE;
 		return;
