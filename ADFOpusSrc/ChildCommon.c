@@ -837,11 +837,12 @@ HWND CreateListView(HWND win)
 
 	// Add your columns
 	LVAddColumn(lv, "Name", 150, 0); // Chiron 2025 - Kludgey fix for the MOUSE SHOOTS OFF bug! Changed the width of the Name column from 200 to 150.
-	LVAddColumn(lv, "Size", 55, 1);
+	LVAddColumn(lv, "Size", 65, 1);
 	LVAddColumn(lv, "Flags", 75, 2);
+	LVAddColumn(lv, "Date", 90, 3);
+
 	if (GetWindowLong(win, GWL_USERDATA) != CHILD_WINLISTER)
-		LVAddColumn(lv, "Comment", 65, 3); // Chiron 2025 - Kludgey fix for the MOUSE SHOOTS OFF bug! Changed the width of the Name column from 605 to 75.
-	// Chiron TODO: This is where we could add the date and time? I dunno maybe. LVAddColumn(lv, "Date", 75, 4);
+		LVAddColumn(lv, "Comment", 65, 4); 
 
 	// Image list + full-row selection
 	ListView_SetImageList(lv, ghwndImageList, LVSIL_SMALL);
@@ -859,54 +860,308 @@ HWND CreateListView(HWND win)
 
 
 
-void ChildUpdate(HWND win)
-/* fills the list view control with the directory content */
-{
-	CHILDINFO	*ci = (CHILDINFO *)GetWindowLong(win, 0);
-	DIRENTRY	*ce;
-	char		strBuf[20];
-	int			pos;
-	struct File *amiFile;
-	BOOL		bAmi = FALSE;
+//void ChildUpdate(HWND win)
+///* fills the list view control with the directory content */
+//{
+//	CHILDINFO	*ci = (CHILDINFO *)GetWindowLong(win, 0);
+//	DIRENTRY	*ce;
+//	char		strBuf[20];
+//	int			pos;
+//	struct File *amiFile;
+//	BOOL		bAmi = FALSE;
+//
+//
+//	SetWindowText(ghwndSB, "Reading directory...");
+//
+//	if (GetWindowLong(win, GWL_USERDATA) == CHILD_WINLISTER)
+//		if (strcmp(ci->curDir, "") == 0)
+//			WinGetDrives(win);
+//		else
+//			WinGetDir(win);
+//	
+//	else{
+//		bAmi = TRUE;
+//		AmiGetDir(win);
+//	}
+//	ChildSortDir(win, 0l);
+//
+//	SendMessage(ci->lv, WM_SETREDRAW, FALSE, 0);
+//
+//	ListView_DeleteAllItems(ci->lv);
+//
+//	ListView_SetItemCount(ci->lv, ci->totalCount);
+//
+//	ce = ci->content;
+//	while (ce != NULL) {
+//		pos = LVAddItem(ci->lv, ce->name, ce->icon);
+//		if (pos == -1)
+//			pos++;
+//		if (ce->icon == ICO_WINFILE || ce->icon == ICO_AMIFILE) {
+//			itoa(ce->size, strBuf, 10);
+//			LVAddSubItem(ci->lv, strBuf, pos, 1);
+//		}
+//		LVAddSubItem(ci->lv, ce->flags, pos, 2);
+//
+//		// Display amiga file comment.
+//		if(bAmi){
+//			amiFile = adfOpenFile(ci->vol, ce->name, "r");
+//			LVAddSubItem(ci->lv, amiFile->fileHdr->comment, pos, 3);
+//			adfCloseFile(amiFile);
+//			LVAddSubItem(ci->lv, "Sep/08/2025 8:03:23 AM", pos, 4);
+//		} else {
+//			LVAddSubItem(ci->lv, "Sep/08/2025 8:03:23 AM", pos, 3);
+//		}
+//
+//		ce = ce->next;
+//	}
+//
+//	SendMessage(ci->lv, WM_SETREDRAW, TRUE, 0);
+//	InvalidateRect(ci->lv, NULL, FALSE);
+//
+//	/* update status bars */
+//	if (! strcmp(ci->curDir, ""))
+//		SetWindowText(ci->sb, "All drives");
+//	else
+//		SetWindowText(ci->sb, ci->curDir);
+//	UpdateToolbar();
+//	//SetWindowText(ghwndSB, "Idle");
+//	SetWindowText(ghwndSB, "Welcome to ADF Opus 2025!");
+//
+//}
 
+
+
+#include <windows.h>
+
+// Converts an Amiga timestamp (days/minutes/ticks since 1978-01-01) into
+// a local SYSTEMTIME.  You can then format that SYSTEMTIME with
+// GetDateFormat()/GetTimeFormat() or similar.
+void AmiDateToSystemTime(
+	LONG        days,    // days since 1978-01-01
+	LONG        mins,    // minutes since midnight (0–1439)
+	LONG        ticks,   // 1/50ths of a second past that minute (0–49)
+	SYSTEMTIME* pSt      // out: local date/time
+)
+{
+	// 1) Build a FILETIME for the base date: 1978-01-01 00:00:00
+	SYSTEMTIME stBase = { 0 };
+	stBase.wYear = 1978;
+	stBase.wMonth = 1;
+	stBase.wDay = 1;
+	// wHour, wMinute, wSecond, wMilliseconds all zero
+
+	FILETIME ftBase;
+	SystemTimeToFileTime(&stBase, &ftBase);
+
+	// 2) Turn that into a 64-bit count of 100-ns intervals
+	ULARGE_INTEGER uli;
+	uli.LowPart = ftBase.dwLowDateTime;
+	uli.HighPart = ftBase.dwHighDateTime;
+
+	// 3) Add the Amiga offset in 100-ns units
+	const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
+	const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
+	const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
+
+	uli.QuadPart += (ULONGLONG)days * DAY_100NS;
+	uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
+	uli.QuadPart += (ULONGLONG)ticks * TICK_100NS;
+
+	// 4) Convert back to FILETIME
+	FILETIME ftTarget;
+	ftTarget.dwLowDateTime = uli.LowPart;
+	ftTarget.dwHighDateTime = uli.HighPart;
+
+	// 5) Convert UTC FILETIME → local FILETIME → local SYSTEMTIME
+	FILETIME ftLocal;
+	FileTimeToLocalFileTime(&ftTarget, &ftLocal);
+	FileTimeToSystemTime(&ftLocal, pSt);
+}
+
+#include <windows.h>
+
+// Formats a raw byte count into a human‐readable string.
+//
+//   bytes   – the size in bytes
+//   buf     – output buffer, at least 64 chars
+//
+// Examples of output:
+//   “512 bytes”
+//   “1.2 KB (1234 bytes)”
+//   “3.4 MB (3562345 bytes)”
+//   “5.6 GB (5987654321 bytes)”
+void FormatByteSize(
+	unsigned long bytes,
+	char* buf
+)
+{
+	const unsigned long KB = 1024UL;
+	const unsigned long MB = 1024UL * KB;
+	const unsigned long GB = 1024UL * MB;
+
+	if (bytes < KB) {
+		// under 1 KB: raw bytes
+		wsprintfA(buf, "%lu bytes", bytes);
+	}
+	else if (bytes < MB) {
+		// 1 KB–1 MB: show KB with one decimal
+		unsigned long whole = bytes / KB;
+		unsigned long frac = (bytes % KB) * 10 / KB;  // tenths
+		//wsprintfA(buf, "%lu.%lu KB (%lu bytes)", whole, frac, bytes);
+		wsprintfA(buf, "%lu.%lu KB", whole, frac, bytes);
+	}
+	else if (bytes < GB) {
+		// 1 MB–1 GB: show MB with one decimal
+		unsigned long whole = bytes / MB;
+		unsigned long frac = (bytes % MB) * 10 / MB;
+		//wsprintfA(buf, "%lu.%lu MB (%lu bytes)", whole, frac, bytes);
+		wsprintfA(buf, "%lu.%lu MB", whole, frac, bytes);
+	}
+	else {
+		// 1 GB+: show GB with one decimal
+		unsigned long whole = bytes / GB;
+		unsigned long frac = (bytes % GB) * 10 / GB;
+		//wsprintfA(buf, "%lu.%lu GB (%lu bytes)", whole, frac, bytes);
+		wsprintfA(buf, "%lu.%lu GB", whole, frac, bytes);
+	}
+}
+
+//----------------------------------------------------------------------------
+// Drop-in replacement for ChildUpdate that fills in real date/time
+//----------------------------------------------------------------------------
+
+void ChildUpdate(HWND win)
+{
+	CHILDINFO* ci = (CHILDINFO*)GetWindowLong(win, 0);
+	DIRENTRY* ce;
+	char         strBuf[20];
+	int          pos;
+	struct File* amiFile;
+	BOOL         bAmi = FALSE;
+
+	// Scratch buffers for date/time formatting
+	TCHAR        dateBuf[64], timeBuf[64], dateTimeBuf[128];
+	SYSTEMTIME   st;
+	FILETIME     ftLocal;
+	WIN32_FILE_ATTRIBUTE_DATA fad;
+	char         fullPath[MAX_PATH];
 
 	SetWindowText(ghwndSB, "Reading directory...");
 
-	if (GetWindowLong(win, GWL_USERDATA) == CHILD_WINLISTER)
+	// Populate ci->content with either Windows or Amiga directory listing
+	if (GetWindowLong(win, GWL_USERDATA) == CHILD_WINLISTER) {
 		if (strcmp(ci->curDir, "") == 0)
 			WinGetDrives(win);
 		else
 			WinGetDir(win);
-	
-	else{
+	}
+	else {
 		bAmi = TRUE;
 		AmiGetDir(win);
 	}
+
 	ChildSortDir(win, 0l);
-
 	SendMessage(ci->lv, WM_SETREDRAW, FALSE, 0);
-
 	ListView_DeleteAllItems(ci->lv);
-
 	ListView_SetItemCount(ci->lv, ci->totalCount);
 
 	ce = ci->content;
-	while (ce != NULL) {
+	while (ce)
+	{
 		pos = LVAddItem(ci->lv, ce->name, ce->icon);
-		if (pos == -1)
-			pos++;
-		if (ce->icon == ICO_WINFILE || ce->icon == ICO_AMIFILE) {
-			itoa(ce->size, strBuf, 10);
-			LVAddSubItem(ci->lv, strBuf, pos, 1);
+		if (pos < 0) pos = 0;
+
+		// Size column
+		if (ce->icon == ICO_WINFILE || ce->icon == ICO_AMIFILE)
+		{
+			//itoa((int)ce->size, strBuf, 10);
+			//LVAddSubItem(ci->lv, strBuf, pos, 1);
+			char strBuf[64];
+			FormatByteSize((unsigned long)ce->size, strBuf);
+			LVAddSubItem(ci->lv, strBuf, pos, /*columnIndex*/1);
+
 		}
+
+		// Flags column
 		LVAddSubItem(ci->lv, ce->flags, pos, 2);
 
-		// Display amiga file comment.
-		if(bAmi){
+		if (bAmi)
+		{
+			// 1) Comment
 			amiFile = adfOpenFile(ci->vol, ce->name, "r");
-			LVAddSubItem(ci->lv, amiFile->fileHdr->comment, pos, 3);
+			LVAddSubItem(ci->lv,
+				amiFile->fileHdr->comment,
+				pos,
+				4);
+
+			// 2) Date/Time from Amiga header → SYSTEMTIME
+			AmiDateToSystemTime(
+				amiFile->fileHdr->days,
+				amiFile->fileHdr->mins,
+				amiFile->fileHdr->ticks,
+				&st);
 			adfCloseFile(amiFile);
+
+			// 3) Format as "Sep/08/2025 8:03:23 AM"
+			GetDateFormat(LOCALE_USER_DEFAULT,
+				0,
+				&st,
+				TEXT("MMM/dd/yyyy"),
+				dateBuf,
+				ARRAYSIZE(dateBuf));
+
+			GetTimeFormat(LOCALE_USER_DEFAULT,
+				0,
+				&st,
+				TEXT("h:mm:ss tt"),
+				timeBuf,
+				ARRAYSIZE(timeBuf));
+
+			wsprintf(dateTimeBuf, TEXT("%s %s"), dateBuf, timeBuf);
+			LVAddSubItem(ci->lv, dateTimeBuf, pos, 3);
 		}
+		else
+		{
+			// 1) Build full Windows path to the file
+			wsprintfA(fullPath,
+				"%s\\%s",
+				ci->curDir,
+				ce->name);
+
+			// 2) Read last-write timestamp
+			if (GetFileAttributesExA(fullPath,
+				GetFileExInfoStandard,
+				&fad))
+			{
+				FileTimeToLocalFileTime(&fad.ftLastWriteTime,
+					&ftLocal);
+				FileTimeToSystemTime(&ftLocal, &st);
+
+				// 3) Format date/time
+				GetDateFormat(LOCALE_USER_DEFAULT,
+					0,
+					&st,
+					TEXT("MMM/dd/yyyy"),
+					dateBuf,
+					ARRAYSIZE(dateBuf));
+
+				GetTimeFormat(LOCALE_USER_DEFAULT,
+					0,
+					&st,
+					TEXT("h:mm:ss tt"),
+					timeBuf,
+					ARRAYSIZE(timeBuf));
+
+				wsprintf(dateTimeBuf, TEXT("%s %s"), dateBuf, timeBuf);
+				LVAddSubItem(ci->lv, dateTimeBuf, pos, 3);
+			}
+			else
+			{
+				// on failure, leave blank
+				LVAddSubItem(ci->lv, TEXT(""), pos, 3);
+			}
+		}
+
 		ce = ce->next;
 	}
 
@@ -914,15 +1169,16 @@ void ChildUpdate(HWND win)
 	InvalidateRect(ci->lv, NULL, FALSE);
 
 	/* update status bars */
-	if (! strcmp(ci->curDir, ""))
+	if (!strcmp(ci->curDir, ""))
 		SetWindowText(ci->sb, "All drives");
 	else
 		SetWindowText(ci->sb, ci->curDir);
-	UpdateToolbar();
-	//SetWindowText(ghwndSB, "Idle");
-	SetWindowText(ghwndSB, "Welcome to ADF Opus 2025!");
 
+	UpdateToolbar();
+	SetWindowText(ghwndSB, "Welcome to ADF Opus 2025!");
 }
+
+
 
 void WinGetDir(HWND win)
 /* fills the internal directory list with the contents of the current windows dir */
