@@ -342,7 +342,7 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 			{
 				strcpy_s(g_defaultLocalPath,
 					sizeof g_defaultLocalPath,
-					"C:\\");
+					"C:\\"); // Chiron TODO: This is using the C:\ as the default default path... I think this needs something better when I put a bunch of extra stuff into Preferences (Options). 
 			}
 			else
 			{
@@ -373,7 +373,7 @@ int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show 
 		wsprintfA(buf,
 			"Failed to load Amiga cursor (ID=%d)\nGetLastError() = %u",
 			IDC_AMIGA_CURSOR, err);
-		MessageBoxA(NULL, buf, "Cursor Load Error", MB_OK | MB_ICONERROR);
+		MessageBoxA(NULL, buf, "Cursor Load Error", MB_OK | MB_ICONERROR); // Chiron 2025: TODO: Is this just debugging? Is it needed? 
 	}
 
 	ReadOptions();
@@ -745,7 +745,7 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 		if (OpenDlg(win))
 			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
 		break;
-	case ID_FIL_OPENDEVICE:
+	case ID_FIL_OPENDEVICE: // Chiron 2025: TODO: I think I removed this from the program because it didn't work. Might be worth fixing and putting back maybe? 
 		strcpy(gstrFileName, "|H1"); //// TODO: RDSK autodetection
 		CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
 		break;
@@ -872,7 +872,7 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 			ShellExecuteA(win, "open", fullPath, NULL, NULL, SW_SHOWNORMAL);
 		}
 		else {
-			ShellExecuteA(win, "open", "README.txt", NULL, NULL, SW_SHOWNORMAL);
+			ShellExecuteA(win, "open", "Licence.txt", NULL, NULL, SW_SHOWNORMAL);
 		}
 		return TRUE;
 	}
@@ -889,7 +889,7 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 			ShellExecuteA(win, "open", fullPath, NULL, NULL, SW_SHOWNORMAL);
 		}
 		else {
-			ShellExecuteA(win, "open", "README.txt", NULL, NULL, SW_SHOWNORMAL);
+			ShellExecuteA(win, "open", "Readme.txt", NULL, NULL, SW_SHOWNORMAL);
 		}
 		return TRUE;
 	}
@@ -1150,6 +1150,8 @@ void CopyAmi2Win(char *fileName, char *destPath, struct Volume *vol, long fileSi
 	HANDLE winFile;
 	long bread = 0l;
 
+	HINSTANCE hInst = GetModuleHandle(NULL);
+
 	// Prevent divide by zero and other errors.
 	if(fileSize <= 0){
 		MessageBox(ghwndFrame, "Can't copy zero byte file", "ADF Opus Error", MB_OK | MB_ICONERROR);
@@ -1159,16 +1161,26 @@ void CopyAmi2Win(char *fileName, char *destPath, struct Volume *vol, long fileSi
 	winFile = CreateFile(destPath, GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (winFile == INVALID_HANDLE_VALUE) {
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Couldn't create destination file.",
-		"Error", MB_OK | MB_ICONERROR);
+		"Error", MB_OK);
 		return;
 	}
 
 	amiFile = adfOpenFile(vol, fileName, "r");
 	if (! amiFile) {
 		CloseHandle(winFile);
+		// Play Sound 1 --> Warning! / Error!
+		// HINSTANCE hInst = GetModuleHandle(NULL);
+		if (Options.playSounds)
+			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+		/*end-if*/
 		MessageBox(ghwndFrame, "Error opening source file (probably"
-			" a bug)", "Error", MB_OK | MB_ICONERROR);
+			" a bug)", "Error", MB_OK );
 		return;
 	}
 
@@ -1178,8 +1190,13 @@ void CopyAmi2Win(char *fileName, char *destPath, struct Volume *vol, long fileSi
 		bread += sizeof(buf);
 		if (! WriteFile(winFile, buf, act, &dwActual, NULL)) {
 			CloseHandle(winFile);
+			// Play Sound 1 --> Warning! / Error!
+			// HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds)
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			/*end-if*/
 			MessageBox(ghwndFrame, "Error writing destination"
-			" file (disk full, maybe?)", "Error", MB_OK | MB_ICONERROR);
+			" file (disk full, maybe?)", "Error", MB_OK );
 			return;
 		}
 		Percent = (100 * bread) / fileSize;

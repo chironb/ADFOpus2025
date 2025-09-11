@@ -379,6 +379,8 @@ LRESULT ChildOnCreate(HWND win)
 		ci->dfDisk = dfDisk;
 		ci->compSize = comp_size;
 
+		// MessageBoxA(win, gstrFileName, "DEBUG:gstrFileName", MB_OK );
+
 		ci->dev = adfMountDev(gstrFileName, ReadOnly);
 		if (!ci->dev) return -1;
 

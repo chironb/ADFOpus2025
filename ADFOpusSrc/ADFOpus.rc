@@ -708,8 +708,8 @@ BEGIN
         MENUITEM "&Greaseweazle Read",          ID_TOOLS_GREASEWEAZLE
         MENUITEM "Greaseweazle Write",          ID_TOOLS_GREASEWEAZLEWRITE
         MENUITEM SEPARATOR
-        MENUITEM "&Install Bootblock",          ID_TOOLS_INSTALL, GRAYED
-        MENUITEM "&Write Raw Bootblock",        ID_TOOLS_WRITE_RAW_BOOTBLOCK, GRAYED
+        MENUITEM "&Install Bootblock",          ID_TOOLS_INSTALL
+        MENUITEM "&Write Raw Bootblock",        ID_TOOLS_WRITE_RAW_BOOTBLOCK
         MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
     END
     POPUP "&View"

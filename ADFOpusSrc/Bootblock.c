@@ -24,9 +24,23 @@ extern HINSTANCE instance;                // your app instance
 #include <commdlg.h>  // for OPENFILENAME
 #include <stdlib.h>   // for malloc/free
 #include <string.h>   // for memcpy, memset
+#include <windows.h>
+#include <shlwapi.h>  // link with Shlwapi.lib
+
+#include <Options.h>
+extern struct OPTIONS Options;
+
+BOOL ends_with(const char* str, const char* suffix) {
+    size_t slen = strlen(str);
+    size_t tlen = strlen(suffix);
+    return slen >= tlen && strcmp(str + slen - tlen, suffix) == 0;
+}
+
+
 
 // forward declaration
 void FormatHexDump(const unsigned char* buf, size_t len, char* out, size_t outSize);
+
 
 //------------------------------------------------------------------------------
 // Reads the latest 1 KB from disk, formats it, and sets IDC_EDIT_BOOTBLOCK
@@ -35,13 +49,62 @@ static BOOL ReloadBootblock(HWND dlg)
     unsigned char buffer[1024];
     char          dump[8192];
     DWORD         bytesRead;
+    char          actualFile[MAX_PATH];
+    
+    HINSTANCE hInst = GetModuleHandle(NULL);
 
     // 1) Flush all C‐runtime file buffers so we force pending writes to disk
     _flushall();
 
+    // When ADF Opus opens a compressed file, like .adz,
+    // it decompresses it, and stores that file in a temp folder. 
+    // Then it uses that file for everything.
+    // At some point an update to HEX Viewer didn't take this into account
+    // and was trying to pull the top of the .adz file 
+    // as if that were the valid bootblock. But it's not because the 
+    // file is compressed. For the rest of the program these operations
+    // on the compressed file take place using 
+    // ci->temp_path instead of ci->orig_path or gstrFileName
+    // so that everything happens to the temp file. This file is 
+    // then recompressed and it overwrites the original file. 
+    // The fix below basically goes:
+    // If ci->orig_path does not end in .adf then use ci->temp_path instead. 
+    // This works! 
+
+    // Test the path.
+    BOOL exists = PathFileExistsA(ci->orig_path);
+    if (!exists) {
+        // Play Sound 1 --> Warning! / Error!
+        if (Options.playSounds)
+            PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+        /*end-if*/
+        MessageBoxA(dlg, "The path ci->orig_path is not valid and/or the file (or directory) does *NOT* exists", "Error:", MB_OK);
+        return FALSE;
+    }
+
+
+    if ( ends_with(ci->orig_path,".adf") ) {            // ci->orig_path ENDS WITH .adf
+        strncpy(actualFile, ci->orig_path, MAX_PATH);
+    } else {                                            // ci->orig_path DOES NOT end with
+        // Test the path.
+        exists = PathFileExistsA(ci->temp_path);
+        if (!exists) {
+            // Play Sound 1 --> Warning! / Error!
+            if (Options.playSounds)
+                PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+            /*end-if*/
+            MessageBoxA(dlg, "The path ci->temp_path is not valid and/or the file (or directory) does *NOT* exists", "Error:", MB_OK);
+            return FALSE;
+        }
+        strncpy(actualFile, ci->temp_path, MAX_PATH);
+    };/*end-if*/
+
+    //MessageBoxA(dlg, actualFile, "DEBUG: actualFile", MB_OK | MB_ICONERROR);
+
     // 2) Open the ADF file for shared read/write
     HANDLE hFile = CreateFileA(
-        gstrFileName,                          // file path
+        //gstrFileName,                          // file path
+        actualFile,                             // the *ACTUAL* file path and not a path to a .adz or other non-adf file!
         GENERIC_READ,                          // read access
         FILE_SHARE_READ | FILE_SHARE_WRITE,    // allow other handles to write
         NULL,
@@ -144,7 +207,7 @@ static void CopyBootblockHexToClipboard(HWND dlg)
             EmptyClipboard();
             SetClipboardData(CF_TEXT, hMem);
             CloseClipboard();
-            // NOTE: do NOT GlobalFree(hMem) after SetClipboardData—Windows owns it now
+            // NOTE: do NOT GlobalFree(hMem) after SetClipboardData—Windows owns it now // Chiron 2025: TODO: Is this a potential memory leak? 
         }
         else
         {
@@ -167,8 +230,56 @@ static void SaveBootblockAsText(HWND dlg)
     char          dump[8192];
     char          initialDir[MAX_PATH];
     FILE* fp;
+    char          actualFile[MAX_PATH];
 
-    fp = fopen(gstrFileName, "rb");
+    HINSTANCE hInst = GetModuleHandle(NULL);
+
+    // When ADF Opus opens a compressed file, like .adz,
+    // it decompresses it, and stores that file in a temp folder. 
+    // Then it uses that file for everything.
+    // At some point an update to HEX Viewer didn't take this into account
+    // and was trying to pull the top of the .adz file 
+    // as if that were the valid bootblock. But it's not because the 
+    // file is compressed. For the rest of the program these operations
+    // on the compressed file take place using 
+    // ci->temp_path instead of ci->orig_path or gstrFileName
+    // so that everything happens to the temp file. This file is 
+    // then recompressed and it overwrites the original file. 
+    // The fix below basically goes:
+    // If ci->orig_path does not end in .adf then use ci->temp_path instead. 
+    // This works! 
+
+    // Test the path.
+    BOOL exists = PathFileExistsA(ci->orig_path);
+    if (!exists) {
+        // Play Sound 1 --> Warning! / Error!
+        if (Options.playSounds)
+            PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+        /*end-if*/
+        MessageBoxA(dlg, "The path ci->orig_path is not valid and/or the file (or directory) does *NOT* exists", "Error:", MB_OK);
+        return;
+    }
+
+
+    if (ends_with(ci->orig_path, ".adf")) {            // ci->orig_path ENDS WITH .adf
+        strncpy(actualFile, ci->orig_path, MAX_PATH);
+    }
+    else {                                            // ci->orig_path DOES NOT end with
+        // Test the path.
+        exists = PathFileExistsA(ci->temp_path);
+        if (!exists) {
+            // Play Sound 1 --> Warning! / Error!
+            if (Options.playSounds)
+                PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+            /*end-if*/
+            MessageBoxA(dlg, "The path ci->temp_path is not valid and/or the file (or directory) does *NOT* exists", "Error:", MB_OK);
+            return;
+        }
+        strncpy(actualFile, ci->temp_path, MAX_PATH);
+    };/*end-if*/
+
+
+    fp = fopen(actualFile, "rb");
     if (!fp) return;
     if (fread(buffer, 1, sizeof(buffer), fp) != sizeof(buffer))
     {
@@ -183,11 +294,12 @@ static void SaveBootblockAsText(HWND dlg)
     lstrcatA(initialDir, "\\Boot");
 
     OPENFILENAMEA ofn = { 0 };
-    char          fileName[MAX_PATH] = "";
+    //char          fileName[MAX_PATH] = "";
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner = dlg;
     ofn.lpstrFilter = "Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
-    ofn.lpstrFile = fileName;
+    ofn.lpstrFile = actualFile;
+    //ofn.lpstrFile = fileName;
     ofn.nMaxFile = MAX_PATH;
     ofn.lpstrInitialDir = initialDir;
     ofn.Flags = OFN_OVERWRITEPROMPT;
@@ -196,7 +308,7 @@ static void SaveBootblockAsText(HWND dlg)
     if (GetSaveFileNameA(&ofn))
     {
         HANDLE hFile = CreateFileA(
-            fileName,
+            actualFile,
             GENERIC_WRITE,
             0, NULL,
             CREATE_ALWAYS,
@@ -221,7 +333,59 @@ static void SaveBootblockAsBinary(HWND dlg)
     char          initialDir[MAX_PATH];
     FILE* fp;
 
-    fp = fopen(gstrFileName, "rb");
+
+    char          actualFile[MAX_PATH];
+
+    HINSTANCE hInst = GetModuleHandle(NULL);
+
+    // When ADF Opus opens a compressed file, like .adz,
+    // it decompresses it, and stores that file in a temp folder. 
+    // Then it uses that file for everything.
+    // At some point an update to HEX Viewer didn't take this into account
+    // and was trying to pull the top of the .adz file 
+    // as if that were the valid bootblock. But it's not because the 
+    // file is compressed. For the rest of the program these operations
+    // on the compressed file take place using 
+    // ci->temp_path instead of ci->orig_path or gstrFileName
+    // so that everything happens to the temp file. This file is 
+    // then recompressed and it overwrites the original file. 
+    // The fix below basically goes:
+    // If ci->orig_path does not end in .adf then use ci->temp_path instead. 
+    // This works! 
+
+    // Test the path.
+    BOOL exists = PathFileExistsA(ci->orig_path);
+    if (!exists) {
+        // Play Sound 1 --> Warning! / Error!
+        if (Options.playSounds)
+            PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+        /*end-if*/
+        MessageBoxA(dlg, "The path ci->orig_path is not valid and/or the file (or directory) does *NOT* exists", "Error:", MB_OK);
+        return;
+    }
+
+
+    if (ends_with(ci->orig_path, ".adf")) {            // ci->orig_path ENDS WITH .adf
+        strncpy(actualFile, ci->orig_path, MAX_PATH);
+    }
+    else {                                            // ci->orig_path DOES NOT end with
+        // Test the path.
+        exists = PathFileExistsA(ci->temp_path);
+        if (!exists) {
+            // Play Sound 1 --> Warning! / Error!
+            if (Options.playSounds)
+                PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+            /*end-if*/
+            MessageBoxA(dlg, "The path ci->temp_path is not valid and/or the file (or directory) does *NOT* exists", "Error:", MB_OK);
+            return;
+        }
+        strncpy(actualFile, ci->temp_path, MAX_PATH);
+    };/*end-if*/
+
+
+
+
+    fp = fopen(actualFile, "rb");
     if (!fp) return;
     if (fread(buffer, 1, sizeof(buffer), fp) != sizeof(buffer))
     {
@@ -234,11 +398,12 @@ static void SaveBootblockAsBinary(HWND dlg)
     lstrcatA(initialDir, "\\Boot");
 
     OPENFILENAMEA ofn = { 0 };
-    char          fileName[MAX_PATH] = "";
+    //char          fileName[MAX_PATH] = "";
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner = dlg;
     ofn.lpstrFilter = "Bootblock Files (*.bbk)\0*.bbk\0All Files (*.*)\0*.*\0";
-    ofn.lpstrFile = fileName;
+    //ofn.lpstrFile = fileName;
+    ofn.lpstrFile = actualFile;
     ofn.nMaxFile = MAX_PATH;
     ofn.lpstrInitialDir = initialDir;
     ofn.Flags = OFN_OVERWRITEPROMPT;
@@ -247,7 +412,7 @@ static void SaveBootblockAsBinary(HWND dlg)
     if (GetSaveFileNameA(&ofn))
     {
         HANDLE hFile = CreateFileA(
-            fileName,
+            actualFile,
             GENERIC_WRITE,
             0, NULL,
             CREATE_ALWAYS,

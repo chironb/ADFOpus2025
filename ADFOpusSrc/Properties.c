@@ -52,6 +52,9 @@ extern HWND	ghwndFrame;
 extern HWND	ghwndMDIClient;
 extern HWND	ghwndTB;
 
+// Chiron 2025: DEBUG: This is for debugging. 
+extern char gstrFileName[MAX_PATH * 2];   // your global ADF path
+
 LRESULT CALLBACK PropertiesProcWin(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 // Uses ci and buf declared in ChildCommon.h. 
 {
@@ -228,6 +231,10 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
 	}
 
 	amiFile = adfOpenFile(ci->vol, DirPtr->name, "r");
+
+	MessageBoxA(dlg, ci->vol, "DEBUG:ci->vol", MB_OK | MB_ICONERROR);
+	MessageBoxA(dlg, DirPtr->name, "DEBUG:DirPtr->name", MB_OK | MB_ICONERROR);
+	MessageBoxA(dlg, gstrFileName, "DEBUG:gstrFileName", MB_OK | MB_ICONERROR);
 
 	// 1) Write comment to dialog.
 	SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, WM_SETTEXT, 0, (LPARAM)amiFile->fileHdr->comment);

@@ -118,7 +118,9 @@ void BCAddFiles(HWND dlg)
 	ofn.hwndOwner = dlg;
 	ofn.hInstance = NULL;
 	// Filter indices are adf:1, dms:2, adz:3.
-	ofn.lpstrFilter = "Amiga Disk Files (*.adf)\0*.adf\0Compressed Disk Files (*.adz)\0*.adz\0Diskmasher Files (*.dms)\0*.dms\0\0";
+	// ofn.lpstrFilter = "Amiga Disk Files (*.adf)\0*.adf\0Compressed Disk Files (*.adz)\0*.adz\0Diskmasher Files (*.dms)\0*.dms\0\0";
+	// Chiron 2025: Reversing the order makes the last one the default filter. So I wanted that to be for .ADF files since this program is ADF first! But like seriously I figure most of the time you're dealing with .ADF files and you want to convert from that to something else.
+	ofn.lpstrFilter = "Diskmasher Files (*.dms)\0*.dms\0Compressed Disk Files (*.adz)\0*.adz\0Amiga Disk Files (*.adf)\0*.adf\0\0";
 	ofn.lpstrCustomFilter = NULL;
 	ofn.nMaxCustFilter = 0;
 	ofn.lpstrFile = strOFNFileNames;

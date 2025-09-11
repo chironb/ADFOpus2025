@@ -14,6 +14,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <direct.h>
+#include <resource.h>
+#include <Options.h>
+extern struct OPTIONS Options;
 
 int	RegisterFileTypes(void)
 // Register Amiga Disk File types with Windows.
@@ -35,13 +38,25 @@ int	RegisterFileTypes(void)
 	(void)getcwd(szOpusPath, MAX_PATH);					// Get the path to ADF Opus.
 	strcat(szOpusPath, "\\ADFOpus.exe");
 
+	HINSTANCE hInst = GetModuleHandle(NULL);
+
 	for(i = 0;i < iNumKeys;i=i+4){
 		if(CreateFileTypeKey(KeyArray[i], KeyArray[i+1]) != 0){
+			// Play Sound 1 --> Warning! / Error!
+			// HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds)
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			/*end-if*/
 			sprintf(szError, "Error creating file type key \"%s\"", KeyArray[i]);
 			MessageBox(NULL, "ADF Opus", szError, IDOK);
 			return(-1);
 		}
 		if(CreateFileTypeTargetKey(KeyArray[i+1], KeyArray[i+2], KeyArray[i+3]) != 0){
+			// Play Sound 1 --> Warning! / Error!
+			// HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds)
+				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			/*end-if*/
 			sprintf(szError, "Error creating file type target key \"%s\"", KeyArray[i+1]);
 			MessageBox(NULL, "ADF Opus", szError, IDOK);
 			return(-1);
