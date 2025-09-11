@@ -30,12 +30,21 @@ extern HINSTANCE instance;                // your app instance
 #include <Options.h>
 extern struct OPTIONS Options;
 
+//BOOL ends_with(const char* str, const char* suffix) {
+//    size_t slen = strlen(str);
+//    size_t tlen = strlen(suffix);
+//    return slen >= tlen && strcmp(str + slen - tlen, suffix) == 0;
+//}
+
+#include <string.h>
+#include <ctype.h>
+// Function to make sure a path string ends with a particular extention. 
+// This version is case insensitive.
 BOOL ends_with(const char* str, const char* suffix) {
     size_t slen = strlen(str);
     size_t tlen = strlen(suffix);
-    return slen >= tlen && strcmp(str + slen - tlen, suffix) == 0;
+    return slen >= tlen && _stricmp(str + slen - tlen, suffix) == 0;
 }
-
 
 
 // forward declaration
@@ -93,7 +102,10 @@ static BOOL ReloadBootblock(HWND dlg)
             if (Options.playSounds)
                 PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
             /*end-if*/
-            MessageBoxA(dlg, "The path ci->temp_path is not valid and/or the file (or directory) does *NOT* exists", "Error:", MB_OK);
+            char errorMsg[255];
+            strcpy(errorMsg, "The path ci->temp_path is not valid and/or the file (or directory) does *NOT* exist.\n-->");
+            strcat(errorMsg, ci->temp_path);
+            MessageBoxA(dlg, errorMsg, "Error:", MB_OK);
             return FALSE;
         }
         strncpy(actualFile, ci->temp_path, MAX_PATH);
@@ -468,9 +480,16 @@ LRESULT CALLBACK DisplayBootblockProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
     }
 
     case WM_ACTIVATE:
+        
         // reload whenever the dialog regains focus
         if (LOWORD(wp) == WA_ACTIVE || LOWORD(wp) == WA_CLICKACTIVE)
-            ReloadBootblock(dlg);
+            BOOL result = ReloadBootblock(dlg);
+
+        if (!result) { // If there was an error this makes sure we can still exist the dialog box.
+            EndDialog(dlg, TRUE);
+            return TRUE;
+        }
+        
         break;
 
     case WM_COMMAND:
