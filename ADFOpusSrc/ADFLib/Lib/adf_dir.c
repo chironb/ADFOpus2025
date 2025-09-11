@@ -325,7 +325,7 @@ RETCODE adfSetEntryComment(struct Volume* vol, SECTNUM parSect, char* name,
 
 
 
-    // Chiron 2025
+    // Chiron 2025 TODO: Why did I do this?!?!?!
     //entry.commLen = min(MAXCMMTLEN, strlen(newCmt));
     //memcpy(entry.comment, newCmt, entry.commLen);
     // compute how many characters we can copy, leaving room for NUL

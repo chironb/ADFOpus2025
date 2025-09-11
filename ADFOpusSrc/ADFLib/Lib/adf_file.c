@@ -879,3 +879,99 @@ RETCODE adfWriteFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtB
     return rc;
 }
 /*###########################################################################*/
+
+
+
+
+/*
+ * adfFileFlushNoDate - Chiron 2025 - Custom version that DOES NOT rewrite the DATE!
+ */
+ /*!	\brief	Flush a file.
+  *	\param	file - the file to flush.
+  *	\return	Void.
+  *
+  *	Flushes a file's datablocks from memory to disk.
+  */
+void adfFileFlushNoDate(struct File* file)
+{
+    struct bEntryBlock parent;
+    struct bOFSDataBlock* data;
+
+    if (file->currentExt) {
+        if (file->writeMode)
+            adfWriteFileExtBlock(file->volume, file->currentExt->headerKey,
+                file->currentExt);
+    }
+    if (file->currentData) {
+        if (file->writeMode) {
+            file->fileHdr->byteSize = file->pos;
+            if (isOFS(file->volume->dosType)) {
+                data = (struct bOFSDataBlock*)file->currentData;
+                data->dataSize = file->posInDataBlk;
+            }
+            if (file->fileHdr->byteSize > 0)
+                adfWriteDataBlock(file->volume, file->curDataPtr,
+                    file->currentData);
+        }
+    }
+    if (file->writeMode) {
+        file->fileHdr->byteSize = file->pos;
+
+#ifdef _DEBUG_PRINTF_
+        printf("pos=%ld\n", file->pos);
+#endif /*_DEBUG_PRINTF_*/
+
+        //adfTime2AmigaTime(adfGiveCurrentTime(),
+        //	&(file->fileHdr->days), &(file->fileHdr->mins), &(file->fileHdr->ticks));
+        adfWriteFileHdrBlock(file->volume, file->fileHdr->headerKey, file->fileHdr);
+
+        if (isDIRCACHE(file->volume->dosType)) {
+
+#ifdef _DEBUG_PRINTF_
+            printf("parent=%ld\n", file->fileHdr->parent);
+#endif /*_DEBUG_PRINTF_*/
+
+            adfReadEntryBlock(file->volume, file->fileHdr->parent, &parent);
+            adfUpdateCache(file->volume, &parent, (struct bEntryBlock*)file->fileHdr, FALSE);
+        }
+        adfUpdateBitmap(file->volume);
+    }
+}
+
+
+
+
+/*
+ * adfCloseFileNoDate - Chiron 2025: Custom version that DOES NOT rewrite the date!
+ */
+ /*!	\brief	Close a file.
+  *	\param	file - a pointer to a file structure containing the file to close.
+  *	\return	Void.
+  *
+  *	Calls adfFlushFile() and frees the file structure.
+  */
+void adfCloseFileNoDate(struct File* file)
+{
+
+    if (file == 0)
+        return;
+
+#ifdef _DEBUG_PRINTF_
+    puts("adfCloseFile in");
+#endif /*_DEBUG_PRINTF_*/
+
+    adfFileFlushNoDate(file); // Chiron 2025: Calls custom version I wrote that preserves the date!
+
+    if (file->currentExt)
+        free(file->currentExt);
+
+    if (file->currentData)
+        free(file->currentData);
+
+    free(file->fileHdr);
+    free(file);
+
+#ifdef _DEBUG_PRINTF_
+    puts("adfCloseFile out");
+#endif /*_DEBUG_PRINTF_*/
+}

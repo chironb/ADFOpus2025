@@ -1351,6 +1351,11 @@ void CopyWin2Win(char *srcPath, char *destPath)
 	CloseHandle(destFile);
 }
 
+
+
+
+
+
 void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, long fileSize)
 {
 	struct File *srcFile, *destFile;
@@ -1432,8 +1437,34 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 		Percent = (100 * bread) / fileSize;
 	}
 
-	adfCloseFile(srcFile);
-	adfCloseFile(destFile);
+	// Chiron 2025: TODO: This is where the comments, flags, and dates should be copied over. 
+	// struct File* amiFile;
+
+	// Setup the source file object for reading.
+	//amiFile = adfOpenFile(srcVol, fileName, "r");
+	// char	szComment[MAXCMMTLEN + 1];			// Max comment length (79) defined in adf_blk.h + '\0'.
+	//strcpy(szComment, (LPARAM)amiFile->fileHdr->comment);
+
+	//amiFile->fileHdr->days --> bFileHeaderBlock in adf_blk.h 
+	// strcpy(szComment, srcFile->fileHdr->comment);
+	// MessageBoxA(ghwndFrame, szComment, "DEBUG:strcpy(szComment, srcFile->fileHdr->comment);", MB_OK );
+
+	// Copy Comments
+	strcpy(destFile->fileHdr->comment, srcFile->fileHdr->comment);
+
+	// Copy Comment Length (char)
+	destFile->fileHdr->commLen = srcFile->fileHdr->commLen;
+
+	// Copy Access Flags (long)
+	destFile->fileHdr->access = srcFile->fileHdr->access;
+
+	// Copy Date and Time (longs)
+	destFile->fileHdr->days  = srcFile->fileHdr->days;	//long	days;  /* Date of last change (days since 1 jan 78).			    */
+	destFile->fileHdr->mins  = srcFile->fileHdr->mins;	//long	mins;  /* Time of last change (mins since midnight).			    */
+	destFile->fileHdr->ticks = srcFile->fileHdr->ticks;	//long	ticks; /* Time of last change (1/50ths of a second since last min). */
+
+	adfCloseFileNoDate(srcFile);
+	adfCloseFileNoDate(destFile);
 }
 
 void GetTooltipText(char *buf, int cmd)
