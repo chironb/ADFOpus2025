@@ -232,9 +232,9 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
 
 	amiFile = adfOpenFile(ci->vol, DirPtr->name, "r");
 
-	MessageBoxA(dlg, ci->vol, "DEBUG:ci->vol", MB_OK | MB_ICONERROR);
-	MessageBoxA(dlg, DirPtr->name, "DEBUG:DirPtr->name", MB_OK | MB_ICONERROR);
-	MessageBoxA(dlg, gstrFileName, "DEBUG:gstrFileName", MB_OK | MB_ICONERROR);
+	//MessageBoxA(dlg, ci->vol, "DEBUG:ci->vol", MB_OK | MB_ICONERROR);
+	//MessageBoxA(dlg, DirPtr->name, "DEBUG:DirPtr->name", MB_OK | MB_ICONERROR);
+	//MessageBoxA(dlg, gstrFileName, "DEBUG:gstrFileName", MB_OK | MB_ICONERROR);
 
 	// 1) Write comment to dialog.
 	SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, WM_SETTEXT, 0, (LPARAM)amiFile->fileHdr->comment);
