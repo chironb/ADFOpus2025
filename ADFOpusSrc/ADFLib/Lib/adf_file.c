@@ -314,13 +314,45 @@ struct File* adfOpenFile(struct Volume *vol, char* name, char *mode)
 
 		 return NULL; 
     }
+    
+    // Chiron 2025: TODO: Figure out what's actually best here. 
+    // 
+    // The Issue:
+    // 
+    // This used to check to see if a file is set to be NOT READABLE. 
+    // However... if you set that flag, the whole program ends. 
+    // So as much as it would be cool to pretend that we are an Amiga OS 
+    // trying to honour the flags... that makes no sense. 
+    // This is a disk image file management tool. 
+    // How can you manage a disk when you can't even open it? 
+    // Like I could see if we had it pretend the file wasn't even there. 
+    // But like... no. This isn't DRM or something crazy. 
+    // At the very least maybe in the future we have it work such that 
+    // there's an option to set the file as hidden from display when it's
+    // flag is set to NON-READABLE. Maybe... but even that I don't like it!
+    // Also guess what? If a file is set to be NOT DELETABLE but this
+    // thing let's you do that! Ha! So there!
+    // Actually that should trigger some kind of extra confirmation 
+    // dialog box "Are You Sure?" message!
+    // 
+    // Original code right here FYI:
+    // if (!write && hasR(entry.access)) {
+    //      (*adfEnv.wFct)("adfFileOpen : access denied"); } return NULL; }
+
     if (!write && hasR(entry.access)) {
-        (*adfEnv.wFct)("adfFileOpen : access denied"); return NULL; }
+        char errorMessage[255];
+        strcpy(errorMessage,"adfFileOpen Result: Access Denied\nFile flag possibly set to *NOT* readable.\nFilename:");
+        strcat(errorMessage, name);
+        (*adfEnv.wFct)(errorMessage);
+    }
+
 /*    if (entry.secType!=ST_FILE) {
         (*adfEnv.wFct)("adfFileOpen : not a file"); return NULL; }
 	if (write && (hasE(entry.access)||hasW(entry.access))) {
         (*adfEnv.wFct)("adfFileOpen : access denied"); return NULL; }  
-*/    if (write && nSect!=-1) {
+*/    
+    
+    if (write && nSect!=-1) {
         (*adfEnv.wFct)("adfFileOpen : file already exists"); return NULL; }  
 
     file = (struct File*)malloc(sizeof(struct File));
