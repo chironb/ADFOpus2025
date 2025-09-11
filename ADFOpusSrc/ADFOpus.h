@@ -31,6 +31,7 @@
 #define ICO_DRIVECD			6
 #define ICO_DRIVEFLOP35		7
 #define ICO_DRIVEFLOP514	8
+#define ICO_WINFILE_ADF		9
 
 /* possible types of MDI child window */
 #define CHILD_WINLISTER 87651

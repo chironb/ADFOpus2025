@@ -153,6 +153,8 @@ HIMAGELIST CreateImageList()
 	AddIcon(il, IDI_DRIVECD);
 	AddIcon(il, IDI_DRIVEFLOP35);
 	AddIcon(il, IDI_DRIVEFLOP514);
+	AddIcon(il, IDI_NEW); // Chiron 2025: ICO_WINFILE_ADF --> Use this for Windows List View for .adf files.
+
 
 	return il;
 }

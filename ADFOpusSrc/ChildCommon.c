@@ -38,7 +38,9 @@
 #include "ADFOpus.h"        // for newWinType, CHILD_WINLISTER, etc.
 #include "ChildCommon.h"    // <-- declares typedef struct _CHILDINFO {...} CHILDINFO
 
-
+#include "Bootblock.h"
+extern ends_with(const char* str, const char* suffix);
+extern BOOL ensure_extension(char* path, size_t buffer_size, const char* ext);
 #include "Options.h"
 extern struct OPTIONS Options;
 
@@ -217,7 +219,7 @@ static LRESULT CALLBACK ListViewClampProc(
 #include <stdlib.h>    // malloc
 #include <string.h>    // strcpy_s, strncpy_s
 
-
+extern HWND ghwndMDIClient;
 
 
 //BOOL	bClicked = FALSE;
@@ -722,12 +724,26 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 			bDirClicked = bFileClicked = FALSE;
 
 			switch (LVGetItemImageIndex(ci->lv, index)) {
-			case ICO_WINFILE:
+			case ICO_WINFILE: // Chiron 2025: TODO: This is where I want to check if it's an .adf file and then open it inside the program and not externally!
 				strcpy(szWinFile, ci->curDir);
 				strcat(szWinFile, buf);
-				iError = (int)ShellExecute(win, "open", szWinFile, NULL, NULL, SW_SHOWNORMAL);
-				ChildUpdate(win);
-				break;
+
+					iError = (int)ShellExecute(win, "open", szWinFile, NULL, NULL, SW_SHOWNORMAL);
+					ChildUpdate(win);
+					break;
+
+			case ICO_WINFILE_ADF:
+				strcpy(szWinFile, ci->curDir);
+				strcat(szWinFile, buf);
+
+
+					// Open the .adf file within this program!
+					strcpy(gstrFileName, szWinFile);
+					// MessageBoxA(win, gstrFileName, "DEBUG:", MB_OK | MB_ICONERROR);
+					CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+					break;
+
+				
 
 			case ICO_WINDIR:
 				strcat(ci->curDir, buf);
@@ -1218,8 +1234,24 @@ BOOL WinAddFile(CHILDINFO *ci, WIN32_FIND_DATA *wfd)
 	de = malloc(sizeof(DIRENTRY));
 	strcpy(de->name, wfd->cFileName);
 	de->size = wfd->nFileSizeLow;
-	de->icon = ((wfd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-		? ICO_WINDIR : ICO_WINFILE;
+	
+	//de->icon = ((wfd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+		//? ICO_WINDIR : ICO_WINFILE;
+
+	if (wfd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+		de->icon = ICO_WINDIR;
+	}
+	else {
+		de->icon = ICO_WINFILE;
+	}
+
+	if (ends_with(wfd->cFileName, ".adf"))
+		de->icon = ICO_WINFILE_ADF;
+
+	// Chiron 2025: TODO: I think this is where I have to put somethign to check and set 
+	// a special icon if it's an .adf file in a Windows List View. 
+	// so when you double-click an .adf in a Windows List View
+	// it opens the file inside the program. I just want it to show the icon!
 
 	strcpy(de->flags, "");
 	if (wfd->dwFileAttributes & FILE_ATTRIBUTE_READONLY)
