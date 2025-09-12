@@ -19,6 +19,7 @@ struct OPTIONS {
 	BOOL autoHoriTile;
 	BOOL autoPaneOnHover;
 	BOOL playSounds;
+	BOOL sortingWindowsStyle;
 };
 
 LRESULT CALLBACK OptionsProc(HWND, UINT, WPARAM, LPARAM);

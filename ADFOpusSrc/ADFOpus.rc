@@ -304,33 +304,35 @@ BEGIN
     CONTROL         "Progress1",IDC_CREATEPROGRESS,"msctls_progress32",WS_BORDER,5,5,245,10
 END
 
-IDD_OPTIONS DIALOGEX 0, 0, 227, 272
+IDD_OPTIONS DIALOGEX 0, 0, 257, 280
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Preferences"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    GROUPBOX        "Ask for confirmation before:",IDC_STATIC,7,145,213,36
-    CONTROL         "Commencing delete",IDC_ODELETE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,156,195,10
-    CONTROL         "Deleting directories",IDC_ODELDIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,166,195,10
-    GROUPBOX        "Miscellaneous",IDC_STATIC,7,184,213,25
+    GROUPBOX        "Ask for confirmation before:",IDC_STATIC,7,156,243,36
+    CONTROL         "Commencing delete",IDC_ODELETE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,167,195,10
+    CONTROL         "Deleting directories",IDC_ODELDIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,177,195,10
+    GROUPBOX        "Miscellaneous",IDC_STATIC,7,195,243,25
     CONTROL         "Use directory cache blocks where possible",IDC_ODIRCACHE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,194,188,10
-    GROUPBOX        "File Types",IDC_STATIC,7,212,213,31
-    PUSHBUTTON      "Register Amiga disk file types with Windows Explorer",IDC_OREGISTER,12,225,203,14
-    DEFPUSHBUTTON   "OK",IDC_OOK,170,250,50,15
-    PUSHBUTTON      "Apply",IDC_OAPPLY,115,250,50,15,WS_DISABLED
-    PUSHBUTTON      "Close",IDCANCEL,7,250,50,15
-    GROUPBOX        "Default filename for new files",IDC_STATIC,7,8,213,25
-    EDITTEXT        IDC_ONEWFILENAME,14,18,199,12,ES_AUTOHSCROLL
-    GROUPBOX        "Default label for new volumes",IDC_STATIC,7,36,213,25
-    EDITTEXT        IDC_OLABEL,14,46,199,12,ES_AUTOHSCROLL
-    GROUPBOX        "Default filename for Greaseweazle files",IDC_STATIC,7,65,213,25
-    EDITTEXT        IDC_OGREASEWEAZLEFILENAME,14,75,199,12,ES_AUTOHSCROLL
-    GROUPBOX        "User Interface",IDC_STATIC,7,93,213,49
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,205,188,10
+    GROUPBOX        "File Types",IDC_STATIC,7,223,243,31
+    PUSHBUTTON      "Register Amiga disk file types with Windows Explorer",IDC_OREGISTER,12,236,203,14
+    DEFPUSHBUTTON   "OK",IDC_OOK,200,258,50,15
+    PUSHBUTTON      "Apply",IDC_OAPPLY,145,258,50,15,WS_DISABLED
+    PUSHBUTTON      "Close",IDCANCEL,7,258,50,15
+    GROUPBOX        "Default filename for new files",IDC_STATIC,7,8,243,25
+    EDITTEXT        IDC_ONEWFILENAME,14,18,229,12,ES_AUTOHSCROLL
+    GROUPBOX        "Default label for new volumes",IDC_STATIC,7,36,243,25
+    EDITTEXT        IDC_OLABEL,14,46,229,12,ES_AUTOHSCROLL
+    GROUPBOX        "Default filename for Greaseweazle files",IDC_STATIC,7,65,243,25
+    EDITTEXT        IDC_OGREASEWEAZLEFILENAME,14,75,229,12,ES_AUTOHSCROLL
+    GROUPBOX        "User Interface",IDC_STATIC,7,93,243,60
     CONTROL         "Auto Vertical Tile",IDC_OAUTOHORITILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,104,69,10
     CONTROL         "Activate Pane on Hover (Requires ADF Opus Restart)",IDC_OAUTOPANEONHOVER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,115,185,10
     CONTROL         "Play Application Sounds",IDC_OPLAYSOUNDS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,126,92,10
+    CONTROL         "Separate Folders && Files Listing (Requires ADF Opus Restart)",IDC_OWINDOWSSORTINGSTYLE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,137,207,10
 END
 
 IDD_ABOUTPAGE4 DIALOG 0, 0, 236, 156
@@ -594,9 +596,9 @@ BEGIN
     IDD_OPTIONS, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 220
+        RIGHTMARGIN, 250
         TOPMARGIN, 7
-        BOTTOMMARGIN, 265
+        BOTTOMMARGIN, 273
     END
 
     IDD_ABOUTPAGE4, DIALOG

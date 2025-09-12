@@ -45,7 +45,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		IDCANCEL,		   IDH_OPTIONS_CANCEL_BUTTON,
 		IDC_ONEWFILENAME,  IDC_OGREASEWEAZLEFILENAME,
 		IDC_OAUTOHORITILE, IDC_OAUTOPANEONHOVER,
-		IDC_OPLAYSOUNDS,
+		IDC_OPLAYSOUNDS,   IDC_OWINDOWSSORTINGSTYLE,
 		0,0 
 	}; 	
 
@@ -63,6 +63,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		SendMessage(GetDlgItem(dlg, IDC_OAUTOHORITILE), BM_SETCHECK, (Options.autoHoriTile ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_OAUTOPANEONHOVER), BM_SETCHECK, (Options.autoPaneOnHover ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_OPLAYSOUNDS), BM_SETCHECK, (Options.playSounds ? BST_CHECKED : 0), 0l);
+		SendMessage(GetDlgItem(dlg, IDC_OWINDOWSSORTINGSTYLE), BM_SETCHECK, (Options.sortingWindowsStyle ? BST_CHECKED : 0), 0l);
 
 		SendMessage(GetDlgItem(dlg, Options.defDriveList ? IDC_ODRIVELIST : IDC_OTHISDIR), BM_SETCHECK, BST_CHECKED, 0l);
 		
@@ -78,6 +79,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		case IDC_OAUTOHORITILE:
 		case IDC_OAUTOPANEONHOVER:
 		case IDC_OPLAYSOUNDS:
+		case IDC_OWINDOWSSORTINGSTYLE:
 			OptionsChanged(dlg);
 			return TRUE;
 		case IDC_ONEWFILENAME:
@@ -138,17 +140,18 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 void SetDefaultOptions()
 {
-	Options.confirmDelete = TRUE;
-	Options.confirmDeleteDirs = TRUE;
+	Options.confirmDelete       = TRUE;
+	Options.confirmDeleteDirs   = TRUE;
 	strcpy(Options.defaultDir, "C:\\"); // Chiron 2025 TODO: This doesn't do anything???
 	strcpy(Options.defaultLabel, "default_label"); // Chiron 2025 TODO: This doesn't do anything???
 	strcpy(Options.defaultNewFilename, "default_filename.adf");
 	strcpy(Options.defaultGreaseweazleFilename, "default_greaseweazle.adf");
-	Options.useDirCache     = TRUE;
-	Options.defDriveList    = FALSE;
-	Options.autoHoriTile    = TRUE;
-	Options.autoPaneOnHover = TRUE;
-	Options.playSounds      = TRUE;
+	Options.useDirCache         = TRUE;
+	Options.defDriveList        = FALSE;
+	Options.autoHoriTile        = TRUE;
+	Options.autoPaneOnHover     = TRUE;
+	Options.playSounds          = TRUE;
+	Options.sortingWindowsStyle = TRUE; // Basically TRUE for sortingWindowsStyle and FALSE for sortingMacStyle
 }
 
 void ReadOptions()
@@ -234,6 +237,7 @@ void ApplyOptions(HWND dlg)
 	Options.autoHoriTile = (SendMessage(GetDlgItem(dlg, IDC_OAUTOHORITILE), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.autoPaneOnHover = (SendMessage(GetDlgItem(dlg, IDC_OAUTOPANEONHOVER), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.playSounds = (SendMessage(GetDlgItem(dlg, IDC_OPLAYSOUNDS), BM_GETCHECK, 0, 0l) == BST_CHECKED);
+	Options.sortingWindowsStyle = (SendMessage(GetDlgItem(dlg, IDC_OWINDOWSSORTINGSTYLE), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 
 	Options.defDriveList = (SendMessage(GetDlgItem(dlg, IDC_ODRIVELIST), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 

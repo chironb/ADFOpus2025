@@ -44,6 +44,7 @@ extern BOOL ensure_extension(char* path, size_t buffer_size, const char* ext);
 #include "Options.h"
 extern struct OPTIONS Options;
 
+
 extern HIMAGELIST ghwndImageList;
 extern HINSTANCE instance;
 extern HWND ghwndFrame;
@@ -59,6 +60,10 @@ extern HCURSOR ghcurNo;
 
 extern int volToOpen;
 extern struct OPTIONS Options;
+
+   
+
+
 
 // Chiron 2025: This is part of fixed to address an annoying issue that I suspect is 
 // either a problem with the way the original codebase was setup or, it's Win32 issues.
@@ -1298,7 +1303,11 @@ void ChildUpdate(HWND win)
 		AmiGetDir(win);
 	}
 
-	ChildSortDir(win, 0l);
+	if (Options.sortingWindowsStyle) 
+		ChildSortDir(win, TRUE); 
+	else
+		ChildSortDir(win, FALSE); // Mac Style - Files and Folders all together sorted alphabetically.
+
 	SendMessage(ci->lv, WM_SETREDRAW, FALSE, 0);
 	ListView_DeleteAllItems(ci->lv);
 	ListView_SetItemCount(ci->lv, ci->totalCount);
@@ -1746,11 +1755,16 @@ void ChildInvertSelection(HWND win)
 
 
 
+// Add these two defines near the top of your .c or in your header
+#define listSortingWindowsStyle TRUE
+#define listSortingMacStyle     FALSE
 //-----------------------------------------------------------------------------
-// Sort a directory listing so that folders come first, then all files
-// (including .adf), each group sorted alphabetically (case‐insensitive).
-//-----------------------------------------------------------------------------
-void ChildSortDir(HWND win, long type)
+// Sort a directory listing in one of two styles:
+//  • sortingWindowsStyle: folders first, then files (.adf included),
+//      each subgroup alphabetical, case‐insensitive.
+//  • sortingMacStyle:  all items (folders + files) in one alphabetical list.
+//----------------------------------------------------------------------------- 
+void ChildSortDir(HWND win, long style)
 {
 	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(win, 0);
 	if (!ci || !ci->content)
@@ -1765,23 +1779,31 @@ void ChildSortDir(HWND win, long type)
 
 		while (cur->next) {
 			DIRENTRY* nxt = cur->next;
-			int grpCur = (cur->icon == ICO_WINDIR
-				|| cur->icon == ICO_AMIDIR)
-				? 0 : 1;
-			int grpNext = (nxt->icon == ICO_WINDIR
-				|| nxt->icon == ICO_AMIDIR)
-				? 0 : 1;
+			BOOL      needSwap = FALSE;
 
-			BOOL needSwap = FALSE;
+			if (style == listSortingWindowsStyle) {
 
-			// 1) Folders (grp 0) always precede files (grp 1)
-			if (grpCur > grpNext) {
-				needSwap = TRUE;
-			}
-			// 2) If same group, sort by name (case‐insensitive)
-			else if (grpCur == grpNext) {
+				// Windows style: folders (icon==ICO_WINDIR/ICO_AMIDIR) get grp=0
+				// files get grp=1
+				int grpCur = (cur->icon == ICO_WINDIR
+					|| cur->icon == ICO_AMIDIR) ? 0 : 1;
+				int grpNext = (nxt->icon == ICO_WINDIR
+					|| nxt->icon == ICO_AMIDIR) ? 0 : 1;
+
+				// 1) group comparison
+				if (grpCur > grpNext) {
+					needSwap = TRUE;
+				}
+				// 2) same group: alphabetical by name
+				else if (grpCur == grpNext) {
+					if (lstrcmpiA(cur->name, nxt->name) > 0)
+						needSwap = TRUE;
+				}
+			} else { 
+				// Mac style: simple name compare
 				if (lstrcmpiA(cur->name, nxt->name) > 0)
 					needSwap = TRUE;
+
 			}
 
 			if (needSwap) {
@@ -1794,8 +1816,8 @@ void ChildSortDir(HWND win, long type)
 }
 
 //-----------------------------------------------------------------------------
-// Swap only the payload (name, flags, size, icon) of two nodes.
-// Leaves their `next` pointers intact.
+// Swaps only the payload of two DIRENTRYs (name, flags, size, icon).
+// Leaves the 'next' pointers alone so the list structure stays valid.
 //-----------------------------------------------------------------------------
 void SwapContent(DIRENTRY* a, DIRENTRY* b)
 {
@@ -1809,19 +1831,18 @@ void SwapContent(DIRENTRY* a, DIRENTRY* b)
 	tmpSize = a->size;
 	tmpIcon = a->icon;
 
-	// copy B → A
+	// copy B into A
 	strcpy(a->name, b->name);
 	strcpy(a->flags, b->flags);
 	a->size = b->size;
 	a->icon = b->icon;
 
-	// restore A → B
+	// restore saved A into B
 	strcpy(b->name, tmpName);
 	strcpy(b->flags, tmpFlags);
 	b->size = tmpSize;
 	b->icon = tmpIcon;
 }
-
 
 
 BOOL ChildOnContextMenu(HWND win, int x, int y)
