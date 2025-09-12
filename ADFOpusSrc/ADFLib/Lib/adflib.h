@@ -36,19 +36,19 @@ PREFIX struct List* newCell(struct List* list, void* content);
 PREFIX void freeList(struct List* list);
 
 /* dir */
-PREFIX RETCODE adfToRootDir(struct Volume *vol);
-PREFIX RETCODE adfCreateDir(struct Volume* vol, SECTNUM parent, char* name);
-PREFIX RETCODE adfChangeDir(struct Volume* vol, char *name);
-PREFIX RETCODE adfParentDir(struct Volume* vol);
-PREFIX RETCODE adfRemoveEntry(struct Volume *vol, SECTNUM pSect, char *name);
+PREFIX RETCODE      adfToRootDir(struct Volume *vol);
+PREFIX RETCODE      adfCreateDir(struct Volume* vol, SECTNUM parent, char* name);
+PREFIX RETCODE      adfChangeDir(struct Volume* vol, char *name);
+PREFIX RETCODE      adfParentDir(struct Volume* vol);
+PREFIX RETCODE      adfRemoveEntry(struct Volume *vol, SECTNUM pSect, char *name);
 PREFIX struct List* adfGetDirEnt(struct Volume* vol, SECTNUM nSect );
 PREFIX struct List* adfGetRDirEnt(struct Volume* vol, SECTNUM nSect, BOOL recurs );
-PREFIX void printEntry(struct Entry* entry);
-PREFIX void adfFreeDirList(struct List* list);
-PREFIX void adfFreeEntry(struct Entry *);
-PREFIX RETCODE adfRenameEntry(struct Volume *vol, SECTNUM, char *old,SECTNUM, char *pNew);	/* BV */
-PREFIX RETCODE adfSetEntryAccess(struct Volume*, SECTNUM, char*, long);
-PREFIX RETCODE adfSetEntryComment(struct Volume*, SECTNUM, char*, char*);
+PREFIX void         printEntry(struct Entry* entry);
+PREFIX void         adfFreeDirList(struct List* list);
+PREFIX void         adfFreeEntry(struct Entry *);
+PREFIX RETCODE      adfRenameEntry(struct Volume *vol, SECTNUM, char *old,SECTNUM, char *pNew);     /* BV */
+PREFIX RETCODE      adfSetEntryAccess(struct Volume*, SECTNUM, char*, long);
+PREFIX RETCODE      adfSetEntryComment(struct Volume*, SECTNUM, char*, char*);
 
 /* file */
 PREFIX long adfFileRealSize(unsigned long size, int blockSize, long *dataN, long *extN);

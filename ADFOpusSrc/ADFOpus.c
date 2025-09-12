@@ -1218,98 +1218,6 @@ void doCopy(void *arse)
 	Done = TRUE;
 }
 
-//void CopyAmi2Win(char *fileName, char *destPath, struct Volume *vol, long fileSize)
-//{
-//	struct File *amiFile;
-//	long act;
-//	DWORD dwActual;
-//	unsigned char buf[600];
-//	HANDLE winFile;
-//	long bread = 0l;
-//
-//	HINSTANCE hInst = GetModuleHandle(NULL);
-//
-//	// Prevent divide by zero and other errors.
-//	if(fileSize <= 0){
-//		MessageBox(ghwndFrame, "Can't copy zero byte file", "ADF Opus Error", MB_OK | MB_ICONERROR);
-//		return;
-//	}
-//
-//	winFile = CreateFile(destPath, GENERIC_WRITE, 0, NULL,
-//		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-//		if (winFile == INVALID_HANDLE_VALUE) {
-//		// Play Sound 1 --> Warning! / Error!
-//		// HINSTANCE hInst = GetModuleHandle(NULL);
-//		if (Options.playSounds)
-//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//		/*end-if*/
-//		MessageBox(ghwndFrame, "Couldn't create destination file.",
-//		"Error", MB_OK);
-//		return;
-//	}
-//
-//	amiFile = adfOpenFile(vol, fileName, "r");
-//	if (! amiFile) {
-//		CloseHandle(winFile);
-//		// Play Sound 1 --> Warning! / Error!
-//		// HINSTANCE hInst = GetModuleHandle(NULL);
-//		if (Options.playSounds)
-//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//		/*end-if*/
-//		MessageBox(ghwndFrame, "Error opening source file (probably"
-//			" a bug)", "Error", MB_OK );
-//		return;
-//	}
-//
-//	/* copy data */
-//	while (! adfEndOfFile(amiFile)) {
-//		act = adfReadFile(amiFile, sizeof(buf), buf);
-//		bread += sizeof(buf);
-//		if (! WriteFile(winFile, buf, act, &dwActual, NULL)) {
-//			CloseHandle(winFile);
-//			// Play Sound 1 --> Warning! / Error!
-//			// HINSTANCE hInst = GetModuleHandle(NULL);
-//			if (Options.playSounds)
-//				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//			/*end-if*/
-//			MessageBox(ghwndFrame, "Error writing destination"
-//			" file (disk full, maybe?)", "Error", MB_OK );
-//			return;
-//		}
-//		Percent = (100 * bread) / fileSize;
-//	}
-//
-//
-//
-//	// Copy Date and Time (longs)
-//	//destFile->fileHdr->days = srcFile->fileHdr->days;	//long	days;  /* Date of last change (days since 1 jan 78).			    */
-//	//destFile->fileHdr->mins = srcFile->fileHdr->mins;	//long	mins;  /* Time of last change (mins since midnight).			    */
-//	//destFile->fileHdr->ticks = srcFile->fileHdr->ticks;	//long	ticks; /* Time of last change (1/50ths of a second since last min). */
-//
-//	// amiFile->fileHdr->days  ;	//long	days;  /* Date of last change (days since 1 jan 78).			    */
-//
-//	// MessageBox(ghwndFrame, amiFile->fileHdr->days "amiFile->fileHdr->days", "Error", MB_OK);
-//
-//	long days = amiFile->fileHdr->days;
-//
-//	// Buffer must be big enough for “-2147483648” plus NUL
-//	TCHAR tempbuf[16];
-//
-//	// If you’re building UNICODE:
-//	wsprintf(tempbuf, TEXT("%ld"), days);
-//
-//	MessageBox(ghwndFrame, tempbuf, TEXT("Days"), MB_OK);
-//
-//	// amiFile->fileHdr->days
-//	// amiFile->fileHdr->mins
-//	// amiFile->fileHdr->ticks
-//
-//
-//	adfCloseFile(amiFile);
-//	CloseHandle(winFile);
-//}
-
-
 
 
 
@@ -1430,7 +1338,7 @@ void CopyAmi2Win(char* fileName, char* destPath, struct Volume* vol, long fileSi
 				SND_RESOURCE | SND_ASYNC);
 
 		MessageBox(ghwndFrame,
-			"Error opening source file (probably a bug)",
+			"Error opening source file.", // "Error opening source file (probably a bug)",
 			"Error",
 			MB_OK);
 		return;
@@ -1485,89 +1393,6 @@ void CopyAmi2Win(char* fileName, char* destPath, struct Volume* vol, long fileSi
 
 
 
-
-
-//void CopyWin2Ami(char *fileName, char *srcPath, struct Volume *vol, long fileSize)
-//{
-//	struct File *amiFile;
-//	HANDLE winFile;
-//	unsigned char buf[600];
-//	DWORD act;
-//	char errMess[200];
-//	long bread = 0, bn;
-//	
-//	HINSTANCE hInst = GetModuleHandle(NULL);
-//
-//	// Prevent divide by zero and other errors.
-//	if(fileSize <= 0){
-//		MessageBox(ghwndFrame, "Can't copy zero byte file", "ADF Opus Error", MB_OK | MB_ICONERROR);
-//		return;
-//	}
-//
-//	bn = adfFileRealSize(fileSize, LOGICAL_BLOCK_SIZE, NULL, NULL);
-//	if (adfCountFreeBlocks(vol) < bn) {
-//		// Play Sound 1 --> Warning! / Error!
-//		// HINSTANCE hInst = GetModuleHandle(NULL);
-//		if (Options.playSounds)
-//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//		/*end-if*/
-//		MessageBox(ghwndFrame, "Could not copy file. There is insufficient "
-//			"free space on the destination volume.", "Error", MB_OK);
-//		return;
-//	}
-//
-//	/* open source file */
-//	winFile = CreateFile(srcPath, GENERIC_READ, 0, NULL, OPEN_EXISTING,
-//		0, NULL);
-//	if (winFile == INVALID_HANDLE_VALUE) {
-//		// Play Sound 1 --> Warning! / Error!
-//		// HINSTANCE hInst = GetModuleHandle(NULL);
-//		if (Options.playSounds)
-//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//		/*end-if*/
-//		MessageBox(ghwndFrame, "Couldn't open source file.",
-//		"Error", MB_OK );
-//		return;
-//	}
-//
-//	/* open dest file */
-//	amiFile = adfOpenFile(vol, fileName, "w");
-//
-//	if (! amiFile) {
-//		CloseHandle(winFile);
-//		// Play Sound 1 --> Warning! / Error!
-//		// HINSTANCE hInst = GetModuleHandle(NULL);
-//		if (Options.playSounds)
-//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//		/*end-if*/
-//		MessageBox(ghwndFrame, "Error opening destination file (volume"
-//			" full perhaps?)", "Error", MB_OK);
-//		return;
-//	}
-//
-//	/* write the file */
-//	act = 1;
-//	while (act > 0) {
-//		(void)ReadFile(winFile, buf, sizeof(buf), &act, NULL);
-//		bread += sizeof(buf);
-//		if (adfWriteFile(amiFile, act, buf) != (long)act) {
-//			CloseHandle(winFile);
-//			adfCloseFile(amiFile);
-//			// Play Sound 1 --> Warning! / Error!
-//			// HINSTANCE hInst = GetModuleHandle(NULL);
-//			if (Options.playSounds)
-//				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//			/*end-if*/
-//			sprintf(errMess, "Could not write file '%s'.  Not enough free space on volume.", fileName);
-//			MessageBox(ghwndFrame, errMess, "Error", MB_OK);
-//			return;
-//		}
-//		Percent = (100 * bread) / fileSize;
-//	}
-//
-//	adfCloseFile(amiFile);
-//	CloseHandle(winFile);
-//}
 
 
 
@@ -1751,73 +1576,6 @@ void CopyWin2Ami(
 
 
 
-//void CopyWin2Win(char *srcPath, char *destPath)
-//{
-//	HANDLE srcFile, destFile;
-//	unsigned char buf[600];
-//	DWORD read, written, crap;
-//	long fileSize, bread = 0;
-//
-//	HINSTANCE hInst = GetModuleHandle(NULL);
-//
-//	/* open source file */
-//	srcFile = CreateFile(srcPath, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-//	if (srcFile == INVALID_HANDLE_VALUE) {
-//		// Play Sound 1 --> Warning! / Error!
-//		// HINSTANCE hInst = GetModuleHandle(NULL);
-//		if (Options.playSounds)
-//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//		/*end-if*/
-//		MessageBox(ghwndFrame, "Couldn't open source file.",
-//		"Error", MB_OK);
-//		return;
-//	}
-//
-//	fileSize = GetFileSize(srcFile, &crap);
-//
-//	/* open dest file */
-//	destFile = CreateFile(destPath, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
-//		0, NULL);
-//	if (destFile == INVALID_HANDLE_VALUE) {
-//		CloseHandle(srcFile);
-//		// Play Sound 1 --> Warning! / Error!
-//		// HINSTANCE hInst = GetModuleHandle(NULL);
-//		if (Options.playSounds)
-//			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//		/*end-if*/
-//		MessageBox(ghwndFrame, "Couldn't create destination file.",
-//		"Error", MB_OK);
-//		return;
-//	}
-//
-//	/* copy data */
-//	read = 1;
-//	while (read) {
-//		(void)ReadFile(srcFile, buf, sizeof(buf), &read, NULL);
-//		bread += sizeof(buf);
-//		WriteFile(destFile, buf, read, &written, NULL);
-//		if (written != read) {
-//			// Play Sound 1 --> Warning! / Error!
-//			// HINSTANCE hInst = GetModuleHandle(NULL);
-//			if (Options.playSounds)
-//				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-//			/*end-if*/
-//			MessageBox(ghwndFrame, "Error writing destination "
-//				"file.  Maybe disk full?", "Error", MB_OK);
-//			CloseHandle(srcFile);
-//			CloseHandle(destFile);
-//			return;
-//		}
-//		Percent = (100 * bread) / fileSize;
-//	}
-//
-//	CloseHandle(srcFile);
-//	CloseHandle(destFile);
-//}
-
-
-
-
 
 
 
@@ -1966,8 +1724,8 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 		if (Options.playSounds)
 			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
 		/*end-if*/
-		MessageBox(ghwndFrame, "Error opening source file (probably"
-			" a bug).", "Error", MB_OK);
+		//MessageBox(ghwndFrame, "Error opening source file (probably a bug).", "Error", MB_OK);
+		MessageBox(ghwndFrame, "Error opening source file.", "Error", MB_OK);
 		return;
 	}
 
@@ -1981,8 +1739,8 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 		if (Options.playSounds)
 			PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
 		/*end-if*/
-		MessageBox(ghwndFrame, "Error opening destination file"
-			" (probably a bug).", "Error", MB_OK);
+		//MessageBox(ghwndFrame, "Error opening destination file (probably a bug).", "Error", MB_OK);
+		MessageBox(ghwndFrame, "Error opening destination file.", "Error", MB_OK);
 		return;
 	}
 
@@ -2004,18 +1762,6 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 		}
 		Percent = (100 * bread) / fileSize;
 	}
-
-	// Chiron 2025: TODO: This is where the comments, flags, and dates should be copied over. 
-	// struct File* amiFile;
-
-	// Setup the source file object for reading.
-	//amiFile = adfOpenFile(srcVol, fileName, "r");
-	// char	szComment[MAXCMMTLEN + 1];			// Max comment length (79) defined in adf_blk.h + '\0'.
-	//strcpy(szComment, (LPARAM)amiFile->fileHdr->comment);
-
-	//amiFile->fileHdr->days --> bFileHeaderBlock in adf_blk.h 
-	// strcpy(szComment, srcFile->fileHdr->comment);
-	// MessageBoxA(ghwndFrame, szComment, "DEBUG:strcpy(szComment, srcFile->fileHdr->comment);", MB_OK );
 
 	// Copy Comments
 	strcpy(destFile->fileHdr->comment, srcFile->fileHdr->comment);
@@ -2263,32 +2009,177 @@ BOOL CopyWinDir2Win(char *srcPath, char *destPath, char *dirName)
 	return TRUE;
 }
 
-BOOL CopyAmiDir2Ami(char *dirName, struct Volume *src, struct Volume *dest)
-{
-	struct List *list;
-	struct Entry *ent;
 
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+/////////////// DO NOT DELETE YET - I STILL WANT TO CRACK THIS NUT! //////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+/* Original routine for reference */
+
+//BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
+//{
+//	struct List* list;
+//	struct Entry* ent;
+//
+//	adfCreateDir(dest, dest->curDirPtr, dirName);
+//
+//	adfChangeDir(src, dirName);
+//	adfChangeDir(dest, dirName);
+//
+//	list = adfGetDirEnt(src, src->curDirPtr);
+//
+//	while (list) {
+//		ent = (struct Entry*)list->content;
+//		if (ent->type == ST_DIR) {
+//			/* it's a dir - recurse into it */
+//			CopyAmiDir2Ami(ent->name, src, dest);
+//		}
+//		else {
+//			/* it's a file or a link, just copy it */
+//			CopyAmi2Ami(ent->name, src, dest, ent->size);
+//		}
+//		adfFreeEntry(list->content);
+//		list = list->next;
+//	}
+//	freeList(list);
+//
+//	adfParentDir(dest);
+//	adfParentDir(src);
+//
+//	return TRUE;
+//}
+
+// Chiron 2025: TODO: Figure out how to copy the date and time from one folder to another properly!
+//
+// The function below DOES NOT WORK FOR COPYING THE DATE AND TIME!
+// 
+// Go to the file: adf_dir.c
+// Look at this function: void printEntry(struct Entry* entry)
+// 
+// That function is for printing to the console as an example of something. 
+// Basically the code below tries to use it for that, but that doesn't work!
+// That's also why this was wrong: 
+// days = e->days;   // days since 1/1/1978    <-- WRONG! That's the day of the month!
+// mins = e->mins;   // minutes since midnight <-- WRONG! That's the mins part of the time of day!
+// 
+// So In order to do this right I need figure out how to read and write the epoch from 
+// the headers. Like I did in the copy routine - look here: 
+// 
+//// Copy Comments
+//strcpy(destFile->fileHdr->comment, srcFile->fileHdr->comment);
+//
+//// Copy Comment Length (char)
+//destFile->fileHdr->commLen = srcFile->fileHdr->commLen;
+//
+//// Copy Access Flags (long)
+//destFile->fileHdr->access = srcFile->fileHdr->access;
+//
+//// Copy Date and Time (longs)
+//destFile->fileHdr->days = srcFile->fileHdr->days;	//long	days;      /* Date of last change (days since 1 jan 78).			    */
+//destFile->fileHdr->mins = srcFile->fileHdr->mins;	//long	mins;      /* Time of last change (mins since midnight).			    */
+//destFile->fileHdr->ticks = srcFile->fileHdr->ticks;	//long	ticks; /* Time of last change (1/50ths of a second since last min). */
+//
+// I tried to do something like that but I can't get it working.
+// I tried to get Copilot to help but it kept
+// getting hung up on fucking struct Entry* which is for nicey nice printing
+// and not for what I want! Fuck! Why is this hard? 
+
+
+BOOL CopyAmiDir2Ami(char* dirName,
+	struct Volume* src,
+	struct Volume* dest)
+{
+	struct List* list;
+	struct Entry* ent;
+
+	// buffers to hold the source folder’s metadata
+	char  commentBuf[MAXCMMTLEN + 1];
+	long  accessFlags;
+	//long  days, mins;
+
+	// 1) Read the source‐dir’s comment, flags and date (days+mins)
+	{
+		struct List* meta = adfGetDirEnt(src, src->curDirPtr);
+		while (meta)
+		{
+			struct Entry* e = (struct Entry*)meta->content;
+			if (e->type == ST_DIR && strcmp(e->name, dirName) == 0)
+			{
+				strcpy(commentBuf, e->comment);
+				accessFlags = e->access;
+				//days = e->days;   // days since 1/1/1978    <-- WRONG! Not epoch! That's the day of the month! struct Entry* is for nicey nice printing!
+				//mins = e->mins;   // minutes since midnight <-- WRONG! Not epoch! That's the mins of the time! struct Entry* is for nicey nice printing!
+
+				adfFreeEntry(meta->content);
+				break;
+			}
+			adfFreeEntry(meta->content);
+			meta = meta->next;
+		}
+		freeList(meta);
+	}
+	
+	// 2) Create the directory in the destination volume
 	adfCreateDir(dest, dest->curDirPtr, dirName);
 
+	// 3) Immediately re‐apply comment & flags
+	adfSetEntryComment(dest,
+		dest->curDirPtr,
+		dirName,
+		commentBuf);
+
+	adfSetEntryAccess(dest,
+		dest->curDirPtr,
+		dirName,
+		accessFlags);
+
+	// 4) Now poke the days+mins back in, then flush via comment‐setter
+	{
+		struct List* meta2 = adfGetDirEnt(dest, dest->curDirPtr);
+		while (meta2)
+		{
+			struct Entry* e2 = (struct Entry*)meta2->content;
+			if (e2->type == ST_DIR && strcmp(e2->name, dirName) == 0)
+			{
+				//e2->days = days;
+				//e2->mins = mins;
+				// flush the block (updates days/mins on disk)
+				adfSetEntryComment(dest,
+					dest->curDirPtr,
+					dirName,
+					e2->comment);
+				adfFreeEntry(meta2->content);
+				break;
+			}
+			adfFreeEntry(meta2->content);
+			meta2 = meta2->next;
+		}
+		freeList(meta2);
+	}
+
+	// 5) Descend on both volumes
 	adfChangeDir(src, dirName);
 	adfChangeDir(dest, dirName);
 
+	// 6) Copy each child (recurse on subdirs)
 	list = adfGetDirEnt(src, src->curDirPtr);
-
-	while (list) {
-		ent = (struct Entry *)list->content;
-		if (ent->type == ST_DIR) {
-			/* it's a dir - recurse into it */
+	while (list)
+	{
+		ent = (struct Entry*)list->content;
+		if (ent->type == ST_DIR)
 			CopyAmiDir2Ami(ent->name, src, dest);
-		} else {
-			/* it's a file or a link, just copy it */
+		else
 			CopyAmi2Ami(ent->name, src, dest, ent->size);
-		}
+
 		adfFreeEntry(list->content);
 		list = list->next;
 	}
 	freeList(list);
 
+	// 7) Step back out
 	adfParentDir(dest);
 	adfParentDir(src);
 
