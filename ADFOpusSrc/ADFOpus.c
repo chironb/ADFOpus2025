@@ -607,10 +607,20 @@ LRESULT CALLBACK MainWinProc(
 			gstrFileName, sizeof gstrFileName);
 		for (i = 0; i < iCount; i++)
 		{
-			DragQueryFile(hDrop, i,
-				gstrFileName, sizeof gstrFileName);
-			CreateChildWin(ghwndMDIClient,
-				CHILD_AMILISTER);
+			DragQueryFile(hDrop, i, gstrFileName, sizeof gstrFileName);
+			
+			//CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+
+			if (isCurrentlyOpen(gstrFileName)) {
+				HINSTANCE hInst = GetModuleHandle(NULL);
+				if (Options.playSounds) PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+				MessageBoxA(hwndFrame, gstrFileName, "Warning: This file is already open!", MB_OK);
+				if (BringAmigaListerToFront(gstrFileName));
+			}
+			else {
+				CreateChildWin(ghwndMDIClient, CHILD_AMILISTER); // Open the .adf file within this program!
+			};/*end-if*/
+
 		}
 		DragFinish(hDrop);
 		break;
