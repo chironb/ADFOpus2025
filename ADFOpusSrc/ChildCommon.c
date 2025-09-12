@@ -1017,7 +1017,7 @@ void FormatByteSize(
 
 	if (bytes < KB) {
 		// under 1 KB: raw bytes
-		wsprintfA(buf, "%lu bytes", bytes);
+		wsprintfA(buf, "%lu B", bytes);
 	}
 	else if (bytes < MB) {
 		// 1 KB–1 MB: show KB with one decimal
