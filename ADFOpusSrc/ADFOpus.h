@@ -28,16 +28,15 @@
 
 /* icon indices for list-box controls */
 #define ICO_WINFILE			0
-#define ICO_WINFILE_ADF		1
-#define ICO_WINDIR			2
-#define ICO_AMIFILE			3
-#define ICO_AMIDIR			4
-#define ICO_DRIVEHD			5
-#define ICO_DRIVENET		6
-#define ICO_DRIVECD			7
-#define ICO_DRIVEFLOP35		8
-#define ICO_DRIVEFLOP514	9
-
+#define ICO_WINDIR			1
+#define ICO_AMIFILE			2
+#define ICO_AMIDIR			3
+#define ICO_DRIVEHD			4
+#define ICO_DRIVENET		5
+#define ICO_DRIVECD			6
+#define ICO_DRIVEFLOP35		7
+#define ICO_DRIVEFLOP514	8
+#define ICO_WINFILE_ADF		9
 
 /* possible types of MDI child window */
 #define CHILD_WINLISTER 87651

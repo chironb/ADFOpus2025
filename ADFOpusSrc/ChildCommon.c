@@ -846,6 +846,7 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 				break;
 			case ICO_AMIFILE:
 			case ICO_WINFILE:
+			case ICO_WINFILE_ADF:
 				bIsFile = TRUE;
 				break;
 			}
@@ -1309,7 +1310,7 @@ void ChildUpdate(HWND win)
 		if (pos < 0) pos = 0;
 
 		// Size column
-		if (ce->icon == ICO_WINFILE || ce->icon == ICO_AMIFILE)
+		if (ce->icon == ICO_WINFILE || ce->icon == ICO_WINFILE_ADF || ce->icon == ICO_AMIFILE)
 		{
 			//itoa((int)ce->size, strBuf, 10);
 			//LVAddSubItem(ci->lv, strBuf, pos, 1);
@@ -1463,11 +1464,13 @@ BOOL WinAddFile(CHILDINFO *ci, WIN32_FIND_DATA *wfd)
 		de->icon = ICO_WINDIR;
 	}
 	else {
-		de->icon = ICO_WINFILE;
+		if (ends_with(wfd->cFileName, ".adf"))
+			de->icon = ICO_WINFILE_ADF;
+		else 
+			de->icon = ICO_WINFILE;
 	}
 
-	if (ends_with(wfd->cFileName, ".adf"))
-		de->icon = ICO_WINFILE_ADF;
+
 
 	// Chiron 2025: TODO: I think this is where I have to put somethign to check and set 
 	// a special icon if it's an .adf file in a Windows List View. 
@@ -1675,71 +1678,151 @@ void ChildInvertSelection(HWND win)
 	SendMessage(win, WM_MDIACTIVATE, 0, 0l);
 }
 
-void ChildSortDir(HWND win, long type)
-/* My entry for the "shittest sorting code ever" championships
- */
-{
-	CHILDINFO *ci = (CHILDINFO *)GetWindowLong(win, 0);
-	DIRENTRY *de1, *de2;
-	char t1[MAX_PATH], t2[MAX_PATH];
+//void ChildSortDir(HWND win, long type)
+///* My entry for the "shittest sorting code ever" championships
+// */
+//{
+//	CHILDINFO *ci = (CHILDINFO *)GetWindowLong(win, 0);
+//	DIRENTRY *de1, *de2;
+//	char t1[MAX_PATH], t2[MAX_PATH];
+//
+//	if (ci->content == NULL)
+//		return;
+//
+//	de1 = de2 = ci->content;
+//
+//	/* sort by icon (type) first */
+//	if (de1->icon < ICO_DRIVEHD) { /* only if this isn't a drive list */
+//		while (de1) {
+//			de2 = ci->content;
+//			while (de2) {
+//				if (de1->icon > de2->icon)
+//					SwapContent(de1, de2);
+//				de2 = de2->next;
+//			}
+//			de1 = de1->next;
+//		}
+//	}
+//
+//	/* now items with same icon by name */
+//	de1 = de2 = ci->content;
+//
+//	while (de1) {
+//		de2 = ci->content;
+//		while (de2) {
+//			strcpy(t1, de1->name);
+//			strcpy(t2, de2->name);
+//			strupr(t1);
+//			strupr(t2);
+//			if ((de1->icon == de2->icon) && (strcmp(t1, t2) < 0))
+//				SwapContent(de1, de2);
+//			de2 = de2->next;
+//		}
+//		de1 = de1->next;
+//	}
+//}
+//
+//void SwapContent(DIRENTRY *de1, DIRENTRY *de2)
+///* the lamest function in this program
+// */
+//{
+//	DIRENTRY tmpde;
+//
+//	strcpy(tmpde.name, de1->name);
+//	strcpy(tmpde.flags, de1->flags);
+//	tmpde.size = de1->size;
+//	tmpde.icon = de1->icon;
+//
+//	strcpy(de1->name, de2->name);
+//	strcpy(de1->flags, de2->flags);
+//	de1->size = de2->size;
+//	de1->icon = de2->icon;
+//
+//	strcpy(de2->name, tmpde.name);
+//	strcpy(de2->flags, tmpde.flags);
+//	de2->size = tmpde.size;
+//	de2->icon = tmpde.icon;
+//}
 
-	if (ci->content == NULL)
+
+
+//-----------------------------------------------------------------------------
+// Sort a directory listing so that folders come first, then all files
+// (including .adf), each group sorted alphabetically (case‐insensitive).
+//-----------------------------------------------------------------------------
+void ChildSortDir(HWND win, long type)
+{
+	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(win, 0);
+	if (!ci || !ci->content)
 		return;
 
-	de1 = de2 = ci->content;
+	BOOL     swapped;
+	DIRENTRY* cur;
 
-	/* sort by icon (type) first */
-	if (de1->icon < ICO_DRIVEHD) { /* only if this isn't a drive list */
-		while (de1) {
-			de2 = ci->content;
-			while (de2) {
-				if (de1->icon > de2->icon)
-					SwapContent(de1, de2);
-				de2 = de2->next;
+	do {
+		swapped = FALSE;
+		cur = ci->content;
+
+		while (cur->next) {
+			DIRENTRY* nxt = cur->next;
+			int grpCur = (cur->icon == ICO_WINDIR
+				|| cur->icon == ICO_AMIDIR)
+				? 0 : 1;
+			int grpNext = (nxt->icon == ICO_WINDIR
+				|| nxt->icon == ICO_AMIDIR)
+				? 0 : 1;
+
+			BOOL needSwap = FALSE;
+
+			// 1) Folders (grp 0) always precede files (grp 1)
+			if (grpCur > grpNext) {
+				needSwap = TRUE;
 			}
-			de1 = de1->next;
-		}
-	}
+			// 2) If same group, sort by name (case‐insensitive)
+			else if (grpCur == grpNext) {
+				if (lstrcmpiA(cur->name, nxt->name) > 0)
+					needSwap = TRUE;
+			}
 
-	/* now items with same icon by name */
-	de1 = de2 = ci->content;
-
-	while (de1) {
-		de2 = ci->content;
-		while (de2) {
-			strcpy(t1, de1->name);
-			strcpy(t2, de2->name);
-			strupr(t1);
-			strupr(t2);
-			if ((de1->icon == de2->icon) && (strcmp(t1, t2) < 0))
-				SwapContent(de1, de2);
-			de2 = de2->next;
+			if (needSwap) {
+				SwapContent(cur, nxt);
+				swapped = TRUE;
+			}
+			cur = nxt;
 		}
-		de1 = de1->next;
-	}
+	} while (swapped);
 }
 
-void SwapContent(DIRENTRY *de1, DIRENTRY *de2)
-/* the lamest function in this program
- */
+//-----------------------------------------------------------------------------
+// Swap only the payload (name, flags, size, icon) of two nodes.
+// Leaves their `next` pointers intact.
+//-----------------------------------------------------------------------------
+void SwapContent(DIRENTRY* a, DIRENTRY* b)
 {
-	DIRENTRY tmpde;
+	char tmpName[MAX_PATH], tmpFlags[9];
+	long tmpSize;
+	int  tmpIcon;
 
-	strcpy(tmpde.name, de1->name);
-	strcpy(tmpde.flags, de1->flags);
-	tmpde.size = de1->size;
-	tmpde.icon = de1->icon;
+	// save A’s data
+	strcpy(tmpName, a->name);
+	strcpy(tmpFlags, a->flags);
+	tmpSize = a->size;
+	tmpIcon = a->icon;
 
-	strcpy(de1->name, de2->name);
-	strcpy(de1->flags, de2->flags);
-	de1->size = de2->size;
-	de1->icon = de2->icon;
+	// copy B → A
+	strcpy(a->name, b->name);
+	strcpy(a->flags, b->flags);
+	a->size = b->size;
+	a->icon = b->icon;
 
-	strcpy(de2->name, tmpde.name);
-	strcpy(de2->flags, tmpde.flags);
-	de2->size = tmpde.size;
-	de2->icon = tmpde.icon;
+	// restore A → B
+	strcpy(b->name, tmpName);
+	strcpy(b->flags, tmpFlags);
+	b->size = tmpSize;
+	b->icon = tmpIcon;
 }
+
+
 
 BOOL ChildOnContextMenu(HWND win, int x, int y)
 /* on context-click decide if we should display a context menu
@@ -1861,7 +1944,7 @@ void DisplayContextMenu(HWND winLister, POINT ptScreen)
 
 			// set flags for EnableMenuItem logic
 			int img = LVGetItemImageIndex(ci->lv, hti.iItem);
-			bFileClicked = (img == ICO_AMIFILE || img == ICO_WINFILE);
+			bFileClicked = (img == ICO_AMIFILE || img == ICO_WINFILE || img == ICO_WINFILE_ADF);
 			bDirClicked = !bFileClicked;
 			bNothingClicked = FALSE;
 		}
