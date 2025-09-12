@@ -2091,6 +2091,10 @@ long AOGetFileSize(CHILDINFO *ci, char *fn)
 	return ce->size;
 }
 
+
+// Chiron 2025: TODO: I could turn this recursive bit into 
+// a way to do an entire amiga disk image export! 
+// Like an Export All or something!
 BOOL CopyAmiDir2Win(char *srcDir, char *destPath, struct Volume *vol)
 {
 	char tp[4096];

@@ -1884,11 +1884,11 @@ void ChildDelete(HWND win)
 		for (i = 0 ; i < ListView_GetItemCount(ci->lv) ; i++) {
 			if (LVIsItemSelected(ci->lv, i)) {
 				icon = LVGetItemImageIndex(ci->lv, i);
-				if ((icon == ICO_WINFILE) || (icon == ICO_WINDIR)) {
+				if ((icon == ICO_WINFILE) || icon == ICO_WINFILE_ADF || (icon == ICO_WINDIR)) {
 					strcpy(path, ci->curDir);
 					LVGetItemCaption(ci->lv, nam, sizeof(nam), i);
 					strcat(path, nam);
-					if (icon == ICO_WINFILE) {
+					if (icon == ICO_WINFILE || icon == ICO_WINFILE_ADF) {
 						if (! DeleteFile(path)) {
 							// Play Sound 1 --> Warning! / Error!
 							// HINSTANCE hInst = GetModuleHandle(NULL);
