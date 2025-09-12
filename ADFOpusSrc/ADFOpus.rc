@@ -316,7 +316,7 @@ BEGIN
     CONTROL         "Use directory cache blocks where possible",IDC_ODIRCACHE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,205,188,10
     GROUPBOX        "File Types",IDC_STATIC,7,223,243,31
-    PUSHBUTTON      "Register Amiga disk file types with Windows Explorer",IDC_OREGISTER,12,236,203,14
+    PUSHBUTTON      "Register Amiga disk file types with Windows Explorer",IDC_OREGISTER,27,236,203,14
     DEFPUSHBUTTON   "OK",IDC_OOK,200,258,50,15
     PUSHBUTTON      "Apply",IDC_OAPPLY,145,258,50,15,WS_DISABLED
     PUSHBUTTON      "Close",IDCANCEL,7,258,50,15
