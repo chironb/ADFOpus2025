@@ -104,6 +104,11 @@ char g_defaultLocalPath[MAX_PATH] = { 0 };
 
 extern char* adfGetVersionNumber(); /* this shouldn't be here */
 
+
+extern BOOL isCurrentlyOpen(const char* gstrFileName);
+extern BOOL BringAmigaListerToFront(const char* gstrFileName);
+extern void adfCloseFileNoDate(struct File* file);
+
 ENV_DECLARATION;
 
 /* function prototypes */
@@ -535,7 +540,19 @@ LRESULT CALLBACK MainWinProc(
 					for (i = 0; i < argCount; i++)
 					{
 						strcpy_s(gstrFileName, sizeof gstrFileName, ArgArray[i]);
-						CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+
+						// CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+
+						if (isCurrentlyOpen(gstrFileName)) {
+							HINSTANCE hInst = GetModuleHandle(NULL);
+							if (Options.playSounds) PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+							MessageBoxA(hwndFrame, gstrFileName, "Warning: This file is already open!", MB_OK);
+							if (BringAmigaListerToFront(gstrFileName));
+						}
+						else {
+							CreateChildWin(ghwndMDIClient, CHILD_AMILISTER); // Open the .adf file within this program!
+						};/*end-if*/
+
 					}
 
 					bCmdLineArgs = TRUE;
@@ -766,13 +783,39 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 		DialogBox(instance, MAKEINTRESOURCE(IDD_NEWVOLUME), win, (DLGPROC) NewDlgProc);
 		break;		
 	case ID_FIL_OPEN:
-		if (OpenDlg(win))
-			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+		if (OpenDlg(win)) {
+
+			//CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+
+			if (isCurrentlyOpen(gstrFileName)) {
+				HINSTANCE hInst = GetModuleHandle(NULL);
+				if (Options.playSounds) PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+				MessageBoxA(win, gstrFileName, "Warning: This file is already open!", MB_OK);
+				if (BringAmigaListerToFront(gstrFileName));
+			}
+			else {
+				CreateChildWin(ghwndMDIClient, CHILD_AMILISTER); // Open the .adf file within this program!
+			};/*end-if*/
+		}
 		break;
-	case ID_FIL_OPENDEVICE: // Chiron 2025: TODO: I think I removed this from the program because it didn't work. Might be worth fixing and putting back maybe? 
+	case ID_FIL_OPENDEVICE: // Chiron 2025: TODO: I think I removed this from the program menu because it didn't work. Might be worth fixing and putting back maybe? 
+		
 		strcpy(gstrFileName, "|H1"); //// TODO: RDSK autodetection
-		CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+		
+		//CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+
+		if (isCurrentlyOpen(gstrFileName)) {
+			HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds) PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			MessageBoxA(win, gstrFileName, "Warning: This file is already open!", MB_OK);
+			if (BringAmigaListerToFront(gstrFileName));
+		}
+		else {
+			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER); // Open the .adf file within this program!
+		};/*end-if*/
+
 		break;
+
 	case ID_FIL_CLOSE:
 		hwndActiveChild = (HWND) SendMessage(ghwndMDIClient, WM_MDIGETACTIVE, 0, (LPARAM) NULL);
 		SendMessage(hwndActiveChild, WM_CLOSE, 0, 0);

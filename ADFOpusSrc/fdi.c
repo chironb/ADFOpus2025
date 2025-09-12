@@ -972,7 +972,19 @@ BOOL RunGreaseweazle(HWND dlg)
 		WaitForSingleObject(hProc, INFINITE);
 		CloseHandle(hProc);
 		EndDialog(dlg, TRUE);
-		CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+
+		//CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+		 
+		if (isCurrentlyOpen(gstrFileName)) {
+			HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds) PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			MessageBoxA(hInst, gstrFileName, "Warning: This file is already open!", MB_OK);
+			if (BringAmigaListerToFront(gstrFileName));
+		}
+		else {
+			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER); // Open the .adf file within this program!
+		};/*end-if*/
+		
 		// Play Sound 2 --> Everything Okay! / Task Complete!
 		HINSTANCE hInst = GetModuleHandle(NULL);
 		if (Options.playSounds)

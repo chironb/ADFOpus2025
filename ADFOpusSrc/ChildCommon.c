@@ -584,6 +584,213 @@ void ChildOnSize(HWND win)
 	SendMessage(ci->sb, WM_SIZE, 0, 0l);
 }
 
+
+
+//typedef struct _CHILDINFO {
+//	BOOL			isAmi;				/* true if Amiga, false if Windows */
+//	HWND			lv;					/* handle of listview control */
+//	HWND			sb;					/* handle of status bar */
+//	char			curDir[MAX_PATH];	/* current directory */
+//	int				totalCount;			/* total no. of files or dirs */
+//	BOOL			atRoot;				/* true if at root dir */
+//	DIRENTRY* content;			/* head of directory contents list */
+//	struct Device* dev;
+//	struct Volume* vol;
+//	BOOL			readOnly;
+//	enum DiskFormat	dfDisk;				// Disk format.
+//	int				compSize;			// Size of compressed disk image.
+//	char			orig_path[MAX_PATH];// Path to original (un/compressed) file.
+//	char			temp_path[MAX_PATH];// Path to temp work adf file.
+//} CHILDINFO;
+
+
+
+
+
+#include <windows.h>
+
+//---------------------------------------------------------------------------
+// Context structure passed to our enum callback
+//---------------------------------------------------------------------------
+typedef struct {
+	const char* targetPath;  // path we’re checking for
+	BOOL        found;       // set TRUE if we find a match
+} OpenCheckCtx;
+
+//---------------------------------------------------------------------------
+// EnumChildWindows callback: checks each Amiga‐lister child’s orig_path
+//--------------------------------------------------------------------------- 
+static BOOL CALLBACK _IsCurrentlyOpenProc(HWND hwndChild, LPARAM lParam)
+{
+	OpenCheckCtx* ctx = (OpenCheckCtx*)lParam;
+
+	// Only look at Amiga‐lister MDI children
+	if (GetWindowLongPtr(hwndChild, GWL_USERDATA) == CHILD_AMILISTER)
+	{
+		CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndChild, 0);
+		if (ci && ci->orig_path)
+		{
+			// Compare case‐insensitive (Windows paths)
+			if (lstrcmpiA(ci->orig_path, ctx->targetPath) == 0)
+			{
+				ctx->found = TRUE;
+				return FALSE;    // stop enumeration early
+			}
+		}
+	}
+
+	return TRUE;  // continue enumerating
+}
+
+
+
+
+//#include <windows.h>
+//
+//// Context for our enum callback
+//typedef struct {
+//	const char* targetPath;  // path we're looking for
+//	BOOL        activated;   // set TRUE if we brought it to front
+//} ActivateCtx;
+//
+////-----------------------------------------------------------------------------
+//// EnumChildWindows callback: looks for an Amiga‐lister whose orig_path matches
+//// the target, then activates that MDI child window.
+////-----------------------------------------------------------------------------
+//static BOOL CALLBACK _ActivateAmigaListerByPath(HWND hwndChild, LPARAM lParam)
+//{
+//	ActivateCtx* ctx = (ActivateCtx*)lParam;
+//
+//	// Only consider your Amiga‐lister MDI children
+//	if (GetWindowLongPtr(hwndChild, GWL_USERDATA) == CHILD_AMILISTER)
+//	{
+//		CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndChild, 0);
+//		if (ci && ci->orig_path &&
+//			lstrcmpiA(ci->orig_path, ctx->targetPath) == 0)
+//		{
+//			// Activate this MDI child
+//			SendMessage(ghwndMDIClient,
+//				WM_MDIACTIVATE,
+//				(WPARAM)hwndChild,
+//				0);
+//
+//			// Optionally ensure it's visible and in front
+//			ShowWindow(hwndChild, SW_RESTORE);
+//			SetForegroundWindow(hwndChild);
+//
+//			ctx->activated = TRUE;
+//			return FALSE;  // stop enumerating
+//		}
+//	}
+//
+//	return TRUE;  // keep going
+//}
+//
+////-----------------------------------------------------------------------------
+//// Call this to bring an already‐open Amiga lister window (by full path) to front.
+//// Returns TRUE if found & activated; FALSE if not open.
+////-----------------------------------------------------------------------------
+//BOOL BringAmigaListerToFront(const char* gstrFileName)
+//{
+//	ActivateCtx ctx;
+//	ctx.targetPath = gstrFileName;
+//	ctx.activated = FALSE;
+//
+//	// Walk each direct child of the MDI client
+//	EnumChildWindows(
+//		ghwndMDIClient,
+//		_ActivateAmigaListerByPath,
+//		(LPARAM)&ctx
+//	);
+//
+//	return ctx.activated;
+//}
+
+
+
+#include <windows.h>
+
+// Context for our enum callback
+typedef struct {
+	const char* targetPath;  // path we're looking for
+	BOOL        activated;   // set TRUE if we brought it to front
+} ActivateCtx;
+
+//-----------------------------------------------------------------------------
+// EnumChildWindows callback: looks for an Amiga‐lister whose orig_path matches
+// the target, then activates that MDI child window.
+//-----------------------------------------------------------------------------
+static BOOL CALLBACK _ActivateAmigaListerByPath(HWND hwndChild, LPARAM lParam)
+{
+	ActivateCtx* ctx = (ActivateCtx*)lParam;
+
+	// Only consider your Amiga‐lister MDI children
+	if (GetWindowLongPtr(hwndChild, GWL_USERDATA) == CHILD_AMILISTER)
+	{
+		CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndChild, 0);
+		if (ci && ci->orig_path &&
+			lstrcmpiA(ci->orig_path, ctx->targetPath) == 0)
+		{
+			// Activate this MDI child
+			SendMessage(ghwndMDIClient,
+				WM_MDIACTIVATE,
+				(WPARAM)hwndChild,
+				0);
+
+			// Optionally ensure it's visible and in front
+			ShowWindow(hwndChild, SW_RESTORE);
+			SetForegroundWindow(hwndChild);
+
+			ctx->activated = TRUE;
+			return FALSE;  // stop enumerating
+		}
+	}
+
+	return TRUE;  // keep going
+}
+
+//-----------------------------------------------------------------------------
+// Call this to bring an already‐open Amiga lister window (by full path) to front.
+// Returns TRUE if found & activated; FALSE if not open.
+//-----------------------------------------------------------------------------
+BOOL BringAmigaListerToFront(const char* gstrFileName)
+{
+	ActivateCtx ctx;
+	ctx.targetPath = gstrFileName;
+	ctx.activated = FALSE;
+
+	// Walk each direct child of the MDI client
+	EnumChildWindows(
+		ghwndMDIClient,
+		_ActivateAmigaListerByPath,
+		(LPARAM)&ctx
+	);
+
+	return ctx.activated;
+}
+
+
+//---------------------------------------------------------------------------
+// Returns TRUE if the given full file‐path is already open in an
+// Amiga‐lister MDI child.  FALSE otherwise.
+//---------------------------------------------------------------------------
+BOOL isCurrentlyOpen(const char* gstrFileName)
+{
+	OpenCheckCtx ctx;
+	ctx.targetPath = gstrFileName;
+	ctx.found = FALSE;
+
+	// Walk every direct child of the MDI‐client
+	EnumChildWindows(
+		ghwndMDIClient,
+		_IsCurrentlyOpenProc,
+		(LPARAM)&ctx
+	);
+
+	return ctx.found;
+}
+
+
 BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 /* process WM_NOTIFY events.  these will always come from the list-view
    control. */
@@ -728,22 +935,30 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 				strcpy(szWinFile, ci->curDir);
 				strcat(szWinFile, buf);
 
-					iError = (int)ShellExecute(win, "open", szWinFile, NULL, NULL, SW_SHOWNORMAL);
-					ChildUpdate(win);
-					break;
+				iError = (int)ShellExecute(win, "open", szWinFile, NULL, NULL, SW_SHOWNORMAL);
+				ChildUpdate(win);
+				break;
 
 			case ICO_WINFILE_ADF:
 				strcpy(szWinFile, ci->curDir);
 				strcat(szWinFile, buf);
 
+				// Update the file path because we're about to open it!
+				strcpy(gstrFileName, szWinFile);
 
-					// Open the .adf file within this program!
-					strcpy(gstrFileName, szWinFile);
-					// MessageBoxA(win, gstrFileName, "DEBUG:", MB_OK | MB_ICONERROR);
-					CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
-					break;
+				//CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
 
-				
+				if (isCurrentlyOpen(gstrFileName)) {
+					HINSTANCE hInst = GetModuleHandle(NULL);
+					if (Options.playSounds) PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+					MessageBoxA(win, gstrFileName, "Warning: This file is already open!", MB_OK);
+					if ( BringAmigaListerToFront(gstrFileName) );
+				}
+				else {
+					CreateChildWin(ghwndMDIClient, CHILD_AMILISTER); // Open the .adf file within this program!
+				};/*end-if*/
+
+				break;
 
 			case ICO_WINDIR:
 				strcat(ci->curDir, buf);
@@ -853,12 +1068,18 @@ HWND CreateListView(HWND win)
 
 	// Add your columns
 	LVAddColumn(lv, "Name", 150, 0); // Chiron 2025 - Kludgey fix for the MOUSE SHOOTS OFF bug! Changed the width of the Name column from 200 to 150.
-	LVAddColumn(lv, "Size", 65, 1);
+	LVAddColumn(lv, "Size",  65, 1);
 	LVAddColumn(lv, "Flags", 75, 2);
-	LVAddColumn(lv, "Date", 90, 3);
+	LVAddColumn(lv, "Date",  90, 3);
 
-	if (GetWindowLong(win, GWL_USERDATA) != CHILD_WINLISTER)
+	if (GetWindowLong(win, GWL_USERDATA) == CHILD_AMILISTER)
 		LVAddColumn(lv, "Comment", 65, 4); 
+
+	// Right-justify column #1 (“Size”)
+	LVCOLUMN col = { 0 };
+	col.mask = LVCF_FMT;
+	col.fmt = LVCFMT_RIGHT;           // right-aligned text
+	ListView_SetColumn(lv, 1, &col);   // 1 == your “Size” column index
 
 	// Image list + full-row selection
 	ListView_SetImageList(lv, ghwndImageList, LVSIL_SMALL);

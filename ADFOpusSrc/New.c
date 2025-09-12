@@ -357,8 +357,21 @@ void NewCreate(HWND dlg)
 	_beginthread(NewCreateFile, 0, dlg);
 	DialogBox(instance, MAKEINTRESOURCE(IDD_PROGRESS1), dlg, (DLGPROC)NewProgressProc);
 	SendMessage(dlg, WM_COMMAND, IDCANCEL, 0l);
-	if (SendMessage(GetDlgItem(dlg, IDC_NEWOPEN), BM_GETCHECK, 0, 0l) == BST_CHECKED)
-			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+	if (SendMessage(GetDlgItem(dlg, IDC_NEWOPEN), BM_GETCHECK, 0, 0l) == BST_CHECKED) {
+
+		//CreateChildWin(ghwndMDIClient, CHILD_AMILISTER);
+
+		if (isCurrentlyOpen(gstrFileName)) {
+			HINSTANCE hInst = GetModuleHandle(NULL);
+			if (Options.playSounds) PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
+			MessageBoxA(hInst, gstrFileName, "Warning: This file is already open!", MB_OK);
+			if (BringAmigaListerToFront(gstrFileName));
+		}
+		else {
+			CreateChildWin(ghwndMDIClient, CHILD_AMILISTER); // Open the .adf file within this program!
+		};/*end-if*/
+
+	}
 }
 
 
