@@ -1271,7 +1271,7 @@ void ChildUpdate(HWND win)
 {
 	CHILDINFO* ci = (CHILDINFO*)GetWindowLong(win, 0);
 	DIRENTRY* ce;
-	char         strBuf[20];
+	//char         strBuf[20];
 	int          pos;
 	struct File* amiFile;
 	BOOL         bAmi = FALSE;

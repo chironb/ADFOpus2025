@@ -69,6 +69,12 @@ extern BOOL MakeGoodOutputFilename(
 	const char* ext         // required extension, including the dot, e.g. ".adf"
 );
 
+
+extern BOOL isCurrentlyOpen(const char* gstrFileName);
+extern BOOL BringAmigaListerToFront(const char* gstrFileName);
+extern void adfCloseFileNoDate(struct File* file);
+
+
 #include "ADFOpus.h"   // for 
 
 
@@ -442,6 +448,81 @@ static BOOL CALLBACK _ShowAmigaDensityFromPath(HWND hwndChild, LPARAM lParam)
 	return FALSE;
 }
 
+
+
+
+
+
+
+//———————————————————————————————————————————————————————————————
+// Helpers to pick the combo‐item matching the active Amiga window
+//———————————————————————————————————————————————————————————————
+
+typedef struct {
+	HWND   hCombo;
+	char   targetPath[MAX_PATH];
+} COMBOCTX;
+
+// Retrieves the full image path from the currently active MDI child
+// into outPath.  outPath[0]==0 if none or not an Amiga lister.
+static void GetActiveAmigaPath(char* outPath)
+{
+	HWND hwndActive = (HWND)SendMessage(
+		ghwndMDIClient,
+		WM_MDIGETACTIVE,
+		0, 0
+	);
+	outPath[0] = 0;
+
+	if (hwndActive
+		&& GetWindowLongPtr(hwndActive, GWL_USERDATA) == CHILD_AMILISTER)
+	{
+		CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndActive, 0);
+		if (ci && ci->orig_path[0])
+			lstrcpyA(outPath, ci->orig_path);
+	}
+}
+
+// EnumChildWindows callback: looks for the first Amiga‐lister whose
+// orig_path matches ctx->targetPath, then selects that string in the combo.
+static BOOL CALLBACK _SelectMatchingComboItem(HWND hwndChild, LPARAM lParam)
+{
+	COMBOCTX* ctx = (COMBOCTX*)lParam;
+
+	if (GetWindowLongPtr(hwndChild, GWL_USERDATA) == CHILD_AMILISTER)
+	{
+		CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndChild, 0);
+		if (ci
+			&& ci->orig_path[0]
+			&& lstrcmpiA(ci->orig_path, ctx->targetPath) == 0)
+		{
+			// Find exact match in combo and select it
+			int idx = (int)SendMessageA(
+				ctx->hCombo,
+				CB_FINDSTRINGEXACT,
+				(WPARAM)-1,
+				(LPARAM)ctx->targetPath
+			);
+			if (idx != CB_ERR)
+				SendMessage(ctx->hCombo, CB_SETCURSEL, (WPARAM)idx, 0);
+
+			return FALSE;  // stop enumeration once found
+		}
+	}
+
+	return TRUE;  // keep looking
+}
+
+
+
+
+
+
+
+
+
+
+
 //-----------------------------------------------------------------------------
 // Greaseweazle “Write” dialog proc
 LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
@@ -465,10 +546,35 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 			(LPARAM)hCombo
 		);
 
+		// PLEASE REWORK WHAT GOES BETWEEN HERE...
 
-		// default‐select the first item, if any
-		if (SendMessage(hCombo, CB_GETCOUNT, 0, 0) > 0)
-			SendMessage(hCombo, CB_SETCURSEL, 0, 0);
+		//EnumChildWindows(
+		//	ghwndMDIClient,
+		//	/*some_function*/,
+		//	/*some_parameter*/
+		//);
+
+			// 2) auto‐select the one matching the active Amiga window
+		COMBOCTX ctx = { hCombo, "" };
+		GetActiveAmigaPath(ctx.targetPath);
+		EnumChildWindows(
+			ghwndMDIClient,
+			_SelectMatchingComboItem,
+			(LPARAM)&ctx
+		);
+
+
+
+		// We no longer do this because we automatically pick the item that matches the path of the active amiga list view.
+		//// default‐select the first item, if any
+		//if (SendMessage(hCombo, CB_GETCOUNT, 0, 0) > 0)
+		//	SendMessage(hCombo, CB_SETCURSEL, 0, 0);
+
+
+
+		// ...AND HERE!
+
+
 
 
 
@@ -978,7 +1084,7 @@ BOOL RunGreaseweazle(HWND dlg)
 		if (isCurrentlyOpen(gstrFileName)) {
 			HINSTANCE hInst = GetModuleHandle(NULL);
 			if (Options.playSounds) PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-			MessageBoxA(hInst, gstrFileName, "Warning: This file is already open!", MB_OK);
+			MessageBoxA(dlg, gstrFileName, "Warning: This file is already open!", MB_OK);
 			if (BringAmigaListerToFront(gstrFileName));
 		}
 		else {

@@ -29,6 +29,10 @@ extern HWND ghwndMDIClient;
 extern BOOL ensure_extension(char* path, size_t buffer_size, const char* ext);
 extern BOOL MakeGoodOutputFilename(HWND hwndDlg, char* path, size_t bufsize, const char* ext);
 
+extern BOOL isCurrentlyOpen(const char* gstrFileName);
+extern BOOL BringAmigaListerToFront(const char* gstrFileName);
+extern void adfCloseFileNoDate(struct File* file);
+
 /* globals */
 extern int Done;
 HWND NewProgress;
@@ -364,7 +368,7 @@ void NewCreate(HWND dlg)
 		if (isCurrentlyOpen(gstrFileName)) {
 			HINSTANCE hInst = GetModuleHandle(NULL);
 			if (Options.playSounds) PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_1), hInst, SND_RESOURCE | SND_ASYNC);
-			MessageBoxA(hInst, gstrFileName, "Warning: This file is already open!", MB_OK);
+			MessageBoxA(dlg, gstrFileName, "Warning: This file is already open!", MB_OK);
 			if (BringAmigaListerToFront(gstrFileName));
 		}
 		else {
