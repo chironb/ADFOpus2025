@@ -286,23 +286,34 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 
 	int i = 0;
 
+	//while (DirPtr->flags[i] != '\0') {
+	//	if (DirPtr->flags[i] == 'R')
+	//		SendDlgItemMessage(dlg, IDC_AMI_READABLE, BM_SETCHECK, BST_CHECKED, 0l);
+	//	else if (DirPtr->flags[i] == 'W')
+	//		SendDlgItemMessage(dlg, IDC_AMI_WRITABLE, BM_SETCHECK, BST_CHECKED, 0l);
+	//	else if (DirPtr->flags[i] == 'E')
+	//		SendDlgItemMessage(dlg, IDC_AMI_EXECUTABLE, BM_SETCHECK, BST_CHECKED, 0l);
+	//	else if (DirPtr->flags[i] == 'D')
+	//		SendDlgItemMessage(dlg, IDC_AMI_DELETABLE, BM_SETCHECK, BST_CHECKED, 0l);
+	//	else if (DirPtr->flags[i] == 'S')
+	//		SendDlgItemMessage(dlg, IDC_AMI_SCRIPT, BM_SETCHECK, BST_CHECKED, 0l);
+	//	else if (DirPtr->flags[i] == 'A')
+	//		SendDlgItemMessage(dlg, IDC_AMI_ARCHIVE, BM_SETCHECK, BST_CHECKED, 0l);
+	//	else if (DirPtr->flags[i] == 'P')
+	//		SendDlgItemMessage(dlg, IDC_AMI_PURE, BM_SETCHECK, BST_CHECKED, 0l);
+	//	else if (DirPtr->flags[i] == 'H')
+	//		SendDlgItemMessage(dlg, IDC_AMI_HOLDBIT, BM_SETCHECK, BST_CHECKED, 0l);
+	//	i++;
+	//}
 	while (DirPtr->flags[i] != '\0') {
-		if (DirPtr->flags[i] == 'R')
-			SendDlgItemMessage(dlg, IDC_AMI_READABLE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if (DirPtr->flags[i] == 'W')
-			SendDlgItemMessage(dlg, IDC_AMI_WRITABLE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if (DirPtr->flags[i] == 'E')
-			SendDlgItemMessage(dlg, IDC_AMI_EXECUTABLE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if (DirPtr->flags[i] == 'D')
-			SendDlgItemMessage(dlg, IDC_AMI_DELETABLE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if (DirPtr->flags[i] == 'S')
-			SendDlgItemMessage(dlg, IDC_AMI_SCRIPT, BM_SETCHECK, BST_CHECKED, 0l);
-		else if (DirPtr->flags[i] == 'A')
-			SendDlgItemMessage(dlg, IDC_AMI_ARCHIVE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if (DirPtr->flags[i] == 'P')
-			SendDlgItemMessage(dlg, IDC_AMI_PURE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if (DirPtr->flags[i] == 'H')
-			SendDlgItemMessage(dlg, IDC_AMI_HOLDBIT, BM_SETCHECK, BST_CHECKED, 0l);
+		if      (DirPtr->flags[i] == 'r') SendDlgItemMessage(dlg, IDC_AMI_READABLE,   BM_SETCHECK, BST_CHECKED, 0l);
+		else if (DirPtr->flags[i] == 'w') SendDlgItemMessage(dlg, IDC_AMI_WRITABLE,   BM_SETCHECK, BST_CHECKED, 0l);
+		else if (DirPtr->flags[i] == 'e') SendDlgItemMessage(dlg, IDC_AMI_EXECUTABLE, BM_SETCHECK, BST_CHECKED, 0l);
+		else if (DirPtr->flags[i] == 'd') SendDlgItemMessage(dlg, IDC_AMI_DELETABLE,  BM_SETCHECK, BST_CHECKED, 0l);
+		else if (DirPtr->flags[i] == 's') SendDlgItemMessage(dlg, IDC_AMI_SCRIPT,     BM_SETCHECK, BST_CHECKED, 0l);
+		else if (DirPtr->flags[i] == 'a') SendDlgItemMessage(dlg, IDC_AMI_ARCHIVE,    BM_SETCHECK, BST_CHECKED, 0l);
+		else if (DirPtr->flags[i] == 'p') SendDlgItemMessage(dlg, IDC_AMI_PURE,       BM_SETCHECK, BST_CHECKED, 0l);
+		else if (DirPtr->flags[i] == 'h') SendDlgItemMessage(dlg, IDC_AMI_HOLDBIT,    BM_SETCHECK, BST_CHECKED, 0l);
 		i++;
 	}
 
@@ -767,14 +778,14 @@ void SetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 	HWND win;
 
 	// 1) Read checkboxes and build flag mask/string
-	if (SendDlgItemMessage(dlg, IDC_AMI_READABLE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_R; new_flags[i++] = 'R'; }
-	if (SendDlgItemMessage(dlg, IDC_AMI_WRITABLE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_W; new_flags[i++] = 'W'; }
-	if (SendDlgItemMessage(dlg, IDC_AMI_EXECUTABLE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_E; new_flags[i++] = 'E'; }
-	if (SendDlgItemMessage(dlg, IDC_AMI_DELETABLE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_D; new_flags[i++] = 'D'; }
-	if (SendDlgItemMessage(dlg, IDC_AMI_SCRIPT, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_S; new_flags[i++] = 'S'; }
-	if (SendDlgItemMessage(dlg, IDC_AMI_ARCHIVE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_A; new_flags[i++] = 'A'; }
-	if (SendDlgItemMessage(dlg, IDC_AMI_PURE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_P; new_flags[i++] = 'P'; }
-	if (SendDlgItemMessage(dlg, IDC_AMI_HOLDBIT, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_H; new_flags[i++] = 'H'; }
+	 if (SendDlgItemMessage(dlg, IDC_AMI_READABLE,   BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_R; new_flags[i++] = 'r'; }
+     if (SendDlgItemMessage(dlg, IDC_AMI_WRITABLE,   BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_W; new_flags[i++] = 'w'; }
+     if (SendDlgItemMessage(dlg, IDC_AMI_EXECUTABLE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_E; new_flags[i++] = 'e'; }
+     if (SendDlgItemMessage(dlg, IDC_AMI_DELETABLE,  BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_D; new_flags[i++] = 'd'; }
+     if (SendDlgItemMessage(dlg, IDC_AMI_SCRIPT,     BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_S;  new_flags[i++] = 's'; }
+     if (SendDlgItemMessage(dlg, IDC_AMI_ARCHIVE,    BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_A;  new_flags[i++] = 'a'; }
+     if (SendDlgItemMessage(dlg, IDC_AMI_PURE,       BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_P;  new_flags[i++] = 'p'; }
+     if (SendDlgItemMessage(dlg, IDC_AMI_HOLDBIT,    BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_H;  new_flags[i++] = 'h'; }
 	new_flags[i] = '\0';
 
 	// 2) Apply flags

@@ -1075,17 +1075,23 @@ HWND CreateListView(HWND win)
 	// Add your columns
 	LVAddColumn(lv, "Name", 150, 0); // Chiron 2025 - Kludgey fix for the MOUSE SHOOTS OFF bug! Changed the width of the Name column from 200 to 150.
 	LVAddColumn(lv, "Size",  65, 1);
-	LVAddColumn(lv, "Flags", 75, 2);
+	LVAddColumn(lv, "Flags", 63, 2);
 	LVAddColumn(lv, "Date",  90, 3);
 
 	if (GetWindowLong(win, GWL_USERDATA) == CHILD_AMILISTER)
 		LVAddColumn(lv, "Comment", 65, 4); 
 
 	// Right-justify column #1 (“Size”)
-	LVCOLUMN col = { 0 };
-	col.mask = LVCF_FMT;
-	col.fmt = LVCFMT_RIGHT;           // right-aligned text
-	ListView_SetColumn(lv, 1, &col);   // 1 == your “Size” column index
+	LVCOLUMN col1 = { 0 };
+	col1.mask = LVCF_FMT;
+	col1.fmt = LVCFMT_RIGHT;           // right-aligned text
+	ListView_SetColumn(lv, 1, &col1);   // 1 == your “Size” column index
+
+	// Right-justify column #2 (“Flags”)
+	LVCOLUMN col2 = { 0 };
+	col2.mask = LVCF_FMT;
+	col2.fmt = LVCFMT_RIGHT;           // right-aligned text
+	ListView_SetColumn(lv, 2, &col2);   // 1 == your “Size” column index
 
 	// Image list + full-row selection
 	ListView_SetImageList(lv, ghwndImageList, LVSIL_SMALL);
@@ -1643,22 +1649,35 @@ void AmiAddFile(CHILDINFO *ci, struct List *list)
 	de->size = ent->size;
 	de->icon = ent->type == ST_FILE ? ICO_AMIFILE : ICO_AMIDIR;
 	strcpy(de->flags, "");
-	if (!hasR(ent->access))
-		strcat(de->flags, "R");
-	if (!hasW(ent->access))
-		strcat(de->flags, "W");
-	if (!hasE(ent->access))
-		strcat(de->flags, "E");
-	if (!hasD(ent->access))
-		strcat(de->flags, "D");
-	if (hasS(ent->access))
-		strcat(de->flags, "S");
-	if (hasA(ent->access))
-		strcat(de->flags, "A");
-	if (hasP(ent->access))
-		strcat(de->flags, "P");
-	if (hasH(ent->access))
-		strcat(de->flags, "H");
+	//if (!hasR(ent->access))
+	//	strcat(de->flags, "R");
+	//if (!hasW(ent->access))
+	//	strcat(de->flags, "W");
+	//if (!hasE(ent->access))
+	//	strcat(de->flags, "E");
+	//if (!hasD(ent->access))
+	//	strcat(de->flags, "D");
+	//if (hasS(ent->access))
+	//	strcat(de->flags, "S");
+	//if (hasA(ent->access))
+	//	strcat(de->flags, "A");
+	//if (hasP(ent->access))
+	//	strcat(de->flags, "P");
+	//if (hasH(ent->access))
+	//	strcat(de->flags, "H");
+
+	//Default Flags : ----rwed
+	//	  All Flags : hsparwed 
+
+	if (hasH(ent->access))  strcat(de->flags, "h"); else strcat(de->flags, "-");
+	if (hasS(ent->access))  strcat(de->flags, "s"); else strcat(de->flags, "-");
+	if (hasP(ent->access))  strcat(de->flags, "p"); else strcat(de->flags, "-");
+	if (hasA(ent->access))  strcat(de->flags, "a"); else strcat(de->flags, "-");
+
+	if (!hasR(ent->access)) strcat(de->flags, "r"); else strcat(de->flags, "-");
+	if (!hasW(ent->access)) strcat(de->flags, "w"); else strcat(de->flags, "-");
+	if (!hasE(ent->access)) strcat(de->flags, "e"); else strcat(de->flags, "-");
+	if (!hasD(ent->access)) strcat(de->flags, "d"); else strcat(de->flags, "-");
 
 	de->next = ci->content;
 	ci->content = de;
