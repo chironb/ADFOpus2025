@@ -1250,3 +1250,67 @@ RETCODE adfWriteDirBlock(struct Volume* vol, SECTNUM nSect, struct bDirBlock *di
 
 
 /*###########################################################################*/
+
+
+
+// Chiron 2025: NEW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 
+// NOTE: This is *NOT* a part of this original ADFLib codebase. 
+//
+/*! \brief    Set an entry’s date/time (days, mins, ticks).
+ *   \param    vol       - pointer to the mounted Amiga volume
+ *   \param    parSect   - parent directory block number
+ *   \param    name      - entry name (file or directory)
+ *   \param    newDays   - days since Jan 1, 1978
+ *   \param    newMins   - minutes since midnight
+ *   \param    newTicks  - 1/50ths of a second since last minute
+ *   \return   RC_OK on success, RC_ERROR on failure
+ */
+RETCODE adfSetEntryDate(
+    struct Volume* vol,
+    SECTNUM        parSect,
+    char* name,
+    long           newDays,
+    long           newMins,
+    long           newTicks)
+{
+    struct bEntryBlock parent, entry;
+    SECTNUM            nSect;
+
+    /* 1) read the parent directory block */
+    if (adfReadEntryBlock(vol, parSect, &parent) != RC_OK)
+        return RC_ERROR;
+
+    /* 2) locate and read the named entry’s header block */
+    nSect = adfNameToEntryBlk(vol,
+        parent.hashTable,
+        name,
+        &entry,
+        NULL);
+    if (nSect == (SECTNUM)-1) {
+        (*adfEnv.wFct)("adfSetEntryDate : entry not found");
+        return RC_ERROR;
+    }
+
+    /* 3) update the timestamp fields */
+    entry.days = newDays;
+    entry.mins = newMins;
+    entry.ticks = newTicks;
+
+    /* 4) write the updated block back */
+    if (entry.secType == ST_DIR)
+        adfWriteDirBlock(vol, nSect, (struct bDirBlock*)&entry);
+    else if (entry.secType == ST_FILE)
+        adfWriteFileHdrBlock(vol, nSect, (struct bFileHeaderBlock*)&entry);
+    else
+        (*adfEnv.wFct)("adfSetEntryDate : invalid secType");
+
+    /* 5) update directory cache if enabled */
+    if (isDIRCACHE(vol->dosType))
+        adfUpdateCache(vol,
+            &parent,
+            (struct bEntryBlock*)&entry,
+            TRUE);
+
+    return RC_OK;
+}

@@ -259,8 +259,11 @@
 #define IDC_OPLAYSOUNDS                 1181
 #define IDC_PROPERTIES_DATE_WIN         1182
 #define IDC_PROPERTIES_SIZE_WIN         1183
-#define IDC_CHECK3                      1184
 #define IDC_OWINDOWSSORTINGSTYLE        1184
+#define IDC_PROPERTIES_DAYS_AMI         1185
+#define IDC_PROPERTIES_MINS_AMI         1188
+#define IDC_PROPERTIES_DAYS_AMI3        1189
+#define IDC_PROPERTIES_TICKS_AMI        1189
 #define ID_ACTION_NEWDIRECTORY          40001
 #define ID_ACTION_RENAME                40002
 #define ID_ACTION_DELETE                40003
@@ -403,7 +406,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        250
 #define _APS_NEXT_COMMAND_VALUE         40145
-#define _APS_NEXT_CONTROL_VALUE         1185
+#define _APS_NEXT_CONTROL_VALUE         1186
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

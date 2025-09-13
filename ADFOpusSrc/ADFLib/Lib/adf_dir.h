@@ -48,5 +48,11 @@ SECTNUM adfNameToEntryBlk(struct Volume *vol, long ht[], char* name,
 PREFIX void printEntry(struct Entry* entry);
 void adfFreeDirList(struct List* list);
 
+// Chiron 2025: NEW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 
+// NOTE: This is *NOT* a part of this original ADFLib codebase. 
+//
+RETCODE adfSetEntryDate(struct Volume* vol, SECTNUM parSect, char* name, long newDays, long newMins, long newTicks);
+
 #endif /* ADF_DIR_H */
 

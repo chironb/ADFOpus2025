@@ -2088,9 +2088,7 @@ BOOL CopyWinDir2Win(char *srcPath, char *destPath, char *dirName)
 // and not for what I want! Fuck! Why is this hard? 
 
 
-BOOL CopyAmiDir2Ami(char* dirName,
-	struct Volume* src,
-	struct Volume* dest)
+BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 {
 	struct List* list;
 	struct Entry* ent;
@@ -2098,7 +2096,13 @@ BOOL CopyAmiDir2Ami(char* dirName,
 	// buffers to hold the source folder’s metadata
 	char  commentBuf[MAXCMMTLEN + 1];
 	long  accessFlags;
-	//long  days, mins;
+	long  days, mins, ticks;
+
+
+
+
+
+
 
 	// 1) Read the source‐dir’s comment, flags and date (days+mins)
 	{
@@ -2125,16 +2129,54 @@ BOOL CopyAmiDir2Ami(char* dirName,
 	// 2) Create the directory in the destination volume
 	adfCreateDir(dest, dest->curDirPtr, dirName);
 
-	// 3) Immediately re‐apply comment & flags
-	adfSetEntryComment(dest,
+	// THESE WORK!!!
+	// 
+	// Immediately re‐apply comment & flags
+	adfSetEntryComment(
+		dest,
 		dest->curDirPtr,
 		dirName,
-		commentBuf);
+		commentBuf
+	);
+	
+	adfSetEntryAccess(
+		dest,
+		dest->curDirPtr,
+		dirName,
+		accessFlags
+	);
 
-	adfSetEntryAccess(dest,
+	struct File* srcDirFile;
+	srcDirFile = adfOpenFile(src, dirName, "r");
+
+	days  = srcDirFile->fileHdr->days;
+	mins  = srcDirFile->fileHdr->mins;
+	ticks = srcDirFile->fileHdr->ticks;
+
+	// THIS WORKS!!!!!!!!!!
+	// But...............
+	// ...only if it's empty!
+	// Writing (from coping) a new file inside 
+	// actually causes the folder's date to 
+	// when the file was copied. 
+	adfSetEntryDate(
+		dest,
 		dest->curDirPtr,
 		dirName,
-		accessFlags);
+		days,
+		mins,
+		ticks
+	);
+
+	adfCloseFileNoDate(srcDirFile);
+
+
+
+
+
+
+
+
 
 	// 4) Now poke the days+mins back in, then flush via comment‐setter
 	{

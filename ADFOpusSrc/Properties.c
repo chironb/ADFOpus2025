@@ -263,29 +263,29 @@ LRESULT CALLBACK PropertiesProcAmi(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 }
 
 
-void GetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
+void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 // Get flags from directory entry and set appropriate boxes.
 // Properties in ADFLib are HSPARWED.
 {
-	struct File *amiFile;
+	struct File* amiFile;
 	int i = 0;
 
-	while(DirPtr->flags[i] != '\0'){
-		if(DirPtr->flags[i] == 'R')
+	while (DirPtr->flags[i] != '\0') {
+		if (DirPtr->flags[i] == 'R')
 			SendDlgItemMessage(dlg, IDC_AMI_READABLE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'W')
+		else if (DirPtr->flags[i] == 'W')
 			SendDlgItemMessage(dlg, IDC_AMI_WRITABLE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'E')
+		else if (DirPtr->flags[i] == 'E')
 			SendDlgItemMessage(dlg, IDC_AMI_EXECUTABLE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'D')
+		else if (DirPtr->flags[i] == 'D')
 			SendDlgItemMessage(dlg, IDC_AMI_DELETABLE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'S')
+		else if (DirPtr->flags[i] == 'S')
 			SendDlgItemMessage(dlg, IDC_AMI_SCRIPT, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'A')
+		else if (DirPtr->flags[i] == 'A')
 			SendDlgItemMessage(dlg, IDC_AMI_ARCHIVE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'P')
+		else if (DirPtr->flags[i] == 'P')
 			SendDlgItemMessage(dlg, IDC_AMI_PURE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'H')
+		else if (DirPtr->flags[i] == 'H')
 			SendDlgItemMessage(dlg, IDC_AMI_HOLDBIT, BM_SETCHECK, BST_CHECKED, 0l);
 		i++;
 	}
@@ -442,7 +442,19 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
 		);
 	}
 
+	// DEBUGING AND TESTING - WRITE RAW DATE INFO TO THE DIALOG! 
+
+	char days_text[255], 
+		 mins_text[255], 
+		ticks_text[255];
 	
+	wsprintfA(days_text, "%d", (LPARAM)amiFile->fileHdr->days);
+	wsprintfA(mins_text, "%d", (LPARAM)amiFile->fileHdr->mins);
+	wsprintfA(ticks_text, "%d", (LPARAM)amiFile->fileHdr->ticks);
+
+	SendDlgItemMessage(dlg, IDC_PROPERTIES_DAYS_AMI, WM_SETTEXT, 0, days_text);
+	SendDlgItemMessage(dlg, IDC_PROPERTIES_MINS_AMI, WM_SETTEXT, 0, mins_text);
+	SendDlgItemMessage(dlg, IDC_PROPERTIES_TICKS_AMI, WM_SETTEXT, 0, ticks_text);
 
     adfCloseFile(amiFile);
 
@@ -544,6 +556,61 @@ void SetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
 		adfSetEntryComment(ci->vol, ci->vol->curDirPtr, DirPtr->name, szComment);
 	
 	}
+
+
+	// DEBUGING AND TESTING - WRITE RAW DATE INFO TO THE DIALOG! 
+
+	//char days_text[255],
+	//	mins_text[255],
+	//	ticks_text[255];
+
+	//wsprintfA(days_text, "%d", (LPARAM)amiFile->fileHdr->days);
+	//wsprintfA(mins_text, "%d", (LPARAM)amiFile->fileHdr->mins);
+	//wsprintfA(ticks_text, "%d", (LPARAM)amiFile->fileHdr->ticks);
+
+	//SendDlgItemMessage(dlg, IDC_PROPERTIES_DAYS_AMI, WM_SETTEXT, 0, days_text);
+	//SendDlgItemMessage(dlg, IDC_PROPERTIES_MINS_AMI, WM_SETTEXT, 0, mins_text);
+	//SendDlgItemMessage(dlg, IDC_PROPERTIES_TICKS_AMI, WM_SETTEXT, 0, ticks_text);
+
+	//adfCloseFile(amiFile);
+
+	//RETCODE adfSetEntryDate(
+	//	struct Volume* vol,
+	//	SECTNUM        parSect,
+	//	char* name,
+	//	long           newDays,
+	//	long           newMins,
+	//	long           newTicks)
+
+	char days_text[255],
+		mins_text[255],
+		ticks_text[255];
+
+	long days_long,
+		 mins_long,
+		ticks_long;
+
+	char* end;
+
+	GetDlgItemTextA(dlg, IDC_PROPERTIES_DAYS_AMI,   days_text, ARRAYSIZE(days_text));
+	GetDlgItemTextA(dlg, IDC_PROPERTIES_MINS_AMI,   mins_text, ARRAYSIZE(mins_text));
+	GetDlgItemTextA(dlg, IDC_PROPERTIES_TICKS_AMI, ticks_text, ARRAYSIZE(ticks_text));
+
+	days_long  = strtol(days_text,  &end, 10);  // base 10 for decimal
+	mins_long  = strtol(mins_text,  &end, 10);   
+	ticks_long = strtol(ticks_text, &end, 10);   
+
+	adfSetEntryDate(ci->vol, ci->vol->curDirPtr, DirPtr->name, days_long, mins_long, ticks_long);
+
+	//adfSetEntryComment(ci->vol, ci->vol->curDirPtr, DirPtr->name, szComment);
+	//if (*end != '\0') printf("Warning: leftover characters after number: %s\n", end);
+
+
+
+
+
+
+
 
 	// Update MDI window childinfo data and listview.	
 	win = GetParent(dlg);
