@@ -955,7 +955,7 @@ void adfFileFlushNoDate(struct File* file)
 
         //adfTime2AmigaTime(adfGiveCurrentTime(),
         //	&(file->fileHdr->days), &(file->fileHdr->mins), &(file->fileHdr->ticks));
-        adfWriteFileHdrBlock(file->volume, file->fileHdr->headerKey, file->fileHdr);
+        adfWriteFileHdrBlock(file->volume, file->fileHdr->headerKey, file->fileHdr); // DIR DATE HERE??????
 
         if (isDIRCACHE(file->volume->dosType)) {
 

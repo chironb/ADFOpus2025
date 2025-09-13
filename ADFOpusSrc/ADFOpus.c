@@ -109,6 +109,15 @@ extern BOOL isCurrentlyOpen(const char* gstrFileName);
 extern BOOL BringAmigaListerToFront(const char* gstrFileName);
 extern void adfCloseFileNoDate(struct File* file);
 
+extern RETCODE adfSetEntryDate(
+	struct Volume* vol,
+	SECTNUM        parSect,
+	char* name,
+	long           newDays,
+	long           newMins,
+	long           newTicks);
+
+
 ENV_DECLARATION;
 
 /* function prototypes */
@@ -1689,8 +1698,15 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 	unsigned char buf[600];
 	long bread = 0;
 	long bn;
-
 	HINSTANCE hInst = GetModuleHandle(NULL);
+
+
+	// Backup the parent folder's date information. 
+
+
+
+
+
 
 	// Prevent divide by zero and other errors.
 	if(fileSize <= 0){
@@ -1779,6 +1795,12 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 
 	adfCloseFileNoDate(srcFile);
 	adfCloseFileNoDate(destFile);
+
+
+	// Restore the parent folder's date information.
+
+
+
 }
 
 void GetTooltipText(char *buf, int cmd)
@@ -2088,6 +2110,7 @@ BOOL CopyWinDir2Win(char *srcPath, char *destPath, char *dirName)
 // and not for what I want! Fuck! Why is this hard? 
 
 
+
 BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 {
 	struct List* list;
@@ -2098,36 +2121,41 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 	long  accessFlags;
 	long  days, mins, ticks;
 
-
-
-
-
-
-
-	// 1) Read the source‐dir’s comment, flags and date (days+mins)
-	{
-		struct List* meta = adfGetDirEnt(src, src->curDirPtr);
-		while (meta)
-		{
-			struct Entry* e = (struct Entry*)meta->content;
-			if (e->type == ST_DIR && strcmp(e->name, dirName) == 0)
-			{
-				strcpy(commentBuf, e->comment);
-				accessFlags = e->access;
-				//days = e->days;   // days since 1/1/1978    <-- WRONG! Not epoch! That's the day of the month! struct Entry* is for nicey nice printing!
-				//mins = e->mins;   // minutes since midnight <-- WRONG! Not epoch! That's the mins of the time! struct Entry* is for nicey nice printing!
-
-				adfFreeEntry(meta->content);
-				break;
-			}
-			adfFreeEntry(meta->content);
-			meta = meta->next;
-		}
-		freeList(meta);
-	}
+	//// Chiron 2025: TODO: This seems like total overkill. 
+	//// Jesus Copilot what the fuck were you thinking!
+	//// 1) Read the source‐dir’s comment, flags and date (days+mins)
+	//{
+	//	struct List* meta = adfGetDirEnt(src, src->curDirPtr);
+	//	while (meta)
+	//	{
+	//		struct Entry* e = (struct Entry*)meta->content;
+	//		if (e->type == ST_DIR && strcmp(e->name, dirName) == 0)
+	//		{
+	//			strcpy(commentBuf, e->comment);
+	//			accessFlags = e->access;
+	//			adfFreeEntry(meta->content);
+	//			break;
+	//		}
+	//		adfFreeEntry(meta->content);
+	//		meta = meta->next;
+	//	}
+	//	freeList(meta);
+	//}
 	
 	// 2) Create the directory in the destination volume
 	adfCreateDir(dest, dest->curDirPtr, dirName);
+
+	struct File* srcDirFile;
+	srcDirFile = adfOpenFile(src, dirName, "r");
+
+	strcpy(commentBuf , srcDirFile->fileHdr->comment);
+	accessFlags       = srcDirFile->fileHdr->access;
+
+	days  = srcDirFile->fileHdr->days;
+	mins  = srcDirFile->fileHdr->mins;
+	ticks = srcDirFile->fileHdr->ticks;
+
+	adfCloseFileNoDate(srcDirFile);
 
 	// THESE WORK!!!
 	// 
@@ -2146,13 +2174,6 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 		accessFlags
 	);
 
-	struct File* srcDirFile;
-	srcDirFile = adfOpenFile(src, dirName, "r");
-
-	days  = srcDirFile->fileHdr->days;
-	mins  = srcDirFile->fileHdr->mins;
-	ticks = srcDirFile->fileHdr->ticks;
-
 	// THIS WORKS!!!!!!!!!!
 	// But...............
 	// ...only if it's empty!
@@ -2168,7 +2189,6 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 		ticks
 	);
 
-	adfCloseFileNoDate(srcDirFile);
 
 
 
@@ -2178,29 +2198,30 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 
 
 
-	// 4) Now poke the days+mins back in, then flush via comment‐setter
-	{
-		struct List* meta2 = adfGetDirEnt(dest, dest->curDirPtr);
-		while (meta2)
-		{
-			struct Entry* e2 = (struct Entry*)meta2->content;
-			if (e2->type == ST_DIR && strcmp(e2->name, dirName) == 0)
-			{
-				//e2->days = days;
-				//e2->mins = mins;
-				// flush the block (updates days/mins on disk)
-				adfSetEntryComment(dest,
-					dest->curDirPtr,
-					dirName,
-					e2->comment);
-				adfFreeEntry(meta2->content);
-				break;
-			}
-			adfFreeEntry(meta2->content);
-			meta2 = meta2->next;
-		}
-		freeList(meta2);
-	}
+
+	//// 4) Now poke the days+mins back in, then flush via comment‐setter
+	//{
+	//	struct List* meta2 = adfGetDirEnt(dest, dest->curDirPtr);
+	//	while (meta2)
+	//	{
+	//		struct Entry* e2 = (struct Entry*)meta2->content;
+	//		if (e2->type == ST_DIR && strcmp(e2->name, dirName) == 0)
+	//		{
+	//			//e2->days = days;
+	//			//e2->mins = mins;
+	//			// flush the block (updates days/mins on disk)
+	//			adfSetEntryComment(dest,
+	//				dest->curDirPtr,
+	//				dirName,
+	//				e2->comment);
+	//			adfFreeEntry(meta2->content);
+	//			break;
+	//		}
+	//		adfFreeEntry(meta2->content);
+	//		meta2 = meta2->next;
+	//	}
+	//	freeList(meta2);
+	//}
 
 	// 5) Descend on both volumes
 	adfChangeDir(src, dirName);
@@ -2225,5 +2246,75 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 	adfParentDir(dest);
 	adfParentDir(src);
 
+	// RESTORE THE ORIGINAL DIRECTORY DATE
+	// We've gone and copied all the files,
+	// so this is where we restore the original
+	// date that we recorded eariler. 
+	// If we didn't do this then all the files
+	// getting copied into the folder 
+	// would trigger the ADFLib functions to 
+	// update the date on the folder because 
+	// that's a change. But it's not a change 
+	// to the file, just a change as to when 
+	// it was copied somewhere.
+	adfSetEntryDate(
+		dest,
+		dest->curDirPtr,
+		dirName,
+		days,
+		mins,
+		ticks
+	);
+
+	// I didn't want to blow away the original
+	// date just because the file was copied!
+	// I want to be able to edit an Amiga disk
+	// and copy files and preserve things like 
+	// comments, access flags, and dates!
+	// I look at ADF Opus through the lens
+	// of editing an Amiga disk image, 
+	// not through the lens on an 
+	// Amiga Operating System. Yes an OS should
+	// update these dates based on these kinds of 
+	// changes. But this isn't that. This is an
+	// editor and it's meant to edit these
+	// disk images. Not pretend to *BE* an Amiga!
+	// 
+	// Here's a use case:
+	// 
+	// You want to create an archive of your old
+	// Amiga word processing documents. So you go
+	// through a bunch of floppy disk images and
+	// put them into an Amiga hard disk image
+	// that can hold them all in an organized 
+	// fashion. Well if you loose all the dates
+	// then later when you go through things you
+	// can't say "Hey, when did I write this?"
+	// because you've lost that data. You'd have 
+	// to go through your floppy disks or disk 
+	// images and figure out where it is and 
+	// get the date from that. But what's the point
+	// of recording when you copied those files 
+	// into your archive in the first place? 
+	// The files haven't changed. Sure, if you edit
+	// a file, then showing the last date that the
+	// file's content actually changed makes sense. 
+	// But there's nothing to be gained from being
+	// able to say: "I copied this file on this date
+	// but I have no idea when the last change was
+	// actually made to the file in a meaningful way."
+	//
+	// Maybe at some point I'll add an option to 
+	// enable or disable the preservation of 
+	// file and folder dates. I might. But I don't
+	// even want to! 
+	//
+	// I've made my case and I think it's a good one!
+	// 
+	// Thank you for coming to my TEDTalk.
+
 	return TRUE;
+
+	// End of copy function. 
+
 }
