@@ -292,10 +292,6 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 
 	amiFile = adfOpenFile(ci->vol, DirPtr->name, "r");
 
-	//MessageBoxA(dlg, ci->vol, "DEBUG:ci->vol", MB_OK | MB_ICONERROR);
-	//MessageBoxA(dlg, DirPtr->name, "DEBUG:DirPtr->name", MB_OK | MB_ICONERROR);
-	//MessageBoxA(dlg, gstrFileName, "DEBUG:gstrFileName", MB_OK | MB_ICONERROR);
-
 	// 1) Write comment to dialog.
 	SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, WM_SETTEXT, 0, (LPARAM)amiFile->fileHdr->comment);
 
@@ -390,14 +386,36 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 				timePart
 			);
 
-			SendDlgItemMessageA(
-				dlg,
-				IDC_PROPERTIES_DATE_AMI,
-				WM_SETTEXT,
-				0,
-				(LPARAM)dateBuf
-			);
+			//SendDlgItemMessageA(
+			//	dlg,
+			//	IDC_PROPERTIES_DATE_AMI,
+			//	WM_SETTEXT,
+			//	0,
+			//	(LPARAM)dateBuf
+			//);
 		}
+
+
+
+		// 7) Update the Date and Time Picker controls with stTarget
+//    Requires #include <commctrl.h> and InitCommonControlsEx for DTP controls
+
+		SendDlgItemMessageA(
+			dlg,
+			IDC_PROPERTIES_DATEPICKER_AMI,    // your date-picker control
+			DTM_SETSYSTEMTIME,                // message to set a SYSTEMTIME
+			GDT_VALID,                        // indicate the time is valid
+			(LPARAM)&stTarget                 // pointer to your SYSTEMTIME
+		);
+
+		SendDlgItemMessageA(
+			dlg,
+			IDC_PROPERTIES_TIMEPICKER_AMI,    // your time-picker control
+			DTM_SETSYSTEMTIME,
+			GDT_VALID,
+			(LPARAM)&stTarget
+		);
+
 
 
 	}
@@ -444,17 +462,17 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 
 	// DEBUGING AND TESTING - WRITE RAW DATE INFO TO THE DIALOG! 
 
-	char days_text[255], 
-		 mins_text[255], 
-		ticks_text[255];
-	
-	wsprintfA(days_text, "%d", (LPARAM)amiFile->fileHdr->days);
-	wsprintfA(mins_text, "%d", (LPARAM)amiFile->fileHdr->mins);
-	wsprintfA(ticks_text, "%d", (LPARAM)amiFile->fileHdr->ticks);
+	//char days_text[255], 
+	//	 mins_text[255], 
+	//	ticks_text[255];
+	//
+	//wsprintfA(days_text, "%d", (LPARAM)amiFile->fileHdr->days);
+	//wsprintfA(mins_text, "%d", (LPARAM)amiFile->fileHdr->mins);
+	//wsprintfA(ticks_text, "%d", (LPARAM)amiFile->fileHdr->ticks);
 
-	SendDlgItemMessage(dlg, IDC_PROPERTIES_DAYS_AMI, WM_SETTEXT, 0, days_text);
-	SendDlgItemMessage(dlg, IDC_PROPERTIES_MINS_AMI, WM_SETTEXT, 0, mins_text);
-	SendDlgItemMessage(dlg, IDC_PROPERTIES_TICKS_AMI, WM_SETTEXT, 0, ticks_text);
+	//SendDlgItemMessage(dlg, IDC_PROPERTIES_DAYS_AMI, WM_SETTEXT, 0, days_text);
+	//SendDlgItemMessage(dlg, IDC_PROPERTIES_MINS_AMI, WM_SETTEXT, 0, mins_text);
+	//SendDlgItemMessage(dlg, IDC_PROPERTIES_TICKS_AMI, WM_SETTEXT, 0, ticks_text);
 
     adfCloseFile(amiFile);
 
@@ -479,146 +497,214 @@ void GetPropertiesWin(HWND dlg, DIRENTRY *DirPtr)
 }
 
 
-void SetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
-// Get flags from checkboxes and set appropriate directory entry flags.
-// Properties in ADFLib are HSPARWED. 
-// Flags are 00000000 for ----RWED. 0 is off for first 4 and on for next 4.
-// File property flags. See ADFLib/adf_blk.h
+//void SetPropertiesAmi(HWND dlg, DIRENTRY *DirPtr)
+//// Get flags from checkboxes and set appropriate directory entry flags.
+//// Properties in ADFLib are HSPARWED. 
+//// Flags are 00000000 for ----RWED. 0 is off for first 4 and on for next 4.
+//// File property flags. See ADFLib/adf_blk.h
+//{
+//	long	longPropertyFlags = 15;	// Default flags 00001111 - all OFF!
+//	char	new_flags[9];
+//	char	szComment[MAXCMMTLEN + 1];			// Max comment length (79) defined in adf_blk.h + '\0'.
+//	int		i = 0;
+//	int		iNumChars;
+//	HWND	win;
+//
+//	// Read the flags and create flag string and long.
+//	// Set RWED bits to 0 if flag set.
+//	if(SendDlgItemMessage(dlg, IDC_AMI_READABLE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		longPropertyFlags &= ~ACCMASK_R;
+//		new_flags[i] = 'R';
+//		i++;
+//	}
+//	if(SendDlgItemMessage(dlg, IDC_AMI_WRITABLE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		longPropertyFlags &= ~ACCMASK_W;	// Current flags NAND flag mask.
+//		new_flags[i] = 'W';
+//		i++;
+//	}
+//	if(SendDlgItemMessage(dlg, IDC_AMI_EXECUTABLE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		longPropertyFlags &= ~ACCMASK_E;
+//		new_flags[i] = 'E';
+//		i++;
+//	}
+//	if(SendDlgItemMessage(dlg, IDC_AMI_DELETABLE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		longPropertyFlags &= ~ACCMASK_D;
+//		new_flags[i] = 'D';
+//		i++;
+//	}
+//	// Set RWED bits to 1 if flag set.
+//	if(SendDlgItemMessage(dlg, IDC_AMI_SCRIPT, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		longPropertyFlags |= ACCMASK_S;
+//		new_flags[i] = 'S';
+//		i++;
+//	}
+//	if(SendDlgItemMessage(dlg, IDC_AMI_ARCHIVE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		longPropertyFlags |= ACCMASK_A;
+//		new_flags[i] = 'A';
+//		i++;
+//	}
+//	if(SendDlgItemMessage(dlg, IDC_AMI_PURE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		longPropertyFlags |= ACCMASK_P;
+//		new_flags[i] = 'P';
+//		i++;
+//	}
+//	if(SendDlgItemMessage(dlg, IDC_AMI_HOLDBIT, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		longPropertyFlags |= ACCMASK_H;
+//		new_flags[i] = 'H';
+//		i++;
+//	}
+// 	new_flags[i] = '\0';
+//	
+//	// Update file properties.
+//	adfSetEntryAccess(ci->vol, ci->vol->curDirPtr, DirPtr->name, longPropertyFlags);
+//
+//	// If file comment text has changed, update file comment.
+//	if(SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETMODIFY, 0, 0)){
+//		
+//		iNumChars = SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, WM_GETTEXTLENGTH, 0, 0);
+//		// SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETLINE, iNumChars + 1, (LPARAM)szComment); // This was a bug in the original code I think. 
+//		GetDlgItemTextA(dlg, IDC_EDIT_COMMENT, szComment, ARRAYSIZE(szComment));
+//		szComment[iNumChars]= '\0';
+//
+//		// MessageBoxA(dlg, szComment, "DEBUG:szComment", MB_OK | MB_ICONERROR);
+//		
+//		adfSetEntryComment(ci->vol, ci->vol->curDirPtr, DirPtr->name, szComment);
+//	
+//	}
+//
+//	// DEBUGING AND TESTING - WRITE RAW DATE INFO TO THE DIALOG! 
+//	char days_text[255],
+//		mins_text[255],
+//		ticks_text[255];
+//
+//	long days_long,
+//		 mins_long,
+//		ticks_long;
+//
+//	char* end;
+//
+//	GetDlgItemTextA(dlg, IDC_PROPERTIES_DAYS_AMI,   days_text, ARRAYSIZE(days_text));
+//	GetDlgItemTextA(dlg, IDC_PROPERTIES_MINS_AMI,   mins_text, ARRAYSIZE(mins_text));
+//	GetDlgItemTextA(dlg, IDC_PROPERTIES_TICKS_AMI, ticks_text, ARRAYSIZE(ticks_text));
+//
+//	days_long  = strtol(days_text,  &end, 10);  // base 10 for decimal
+//	mins_long  = strtol(mins_text,  &end, 10);   
+//	ticks_long = strtol(ticks_text, &end, 10);   
+//
+//	adfSetEntryDate(ci->vol, ci->vol->curDirPtr, DirPtr->name, days_long, mins_long, ticks_long);
+//
+//	// Update MDI window childinfo data and listview.	
+//	win = GetParent(dlg);
+// 	SendMessage(win, WM_COMMAND, ID_VIEW_REFRESH, 0l);
+//
+//}
+
+
+
+
+void SetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 {
+	long longPropertyFlags = 15;  // Default flags 00001111 - all OFF!
+	char new_flags[9];
+	char szComment[MAXCMMTLEN + 1];
+	int  i = 0;
+	int  iNumChars;
+	HWND win;
 
-	long	longPropertyFlags = 15;	// Default flags 00001111 - all OFF!
-	char	new_flags[9];
-	char	szComment[MAXCMMTLEN + 1];			// Max comment length (79) defined in adf_blk.h + '\0'.
-	int		i = 0;
-	int		iNumChars;
-	HWND	win;
+	// 1) Read checkboxes and build flag mask/string
+	if (SendDlgItemMessage(dlg, IDC_AMI_READABLE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_R; new_flags[i++] = 'R'; }
+	if (SendDlgItemMessage(dlg, IDC_AMI_WRITABLE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_W; new_flags[i++] = 'W'; }
+	if (SendDlgItemMessage(dlg, IDC_AMI_EXECUTABLE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_E; new_flags[i++] = 'E'; }
+	if (SendDlgItemMessage(dlg, IDC_AMI_DELETABLE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags &= ~ACCMASK_D; new_flags[i++] = 'D'; }
+	if (SendDlgItemMessage(dlg, IDC_AMI_SCRIPT, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_S; new_flags[i++] = 'S'; }
+	if (SendDlgItemMessage(dlg, IDC_AMI_ARCHIVE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_A; new_flags[i++] = 'A'; }
+	if (SendDlgItemMessage(dlg, IDC_AMI_PURE, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_P; new_flags[i++] = 'P'; }
+	if (SendDlgItemMessage(dlg, IDC_AMI_HOLDBIT, BM_GETCHECK, 0, 0) == BST_CHECKED) { longPropertyFlags |= ACCMASK_H; new_flags[i++] = 'H'; }
+	new_flags[i] = '\0';
 
-	// Read the flags and create flag string and long.
-	// Set RWED bits to 0 if flag set.
-	if(SendDlgItemMessage(dlg, IDC_AMI_READABLE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		longPropertyFlags &= ~ACCMASK_R;
-		new_flags[i] = 'R';
-		i++;
-	}
-	if(SendDlgItemMessage(dlg, IDC_AMI_WRITABLE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		longPropertyFlags &= ~ACCMASK_W;	// Current flags NAND flag mask.
-		new_flags[i] = 'W';
-		i++;
-	}
-	if(SendDlgItemMessage(dlg, IDC_AMI_EXECUTABLE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		longPropertyFlags &= ~ACCMASK_E;
-		new_flags[i] = 'E';
-		i++;
-	}
-	if(SendDlgItemMessage(dlg, IDC_AMI_DELETABLE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		longPropertyFlags &= ~ACCMASK_D;
-		new_flags[i] = 'D';
-		i++;
-	}
-	// Set RWED bits to 1 if flag set.
-	if(SendDlgItemMessage(dlg, IDC_AMI_SCRIPT, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		longPropertyFlags |= ACCMASK_S;
-		new_flags[i] = 'S';
-		i++;
-	}
-	if(SendDlgItemMessage(dlg, IDC_AMI_ARCHIVE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		longPropertyFlags |= ACCMASK_A;
-		new_flags[i] = 'A';
-		i++;
-	}
-	if(SendDlgItemMessage(dlg, IDC_AMI_PURE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		longPropertyFlags |= ACCMASK_P;
-		new_flags[i] = 'P';
-		i++;
-	}
-	if(SendDlgItemMessage(dlg, IDC_AMI_HOLDBIT, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		longPropertyFlags |= ACCMASK_H;
-		new_flags[i] = 'H';
-		i++;
-	}
- 	new_flags[i] = '\0';
-	
-	// Update file properties.
+	// 2) Apply flags
 	adfSetEntryAccess(ci->vol, ci->vol->curDirPtr, DirPtr->name, longPropertyFlags);
 
-	
-
-	// If file comment text has changed, update file comment.
-	if(SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETMODIFY, 0, 0)){
-		
+	// 3) Update comment if modified
+	if (SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETMODIFY, 0, 0)) {
 		iNumChars = SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, WM_GETTEXTLENGTH, 0, 0);
-		// SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, EM_GETLINE, iNumChars + 1, (LPARAM)szComment); // This was a bug in the original code I think. 
 		GetDlgItemTextA(dlg, IDC_EDIT_COMMENT, szComment, ARRAYSIZE(szComment));
-		szComment[iNumChars]= '\0';
-
-		// MessageBoxA(dlg, szComment, "DEBUG:szComment", MB_OK | MB_ICONERROR);
-		
+		szComment[iNumChars] = '\0';
 		adfSetEntryComment(ci->vol, ci->vol->curDirPtr, DirPtr->name, szComment);
-	
 	}
 
+	// 4) Read date & time from the picker controls, convert to Amiga date, and set it
+	{
+		SYSTEMTIME stDate = { 0 };
+		SYSTEMTIME stTime = { 0 };
+		SYSTEMTIME stTarget = { 0 };
 
-	// DEBUGING AND TESTING - WRITE RAW DATE INFO TO THE DIALOG! 
+		// Fetch date and time separately
+		SendDlgItemMessageA(dlg,
+			IDC_PROPERTIES_DATEPICKER_AMI,
+			DTM_GETSYSTEMTIME,
+			0,
+			(LPARAM)&stDate);
 
-	//char days_text[255],
-	//	mins_text[255],
-	//	ticks_text[255];
+		SendDlgItemMessageA(dlg,
+			IDC_PROPERTIES_TIMEPICKER_AMI,
+			DTM_GETSYSTEMTIME,
+			0,
+			(LPARAM)&stTime);
 
-	//wsprintfA(days_text, "%d", (LPARAM)amiFile->fileHdr->days);
-	//wsprintfA(mins_text, "%d", (LPARAM)amiFile->fileHdr->mins);
-	//wsprintfA(ticks_text, "%d", (LPARAM)amiFile->fileHdr->ticks);
+		// Combine into one SYSTEMTIME
+		stTarget.wYear = stDate.wYear;
+		stTarget.wMonth = stDate.wMonth;
+		stTarget.wDay = stDate.wDay;
+		stTarget.wHour = stTime.wHour;
+		stTarget.wMinute = stTime.wMinute;
+		stTarget.wSecond = stTime.wSecond;
+		stTarget.wMilliseconds = stTime.wMilliseconds;
 
-	//SendDlgItemMessage(dlg, IDC_PROPERTIES_DAYS_AMI, WM_SETTEXT, 0, days_text);
-	//SendDlgItemMessage(dlg, IDC_PROPERTIES_MINS_AMI, WM_SETTEXT, 0, mins_text);
-	//SendDlgItemMessage(dlg, IDC_PROPERTIES_TICKS_AMI, WM_SETTEXT, 0, ticks_text);
+		// Convert local SYSTEMTIME to UTC FILETIME
+		SYSTEMTIME stUTC;
+		TzSpecificLocalTimeToSystemTime(NULL, &stTarget, &stUTC);
 
-	//adfCloseFile(amiFile);
+		FILETIME ftUTC;
+		SystemTimeToFileTime(&stUTC, &ftUTC);
 
-	//RETCODE adfSetEntryDate(
-	//	struct Volume* vol,
-	//	SECTNUM        parSect,
-	//	char* name,
-	//	long           newDays,
-	//	long           newMins,
-	//	long           newTicks)
+		// Build base FILETIME for 1978-01-01 00:00:00 UTC
+		SYSTEMTIME stBase = { 0 };
+		stBase.wYear = 1978;
+		stBase.wMonth = 1;
+		stBase.wDay = 1;
 
-	char days_text[255],
-		mins_text[255],
-		ticks_text[255];
+		FILETIME ftBase;
+		SystemTimeToFileTime(&stBase, &ftBase);
 
-	long days_long,
-		 mins_long,
-		ticks_long;
+		ULARGE_INTEGER baseULI;
+		baseULI.LowPart = ftBase.dwLowDateTime;
+		baseULI.HighPart = ftBase.dwHighDateTime;
 
-	char* end;
+		ULARGE_INTEGER targetULI;
+		targetULI.LowPart = ftUTC.dwLowDateTime;
+		targetULI.HighPart = ftUTC.dwHighDateTime;
 
-	GetDlgItemTextA(dlg, IDC_PROPERTIES_DAYS_AMI,   days_text, ARRAYSIZE(days_text));
-	GetDlgItemTextA(dlg, IDC_PROPERTIES_MINS_AMI,   mins_text, ARRAYSIZE(mins_text));
-	GetDlgItemTextA(dlg, IDC_PROPERTIES_TICKS_AMI, ticks_text, ARRAYSIZE(ticks_text));
+		const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
+		const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
+		const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
 
-	days_long  = strtol(days_text,  &end, 10);  // base 10 for decimal
-	mins_long  = strtol(mins_text,  &end, 10);   
-	ticks_long = strtol(ticks_text, &end, 10);   
+		ULONGLONG diff = targetULI.QuadPart - baseULI.QuadPart;
+		LONG      days_long = (LONG)(diff / DAY_100NS);
+		diff %= DAY_100NS;
+		LONG      mins_long = (LONG)(diff / MIN_100NS);
+		diff %= MIN_100NS;
+		LONG      ticks_long = (LONG)(diff / TICK_100NS);
 
-	adfSetEntryDate(ci->vol, ci->vol->curDirPtr, DirPtr->name, days_long, mins_long, ticks_long);
+		adfSetEntryDate(ci->vol, ci->vol->curDirPtr, DirPtr->name,
+			days_long, mins_long, ticks_long);
+	}
 
-	//adfSetEntryComment(ci->vol, ci->vol->curDirPtr, DirPtr->name, szComment);
-	//if (*end != '\0') printf("Warning: leftover characters after number: %s\n", end);
-
-
-
-
-
-
-
-
-	// Update MDI window childinfo data and listview.	
+	// 5) Refresh the view
 	win = GetParent(dlg);
- 	SendMessage(win, WM_COMMAND, ID_VIEW_REFRESH, 0l);
-//	CheckForNDOS();
+	SendMessage(win, WM_COMMAND, ID_VIEW_REFRESH, 0l);
+}    
 
-
-}
 
 
 
