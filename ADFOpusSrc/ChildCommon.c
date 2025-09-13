@@ -1174,6 +1174,59 @@ HWND CreateListView(HWND win)
 
 
 
+//#include <windows.h>
+//
+//// Converts an Amiga timestamp (days/minutes/ticks since 1978-01-01) into
+//// a local SYSTEMTIME.  You can then format that SYSTEMTIME with
+//// GetDateFormat()/GetTimeFormat() or similar.
+//void AmiDateToSystemTime(
+//	LONG        days,    // days since 1978-01-01
+//	LONG        mins,    // minutes since midnight (0–1439)
+//	LONG        ticks,   // 1/50ths of a second past that minute (0–49)
+//	SYSTEMTIME* pSt      // out: local date/time
+//)
+//{
+//	// 1) Build a FILETIME for the base date: 1978-01-01 00:00:00
+//	SYSTEMTIME stBase = { 0 };
+//	stBase.wYear = 1978;
+//	stBase.wMonth = 1;
+//	stBase.wDay = 1;
+//	// wHour, wMinute, wSecond, wMilliseconds all zero
+//
+//	FILETIME ftBase;
+//	SystemTimeToFileTime(&stBase, &ftBase);
+//
+//	// 2) Turn that into a 64-bit count of 100-ns intervals
+//	ULARGE_INTEGER uli;
+//	uli.LowPart = ftBase.dwLowDateTime;
+//	uli.HighPart = ftBase.dwHighDateTime;
+//
+//	// 3) Add the Amiga offset in 100-ns units
+//	const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
+//	const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
+//	const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
+//
+//	uli.QuadPart += (ULONGLONG)days * DAY_100NS;
+//	uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
+//	uli.QuadPart += (ULONGLONG)ticks * TICK_100NS;
+//
+//	// 4) Convert back to FILETIME
+//	FILETIME ftTarget;
+//	ftTarget.dwLowDateTime = uli.LowPart;
+//	ftTarget.dwHighDateTime = uli.HighPart;
+//
+//	// 5) Convert UTC FILETIME → local FILETIME → local SYSTEMTIME
+//	FILETIME ftLocal;
+//	FileTimeToLocalFileTime(&ftTarget, &ftLocal);
+//	FileTimeToSystemTime(&ftLocal, pSt);
+//}
+
+
+
+
+
+
+
 #include <windows.h>
 
 // Converts an Amiga timestamp (days/minutes/ticks since 1978-01-01) into
@@ -1186,22 +1239,31 @@ void AmiDateToSystemTime(
 	SYSTEMTIME* pSt      // out: local date/time
 )
 {
-	// 1) Build a FILETIME for the base date: 1978-01-01 00:00:00
-	SYSTEMTIME stBase = { 0 };
-	stBase.wYear = 1978;
-	stBase.wMonth = 1;
-	stBase.wDay = 1;
+	// 1) Build a SYSTEMTIME for the base date: 1978-01-01 00:00:00 local
+	SYSTEMTIME stBaseLocal = { 0 };
+	stBaseLocal.wYear = 1978;
+	stBaseLocal.wMonth = 1;
+	stBaseLocal.wDay = 1;
 	// wHour, wMinute, wSecond, wMilliseconds all zero
 
-	FILETIME ftBase;
-	SystemTimeToFileTime(&stBase, &ftBase);
+	// 2) Convert that LOCAL base into UTC
+	SYSTEMTIME stBaseUtc;
+	TzSpecificLocalTimeToSystemTime(
+		NULL,             // use current user time zone
+		&stBaseLocal,     // local 1978-01-01 midnight
+		&stBaseUtc        // receives equivalent UTC time
+	);
 
-	// 2) Turn that into a 64-bit count of 100-ns intervals
+	// 3) Turn UTC base SYSTEMTIME into FILETIME
+	FILETIME ftBase;
+	SystemTimeToFileTime(&stBaseUtc, &ftBase);
+
+	// 4) Promote to 64-bit count of 100-ns intervals
 	ULARGE_INTEGER uli;
 	uli.LowPart = ftBase.dwLowDateTime;
 	uli.HighPart = ftBase.dwHighDateTime;
 
-	// 3) Add the Amiga offset in 100-ns units
+	// 5) Add the Amiga offset in 100-ns units
 	const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
 	const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
 	const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
@@ -1210,16 +1272,22 @@ void AmiDateToSystemTime(
 	uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
 	uli.QuadPart += (ULONGLONG)ticks * TICK_100NS;
 
-	// 4) Convert back to FILETIME
+	// 6) Convert back to FILETIME
 	FILETIME ftTarget;
 	ftTarget.dwLowDateTime = uli.LowPart;
 	ftTarget.dwHighDateTime = uli.HighPart;
 
-	// 5) Convert UTC FILETIME → local FILETIME → local SYSTEMTIME
+	// 7) Convert UTC FILETIME → local FILETIME → local SYSTEMTIME
 	FILETIME ftLocal;
 	FileTimeToLocalFileTime(&ftTarget, &ftLocal);
 	FileTimeToSystemTime(&ftLocal, pSt);
 }
+
+
+
+
+
+
 
 #include <windows.h>
 
@@ -1336,35 +1404,80 @@ void ChildUpdate(HWND win)
 		{
 			// 1) Comment
 			amiFile = adfOpenFile(ci->vol, ce->name, "r");
-			LVAddSubItem(ci->lv,
+			LVAddSubItem(
+				ci->lv,
 				amiFile->fileHdr->comment,
 				pos,
-				4);
+				4
+			);
 
-			// 2) Date/Time from Amiga header → SYSTEMTIME
-			AmiDateToSystemTime(
-				amiFile->fileHdr->days,
-				amiFile->fileHdr->mins,
-				amiFile->fileHdr->ticks,
-				&st);
+			// 2) Convert raw Amiga days/minutes/ticks → local SYSTEMTIME
+			{
+				// pull out the raw fields
+				LONG days   = amiFile->fileHdr->days;   // days since 1978-01-01
+				LONG mins   = amiFile->fileHdr->mins;   // minutes since midnight
+				LONG ticks_ = amiFile->fileHdr->ticks;  // 1/50ths of a second
+
+				// build FILETIME for the base date 1978-01-01 00:00:00 UTC
+				SYSTEMTIME stBase = { 0 };
+				stBase.wYear = 1978;
+				stBase.wMonth = 1;
+				stBase.wDay = 1;
+				FILETIME ftBase;
+				SystemTimeToFileTime(&stBase, &ftBase);
+
+				// promote to 64-bit and add days, mins, ticks in 100 ns units
+				ULARGE_INTEGER uli = { .LowPart = ftBase.dwLowDateTime,
+									   .HighPart = ftBase.dwHighDateTime };
+				const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
+				const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
+				const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
+
+				uli.QuadPart += (ULONGLONG)days * DAY_100NS;
+				uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
+				uli.QuadPart += (ULONGLONG)ticks_ * TICK_100NS;
+
+				// back into FILETIME → local SYSTEMTIME
+				FILETIME    ftTarget, ftLocal;
+				SYSTEMTIME  stTarget = { 0 };
+
+				ftTarget.dwLowDateTime = uli.LowPart;
+				ftTarget.dwHighDateTime = uli.HighPart;
+
+				//FileTimeToLocalFileTime(&ftTarget, &ftLocal);
+				//FileTimeToSystemTime(&ftLocal, &stTarget);
+
+				FileTimeToSystemTime(&ftTarget, &stTarget);
+
+
+				// stash it in 'st' for formatting
+				st = stTarget;
+			}
+
 			adfCloseFile(amiFile);
 
-			// 3) Format as "Sep/08/2025 8:03:23 AM"
-			GetDateFormat(LOCALE_USER_DEFAULT,
+			// 3) Format exactly as your Properties dialog does
+			GetDateFormat(
+				LOCALE_USER_DEFAULT,
 				0,
 				&st,
 				TEXT("MMM/dd/yyyy"),
 				dateBuf,
-				ARRAYSIZE(dateBuf));
-
-			GetTimeFormat(LOCALE_USER_DEFAULT,
+				ARRAYSIZE(dateBuf)
+			);
+			GetTimeFormat(
+				LOCALE_USER_DEFAULT,
 				0,
 				&st,
 				TEXT("h:mm:ss tt"),
 				timeBuf,
-				ARRAYSIZE(timeBuf));
+				ARRAYSIZE(timeBuf)
+			);
 
 			wsprintf(dateTimeBuf, TEXT("%s %s"), dateBuf, timeBuf);
+			//MessageBoxA(NULL, dateTimeBuf, "DEBUG:dateTimeBuf", MB_OK | MB_ICONERROR);
+
+			// 4) Insert into ListView
 			LVAddSubItem(ci->lv, dateTimeBuf, pos, 3);
 		}
 		else
@@ -1380,19 +1493,20 @@ void ChildUpdate(HWND win)
 				GetFileExInfoStandard,
 				&fad))
 			{
-				FileTimeToLocalFileTime(&fad.ftLastWriteTime,
-					&ftLocal);
+				FileTimeToLocalFileTime(&fad.ftLastWriteTime, &ftLocal);
 				FileTimeToSystemTime(&ftLocal, &st);
 
 				// 3) Format date/time
-				GetDateFormat(LOCALE_USER_DEFAULT,
+				GetDateFormat(
+					LOCALE_USER_DEFAULT,
 					0,
 					&st,
 					TEXT("MMM/dd/yyyy"),
 					dateBuf,
 					ARRAYSIZE(dateBuf));
 
-				GetTimeFormat(LOCALE_USER_DEFAULT,
+				GetTimeFormat(
+					LOCALE_USER_DEFAULT,
 					0,
 					&st,
 					TEXT("h:mm:ss tt"),
@@ -2485,6 +2599,8 @@ void ChildMakeDir(HWND win)
 	char newPath[MAX_PATH];
 	int pos;
 
+	// Chiron 2025: TODO: Need to have this deal with this better!
+
 	if (GetWindowLong(win, GWL_USERDATA) == CHILD_AMILISTER) {
 		if (adfCreateDir(ci->vol, ci->vol->curDirPtr, "New Directory") != RC_OK) {
 			MessageBox(win, "Couldn't create directory, the volume is probably full.",
@@ -2500,6 +2616,7 @@ void ChildMakeDir(HWND win)
 		}
 	}
 
+	// Chiron 2025: TODO: This should just refresh the whole view!
 	pos = LVAddItem(ci->lv, "New Directory", (GetWindowLong(win, GWL_USERDATA) ==
 	 CHILD_AMILISTER) ? ICO_AMIDIR : ICO_WINDIR);
 	

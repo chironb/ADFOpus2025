@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  */
 /*! \file	adf_dir.c
@@ -729,7 +729,7 @@ SECTNUM adfNameToEntryBlk(struct Volume *vol, long ht[], char* name,
 #ifdef _DEBUG_PRINTF_
 	printf("name=%s ht[%d]=%d upper=%s len=%d\n",name,hashVal,nSect,upperName,nameLen);
 	printf("hashVal=%d\n",adfGetHashValue(upperName, intl ));
-	if(!strcmp("españa.country",name)){
+	if(!strcmp("espaÃ±a.country",name)){
 		int i;
 		for(i=0; i<HT_SIZE; i++)
 			printf("ht[%d]=%d    ",i,ht[i]);
@@ -1037,7 +1037,7 @@ RETCODE adfCreateDir(struct Volume* vol, SECTNUM nParent, char* name)
     // zero the on-disk block
     memset(&dir, 0, sizeof dir);
     //
-    //—— clamp & copy the name safely ——
+    //â€”â€” clamp & copy the name safely â€”â€”
     size_t rawLen = strlen(name);
     size_t maxChars = sizeof(dir.dirName) - 1;   // leave room for NUL
     size_t copyLen = (rawLen > maxChars ? maxChars : rawLen);
@@ -1056,6 +1056,7 @@ RETCODE adfCreateDir(struct Volume* vol, SECTNUM nParent, char* name)
         dir.parent = vol->rootBlock;
     else
         dir.parent = parent.headerKey;
+
     adfTime2AmigaTime(adfGiveCurrentTime(),&(dir.days),&(dir.mins),&(dir.ticks));
 
     if (isDIRCACHE(vol->dosType)) {
@@ -1113,7 +1114,7 @@ RETCODE adfCreateFile(struct Volume* vol, SECTNUM nParent, char *name,
     //
     memset(fhdr, 0, sizeof * fhdr);
     //
-    // —— clamp & copy the filename safely ——
+    // â€”â€” clamp & copy the filename safely â€”â€”
     size_t rawLen = strlen(name);
     size_t maxChars = sizeof(fhdr->fileName) - 1;   // leave room for NUL
     size_t copyLen = (rawLen > maxChars ? maxChars : rawLen);
@@ -1257,7 +1258,7 @@ RETCODE adfWriteDirBlock(struct Volume* vol, SECTNUM nSect, struct bDirBlock *di
 // 
 // NOTE: This is *NOT* a part of this original ADFLib codebase. 
 //
-/*! \brief    Set an entry’s date/time (days, mins, ticks).
+/*! \brief    Set an entryâ€™s date/time (days, mins, ticks).
  *   \param    vol       - pointer to the mounted Amiga volume
  *   \param    parSect   - parent directory block number
  *   \param    name      - entry name (file or directory)
@@ -1281,7 +1282,7 @@ RETCODE adfSetEntryDate(
     if (adfReadEntryBlock(vol, parSect, &parent) != RC_OK)
         return RC_ERROR;
 
-    /* 2) locate and read the named entry’s header block */
+    /* 2) locate and read the named entryâ€™s header block */
     nSect = adfNameToEntryBlk(vol,
         parent.hashTable,
         name,

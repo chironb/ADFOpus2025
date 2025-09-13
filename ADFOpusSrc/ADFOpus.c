@@ -118,6 +118,15 @@ extern RETCODE adfSetEntryDate(
 	long           newTicks);
 
 
+
+extern void AmiDateToSystemTime(
+	LONG        days,    // days since 1978-01-01
+	LONG        mins,    // minutes since midnight (0–1439)
+	LONG        ticks,   // 1/50ths of a second past that minute (0–49)
+	SYSTEMTIME* pSt      // out: local date/time
+);
+
+
 ENV_DECLARATION;
 
 /* function prototypes */
@@ -1231,71 +1240,71 @@ void doCopy(void *arse)
 
 
 
-#include <windows.h>
-
-// Helper: convert Amiga date (days since 1 Jan 1978), minutes since midnight,
-// and ticks (1/50 s) into a SYSTEMTIME.
-static void AmiDateToSystemTime(
-	LONG days,
-	LONG mins,
-	LONG ticks,
-	SYSTEMTIME* pSt
-)
-{
-	// 1 Jan 1978 epoch
-	int year = 1978;
-	LONG dayCount = days;
-
-	// Roll forward year by year
-	while (true)
-	{
-		bool leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
-		int daysInYear = leap ? 366 : 365;
-		if (dayCount >= daysInYear)
-		{
-			dayCount -= daysInYear;
-			++year;
-		}
-		else
-		{
-			break;
-		}
-	}
-
-	// Month/day within that year
-	static const int mdays[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
-	int month = 1;
-	for (int i = 0; i < 12; ++i)
-	{
-		int dim = mdays[i];
-		if (i == 1 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))
-			dim = 29;
-		if (dayCount >= dim)
-		{
-			dayCount -= dim;
-			++month;
-		}
-		else
-		{
-			break;
-		}
-	}
-
-	int day = (int)dayCount + 1;
-	int hour = (int)(mins / 60);
-	int minute = (int)(mins % 60);
-	int second = (int)(ticks / 50);
-	int msec = (int)((ticks % 50) * 20);  // each tick = 20 ms
-
-	pSt->wYear = (WORD)year;
-	pSt->wMonth = (WORD)month;
-	pSt->wDay = (WORD)day;
-	pSt->wHour = (WORD)hour;
-	pSt->wMinute = (WORD)minute;
-	pSt->wSecond = (WORD)second;
-	pSt->wMilliseconds = (WORD)msec;
-	pSt->wDayOfWeek = 0;  // not required for FileTime conversion
-}
+//#include <windows.h>
+//
+//// Helper: convert Amiga date (days since 1 Jan 1978), minutes since midnight,
+//// and ticks (1/50 s) into a SYSTEMTIME.
+//static void AmiDateToSystemTime(
+//	LONG days,
+//	LONG mins,
+//	LONG ticks,
+//	SYSTEMTIME* pSt
+//)
+//{
+//	// 1 Jan 1978 epoch
+//	int year = 1978;
+//	LONG dayCount = days;
+//
+//	// Roll forward year by year
+//	while (true)
+//	{
+//		bool leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+//		int daysInYear = leap ? 366 : 365;
+//		if (dayCount >= daysInYear)
+//		{
+//			dayCount -= daysInYear;
+//			++year;
+//		}
+//		else
+//		{
+//			break;
+//		}
+//	}
+//
+//	// Month/day within that year
+//	static const int mdays[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+//	int month = 1;
+//	for (int i = 0; i < 12; ++i)
+//	{
+//		int dim = mdays[i];
+//		if (i == 1 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))
+//			dim = 29;
+//		if (dayCount >= dim)
+//		{
+//			dayCount -= dim;
+//			++month;
+//		}
+//		else
+//		{
+//			break;
+//		}
+//	}
+//
+//	int day = (int)dayCount + 1;
+//	int hour = (int)(mins / 60);
+//	int minute = (int)(mins % 60);
+//	int second = (int)(ticks / 50);
+//	int msec = (int)((ticks % 50) * 20);  // each tick = 20 ms
+//
+//	pSt->wYear = (WORD)year;
+//	pSt->wMonth = (WORD)month;
+//	pSt->wDay = (WORD)day;
+//	pSt->wHour = (WORD)hour;
+//	pSt->wMinute = (WORD)minute;
+//	pSt->wSecond = (WORD)second;
+//	pSt->wMilliseconds = (WORD)msec;
+//	pSt->wDayOfWeek = 0;  // not required for FileTime conversion
+//}
 
 void CopyAmi2Win(char* fileName, char* destPath, struct Volume* vol, long fileSize)
 {

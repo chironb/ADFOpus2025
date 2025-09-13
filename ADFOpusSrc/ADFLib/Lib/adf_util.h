@@ -20,10 +20,8 @@ PREFIX struct List* newCell(struct List* list, void* content);
 PREFIX void freeList(struct List* list);
 void adfDays2Date(long days, int *yy, int *mm, int *dd);
 BOOL adfIsLeap(int y);
-    void
-adfTime2AmigaTime(struct DateTime dt, long *day, long *min, long *ticks );
-    struct DateTime
-adfGiveCurrentTime( void );
+void adfTime2AmigaTime(struct DateTime dt, long *day, long *min, long *ticks );
+struct DateTime adfGiveCurrentTime( void );
 
 void dumpBlock(unsigned char *buf);
 

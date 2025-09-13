@@ -1,4 +1,4 @@
-/*
+﻿/*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  */
 /*! \file	adf_util.c
@@ -142,73 +142,161 @@ adfIsLeap(int y)
 }
 
 
-/*
- * adfCurrentDateTime
- *
- * return the current system date and time
- */
+
+    /*
+     * adfCurrentDateTime
+     *
+     * return the current system date and time
+     */
     struct DateTime
-adfGiveCurrentTime( void )
-{
-    struct tm *local;
-    time_t cal;
-    struct DateTime r;
+        adfGiveCurrentTime(void)
+    {
+        struct tm* local;
+        time_t cal;
+        struct DateTime r;
 
-    time(&cal);
-    local=localtime(&cal);
+        time(&cal);
+        local = localtime(&cal);
 
-    r.year=local->tm_year;         /* since 1900 */
-    r.mon=local->tm_mon+1;
-    r.day=local->tm_mday;
-    r.hour=local->tm_hour;
-    r.min=local->tm_min;
-    r.sec=local->tm_sec;
+        r.year = local->tm_year;         /* since 1900 */
+        r.mon = local->tm_mon + 1;
+        r.day = local->tm_mday;
+        r.hour = local->tm_hour;
+        r.min = local->tm_min;
+        r.sec = local->tm_sec;
 
-    return(r);
-}
+        return(r);
+    }
+
+
+
+
+//#include <time.h>    // time_t, struct tm, gmtime()/gmtime_r()/gmtime_s()
+///*
+//    * adfCurrentDateTime
+//    *
+//    * return the current system date and time in UTC
+//    */
+//struct DateTime adfGiveCurrentTime(void)
+//{
+//    time_t       cal;
+//    struct tm    tmUtc;
+//    struct DateTime r;
+//
+//    // get the current epoch seconds
+//    time(&cal);
+//
+//    // break it down as UTC
+//#if defined(_WIN32)
+//// Windows secure variant
+//    gmtime_s(&tmUtc, &cal);       // FIRST param is struct tm*, SECOND is time_t*
+//#else
+//// POSIX variant
+//    gmtime_r(&cal, &tmUtc);       // FIRST param is time_t*,   SECOND is struct tm*
+//#endif
+//
+//    // fill your DateTime exactly as before (year since 1900, mon+1, etc.)
+//    r.year = tmUtc.tm_year;      /* years since 1900 */
+//    r.mon = tmUtc.tm_mon + 1;
+//    r.day = tmUtc.tm_mday;
+//    r.hour = tmUtc.tm_hour;
+//    r.min = tmUtc.tm_min;
+//    r.sec = tmUtc.tm_sec;
+//
+//    return r;
+//}
+
+
+///*
+// * adfTime2AmigaTime
+// *
+// * converts date and time (dt) into Amiga format : day, min, ticks
+// */
+//    void
+//adfTime2AmigaTime(struct DateTime dt, long *day, long *min, long *ticks )
+//{
+//    int jm[12]={ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+//
+//
+//    *min= dt.hour*60 + dt.min;                /* mins */
+//    *ticks= dt.sec*50;                        /* ticks */
+//
+//    /*--- days ---*/
+//
+//    *day= dt.day-1;                         /* current month days */
+//
+//    /* previous months days downto january */
+//    if (dt.mon>1) {                      /* if previous month exists */
+//        dt.mon--;
+//        if (dt.mon>2 && adfIsLeap(dt.year))    /* months after a leap february */
+//            jm[2-1]=29;
+//        while(dt.mon>0) {
+//            *day=*day+jm[dt.mon-1];
+//            dt.mon--;
+//        }
+//    }
+//
+//    /* years days before current year downto 1978 */
+//    if (dt.year>78) {
+//        dt.year--;
+//        while(dt.year>=78) {
+//            if (adfIsLeap(dt.year))
+//                *day=*day+366;
+//            else
+//                *day=*day+365;
+//            dt.year--;
+//        }
+//    }
+//}
+
+
 
 
 /*
  * adfTime2AmigaTime
  *
- * converts date and time (dt) into Amiga format : day, min, ticks
+ * Convert a DateTime (tm_year since 1900, month 1–12, day 1–31,
+ * hour/min/sec) into Amiga days/minutes/ticks since 1978-01-01.
  */
-    void
-adfTime2AmigaTime(struct DateTime dt, long *day, long *min, long *ticks )
+void adfTime2AmigaTime( struct DateTime dt ,
+                          long        *day ,
+                          long        *min ,
+                          long      *ticks )
 {
-    int jm[12]={ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    // 1) Minutes and ticks unchanged
+    *min   = dt.hour * 60 + dt.min;   // minutes since midnight
+    *ticks = dt.sec  * 50;            // 1/50ths of second
 
+    // 2) Compute “Julian day number” for dt (days since some fixed point)
+    //    Adjust year/month so March=3..14 to make Feb the last month.
+    int realYear = dt.year + 1900;
+    int realMonth = dt.mon;
+    int y = realYear - (realMonth <= 2 ? 1 : 0);
+    int m = realMonth + (realMonth <= 2 ? 12 : 0);
+    long julianToday = 
+        365L * y
+      + y / 4
+      - y / 100
+      + y / 400
+      + (153 * (m - 3) + 2) / 5
+      + (dt.day - 1);
 
-    *min= dt.hour*60 + dt.min;                /* mins */
-    *ticks= dt.sec*50;                        /* ticks */
+    // 3) Compute Julian day number for 1978-01-01
+    //    (we know Jan ≤ 2, so this branch always adjusts)
+    int baseYear  = 1978 - 1;   // since month<=2
+    int baseMonth = 1 + 12;     // January → month 13 of previous year
+    long julianBase =
+        365L * baseYear
+      + baseYear / 4
+      - baseYear / 100
+      + baseYear / 400
+      + (153 * (baseMonth - 3) + 2) / 5
+      + (1 - 1);               // day=1 → subtract 1
 
-    /*--- days ---*/
-
-    *day= dt.day-1;                         /* current month days */
-
-    /* previous months days downto january */
-    if (dt.mon>1) {                      /* if previous month exists */
-        dt.mon--;
-        if (dt.mon>2 && adfIsLeap(dt.year))    /* months after a leap february */
-            jm[2-1]=29;
-        while(dt.mon>0) {
-            *day=*day+jm[dt.mon-1];
-            dt.mon--;
-        }
-    }
-
-    /* years days before current year downto 1978 */
-    if (dt.year>78) {
-        dt.year--;
-        while(dt.year>=78) {
-            if (adfIsLeap(dt.year))
-                *day=*day+366;
-            else
-                *day=*day+365;
-            dt.year--;
-        }
-    }
+    // 4) Difference = days since 1978-01-01
+    *day = julianToday - julianBase;
 }
+
 
 
 

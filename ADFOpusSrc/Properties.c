@@ -59,6 +59,22 @@ extern HWND	ghwndTB;
 // Chiron 2025: DEBUG: This is for debugging. 
 extern char gstrFileName[MAX_PATH * 2];   // your global ADF path
 
+
+#include "adf_dir.h"
+
+extern RETCODE adfSetEntryDate(
+	struct Volume* vol,
+	SECTNUM        parSect,
+	char* name,
+	long           newDays,
+	long           newMins,
+	long           newTicks);
+
+
+#include "adf_util.h"
+extern void adfTime2AmigaTime(struct DateTime dt, long* day, long* min, long* ticks);
+
+
 LRESULT CALLBACK PropertiesProcWin(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 // Uses ci and buf declared in ChildCommon.h. 
 {
@@ -267,7 +283,7 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 // Get flags from directory entry and set appropriate boxes.
 // Properties in ADFLib are HSPARWED.
 {
-	struct File* amiFile;
+
 	int i = 0;
 
 	while (DirPtr->flags[i] != '\0') {
@@ -290,110 +306,230 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 		i++;
 	}
 
+
+	struct File* amiFile;
+
 	amiFile = adfOpenFile(ci->vol, DirPtr->name, "r");
 
 	// 1) Write comment to dialog.
 	SendDlgItemMessage(dlg, IDC_EDIT_COMMENT, WM_SETTEXT, 0, (LPARAM)amiFile->fileHdr->comment);
 
-	// 2) Convert Amiga date/time to local Windows date/time and write to dialog.
-	{
-		// 1) Grab the raw Amiga date/time fields
-		LONG days = amiFile->fileHdr->days;   // days since 1978-01-01
-		LONG mins = amiFile->fileHdr->mins;   // minutes since midnight
-		LONG ticks = amiFile->fileHdr->ticks;  // 1/50ths of a second
 
-		// 2) Build a FILETIME for the base date 1978-01-01 00:00:00
-		SYSTEMTIME stBase = { 0 };
-		stBase.wYear = 1978;
-		stBase.wMonth = 1;
-		stBase.wDay = 1;
-		// wHour, wMinute, wSecond, wMilliseconds all zero
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	// DATE STARTS HERE ///////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
 
-		FILETIME ftBase;
-		SystemTimeToFileTime(&stBase, &ftBase);
 
-		// 3) Promote to 64-bit and add days, mins, ticks in 100ns units
-		ULARGE_INTEGER uli;
-		uli.LowPart = ftBase.dwLowDateTime;
-		uli.HighPart = ftBase.dwHighDateTime;
 
-		const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
-		const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
-		const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
 
-		uli.QuadPart += (ULONGLONG)days * DAY_100NS;
-		uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
-		uli.QuadPart += (ULONGLONG)ticks * TICK_100NS;
 
-		// 4) Convert back to FILETIME
-		FILETIME ftTarget;
-		ftTarget.dwLowDateTime = uli.LowPart;
-		ftTarget.dwHighDateTime = uli.HighPart;
 
-		// 5) Convert to local SYSTEMTIME
-		FILETIME ftLocal;
-		SYSTEMTIME stTarget;
-		FileTimeToLocalFileTime(&ftTarget, &ftLocal);
-		FileTimeToSystemTime(&ftLocal, &stTarget);
 
-		// 6) Format as "YYYY-MM-DD HH:MM:SS"
-		char dateBuf[64];
-		wsprintfA(
-			dateBuf,
-			"%04u-%02u-%02u %02u:%02u:%02u",
-			stTarget.wYear,
-			stTarget.wMonth,
-			stTarget.wDay,
-			stTarget.wHour,
-			stTarget.wMinute,
-			stTarget.wSecond
-		);
+	//// 2) Convert Amiga date/time to local Windows date/time and write to dialog.
+	//
+	//	// 1) Grab the raw Amiga date/time fields
+	//	LONG days = amiFile->fileHdr->days;   // days since 1978-01-01
+	//	LONG mins = amiFile->fileHdr->mins;   // minutes since midnight
+	//	LONG ticks = amiFile->fileHdr->ticks;  // 1/50ths of a second
 
-		// … after you’ve obtained `stTarget` from FileTimeToSystemTime …
+	//	// 2) Build a FILETIME for the base date 1978-01-01 00:00:00
+	//	SYSTEMTIME stBase = { 0 };
+	//	stBase.wYear = 1978;
+	//	stBase.wMonth = 1;
+	//	stBase.wDay = 1;
+	//	// wHour, wMinute, wSecond, wMilliseconds all zero
 
-		{
-			char dateBuf[64];
-			char datePart[32];
-			char timePart[32];
+	//	FILETIME ftBase;
+	//	SystemTimeToFileTime(&stBase, &ftBase);
 
-			// Format “August 2, 2025”
-			// pattern “MMMM d, yyyy” → full month, day(no leading 0), 4-digit year
-			GetDateFormatA(
+	//	// 3) Promote to 64-bit and add days, mins, ticks in 100ns units
+	//	ULARGE_INTEGER uli;
+	//	uli.LowPart = ftBase.dwLowDateTime;
+	//	uli.HighPart = ftBase.dwHighDateTime;
+
+	//	const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
+	//	const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
+	//	const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
+
+	//	uli.QuadPart += (ULONGLONG)days * DAY_100NS;
+	//	uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
+	//	uli.QuadPart += (ULONGLONG)ticks * TICK_100NS;
+
+	//	// 4) Convert back to FILETIME
+	//	FILETIME ftTarget;
+	//	ftTarget.dwLowDateTime = uli.LowPart;
+	//	ftTarget.dwHighDateTime = uli.HighPart;
+
+	//	// 5) Convert to local SYSTEMTIME
+	//	FILETIME ftLocal;
+	//	SYSTEMTIME stTarget;
+	//	// … after you’ve built ftTarget by adding days/mins/ticks to your base …
+	//	//
+	//	// OLD: this applies DST/TZ and will shift you in or out of summer time
+	//	//    FileTimeToLocalFileTime(&ftTarget, &ftLocal);
+	//	//    FileTimeToSystemTime  (&ftLocal, &stTarget);
+	//	//
+	//	// NEW: drop the local‐convert; ftTarget is *your* raw 1978‐based offset,
+	//	//      so just turn that 100ns‐value directly into a SYSTEMTIME
+	//	FileTimeToSystemTime(&ftTarget, &stTarget);
+
+	//	// 6) Format as "YYYY-MM-DD HH:MM:SS"
+	//	char dateBuf[64];
+	//	wsprintfA(
+	//		dateBuf,
+	//		"%04u-%02u-%02u %02u:%02u:%02u",
+	//		stTarget.wYear,
+	//		stTarget.wMonth,
+	//		stTarget.wDay,
+	//		stTarget.wHour,
+	//		stTarget.wMinute,
+	//		stTarget.wSecond
+	//	);
+
+	//	// … after you’ve obtained `stTarget` from FileTimeToSystemTime …
+
+	//	
+	//		//char dateBuf[64];
+	//		char datePart[32];
+	//		char timePart[32];
+
+	//		// Format “August 2, 2025”
+	//		// pattern “MMMM d, yyyy” → full month, day(no leading 0), 4-digit year
+	//		GetDateFormatA(
+	//			LOCALE_USER_DEFAULT,
+	//			0,
+	//			&stTarget,
+	//			"MMMM d, yyyy",
+	//			datePart,
+	//			ARRAYSIZE(datePart)
+	//		);
+
+	//		// Format “10:52:18 PM”
+	//		// pattern “h:mm:ss tt” → 12-hour, no leading 0 on hour, seconds, AM/PM
+	//		GetTimeFormatA(
+	//			LOCALE_USER_DEFAULT,
+	//			0,
+	//			&stTarget,
+	//			"h:mm:ss tt",
+	//			timePart,
+	//			ARRAYSIZE(timePart)
+	//		);
+
+	//		// Combine with a comma
+	//		wsprintfA(
+	//			dateBuf,
+	//			"%s, %s",
+	//			datePart,
+	//			timePart
+	//		);
+
+
+	//		MessageBoxA(NULL, dateBuf, "DEBUG:dateBuf", MB_OK | MB_ICONERROR);
+
+	//		//SendDlgItemMessageA(
+	//		//	dlg,
+	//		//	IDC_PROPERTIES_DATE_AMI,
+	//		//	WM_SETTEXT,
+	//		//	0,
+	//		//	(LPARAM)dateBuf
+	//		//);
+		
+
+
+
+//DIRENTRY* ce;
+////char         strBuf[20];
+//int          pos;
+//
+//BOOL         bAmi = FALSE;
+//
+//// Scratch buffers for date/time formatting
+TCHAR        dateBuf[64], timeBuf[64], dateTimeBuf[128];
+SYSTEMTIME   st;
+//FILETIME     ftLocal;
+//WIN32_FILE_ATTRIBUTE_DATA fad;
+//char         fullPath[MAX_PATH];
+//
+//// back into FILETIME → local SYSTEMTIME
+FILETIME    ftTarget, ftLocal;
+SYSTEMTIME  stTarget = { 0 };
+
+			// 2) Convert raw Amiga days/minutes/ticks → local SYSTEMTIME
+			{
+				// pull out the raw fields
+				LONG days = amiFile->fileHdr->days;   // days since 1978-01-01
+				LONG mins = amiFile->fileHdr->mins;   // minutes since midnight
+				LONG ticks_ = amiFile->fileHdr->ticks;  // 1/50ths of a second
+
+				// build FILETIME for the base date 1978-01-01 00:00:00 UTC
+				SYSTEMTIME stBase = { 0 };
+				stBase.wYear = 1978;
+				stBase.wMonth = 1;
+				stBase.wDay = 1;
+				FILETIME ftBase;
+				SystemTimeToFileTime(&stBase, &ftBase);
+
+				// promote to 64-bit and add days, mins, ticks in 100 ns units
+				ULARGE_INTEGER uli = { .LowPart = ftBase.dwLowDateTime,
+									   .HighPart = ftBase.dwHighDateTime };
+				const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
+				const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
+				const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
+
+				uli.QuadPart += (ULONGLONG)days * DAY_100NS;
+				uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
+				uli.QuadPart += (ULONGLONG)ticks_ * TICK_100NS;
+
+				// back into FILETIME → local SYSTEMTIME
+				FILETIME    ftTarget, ftLocal;
+				SYSTEMTIME  stTarget = { 0 };
+
+				ftTarget.dwLowDateTime = uli.LowPart;
+				ftTarget.dwHighDateTime = uli.HighPart;
+
+				//FileTimeToLocalFileTime(&ftTarget, &ftLocal);
+				//FileTimeToSystemTime(&ftLocal, &stTarget);
+				FileTimeToSystemTime(&ftTarget, &stTarget);
+
+
+				// stash it in 'st' for formatting
+				st = stTarget;
+			}
+
+			//adfCloseFile(amiFile);
+
+			// 3) Format exactly as your Properties dialog does
+			GetDateFormat(
 				LOCALE_USER_DEFAULT,
 				0,
-				&stTarget,
-				"MMMM d, yyyy",
-				datePart,
-				ARRAYSIZE(datePart)
-			);
-
-			// Format “10:52:18 PM”
-			// pattern “h:mm:ss tt” → 12-hour, no leading 0 on hour, seconds, AM/PM
-			GetTimeFormatA(
-				LOCALE_USER_DEFAULT,
-				0,
-				&stTarget,
-				"h:mm:ss tt",
-				timePart,
-				ARRAYSIZE(timePart)
-			);
-
-			// Combine with a comma
-			wsprintfA(
+				&st,
+				TEXT("MMM/dd/yyyy"),
 				dateBuf,
-				"%s, %s",
-				datePart,
-				timePart
+				ARRAYSIZE(dateBuf)
+			);
+			GetTimeFormat(
+				LOCALE_USER_DEFAULT,
+				0,
+				&st,
+				TEXT("h:mm:ss tt"),
+				timeBuf,
+				ARRAYSIZE(timeBuf)
 			);
 
-			//SendDlgItemMessageA(
-			//	dlg,
-			//	IDC_PROPERTIES_DATE_AMI,
-			//	WM_SETTEXT,
-			//	0,
-			//	(LPARAM)dateBuf
-			//);
-		}
+			wsprintf(dateTimeBuf, TEXT("%s %s"), dateBuf, timeBuf);
+
+			//// 4) Insert into ListView
+			//LVAddSubItem(ci->lv, dateTimeBuf, pos, 3);
+
+
+			//MessageBoxA(NULL, dateTimeBuf, "DEBUG:dateTimeBuf", MB_OK | MB_ICONERROR);
+
 
 
 
@@ -405,7 +541,7 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 			IDC_PROPERTIES_DATEPICKER_AMI,    // your date-picker control
 			DTM_SETSYSTEMTIME,                // message to set a SYSTEMTIME
 			GDT_VALID,                        // indicate the time is valid
-			(LPARAM)&stTarget                 // pointer to your SYSTEMTIME
+			(LPARAM)&st                 // pointer to your SYSTEMTIME
 		);
 
 		SendDlgItemMessageA(
@@ -413,14 +549,45 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 			IDC_PROPERTIES_TIMEPICKER_AMI,    // your time-picker control
 			DTM_SETSYSTEMTIME,
 			GDT_VALID,
-			(LPARAM)&stTarget
+			(LPARAM)&st
 		);
 
 
 
-	}
 
-	{
+
+		// DEBUGING AND TESTING - WRITE RAW DATE INFO TO THE DIALOG! 
+
+		//char days_text[255], 
+		//	 mins_text[255], 
+		//	ticks_text[255];
+		//
+		//wsprintfA(days_text, "%d", (LPARAM)amiFile->fileHdr->days);
+		//wsprintfA(mins_text, "%d", (LPARAM)amiFile->fileHdr->mins);
+		//wsprintfA(ticks_text, "%d", (LPARAM)amiFile->fileHdr->ticks);
+
+		//SendDlgItemMessage(dlg, IDC_PROPERTIES_DAYS_AMI, WM_SETTEXT, 0, days_text);
+		//SendDlgItemMessage(dlg, IDC_PROPERTIES_MINS_AMI, WM_SETTEXT, 0, mins_text);
+		//SendDlgItemMessage(dlg, IDC_PROPERTIES_TICKS_AMI, WM_SETTEXT, 0, ticks_text);
+
+
+
+
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	// DATE FINISH HERE ///////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+
+
+	
+
+	
 		unsigned long bytes = amiFile->fileHdr->byteSize;
 		char buf[64];
 
@@ -458,21 +625,9 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 			0,
 			(LPARAM)buf
 		);
-	}
+	
 
-	// DEBUGING AND TESTING - WRITE RAW DATE INFO TO THE DIALOG! 
 
-	//char days_text[255], 
-	//	 mins_text[255], 
-	//	ticks_text[255];
-	//
-	//wsprintfA(days_text, "%d", (LPARAM)amiFile->fileHdr->days);
-	//wsprintfA(mins_text, "%d", (LPARAM)amiFile->fileHdr->mins);
-	//wsprintfA(ticks_text, "%d", (LPARAM)amiFile->fileHdr->ticks);
-
-	//SendDlgItemMessage(dlg, IDC_PROPERTIES_DAYS_AMI, WM_SETTEXT, 0, days_text);
-	//SendDlgItemMessage(dlg, IDC_PROPERTIES_MINS_AMI, WM_SETTEXT, 0, mins_text);
-	//SendDlgItemMessage(dlg, IDC_PROPERTIES_TICKS_AMI, WM_SETTEXT, 0, ticks_text);
 
     adfCloseFile(amiFile);
 
@@ -635,69 +790,111 @@ void SetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 
 	// 4) Read date & time from the picker controls, convert to Amiga date, and set it
 	{
-		SYSTEMTIME stDate = { 0 };
-		SYSTEMTIME stTime = { 0 };
-		SYSTEMTIME stTarget = { 0 };
+		//SYSTEMTIME stDate = { 0 };
+		//SYSTEMTIME stTime = { 0 };
+		//SYSTEMTIME stTarget = { 0 };
 
-		// Fetch date and time separately
-		SendDlgItemMessageA(dlg,
-			IDC_PROPERTIES_DATEPICKER_AMI,
-			DTM_GETSYSTEMTIME,
-			0,
-			(LPARAM)&stDate);
+		//// Fetch date and time separately
+		//SendDlgItemMessageA(dlg,
+		//	IDC_PROPERTIES_DATEPICKER_AMI,
+		//	DTM_GETSYSTEMTIME,
+		//	0,
+		//	(LPARAM)&stDate);
 
-		SendDlgItemMessageA(dlg,
-			IDC_PROPERTIES_TIMEPICKER_AMI,
-			DTM_GETSYSTEMTIME,
-			0,
-			(LPARAM)&stTime);
+		//SendDlgItemMessageA(dlg,
+		//	IDC_PROPERTIES_TIMEPICKER_AMI,
+		//	DTM_GETSYSTEMTIME,
+		//	0,
+		//	(LPARAM)&stTime);
 
-		// Combine into one SYSTEMTIME
-		stTarget.wYear = stDate.wYear;
-		stTarget.wMonth = stDate.wMonth;
-		stTarget.wDay = stDate.wDay;
-		stTarget.wHour = stTime.wHour;
-		stTarget.wMinute = stTime.wMinute;
-		stTarget.wSecond = stTime.wSecond;
-		stTarget.wMilliseconds = stTime.wMilliseconds;
+		//// Combine into one SYSTEMTIME
+		//stTarget.wYear = stDate.wYear;
+		//stTarget.wMonth = stDate.wMonth;
+		//stTarget.wDay = stDate.wDay;
+		//stTarget.wHour = stTime.wHour;
+		//stTarget.wMinute = stTime.wMinute;
+		//stTarget.wSecond = stTime.wSecond;
+		//stTarget.wMilliseconds = stTime.wMilliseconds;
 
-		// Convert local SYSTEMTIME to UTC FILETIME
-		SYSTEMTIME stUTC;
-		TzSpecificLocalTimeToSystemTime(NULL, &stTarget, &stUTC);
+		//// Convert local SYSTEMTIME to UTC FILETIME
+		//SYSTEMTIME stUTC;
+		//TzSpecificLocalTimeToSystemTime(NULL, &stTarget, &stUTC);
 
-		FILETIME ftUTC;
-		SystemTimeToFileTime(&stUTC, &ftUTC);
+		//FILETIME ftUTC;
+		//SystemTimeToFileTime(&stUTC, &ftUTC);
 
-		// Build base FILETIME for 1978-01-01 00:00:00 UTC
-		SYSTEMTIME stBase = { 0 };
-		stBase.wYear = 1978;
-		stBase.wMonth = 1;
-		stBase.wDay = 1;
 
-		FILETIME ftBase;
-		SystemTimeToFileTime(&stBase, &ftBase);
 
-		ULARGE_INTEGER baseULI;
-		baseULI.LowPart = ftBase.dwLowDateTime;
-		baseULI.HighPart = ftBase.dwHighDateTime;
+		// 4) Read date & time from the pickers, pack into DateTime, and call adfTime2AmigaTime
+		{
+			SYSTEMTIME stDate   = { 0 };
+			SYSTEMTIME stTime   = { 0 };
+			SYSTEMTIME stTarget = { 0 };
 
-		ULARGE_INTEGER targetULI;
-		targetULI.LowPart = ftUTC.dwLowDateTime;
-		targetULI.HighPart = ftUTC.dwHighDateTime;
+			// fetch date and time
+			SendDlgItemMessageA(
+				dlg,
+				IDC_PROPERTIES_DATEPICKER_AMI,
+				DTM_GETSYSTEMTIME,
+				0,
+				(LPARAM)&stDate
+			);
+			SendDlgItemMessageA(
+				dlg,
+				IDC_PROPERTIES_TIMEPICKER_AMI,
+				DTM_GETSYSTEMTIME,
+				0,
+				(LPARAM)&stTime
+			);
+			
 
-		const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
-		const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
-		const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
 
-		ULONGLONG diff = targetULI.QuadPart - baseULI.QuadPart;
-		LONG      days_long = (LONG)(diff / DAY_100NS);
-		diff %= DAY_100NS;
-		LONG      mins_long = (LONG)(diff / MIN_100NS);
-		diff %= MIN_100NS;
-		LONG      ticks_long = (LONG)(diff / TICK_100NS);
 
-		adfSetEntryDate(ci->vol, ci->vol->curDirPtr, DirPtr->name,
-			days_long, mins_long, ticks_long);
+			// merge into one SYSTEMTIME
+			stTarget.wYear = stDate.wYear;
+			stTarget.wMonth = stDate.wMonth;
+			stTarget.wDay = stDate.wDay;
+			stTarget.wHour = stTime.wHour;
+			stTarget.wMinute = stTime.wMinute;
+			stTarget.wSecond = stTime.wSecond;
+			stTarget.wMilliseconds = stTime.wMilliseconds;
+
+			// build your struct DateTime (tm_year since 1900, mon 1-12, day 1-31)
+			struct DateTime dt;
+			dt.year = stTarget.wYear - 1900;
+			dt.mon  = stTarget.wMonth;
+			dt.day  = stTarget.wDay;
+			dt.hour = stTarget.wHour;
+			dt.min  = stTarget.wMinute;
+			dt.sec  = stTarget.wSecond;
+
+
+
+
+
+			//TCHAR dateBuf[64], timeBuf[64], dateTimeBuf[128];
+			//GetDateFormat( LOCALE_USER_DEFAULT, 0, &stTarget, TEXT("MMM/dd/yyyy"), dateBuf, ARRAYSIZE(dateBuf) );
+			//GetTimeFormat( LOCALE_USER_DEFAULT, 0, &stTarget, TEXT("h:mm:ss tt"),  timeBuf, ARRAYSIZE(timeBuf) );
+			//wsprintf(dateTimeBuf, TEXT("%s %s"), dateBuf, timeBuf);
+			//MessageBoxA(NULL, dateTimeBuf, "DEBUG:dateTimeBuf", MB_OK | MB_ICONERROR);
+
+
+
+			// convert *literally*—no timezone or DST adjustments
+			long days, mins, ticks;
+			adfTime2AmigaTime(dt, &days, &mins, &ticks);
+
+			// write back into the Amiga header
+			adfSetEntryDate(
+				ci->vol,
+				ci->vol->curDirPtr,
+				DirPtr->name,
+				days,
+				mins,
+				ticks
+			);
+		}
+
 	}
 
 	// 5) Refresh the view
