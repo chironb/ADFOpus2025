@@ -37,6 +37,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		IDC_OLABEL,		   IDH_OPTIONS_LABEL,
 		IDC_ODELETE,	   IDH_OPTIONS_CONFIRM_COMDEL,
 		IDC_ODELDIR,	   IDH_OPTIONS_CONFIRM_DELDIR,
+		IDC_OWRITEGWFLOPPY,
 		IDC_ODIRCACHE,	   IDH_OPTIONS_MISC_DIRCACHE,
 		IDC_OREGISTER,	   IDH_OPTIONS_REGISTER_BUTTON,
 		IDC_OOK,		   IDH_OPTIONS_OK_BUTTON,
@@ -60,6 +61,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		SendMessage(GetDlgItem(dlg, IDC_ODIRCACHE), BM_SETCHECK, (Options.useDirCache ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_ODELETE), BM_SETCHECK, (Options.confirmDelete ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_ODELDIR), BM_SETCHECK, (Options.confirmDeleteDirs ? BST_CHECKED : 0), 0l);
+		SendMessage(GetDlgItem(dlg, IDC_OWRITEGWFLOPPY), BM_SETCHECK, (Options.confirmWriteGwFloppy ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_OAUTOHORITILE), BM_SETCHECK, (Options.autoHoriTile ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_OAUTOPANEONHOVER), BM_SETCHECK, (Options.autoPaneOnHover ? BST_CHECKED : 0), 0l);
 		SendMessage(GetDlgItem(dlg, IDC_OPLAYSOUNDS), BM_SETCHECK, (Options.playSounds ? BST_CHECKED : 0), 0l);
@@ -74,6 +76,7 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		case IDC_ODELETE:
 		case IDC_ODELDIR:
 		case IDC_ODIRCACHE:
+		case IDC_OWRITEGWFLOPPY:
 		case IDC_ODIR:
 		case IDC_OLABEL:
 		case IDC_OAUTOHORITILE:
@@ -140,18 +143,19 @@ LRESULT CALLBACK OptionsProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 void SetDefaultOptions()
 {
-	Options.confirmDelete       = TRUE;
-	Options.confirmDeleteDirs   = TRUE;
+	Options.confirmDelete        = TRUE;
+	Options.confirmDeleteDirs    = TRUE;
+	Options.confirmWriteGwFloppy = TRUE;
 	strcpy(Options.defaultDir, "C:\\"); // Chiron 2025 TODO: This doesn't do anything???
 	strcpy(Options.defaultLabel, "default_label"); // Chiron 2025 TODO: This doesn't do anything???
 	strcpy(Options.defaultNewFilename, "default_filename.adf");
 	strcpy(Options.defaultGreaseweazleFilename, "default_greaseweazle.adf");
-	Options.useDirCache         = TRUE;
-	Options.defDriveList        = FALSE;
-	Options.autoHoriTile        = TRUE;
-	Options.autoPaneOnHover     = TRUE;
-	Options.playSounds          = TRUE;
-	Options.sortingWindowsStyle = TRUE; // Basically TRUE for sortingWindowsStyle and FALSE for sortingMacStyle
+	Options.useDirCache          = TRUE;
+	Options.defDriveList         = FALSE;
+	Options.autoHoriTile         = TRUE;
+	Options.autoPaneOnHover      = TRUE;
+	Options.playSounds           = TRUE;
+	Options.sortingWindowsStyle  = TRUE; // Basically TRUE for sortingWindowsStyle and FALSE for sortingMacStyle
 }
 
 void ReadOptions()
@@ -234,6 +238,7 @@ void ApplyOptions(HWND dlg)
 	Options.useDirCache = (SendMessage(GetDlgItem(dlg, IDC_ODIRCACHE), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.confirmDelete = (SendMessage(GetDlgItem(dlg, IDC_ODELETE), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.confirmDeleteDirs = (SendMessage(GetDlgItem(dlg, IDC_ODELDIR), BM_GETCHECK, 0, 0l) == BST_CHECKED);
+	Options.confirmWriteGwFloppy = (SendMessage(GetDlgItem(dlg, IDC_OWRITEGWFLOPPY), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.autoHoriTile = (SendMessage(GetDlgItem(dlg, IDC_OAUTOHORITILE), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.autoPaneOnHover = (SendMessage(GetDlgItem(dlg, IDC_OAUTOPANEONHOVER), BM_GETCHECK, 0, 0l) == BST_CHECKED);
 	Options.playSounds = (SendMessage(GetDlgItem(dlg, IDC_OPLAYSOUNDS), BM_GETCHECK, 0, 0l) == BST_CHECKED);

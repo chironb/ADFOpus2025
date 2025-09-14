@@ -646,29 +646,37 @@ LRESULT CALLBACK GreaseweazleProcWrite(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 		switch (id)
 		{
 		case ID_GW_WRITE_CANCEL:
+
 			SetWindowText(ghwndSB, "Idle"); // Needs: extern HWND ghwndSB;
 			EndDialog(dlg, FALSE);
 			return TRUE;
 
 		case ID_GW_WRITE_START:
 
-			// Play Sound 3 --> Alert / Are You Sure? 
-			HINSTANCE hInst = GetModuleHandle(NULL);
-			if (Options.playSounds)
-				PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
-			/*end-if*/
-
-			// Confirm before commencing a floppy drive write.
-			if (MessageBox(
-				dlg,
-				"Writing to a floppy disk will destroy what's on it right now.\nAre you sure you want to write an image to your floppy disk?",
-				"Question",
-				MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)  // I removed MB_ICONQUESTION for the custom sound!
-			{
-
-				return TRUE;
-
+			if (Options.confirmWriteGwFloppy) {
+				// Play Sound 3 --> Alert / Are You Sure? 
+				HINSTANCE hInst = GetModuleHandle(NULL);
+				if (Options.playSounds)
+					PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_3), hInst, SND_RESOURCE | SND_ASYNC);
+				/*end-if*/
+				// Confirm before commencing a floppy drive write.
+				if (MessageBox(
+					dlg,
+					"Writing to a floppy disk will destroy what's on it right now.\nAre you sure you want to write an image to your floppy disk?",
+					"Question",
+					MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)  // I removed MB_ICONQUESTION for the custom sound!
+				{
+					return TRUE;
+				}
 			}
+			else {
+				// Play Sound 2 --> Alert
+				HINSTANCE hInst = GetModuleHandle(NULL);
+				if (Options.playSounds)
+					PlaySound(MAKEINTRESOURCE(IDR_NOTIFICATION_WAVE_2), hInst, SND_RESOURCE | SND_ASYNC);
+				/*end-if*/
+			}
+
 
 			SetWindowText(ghwndSB, "Greaseweazle writing to floppy disk..."); // Needs: extern HWND ghwndSB;
 			RunGreaseweazleWrite(dlg);

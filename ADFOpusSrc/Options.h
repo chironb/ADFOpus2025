@@ -1,8 +1,8 @@
-/* ADF Opus Copyright 1998-2002 by 
- * Dan Sutherland <dan@chromerhino.demon.co.uk> and Gary Harris <gharris@zip.com.au>.	
- *
- * Options.h - definitions for options dialogue
- */
+/* ADF Opus Copyright 1998-2002 by
+* Dan Sutherland <dan@chromerhino.demon.co.uk> and Gary Harris <gharris@zip.com.au>.
+*
+* Options.h - definitions for options dialogue
+*/
 
 #ifndef OPTIONS_H
 #define OPTIONS_H
@@ -15,6 +15,7 @@ struct OPTIONS {
 	char defaultGreaseweazleFilename[MAX_PATH];
 	BOOL confirmDelete;
 	BOOL confirmDeleteDirs;
+	BOOL confirmWriteGwFloppy;
 	BOOL defDriveList;
 	BOOL autoHoriTile;
 	BOOL autoPaneOnHover;

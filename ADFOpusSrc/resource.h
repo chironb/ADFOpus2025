@@ -401,7 +401,8 @@
 #define IDI_SELECTNONE                  50032
 #define IDI_INVERTSELECTION             50033
 #define IDI_README                      50034
-#define IDR_NOTIFICATION_WAVE_1         60001
+#define IDC_OWRITEGWFLOPPY				50035
+#define IDR_NOTIFICATION_WAVE_1         60001            
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
