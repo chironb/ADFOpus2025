@@ -32,9 +32,11 @@
  * ADFOpus.c - ADF Opus main program, registering of classes and all that is
  *             done in Init.c.
  */
+
+
+ /* Chiron 2025: TODO: Remove duplicates. I mean... it's fine... but it's messy! */
 #define OEMRESOURCE
 #include "Pch.h"
-
 #include "ADFOpus.h"
 #include "Init.h"
 #include "ChildCommon.h"
@@ -53,58 +55,39 @@
 #include "Bootblock.h"
 #include "TextViewer.h"
 #include "HexViewer.h"
-
 #include "ADFLib.h"
 #include "Help\AdfOpusHlp.h"
-
-
-// Chiron 2025
-#include <windows.h>
+#include <windows.h> // Chiron 2025
 #include <commctrl.h>
 #pragma comment(lib, "comctl32.lib")
-
-
-
 #include <windows.h>
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
+#include "MenuIcons.h"
+#include "Bootblock.h"   // now brings in RawWriteBootBlock()
+#include <shlwapi.h>      // for PathRemoveFileSpecA, PathAddBackslashA
+#pragma comment(lib, "Shlwapi.lib")  // link shlwapi
+#include <windows.h>
+#include "resource.h"
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <windows.h>
+#include <string.h>    // strlen, _stricmp, memcpy
+#include <windows.h>
+#include "resource.h"     // IDR_LISTERMENU, ID_FIL_*, IDI_*, etc.
+#include "MenuIcons.h"    // InitMenuIcons, CleanupMenuIcons, OnMeasureItem, OnDrawItem
 
 
 
 
 // tell this .c file that ghwndFrame exists somewhere else
 extern HWND ghwndFrame;
-#include "MenuIcons.h"
 extern HINSTANCE instance;    // or however you name your HINSTANCE
 extern HWND      ghwndFrame;  // your main window handle
 extern BOOL      bDirClicked;
 extern BOOL      bFileClicked;
-
-#include "Bootblock.h"   // now brings in RawWriteBootBlock()
-
-
-// 1) include your shared header
-// #include "ADFOpus.h" already did this above del this later. my code is messy like my brain! Messy.... like a fox!
-
-// 2) define the variable here (no extern)
-// This is the default local filesystem path that the Windows lister will open to when you open a new Windows lister window.
-#include <shlwapi.h>      // for PathRemoveFileSpecA, PathAddBackslashA
-#pragma comment(lib, "Shlwapi.lib")  // link shlwapi
-
-char gstrCmdLineArgs[CMDLINE_BUFFER] = { 0 };
-char g_defaultLocalPath[MAX_PATH] = { 0 };
-
-
-
-
-#include <windows.h>
-#include "resource.h"
-
-
-
 extern char* adfGetVersionNumber(); /* this shouldn't be here */
-
-
 extern BOOL isCurrentlyOpen(const char* gstrFileName);
 extern BOOL BringAmigaListerToFront(const char* gstrFileName);
 extern void adfCloseFileNoDate(struct File* file);
@@ -117,15 +100,12 @@ extern RETCODE adfSetEntryDate(
 	long           newMins,
 	long           newTicks);
 
-
-
 extern void AmiDateToSystemTime(
 	LONG        days,    // days since 1978-01-01
 	LONG        mins,    // minutes since midnight (0–1439)
 	LONG        ticks,   // 1/50ths of a second past that minute (0–49)
 	SYSTEMTIME* pSt      // out: local date/time
 );
-
 
 ENV_DECLARATION;
 
@@ -149,6 +129,17 @@ void GetTooltipText(char *, int);
 void doCopy(void *);
 LRESULT CALLBACK copyProgressProc(HWND, UINT, WPARAM, LPARAM);
 long AOGetFileSize(CHILDINFO *, char *);
+
+// 1) include your shared header
+// #include "ADFOpus.h" already did this above del this later. my code is messy like my brain! Messy.... like a fox!
+
+// 2) define the variable here (no extern)
+// This is the default local filesystem path that the Windows lister will open to when you open a new Windows lister window.
+
+char gstrCmdLineArgs[CMDLINE_BUFFER] = { 0 };
+char g_defaultLocalPath[MAX_PATH] = { 0 };
+
+
 
 
 /* global variables (too many) */
@@ -191,32 +182,6 @@ char			gstrCmdLineArgs[MAX_PATH * 2];			// Command line argument string.
  *
  * Returns true if path now ends in ext, false if buffer was too small.
  */
-//BOOL ensure_extension(char* path, size_t buffer_size, const char* ext)
-//{
-//	size_t path_len = strlen(path);
-//	size_t ext_len = strlen(ext);
-//
-//	// already ends with ext?
-//	if (path_len >= ext_len
-//		&& strcmp(path + path_len - ext_len, ext) == 0)
-//	{
-//		return TRUE;
-//	}
-//
-//	// need room for ext plus NUL
-//	if (path_len + ext_len + 1 > buffer_size) {
-//		return FALSE;
-//	}
-//
-//	// append extension (copies the NUL too)
-//	memcpy(path + path_len, ext, ext_len + 1);
-//	return TRUE;
-//}
-//
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
-
 bool ensure_extension(char* path, size_t bufsize, const char* ext)
 {
 	size_t path_len = strlen(path);
@@ -235,8 +200,7 @@ bool ensure_extension(char* path, size_t bufsize, const char* ext)
 }
 
 
-#include <windows.h>
-#include <string.h>    // strlen, _stricmp, memcpy
+
 
 // Appends ext (e.g. ".adf") if missing, then checks that the final path
 // doesn’t already exist. On any error, pops up an MB and returns false.
@@ -288,6 +252,9 @@ BOOL MakeGoodOutputFilename(
 
 	return true;
 }
+
+
+
 
 int PASCAL WinMain( HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int show )
 {
@@ -465,7 +432,8 @@ CLEANUP:
 }
 
 
-#include <windows.h>
+
+
 
 // Call this after CreateWindow/ShowWindow (once you know your final window size)
 static void CenterWindow(HWND hwnd, int winWidth, int winHeight)
@@ -491,9 +459,7 @@ static void CenterWindow(HWND hwnd, int winWidth, int winHeight)
 
 
 
-#include <windows.h>
-#include "resource.h"     // IDR_LISTERMENU, ID_FIL_*, IDI_*, etc.
-#include "MenuIcons.h"    // InitMenuIcons, CleanupMenuIcons, OnMeasureItem, OnDrawItem
+
 LRESULT CALLBACK MainWinProc(
 	HWND   hwndFrame,
 	UINT   wMsg,
@@ -779,6 +745,10 @@ BOOL CreateProc(HWND hwndFrame)
 	return TRUE;
 }
 
+
+
+
+
 BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 /* handles WM_COMMAND messages for the main window
  */
@@ -1021,6 +991,10 @@ BOOL CommandProc(HWND win, WPARAM wp, LONG lp)
 	return(TRUE);
 }
 
+
+
+
+
 VOID PaintProc(HWND win)
 /* handles WM_PAINT messages for the MDI client window
  */
@@ -1034,6 +1008,11 @@ VOID PaintProc(HWND win)
 
 	return;
 }
+
+
+
+
+
 
 VOID DestroyProc(HWND hwndFrame)
 /* game over
@@ -1072,6 +1051,10 @@ VOID DestroyProc(HWND hwndFrame)
 	return;
 }
 
+
+
+
+
 /* the callback functions for ADFLib - simply redirects the messages to a
  * standard Windows message box
  */
@@ -1085,6 +1068,10 @@ VOID ADFError(char *strMessage)
 	MessageBox(ghwndFrame, strMessage, "ADFLib Error", MB_OK );
 }
 
+
+
+
+
 VOID ADFWarning(char *strMessage)
 {
 	// Play Sound 1 --> Warning! / Error!
@@ -1094,6 +1081,9 @@ VOID ADFWarning(char *strMessage)
 	/*end-if*/
 	MessageBox(ghwndFrame, strMessage, "ADFLib Warning", MB_OK );
 }
+
+
+
 
 VOID ADFVerbose(char *strMessage)
 {
@@ -1106,15 +1096,24 @@ VOID ADFVerbose(char *strMessage)
 	MessageBox(ghwndFrame, strMessage, "ADFLib Message", MB_OK );
 }
 
+
+
+
 void ADFAccess(SECTNUM physical, SECTNUM logical, BOOL write) // ABOUT THAT WARNING *** NOTE THIS OFTEN THROWS AN ERROR BUT LIKE LEAVE IT ALONE FOR NOW! IT'S FINE... I think... Warning: 'typedef ': ignored on left of 'unsigned __int64' when no variable is declared
 {
 	CurrentSect = physical;
 }
 
+
+
+
 void ADFProgress(int perCentDone)
 {
 	Percent = perCentDone;
 }
+
+
+
 
 void MainWinOnDragOver(int x, int y)
 {
@@ -1154,6 +1153,10 @@ void MainWinOnDragOver(int x, int y)
 	}
 }
 
+
+
+
+
 void MainWinOnDrop()
 {
 	// Chiron 2025 TODO: Maybe this is where I can have the dragging of files from outside the App? There's like 3 or more places where this maybe should be figured out and handled. 
@@ -1176,6 +1179,11 @@ void MainWinOnDrop()
 	/* refresh destination lister */
 	SendMessage(ghwndDragTarget, WM_COMMAND, ID_VIEW_REFRESH, (LPARAM)NULL);
 }
+
+
+
+
+
 
 void doCopy(void *arse)
 {
@@ -1239,72 +1247,6 @@ void doCopy(void *arse)
 
 
 
-
-//#include <windows.h>
-//
-//// Helper: convert Amiga date (days since 1 Jan 1978), minutes since midnight,
-//// and ticks (1/50 s) into a SYSTEMTIME.
-//static void AmiDateToSystemTime(
-//	LONG days,
-//	LONG mins,
-//	LONG ticks,
-//	SYSTEMTIME* pSt
-//)
-//{
-//	// 1 Jan 1978 epoch
-//	int year = 1978;
-//	LONG dayCount = days;
-//
-//	// Roll forward year by year
-//	while (true)
-//	{
-//		bool leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
-//		int daysInYear = leap ? 366 : 365;
-//		if (dayCount >= daysInYear)
-//		{
-//			dayCount -= daysInYear;
-//			++year;
-//		}
-//		else
-//		{
-//			break;
-//		}
-//	}
-//
-//	// Month/day within that year
-//	static const int mdays[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
-//	int month = 1;
-//	for (int i = 0; i < 12; ++i)
-//	{
-//		int dim = mdays[i];
-//		if (i == 1 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))
-//			dim = 29;
-//		if (dayCount >= dim)
-//		{
-//			dayCount -= dim;
-//			++month;
-//		}
-//		else
-//		{
-//			break;
-//		}
-//	}
-//
-//	int day = (int)dayCount + 1;
-//	int hour = (int)(mins / 60);
-//	int minute = (int)(mins % 60);
-//	int second = (int)(ticks / 50);
-//	int msec = (int)((ticks % 50) * 20);  // each tick = 20 ms
-//
-//	pSt->wYear = (WORD)year;
-//	pSt->wMonth = (WORD)month;
-//	pSt->wDay = (WORD)day;
-//	pSt->wHour = (WORD)hour;
-//	pSt->wMinute = (WORD)minute;
-//	pSt->wSecond = (WORD)second;
-//	pSt->wMilliseconds = (WORD)msec;
-//	pSt->wDayOfWeek = 0;  // not required for FileTime conversion
-//}
 
 void CopyAmi2Win(char* fileName, char* destPath, struct Volume* vol, long fileSize)
 {
@@ -1414,7 +1356,6 @@ void CopyAmi2Win(char* fileName, char* destPath, struct Volume* vol, long fileSi
 
 
 
-#include <windows.h>
 
 // Helper: convert a LOCAL SYSTEMTIME into Amiga days/mins/ticks
 static void SystemTimeToAmiDate(
@@ -1449,6 +1390,11 @@ static void SystemTimeToAmiDate(
 	*outMins = st->wHour * 60 + st->wMinute;
 	*outTicks = st->wSecond * 50 + (st->wMilliseconds / 20);
 }
+
+
+
+
+
 
 void CopyWin2Ami(
 	char* fileName,
@@ -1597,7 +1543,6 @@ void CopyWin2Ami(
 
 
 
-#include <windows.h>
 
 void CopyWin2Win(char* srcPath, char* destPath)
 {
@@ -1709,14 +1654,6 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 	long bn;
 	HINSTANCE hInst = GetModuleHandle(NULL);
 
-
-	// Backup the parent folder's date information. 
-
-
-
-
-
-
 	// Prevent divide by zero and other errors.
 	if(fileSize <= 0){
 		// Play Sound 1 --> Warning! / Error!
@@ -1805,12 +1742,12 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 	adfCloseFileNoDate(srcFile);
 	adfCloseFileNoDate(destFile);
 
-
-	// Restore the parent folder's date information.
-
-
-
 }
+
+
+
+
+
 
 void GetTooltipText(char *buf, int cmd)
 {
@@ -1883,6 +1820,9 @@ void GetTooltipText(char *buf, int cmd)
 }
 	
 
+
+
+
 LRESULT CALLBACK copyProgressProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 {
 	static char cs[20];
@@ -1911,6 +1851,10 @@ LRESULT CALLBACK copyProgressProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 	return FALSE;
 }
 
+
+
+
+
 long AOGetFileSize(CHILDINFO *ci, char *fn)
 {
 	DIRENTRY *ce = ci->content;
@@ -1920,6 +1864,10 @@ long AOGetFileSize(CHILDINFO *ci, char *fn)
 
 	return ce->size;
 }
+
+
+
+
 
 
 // Chiron 2025: TODO: I could turn this recursive bit into 
@@ -1957,6 +1905,10 @@ BOOL CopyAmiDir2Win(char *srcDir, char *destPath, struct Volume *vol)
 
 	return TRUE;
 }
+
+
+
+
 
 BOOL CopyWinDir2Ami(char *srcDir, char *srcPath, struct Volume *vol)
 {
@@ -1999,6 +1951,10 @@ BOOL CopyWinDir2Ami(char *srcDir, char *srcPath, struct Volume *vol)
 
 	return TRUE;
 }
+
+
+
+
 
 BOOL CopyWinDir2Win(char *srcPath, char *destPath, char *dirName)
 {
@@ -2044,79 +2000,6 @@ BOOL CopyWinDir2Win(char *srcPath, char *destPath, char *dirName)
 
 
 
-///////////////////////////////////////////////////////////////////////////////////
-/////////////// DO NOT DELETE YET - I STILL WANT TO CRACK THIS NUT! //////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-
-/* Original routine for reference */
-
-//BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
-//{
-//	struct List* list;
-//	struct Entry* ent;
-//
-//	adfCreateDir(dest, dest->curDirPtr, dirName);
-//
-//	adfChangeDir(src, dirName);
-//	adfChangeDir(dest, dirName);
-//
-//	list = adfGetDirEnt(src, src->curDirPtr);
-//
-//	while (list) {
-//		ent = (struct Entry*)list->content;
-//		if (ent->type == ST_DIR) {
-//			/* it's a dir - recurse into it */
-//			CopyAmiDir2Ami(ent->name, src, dest);
-//		}
-//		else {
-//			/* it's a file or a link, just copy it */
-//			CopyAmi2Ami(ent->name, src, dest, ent->size);
-//		}
-//		adfFreeEntry(list->content);
-//		list = list->next;
-//	}
-//	freeList(list);
-//
-//	adfParentDir(dest);
-//	adfParentDir(src);
-//
-//	return TRUE;
-//}
-
-// Chiron 2025: TODO: Figure out how to copy the date and time from one folder to another properly!
-//
-// The function below DOES NOT WORK FOR COPYING THE DATE AND TIME!
-// 
-// Go to the file: adf_dir.c
-// Look at this function: void printEntry(struct Entry* entry)
-// 
-// That function is for printing to the console as an example of something. 
-// Basically the code below tries to use it for that, but that doesn't work!
-// That's also why this was wrong: 
-// days = e->days;   // days since 1/1/1978    <-- WRONG! That's the day of the month!
-// mins = e->mins;   // minutes since midnight <-- WRONG! That's the mins part of the time of day!
-// 
-// So In order to do this right I need figure out how to read and write the epoch from 
-// the headers. Like I did in the copy routine - look here: 
-// 
-//// Copy Comments
-//strcpy(destFile->fileHdr->comment, srcFile->fileHdr->comment);
-//
-//// Copy Comment Length (char)
-//destFile->fileHdr->commLen = srcFile->fileHdr->commLen;
-//
-//// Copy Access Flags (long)
-//destFile->fileHdr->access = srcFile->fileHdr->access;
-//
-//// Copy Date and Time (longs)
-//destFile->fileHdr->days = srcFile->fileHdr->days;	//long	days;      /* Date of last change (days since 1 jan 78).			    */
-//destFile->fileHdr->mins = srcFile->fileHdr->mins;	//long	mins;      /* Time of last change (mins since midnight).			    */
-//destFile->fileHdr->ticks = srcFile->fileHdr->ticks;	//long	ticks; /* Time of last change (1/50ths of a second since last min). */
-//
-// I tried to do something like that but I can't get it working.
-// I tried to get Copilot to help but it kept
-// getting hung up on fucking struct Entry* which is for nicey nice printing
-// and not for what I want! Fuck! Why is this hard? 
 
 
 
@@ -2129,27 +2012,6 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 	char  commentBuf[MAXCMMTLEN + 1];
 	long  accessFlags;
 	long  days, mins, ticks;
-
-	//// Chiron 2025: TODO: This seems like total overkill. 
-	//// Jesus Copilot what the fuck were you thinking!
-	//// 1) Read the source‐dir’s comment, flags and date (days+mins)
-	//{
-	//	struct List* meta = adfGetDirEnt(src, src->curDirPtr);
-	//	while (meta)
-	//	{
-	//		struct Entry* e = (struct Entry*)meta->content;
-	//		if (e->type == ST_DIR && strcmp(e->name, dirName) == 0)
-	//		{
-	//			strcpy(commentBuf, e->comment);
-	//			accessFlags = e->access;
-	//			adfFreeEntry(meta->content);
-	//			break;
-	//		}
-	//		adfFreeEntry(meta->content);
-	//		meta = meta->next;
-	//	}
-	//	freeList(meta);
-	//}
 	
 	// 2) Create the directory in the destination volume
 	adfCreateDir(dest, dest->curDirPtr, dirName);
@@ -2198,40 +2060,6 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 		ticks
 	);
 
-
-
-
-
-
-
-
-
-
-
-	//// 4) Now poke the days+mins back in, then flush via comment‐setter
-	//{
-	//	struct List* meta2 = adfGetDirEnt(dest, dest->curDirPtr);
-	//	while (meta2)
-	//	{
-	//		struct Entry* e2 = (struct Entry*)meta2->content;
-	//		if (e2->type == ST_DIR && strcmp(e2->name, dirName) == 0)
-	//		{
-	//			//e2->days = days;
-	//			//e2->mins = mins;
-	//			// flush the block (updates days/mins on disk)
-	//			adfSetEntryComment(dest,
-	//				dest->curDirPtr,
-	//				dirName,
-	//				e2->comment);
-	//			adfFreeEntry(meta2->content);
-	//			break;
-	//		}
-	//		adfFreeEntry(meta2->content);
-	//		meta2 = meta2->next;
-	//	}
-	//	freeList(meta2);
-	//}
-
 	// 5) Descend on both volumes
 	adfChangeDir(src, dirName);
 	adfChangeDir(dest, dirName);
@@ -2274,6 +2102,8 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 		mins,
 		ticks
 	);
+
+	return TRUE;
 
 	// I didn't want to blow away the original
 	// date just because the file was copied!
@@ -2322,8 +2152,4 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 	// 
 	// Thank you for coming to my TEDTalk.
 
-	return TRUE;
-
-	// End of copy function. 
-
-}
+};/*end-function*/

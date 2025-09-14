@@ -9,42 +9,58 @@
  * ChildCommon.c - Routines common to both types of child window
  */
 
-
+/* Chiron 2025: TODO: Remove duplicates. I mean... it's fine... but it's messy! */
 #include <windows.h>
 #include <commctrl.h>
 #include <direct.h>     // for _chdir, _mkdir
 #include <stdio.h>      // for sprintf
-
-
-	
 #include "ADFOpus.h"     // <-- must define CHILDINFO, newWinType, etc.
 #include <windows.h>
 #include <commctrl.h>    // for SetWindowSubclass / DefSubclassProc
 #include <windowsx.h>    // for GET_X_LPARAM / GET_Y_LPARAM macros
-
-
 #include <windows.h>
-
-
-
-
-
 #include "MenuIcons.h"
-
 #include <windows.h>
 #include <commctrl.h>
 #include <windowsx.h>
-
 #include "ADFOpus.h"        // for newWinType, CHILD_WINLISTER, etc.
 #include "ChildCommon.h"    // <-- declares typedef struct _CHILDINFO {...} CHILDINFO
-
 #include "Bootblock.h"
+#include "Options.h"
+#include <windows.h>
+#include <commctrl.h>           // for SetWindowSubclass
+#pragma comment(lib, "comctl32.lib")
+#include <windows.h>
+#include <commctrl.h>   // for SetWindowSubclass / DefSubclassProc
+#include "Pch.h"
+#include "ADFOpus.h"
+#include "ChildCommon.h"
+#include "ListView.h"
+#include "Utils.h"
+#include "VolSelect.h"
+#include "Options.h"
+#include <direct.h>
+#include "ADFLib.h"
+#include "ADF_err.h" ////////// this shouldn't be needed
+#include "xDMS.h"  // For conversions.
+#include "BatchConvert.h"
+#include "zLib.h"
+#include <windows.h> /* Chiron 2025 - For the default folder being the users home folder instead of the C:\ */
+#include <stdlib.h>    // malloc
+#include <string.h>    // strcpy_s, strncpy_s
+#include "ADFOpus.h"    // for g_defaultLocalPath, newWinType, CHILD_WINLISTER
+#include <windows.h>
+#include <windows.h>
+#include "resource.h"
+#include "MenuIcons.h"
+
+
+
+
+
 extern ends_with(const char* str, const char* suffix);
 extern BOOL ensure_extension(char* path, size_t buffer_size, const char* ext);
-#include "Options.h"
 extern struct OPTIONS Options;
-
-
 extern HIMAGELIST ghwndImageList;
 extern HINSTANCE instance;
 extern HWND ghwndFrame;
@@ -54,14 +70,82 @@ extern HWND ghwndSB;
 extern HWND	ghwndTB;
 extern char gstrFileName[MAX_PATH * 2];
 extern BOOL ReadOnly;
-
 extern HCURSOR ghcurNormal;
 extern HCURSOR ghcurNo;
-
 extern int volToOpen;
 extern struct OPTIONS Options;
+extern HINSTANCE instance;    // or however you name your HINSTANCE
+extern HWND      ghwndFrame;  // your main window handle
+extern BOOL      bDirClicked;
+extern BOOL      bFileClicked;
+extern HWND ghwndMDIClient;
+extern HINSTANCE instance;
+extern HWND      ghwndFrame;
+extern BOOL      bDirClicked, bFileClicked, bNothingClicked;
 
-   
+
+
+
+
+
+#define listSortingWindowsStyle TRUE
+#define listSortingMacStyle     FALSE
+
+
+
+#ifndef WINVER
+#  define WINVER    0x0501    // XP+
+#endif
+#ifndef _WIN32_IE
+#  define _WIN32_IE 0x0400    // ComCtl32 v6 APIs
+#endif
+
+
+
+//BOOL	bClicked = FALSE;
+BOOL	bDirClicked = FALSE, bFileClicked = FALSE, bNothingClicked = FALSE;		// File or dir or nothing selection flags.
+BOOL	bUndeleting = FALSE;	// Undeletion flag.
+
+///////// could maybe do without this
+long newWinType;
+
+/* local function prototypes */
+LRESULT ChildOnCreate(HWND);
+BOOL ChildOnCommand(HWND, WPARAM, LPARAM);
+void ChildOnPaint(HWND);
+void ChildOnDestroy(HWND);
+BOOL ChildOnNotify(HWND, WPARAM, LPARAM);
+void ChildOnSize(HWND);
+HWND CreateListView(HWND);
+void ChildUpOneLevel(HWND);
+void ChildSelectAll(HWND);
+void ChildSelectNone(HWND);
+void ChildInvertSelection(HWND);
+void ChildUpdate(HWND);
+void ChildClearContent(HWND);
+void ChildDelete(HWND);
+BOOL ChildShowUndeletable(HWND);
+BOOL ChildUndelete(HWND);
+void WinGetDir(HWND);
+BOOL WinAddFile(CHILDINFO*, WIN32_FIND_DATA*);
+void AmiGetDir(HWND);
+void AmiAddFile(CHILDINFO*, struct List*);
+void WinGetDrives(HWND);
+void ChildSortDir(HWND, long);
+void SwapContent(DIRENTRY*, DIRENTRY*);
+BOOL ChildOnContextMenu(HWND, int, int);
+void DisplayContextMenu(HWND, POINT);
+BOOL ChildRename(HWND, LV_DISPINFO*);
+BOOL ChildCheckRename(HWND, LV_DISPINFO*);
+void ChildMakeDir(HWND);
+BOOL RemoveDirectoryRecursive(char*);
+BOOL RemoveAmiDirectoryRecursive(struct Volume*, SECTNUM, char*);
+
+
+
+
+/***************************************************************************/
+
 
 
 
@@ -120,32 +204,9 @@ ListViewHoverProc(
 
 
 
-extern HINSTANCE instance;    // or however you name your HINSTANCE
-extern HWND      ghwndFrame;  // your main window handle
-extern BOOL      bDirClicked;
-extern BOOL      bFileClicked;
 
 
 
-
-// at the top of your .c/.cpp
-#ifndef WINVER
-#  define WINVER    0x0501    // XP+
-#endif
-#ifndef _WIN32_IE
-#  define _WIN32_IE 0x0400    // ComCtl32 v6 APIs
-#endif
-
-#include <windows.h>
-#include <commctrl.h>           // for SetWindowSubclass
-#pragma comment(lib, "comctl32.lib")
-
-
-
-
-
-#include <windows.h>
-#include <commctrl.h>   // for SetWindowSubclass / DefSubclassProc
 
 
 
@@ -199,74 +260,7 @@ static LRESULT CALLBACK ListViewClampProc(
 
 
 
-#include "Pch.h"
 
-#include "ADFOpus.h"
-#include "ChildCommon.h"
-#include "ListView.h"
-#include "Utils.h"
-#include "VolSelect.h"
-#include "Options.h"
-#include <direct.h>
-
-	
-#include "ADFLib.h"
-#include "ADF_err.h" ////////// this shouldn't be needed
-
-// For conversions.
-#include "xDMS.h"
-#include "BatchConvert.h"
-#include "zLib.h"
-
-// Chiron 2025 - For the default folder being the users home folder instead of the C:\
-//
-#include <windows.h>
-#include <stdlib.h>    // malloc
-#include <string.h>    // strcpy_s, strncpy_s
-
-extern HWND ghwndMDIClient;
-
-
-//BOOL	bClicked = FALSE;
-BOOL	bDirClicked = FALSE, bFileClicked = FALSE, bNothingClicked = FALSE;		// File or dir or nothing selection flags.
-BOOL	bUndeleting = FALSE;	// Undeletion flag.
-
-///////// could maybe do without this
-long newWinType;
-
-/* local function prototypes */
-LRESULT ChildOnCreate(HWND);
-BOOL ChildOnCommand(HWND, WPARAM, LPARAM);
-void ChildOnPaint(HWND);
-void ChildOnDestroy(HWND);
-BOOL ChildOnNotify(HWND, WPARAM, LPARAM);
-void ChildOnSize(HWND);
-HWND CreateListView(HWND);
-void ChildUpOneLevel(HWND);
-void ChildSelectAll(HWND);
-void ChildSelectNone(HWND);
-void ChildInvertSelection(HWND);
-void ChildUpdate(HWND);
-void ChildClearContent(HWND);
-void ChildDelete(HWND);
-BOOL ChildShowUndeletable(HWND);
-BOOL ChildUndelete(HWND);
-void WinGetDir(HWND);
-BOOL WinAddFile(CHILDINFO *, WIN32_FIND_DATA *);
-void AmiGetDir(HWND);
-void AmiAddFile(CHILDINFO *, struct List *);
-void WinGetDrives(HWND);
-void ChildSortDir(HWND, long);
-void SwapContent(DIRENTRY *, DIRENTRY *);
-BOOL ChildOnContextMenu(HWND, int, int);
-void DisplayContextMenu(HWND, POINT);
-BOOL ChildRename(HWND, LV_DISPINFO *);
-BOOL ChildCheckRename(HWND, LV_DISPINFO *);
-void ChildMakeDir(HWND);
-BOOL RemoveDirectoryRecursive(char *);
-BOOL RemoveAmiDirectoryRecursive(struct Volume *, SECTNUM, char *);
-
-/***************************************************************************/
 
 HWND CreateChildWin(HWND client, long type)
 /*! creates and displays a new MDI child window 
@@ -286,9 +280,6 @@ HWND CreateChildWin(HWND client, long type)
 	} else {
 			strcpy(title, "Local Filesystem");
 	}
-
-
-
 
 	/* Initialize the MDI create struct */
 	mcs.szClass = (type == CHILD_WINLISTER) ? WINLISTERCLASSNAME : AMILISTERCLASSNAME;
@@ -354,8 +345,7 @@ LRESULT CALLBACK ChildWinProc(HWND win, UINT msg, WPARAM wp, LPARAM lp)
 
 
 
-#include "ADFOpus.h"    // for g_defaultLocalPath, newWinType, CHILD_WINLISTER
-#include <windows.h>
+
 
 LRESULT ChildOnCreate(HWND win)
 {
@@ -513,6 +503,7 @@ BOOL ChildOnCommand(HWND win, WPARAM wp, LPARAM lp)
 	return TRUE;
 }
 
+
 void ChildOnPaint(HWND win)
 /* standard do-nothing WM_PAINT handler */
 {
@@ -523,6 +514,7 @@ void ChildOnPaint(HWND win)
 	if (dc)
 		EndPaint(win, &ps);
 }
+
 
 void ChildOnDestroy(HWND win)
 // Cleanup after child window. Delete temp adf and recompress if adz.
@@ -573,6 +565,7 @@ void ChildOnDestroy(HWND win)
 
 }
 
+
 void ChildOnSize(HWND win)
 /* adjust the listview and status bar when window is resized */
 {
@@ -591,28 +584,8 @@ void ChildOnSize(HWND win)
 
 
 
-//typedef struct _CHILDINFO {
-//	BOOL			isAmi;				/* true if Amiga, false if Windows */
-//	HWND			lv;					/* handle of listview control */
-//	HWND			sb;					/* handle of status bar */
-//	char			curDir[MAX_PATH];	/* current directory */
-//	int				totalCount;			/* total no. of files or dirs */
-//	BOOL			atRoot;				/* true if at root dir */
-//	DIRENTRY* content;			/* head of directory contents list */
-//	struct Device* dev;
-//	struct Volume* vol;
-//	BOOL			readOnly;
-//	enum DiskFormat	dfDisk;				// Disk format.
-//	int				compSize;			// Size of compressed disk image.
-//	char			orig_path[MAX_PATH];// Path to original (un/compressed) file.
-//	char			temp_path[MAX_PATH];// Path to temp work adf file.
-//} CHILDINFO;
 
 
-
-
-
-#include <windows.h>
 
 //---------------------------------------------------------------------------
 // Context structure passed to our enum callback
@@ -621,6 +594,8 @@ typedef struct {
 	const char* targetPath;  // path we’re checking for
 	BOOL        found;       // set TRUE if we find a match
 } OpenCheckCtx;
+
+
 
 //---------------------------------------------------------------------------
 // EnumChildWindows callback: checks each Amiga‐lister child’s orig_path
@@ -650,76 +625,14 @@ static BOOL CALLBACK _IsCurrentlyOpenProc(HWND hwndChild, LPARAM lParam)
 
 
 
-//#include <windows.h>
-//
-//// Context for our enum callback
-//typedef struct {
-//	const char* targetPath;  // path we're looking for
-//	BOOL        activated;   // set TRUE if we brought it to front
-//} ActivateCtx;
-//
-////-----------------------------------------------------------------------------
-//// EnumChildWindows callback: looks for an Amiga‐lister whose orig_path matches
-//// the target, then activates that MDI child window.
-////-----------------------------------------------------------------------------
-//static BOOL CALLBACK _ActivateAmigaListerByPath(HWND hwndChild, LPARAM lParam)
-//{
-//	ActivateCtx* ctx = (ActivateCtx*)lParam;
-//
-//	// Only consider your Amiga‐lister MDI children
-//	if (GetWindowLongPtr(hwndChild, GWL_USERDATA) == CHILD_AMILISTER)
-//	{
-//		CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(hwndChild, 0);
-//		if (ci && ci->orig_path &&
-//			lstrcmpiA(ci->orig_path, ctx->targetPath) == 0)
-//		{
-//			// Activate this MDI child
-//			SendMessage(ghwndMDIClient,
-//				WM_MDIACTIVATE,
-//				(WPARAM)hwndChild,
-//				0);
-//
-//			// Optionally ensure it's visible and in front
-//			ShowWindow(hwndChild, SW_RESTORE);
-//			SetForegroundWindow(hwndChild);
-//
-//			ctx->activated = TRUE;
-//			return FALSE;  // stop enumerating
-//		}
-//	}
-//
-//	return TRUE;  // keep going
-//}
-//
-////-----------------------------------------------------------------------------
-//// Call this to bring an already‐open Amiga lister window (by full path) to front.
-//// Returns TRUE if found & activated; FALSE if not open.
-////-----------------------------------------------------------------------------
-//BOOL BringAmigaListerToFront(const char* gstrFileName)
-//{
-//	ActivateCtx ctx;
-//	ctx.targetPath = gstrFileName;
-//	ctx.activated = FALSE;
-//
-//	// Walk each direct child of the MDI client
-//	EnumChildWindows(
-//		ghwndMDIClient,
-//		_ActivateAmigaListerByPath,
-//		(LPARAM)&ctx
-//	);
-//
-//	return ctx.activated;
-//}
-
-
-
-#include <windows.h>
-
 // Context for our enum callback
 typedef struct {
 	const char* targetPath;  // path we're looking for
 	BOOL        activated;   // set TRUE if we brought it to front
 } ActivateCtx;
+
+
+
 
 //-----------------------------------------------------------------------------
 // EnumChildWindows callback: looks for an Amiga‐lister whose orig_path matches
@@ -753,6 +666,8 @@ static BOOL CALLBACK _ActivateAmigaListerByPath(HWND hwndChild, LPARAM lParam)
 
 	return TRUE;  // keep going
 }
+
+
 
 //-----------------------------------------------------------------------------
 // Call this to bring an already‐open Amiga lister window (by full path) to front.
@@ -1055,6 +970,8 @@ BOOL ChildOnNotify(HWND win, WPARAM wp, LONG lp)
 }
 
 
+
+
 HWND CreateListView(HWND win)
 {
 	HWND lv = CreateWindowEx(
@@ -1109,131 +1026,10 @@ HWND CreateListView(HWND win)
 
 
 
-//void ChildUpdate(HWND win)
-///* fills the list view control with the directory content */
-//{
-//	CHILDINFO	*ci = (CHILDINFO *)GetWindowLong(win, 0);
-//	DIRENTRY	*ce;
-//	char		strBuf[20];
-//	int			pos;
-//	struct File *amiFile;
-//	BOOL		bAmi = FALSE;
-//
-//
-//	SetWindowText(ghwndSB, "Reading directory...");
-//
-//	if (GetWindowLong(win, GWL_USERDATA) == CHILD_WINLISTER)
-//		if (strcmp(ci->curDir, "") == 0)
-//			WinGetDrives(win);
-//		else
-//			WinGetDir(win);
-//	
-//	else{
-//		bAmi = TRUE;
-//		AmiGetDir(win);
-//	}
-//	ChildSortDir(win, 0l);
-//
-//	SendMessage(ci->lv, WM_SETREDRAW, FALSE, 0);
-//
-//	ListView_DeleteAllItems(ci->lv);
-//
-//	ListView_SetItemCount(ci->lv, ci->totalCount);
-//
-//	ce = ci->content;
-//	while (ce != NULL) {
-//		pos = LVAddItem(ci->lv, ce->name, ce->icon);
-//		if (pos == -1)
-//			pos++;
-//		if (ce->icon == ICO_WINFILE || ce->icon == ICO_AMIFILE) {
-//			itoa(ce->size, strBuf, 10);
-//			LVAddSubItem(ci->lv, strBuf, pos, 1);
-//		}
-//		LVAddSubItem(ci->lv, ce->flags, pos, 2);
-//
-//		// Display amiga file comment.
-//		if(bAmi){
-//			amiFile = adfOpenFile(ci->vol, ce->name, "r");
-//			LVAddSubItem(ci->lv, amiFile->fileHdr->comment, pos, 3);
-//			adfCloseFile(amiFile);
-//			LVAddSubItem(ci->lv, "Sep/08/2025 8:03:23 AM", pos, 4);
-//		} else {
-//			LVAddSubItem(ci->lv, "Sep/08/2025 8:03:23 AM", pos, 3);
-//		}
-//
-//		ce = ce->next;
-//	}
-//
-//	SendMessage(ci->lv, WM_SETREDRAW, TRUE, 0);
-//	InvalidateRect(ci->lv, NULL, FALSE);
-//
-//	/* update status bars */
-//	if (! strcmp(ci->curDir, ""))
-//		SetWindowText(ci->sb, "All drives");
-//	else
-//		SetWindowText(ci->sb, ci->curDir);
-//	UpdateToolbar();
-//	//SetWindowText(ghwndSB, "Idle");
-//	SetWindowText(ghwndSB, "Welcome to ADF Opus 2025!");
-//
-//}
-
-
-
-//#include <windows.h>
-//
-//// Converts an Amiga timestamp (days/minutes/ticks since 1978-01-01) into
-//// a local SYSTEMTIME.  You can then format that SYSTEMTIME with
-//// GetDateFormat()/GetTimeFormat() or similar.
-//void AmiDateToSystemTime(
-//	LONG        days,    // days since 1978-01-01
-//	LONG        mins,    // minutes since midnight (0–1439)
-//	LONG        ticks,   // 1/50ths of a second past that minute (0–49)
-//	SYSTEMTIME* pSt      // out: local date/time
-//)
-//{
-//	// 1) Build a FILETIME for the base date: 1978-01-01 00:00:00
-//	SYSTEMTIME stBase = { 0 };
-//	stBase.wYear = 1978;
-//	stBase.wMonth = 1;
-//	stBase.wDay = 1;
-//	// wHour, wMinute, wSecond, wMilliseconds all zero
-//
-//	FILETIME ftBase;
-//	SystemTimeToFileTime(&stBase, &ftBase);
-//
-//	// 2) Turn that into a 64-bit count of 100-ns intervals
-//	ULARGE_INTEGER uli;
-//	uli.LowPart = ftBase.dwLowDateTime;
-//	uli.HighPart = ftBase.dwHighDateTime;
-//
-//	// 3) Add the Amiga offset in 100-ns units
-//	const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
-//	const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
-//	const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
-//
-//	uli.QuadPart += (ULONGLONG)days * DAY_100NS;
-//	uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
-//	uli.QuadPart += (ULONGLONG)ticks * TICK_100NS;
-//
-//	// 4) Convert back to FILETIME
-//	FILETIME ftTarget;
-//	ftTarget.dwLowDateTime = uli.LowPart;
-//	ftTarget.dwHighDateTime = uli.HighPart;
-//
-//	// 5) Convert UTC FILETIME → local FILETIME → local SYSTEMTIME
-//	FILETIME ftLocal;
-//	FileTimeToLocalFileTime(&ftTarget, &ftLocal);
-//	FileTimeToSystemTime(&ftLocal, pSt);
-//}
 
 
 
 
-
-
-
-#include <windows.h>
 
 // Converts an Amiga timestamp (days/minutes/ticks since 1978-01-01) into
 // a local SYSTEMTIME.  You can then format that SYSTEMTIME with
@@ -1294,9 +1090,6 @@ void AmiDateToSystemTime(
 
 
 
-
-#include <windows.h>
-
 // Formats a raw byte count into a human‐readable string.
 //
 //   bytes   – the size in bytes
@@ -1343,10 +1136,14 @@ void FormatByteSize(
 	}
 }
 
+
+
+
+
+
 //----------------------------------------------------------------------------
 // Drop-in replacement for ChildUpdate that fills in real date/time
 //----------------------------------------------------------------------------
-
 void ChildUpdate(HWND win)
 {
 	CHILDINFO* ci = (CHILDINFO*)GetWindowLong(win, 0);
@@ -1547,6 +1344,8 @@ void ChildUpdate(HWND win)
 
 
 
+
+
 void WinGetDir(HWND win)
 /* fills the internal directory list with the contents of the current windows dir */
 {
@@ -1572,6 +1371,9 @@ void WinGetDir(HWND win)
 
 	FindClose(search);
 }
+
+
+
 
 BOOL WinAddFile(CHILDINFO *ci, WIN32_FIND_DATA *wfd)
 /* returns TRUE if a file was actually added (not . or ..), FALSE otherwise
@@ -1599,8 +1401,6 @@ BOOL WinAddFile(CHILDINFO *ci, WIN32_FIND_DATA *wfd)
 			de->icon = ICO_WINFILE;
 	}
 
-
-
 	// Chiron 2025: TODO: I think this is where I have to put somethign to check and set 
 	// a special icon if it's an .adf file in a Windows List View. 
 	// so when you double-click an .adf in a Windows List View
@@ -1622,6 +1422,10 @@ BOOL WinAddFile(CHILDINFO *ci, WIN32_FIND_DATA *wfd)
 	return TRUE;
 }
 
+
+
+
+
 void AmiGetDir(HWND win)
 {
 	CHILDINFO *ci = (CHILDINFO *)GetWindowLong(win, 0);
@@ -1640,6 +1444,10 @@ void AmiGetDir(HWND win)
 	freeList(list);
 }
 
+
+
+
+
 void AmiAddFile(CHILDINFO *ci, struct List *list)
 {
 	DIRENTRY *de = malloc(sizeof(DIRENTRY));
@@ -1649,25 +1457,6 @@ void AmiAddFile(CHILDINFO *ci, struct List *list)
 	de->size = ent->size;
 	de->icon = ent->type == ST_FILE ? ICO_AMIFILE : ICO_AMIDIR;
 	strcpy(de->flags, "");
-	//if (!hasR(ent->access))
-	//	strcat(de->flags, "R");
-	//if (!hasW(ent->access))
-	//	strcat(de->flags, "W");
-	//if (!hasE(ent->access))
-	//	strcat(de->flags, "E");
-	//if (!hasD(ent->access))
-	//	strcat(de->flags, "D");
-	//if (hasS(ent->access))
-	//	strcat(de->flags, "S");
-	//if (hasA(ent->access))
-	//	strcat(de->flags, "A");
-	//if (hasP(ent->access))
-	//	strcat(de->flags, "P");
-	//if (hasH(ent->access))
-	//	strcat(de->flags, "H");
-
-	//Default Flags : ----rwed
-	//	  All Flags : hsparwed 
 
 	if (hasH(ent->access))  strcat(de->flags, "h"); else strcat(de->flags, "-");
 	if (hasS(ent->access))  strcat(de->flags, "s"); else strcat(de->flags, "-");
@@ -1682,6 +1471,11 @@ void AmiAddFile(CHILDINFO *ci, struct List *list)
 	de->next = ci->content;
 	ci->content = de;
 }
+
+
+
+
+
 
 void ChildClearContent(HWND win)
 {
@@ -1699,6 +1493,11 @@ void ChildClearContent(HWND win)
 	ci->content = NULL;
 	ci->totalCount = 0;
 }
+
+
+
+
+
 
 void ChildUpOneLevel(HWND win)
 /* go to the parent directory, or display the drive list if we are already
@@ -1748,6 +1547,11 @@ void ChildUpOneLevel(HWND win)
 	ChildUpdate(win);
 }
 
+
+
+
+
+
 void WinGetDrives(HWND win)
 /* get available windows drives
  */
@@ -1796,6 +1600,11 @@ void WinGetDrives(HWND win)
 	}
 }
 
+
+
+
+
+
 void ChildSelectAll(HWND win)
 {
 	CHILDINFO *ci = (CHILDINFO *)GetWindowLong(win, 0);
@@ -1803,6 +1612,11 @@ void ChildSelectAll(HWND win)
 	LVSelectAll(ci->lv);
 	SendMessage(win, WM_MDIACTIVATE, 0, 0l);
 }
+
+
+
+
+
 
 void ChildSelectNone(HWND win)
 {
@@ -1812,6 +1626,11 @@ void ChildSelectNone(HWND win)
 	SendMessage(win, WM_MDIACTIVATE, 0, 0l);
 }
 
+
+
+
+
+
 void ChildInvertSelection(HWND win)
 {
 	CHILDINFO *ci = (CHILDINFO *)GetWindowLong(win, 0);
@@ -1820,77 +1639,12 @@ void ChildInvertSelection(HWND win)
 	SendMessage(win, WM_MDIACTIVATE, 0, 0l);
 }
 
-//void ChildSortDir(HWND win, long type)
-///* My entry for the "shittest sorting code ever" championships
-// */
-//{
-//	CHILDINFO *ci = (CHILDINFO *)GetWindowLong(win, 0);
-//	DIRENTRY *de1, *de2;
-//	char t1[MAX_PATH], t2[MAX_PATH];
-//
-//	if (ci->content == NULL)
-//		return;
-//
-//	de1 = de2 = ci->content;
-//
-//	/* sort by icon (type) first */
-//	if (de1->icon < ICO_DRIVEHD) { /* only if this isn't a drive list */
-//		while (de1) {
-//			de2 = ci->content;
-//			while (de2) {
-//				if (de1->icon > de2->icon)
-//					SwapContent(de1, de2);
-//				de2 = de2->next;
-//			}
-//			de1 = de1->next;
-//		}
-//	}
-//
-//	/* now items with same icon by name */
-//	de1 = de2 = ci->content;
-//
-//	while (de1) {
-//		de2 = ci->content;
-//		while (de2) {
-//			strcpy(t1, de1->name);
-//			strcpy(t2, de2->name);
-//			strupr(t1);
-//			strupr(t2);
-//			if ((de1->icon == de2->icon) && (strcmp(t1, t2) < 0))
-//				SwapContent(de1, de2);
-//			de2 = de2->next;
-//		}
-//		de1 = de1->next;
-//	}
-//}
-//
-//void SwapContent(DIRENTRY *de1, DIRENTRY *de2)
-///* the lamest function in this program
-// */
-//{
-//	DIRENTRY tmpde;
-//
-//	strcpy(tmpde.name, de1->name);
-//	strcpy(tmpde.flags, de1->flags);
-//	tmpde.size = de1->size;
-//	tmpde.icon = de1->icon;
-//
-//	strcpy(de1->name, de2->name);
-//	strcpy(de1->flags, de2->flags);
-//	de1->size = de2->size;
-//	de1->icon = de2->icon;
-//
-//	strcpy(de2->name, tmpde.name);
-//	strcpy(de2->flags, tmpde.flags);
-//	de2->size = tmpde.size;
-//	de2->icon = tmpde.icon;
-//}
 
 
 
-// Add these two defines near the top of your .c or in your header
-#define listSortingWindowsStyle TRUE
-#define listSortingMacStyle     FALSE
+
+
+
 //-----------------------------------------------------------------------------
 // Sort a directory listing in one of two styles:
 //  • sortingWindowsStyle: folders first, then files (.adf included),
@@ -1948,6 +1702,9 @@ void ChildSortDir(HWND win, long style)
 	} while (swapped);
 }
 
+
+
+
 //-----------------------------------------------------------------------------
 // Swaps only the payload of two DIRENTRYs (name, flags, size, icon).
 // Leaves the 'next' pointers alone so the list structure stays valid.
@@ -1978,6 +1735,8 @@ void SwapContent(DIRENTRY* a, DIRENTRY* b)
 }
 
 
+
+
 BOOL ChildOnContextMenu(HWND win, int x, int y)
 /* on context-click decide if we should display a context menu
  */
@@ -1999,59 +1758,6 @@ BOOL ChildOnContextMenu(HWND win, int x, int y)
 }
 
 
-#include <windows.h>
-#include "resource.h"
-#include "MenuIcons.h"
-
-extern HINSTANCE instance;
-extern HWND      ghwndFrame;
-extern BOOL      bDirClicked, bFileClicked, bNothingClicked;
-//extern ContextInfo* ci;
-
-//void DisplayContextMenu(HWND winLister, POINT pt)
-//{
-//	// 1) Load the bar resource and get its first submenu
-//	HMENU menu = LoadMenu(instance, MAKEINTRESOURCE(IDR_LISTERMENU));
-//	if (!menu) return;
-//	HMENU popup = GetSubMenu(menu, 0);
-//	if (!popup) { DestroyMenu(menu); return; }
-//
-//	// 2) Reserve the icon/check gutter on the popup itself
-//	MENUINFO mi = { sizeof(mi) };
-//	GetMenuInfo(popup, &mi);
-//	mi.fMask = MIM_STYLE;
-//	mi.dwStyle = mi.dwStyle | MNS_CHECKORBMP;
-//	SetMenuInfo(popup, &mi);
-//
-//	// 3) Owner-draw setup (loads the icons & marks the IDs you mapped)
-//	InitMenuIcons(instance, popup);
-//
-//	// 4) Enable/disable your items on that same popup
-//	EnableMenuItem(popup,
-//		ID_ACTION_PROPERTIES,
-//		(bDirClicked || bFileClicked) ? MF_ENABLED : MF_GRAYED
-//	);
-//	// …and the rest of your logic…
-//
-//	// 5) Make sure the frame is foreground (necessary for ContextMenus)
-//	SetForegroundWindow(ghwndFrame);
-//
-//	// 6) Show the popup *with* the frame as the owner
-//	TrackPopupMenuEx(
-//		popup,
-//		TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-//		pt.x, pt.y,
-//		ghwndFrame,    // ← IMPORTANT: frame handles Measure/Draw
-//		NULL
-//	);
-//
-//	// 7) Post a zero-msg so the menu will dismiss correctly
-//	PostMessage(ghwndFrame, WM_NULL, 0, 0);
-//
-//	// 8) Cleanup
-//	CleanupMenuIcons();
-//	DestroyMenu(menu);
-//}
 
 
 
@@ -2121,7 +1827,6 @@ void DisplayContextMenu(HWND winLister, POINT ptScreen)
 	// 3) Owner-draw setup
 	InitMenuIcons(instance, popup);
 
-
 	// 4) Enable/disable items based on the (possibly multi-)selection
 
 	// Delete
@@ -2163,32 +1868,6 @@ void DisplayContextMenu(HWND winLister, POINT ptScreen)
 		? MF_ENABLED
 		: MF_GRAYED
 	);
-
-	//  [0] MENUITEM SEPARATOR
-//  [1] MENUITEM "&New Directory",              ID_ACTION_NEWDIRECTORY
-//  [2] MENUITEM SEPARATOR
-//  [3] MENUITEM "&Text Viewer",                ID_TOOLS_TEXT_VIEWER
-//  [4] MENUITEM "&HEX Viewer",                 ID_TOOLS_HEX_VIEWER
-//  [5] MENUITEM SEPARATOR
-//  [6] MENUITEM "&Rename",                     ID_ACTION_RENAME
-//  [7] MENUITEM "&Delete",                     ID_ACTION_DELETE
-//  [8] MENUITEM SEPARATOR
-//  [9] MENUITEM "&Select All",                 ID_EDIT_SELECTALL
-// [10] MENUITEM "&Unselect All",               ID_EDIT_SELECTNONE
-// [11] MENUITEM "&Invert Selection",           ID_EDIT_INVERTSELECTION
-// [12] MENUITEM SEPARATOR
-// [13] MENUITEM "&Properties",                 ID_ACTION_PROPERTIES
-// [14] MENUITEM SEPARATOR
-// [15] MENUITEM "Batch Converter",             ID_TOOLS_BATCHCONVERTER
-// [16] MENUITEM "Greaseweazle Read",           ID_TOOLS_GREASEWEAZLE
-// [17] MENUITEM "Greaseweazle Write",          ID_TOOLS_GREASEWEAZLEWRITE
-// [18]MENUITEM SEPARATOR
-// [19]MENUITEM "Close",                       ID_FIL_CLOSE
-// [20]MENUITEM "Install Bootblock",           ID_TOOLS_INSTALL
-// [21]MENUITEM "&View Bootblock",             ID_TOOLS_DISPLAYBOOTBLOCK
-// [22]MENUITEM SEPARATOR
-// [23]MENUITEM "Disk &Information",           ID_FIL_INFORMATION
-
 
 	// FILE CONTEXT MENU
 	if (bFileClicked == TRUE && bDirClicked == FALSE && bNothingClicked == FALSE) {
@@ -2286,18 +1965,6 @@ void DisplayContextMenu(HWND winLister, POINT ptScreen)
 
 	};/*end-if*/
 
-
-
-	//if (bNothingClicked == TRUE) 
-	//	MessageBoxA(winLister, "bNothingClicked == TRUE", "DEBUG:", MB_OK | MB_ICONERROR);
-	//else if (bNothingClicked == FALSE) 
-	//	MessageBoxA(winLister, "bNothingClicked == FALSE", "DEBUG:", MB_OK | MB_ICONERROR);
-	//else
-	//	MessageBoxA(winLister, "bNothingClicked == DA FUCK?!??!!", "DEBUG:", MB_OK | MB_ICONERROR);
-
-
-
-
 	// 5) Show the popup
 	SetForegroundWindow(ghwndFrame);
 	TrackPopupMenuEx(popup,
@@ -2311,6 +1978,10 @@ void DisplayContextMenu(HWND winLister, POINT ptScreen)
 	CleanupMenuIcons();
 	DestroyMenu(menu);
 }
+
+
+
+
 
 void ChildDelete(HWND win)
 /* delete selected files
@@ -2422,6 +2093,7 @@ void ChildDelete(HWND win)
 }
 
 
+
 BOOL ChildShowUndeletable(HWND win)
 /*  Show undeletable files.
  */
@@ -2430,7 +2102,6 @@ BOOL ChildShowUndeletable(HWND win)
 	struct GenBlock	*block;
 	char			undel[MAX_PATH];
 	int				pos;
-
 
 	//CHILDINFO *ci = (CHILDINFO *)GetWindowLong(win, 0);
 	CHILDINFO* ci = (CHILDINFO*)GetWindowLongPtr(win, 0); // Chiron TODO: Look at original non-ported code!
@@ -2450,15 +2121,6 @@ BOOL ChildShowUndeletable(HWND win)
         block =(struct GenBlock*) cell->content;
         sprintf(undel, "%s",block->name);
 
-		//// DEBUGGING --> Instrument every block you get back:
-		//char debug[256];
-		//sprintf(debug, "sect=%06lx secType=%d name=%s\n",
-		//	(unsigned long)block->sect, block->secType, block->name);
-		////OutputDebugString(debug);
-		//MessageBox(win, debug, "WTF?!?!?!?!", MB_ICONINFORMATION | MB_OK);
-
-
-
 		if(adfCheckEntry(ci->vol, block->sect, 0) == RC_OK){
 			if(block->secType == 2)
 				pos = LVAddItem(ci->lv, undel, ICO_AMIDIR);
@@ -2467,18 +2129,6 @@ BOOL ChildShowUndeletable(HWND win)
 			ListView_SetItemState(ci->lv, pos, LVIS_CUT, LVIS_CUT);
 			pos++;
 			
-			//// DEBUGGING
-			//// inside your ChildShowUndeletable loop, replace:
-			//// if (adfCheckEntry(ci->vol, block->sect, 0) == RC_OK) { … }
-			//// with:
-			//{
-			//	// always add to list, so you can see exactly what adfGetDelEnt returns // Chiron 2025 --> THIS WORKED!!!
-			//	if (block->secType == 2) pos = LVAddItem(ci->lv, undel, ICO_AMIDIR);
-			//	else            pos = LVAddItem(ci->lv, undel, ICO_AMIFILE);
-			//	ListView_SetItemState(ci->lv, pos, LVIS_CUT, LVIS_CUT);
-			//}
-
-
 		}
 		
 		cell = cell->next;
@@ -2595,6 +2245,10 @@ BOOL ChildRename(HWND win, LV_DISPINFO *di)
 	return TRUE;
 }
 
+
+
+
+
 BOOL ChildCheckRename(HWND win, LV_DISPINFO *di)
 /* return TRUE if item can be edited, FALSE otherwise */
 //////// This function is FUCKED.
@@ -2609,6 +2263,9 @@ BOOL ChildCheckRename(HWND win, LV_DISPINFO *di)
 	else
 		return TRUE;
 }
+
+
+
 
 void ChildMakeDir(HWND win)
 /* create a new dir "New Directory" and call the rename function on it
@@ -2645,6 +2302,9 @@ void ChildMakeDir(HWND win)
 		
 }
 
+
+
+
 BOOL RemoveDirectoryRecursive(char *path)
 {
 	WIN32_FIND_DATA wfd;
@@ -2680,6 +2340,9 @@ BOOL RemoveDirectoryRecursive(char *path)
 	return RemoveDirectory(curPath);
 }
 
+
+
+
 BOOL RemoveAmiDirectoryRecursive(struct Volume *vol, SECTNUM curDir, char *path)
 {
 	struct List *list;
@@ -2709,6 +2372,8 @@ BOOL RemoveAmiDirectoryRecursive(struct Volume *vol, SECTNUM curDir, char *path)
 
 	return TRUE;
 }
+
+
 
 
 int GetFileFromADF(struct Volume *vol, char	*szFileName)
