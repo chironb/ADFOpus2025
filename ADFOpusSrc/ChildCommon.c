@@ -1031,60 +1031,83 @@ HWND CreateListView(HWND win)
 
 
 
-// Converts an Amiga timestamp (days/minutes/ticks since 1978-01-01) into
-// a local SYSTEMTIME.  You can then format that SYSTEMTIME with
-// GetDateFormat()/GetTimeFormat() or similar.
+//// Converts an Amiga timestamp (days/minutes/ticks since 1978-01-01) into
+//// a local SYSTEMTIME.  You can then format that SYSTEMTIME with
+//// GetDateFormat()/GetTimeFormat() or similar.
+//void AmiDateToSystemTime(
+//	LONG        days,    // days since 1978-01-01
+//	LONG        mins,    // minutes since midnight (0–1439)
+//	LONG        ticks,   // 1/50ths of a second past that minute (0–49)
+//	SYSTEMTIME* pSt      // out: local date/time
+//)
+//{
+//	// 1) Build a SYSTEMTIME for the base date: 1978-01-01 00:00:00 local
+//	SYSTEMTIME stBaseLocal = { 0 };
+//	stBaseLocal.wYear = 1978;
+//	stBaseLocal.wMonth = 1;
+//	stBaseLocal.wDay = 1;
+//	// wHour, wMinute, wSecond, wMilliseconds all zero
+//
+//	// 2) Convert that LOCAL base into UTC
+//	SYSTEMTIME stBaseUtc;
+//	TzSpecificLocalTimeToSystemTime(
+//		NULL,             // use current user time zone
+//		&stBaseLocal,     // local 1978-01-01 midnight
+//		&stBaseUtc        // receives equivalent UTC time
+//	);
+//
+//	// 3) Turn UTC base SYSTEMTIME into FILETIME
+//	FILETIME ftBase;
+//	SystemTimeToFileTime(&stBaseUtc, &ftBase);
+//
+//	// 4) Promote to 64-bit count of 100-ns intervals
+//	ULARGE_INTEGER uli;
+//	uli.LowPart = ftBase.dwLowDateTime;
+//	uli.HighPart = ftBase.dwHighDateTime;
+//
+//	// 5) Add the Amiga offset in 100-ns units
+//	const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
+//	const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
+//	const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
+//
+//	uli.QuadPart += (ULONGLONG)days * DAY_100NS;
+//	uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
+//	uli.QuadPart += (ULONGLONG)ticks * TICK_100NS;
+//
+//	// 6) Convert back to FILETIME
+//	FILETIME ftTarget;
+//	ftTarget.dwLowDateTime = uli.LowPart;
+//	ftTarget.dwHighDateTime = uli.HighPart;
+//
+//	// 7) Convert UTC FILETIME → local FILETIME → local SYSTEMTIME
+//	FILETIME ftLocal;
+//	FileTimeToLocalFileTime(&ftTarget, &ftLocal);
+//	FileTimeToSystemTime(&ftLocal, pSt);
+//}
+
+
+
+
+
 void AmiDateToSystemTime(
-	LONG        days,    // days since 1978-01-01
-	LONG        mins,    // minutes since midnight (0–1439)
-	LONG        ticks,   // 1/50ths of a second past that minute (0–49)
-	SYSTEMTIME* pSt      // out: local date/time
+	LONG        days,
+	LONG        mins,
+	LONG        ticks,
+	SYSTEMTIME* pSt
 )
 {
-	// 1) Build a SYSTEMTIME for the base date: 1978-01-01 00:00:00 local
-	SYSTEMTIME stBaseLocal = { 0 };
-	stBaseLocal.wYear = 1978;
-	stBaseLocal.wMonth = 1;
-	stBaseLocal.wDay = 1;
-	// wHour, wMinute, wSecond, wMilliseconds all zero
+	int y, m, d;
+	adfDays2Date(days, &y, &m, &d);
 
-	// 2) Convert that LOCAL base into UTC
-	SYSTEMTIME stBaseUtc;
-	TzSpecificLocalTimeToSystemTime(
-		NULL,             // use current user time zone
-		&stBaseLocal,     // local 1978-01-01 midnight
-		&stBaseUtc        // receives equivalent UTC time
-	);
+	pSt->wYear = (WORD)y;
+	pSt->wMonth = (WORD)m;
+	pSt->wDay = (WORD)d;
 
-	// 3) Turn UTC base SYSTEMTIME into FILETIME
-	FILETIME ftBase;
-	SystemTimeToFileTime(&stBaseUtc, &ftBase);
-
-	// 4) Promote to 64-bit count of 100-ns intervals
-	ULARGE_INTEGER uli;
-	uli.LowPart = ftBase.dwLowDateTime;
-	uli.HighPart = ftBase.dwHighDateTime;
-
-	// 5) Add the Amiga offset in 100-ns units
-	const ULONGLONG DAY_100NS = 86400ULL * 10000000ULL;
-	const ULONGLONG MIN_100NS = 60ULL * 10000000ULL;
-	const ULONGLONG TICK_100NS = 10000000ULL / 50ULL;
-
-	uli.QuadPart += (ULONGLONG)days * DAY_100NS;
-	uli.QuadPart += (ULONGLONG)mins * MIN_100NS;
-	uli.QuadPart += (ULONGLONG)ticks * TICK_100NS;
-
-	// 6) Convert back to FILETIME
-	FILETIME ftTarget;
-	ftTarget.dwLowDateTime = uli.LowPart;
-	ftTarget.dwHighDateTime = uli.HighPart;
-
-	// 7) Convert UTC FILETIME → local FILETIME → local SYSTEMTIME
-	FILETIME ftLocal;
-	FileTimeToLocalFileTime(&ftTarget, &ftLocal);
-	FileTimeToSystemTime(&ftLocal, pSt);
+	pSt->wHour = (WORD)(mins / 60);
+	pSt->wMinute = (WORD)(mins % 60);
+	pSt->wSecond = (WORD)(ticks / 50);
+	pSt->wMilliseconds = (WORD)((ticks % 50) * 20);
 }
-
 
 
 
