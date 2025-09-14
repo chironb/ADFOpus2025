@@ -100,12 +100,7 @@ extern RETCODE adfSetEntryDate(
 	long           newMins,
 	long           newTicks);
 
-extern void AmiDateToSystemTime(
-	LONG        days,    // days since 1978-01-01
-	LONG        mins,    // minutes since midnight (0–1439)
-	LONG        ticks,   // 1/50ths of a second past that minute (0–49)
-	SYSTEMTIME* pSt      // out: local date/time
-);
+
 
 ENV_DECLARATION;
 
@@ -167,6 +162,73 @@ BOOL			ReadOnly;
 
 BOOL			bCmdLineArgs = FALSE;
 char			gstrCmdLineArgs[MAX_PATH * 2];			// Command line argument string.
+
+
+
+
+
+
+
+void AmiDateToSystemTime(
+	LONG        days,
+	LONG        mins,
+	LONG        ticks,
+	SYSTEMTIME* pSt
+)
+{
+	int y, m, d;
+	adfDays2Date(days, &y, &m, &d);
+
+	pSt->wYear = (WORD)y;
+	pSt->wMonth = (WORD)m;
+	pSt->wDay = (WORD)d;
+
+	pSt->wHour = (WORD)(mins / 60);
+	pSt->wMinute = (WORD)(mins % 60);
+	pSt->wSecond = (WORD)(ticks / 50);
+	pSt->wMilliseconds = (WORD)((ticks % 50) * 20);
+}
+
+
+
+
+
+
+// Helper: convert a LOCAL SYSTEMTIME into Amiga days/mins/ticks
+static void SystemTimeToAmiDate(
+	const SYSTEMTIME* st,
+	LONG* outDays,
+	LONG* outMins,
+	LONG* outTicks
+)
+{
+	// 1 Jan 1978 epoch
+	LONG days = 0;
+	for (int y = 1978; y < st->wYear; ++y)
+	{
+		BOOL leap = (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0));
+		days += leap ? 366 : 365;
+	}
+
+	static const int mdays[12] =
+	{ 31,28,31,30,31,30,31,31,30,31,30,31 };
+	BOOL isLeap = (st->wYear % 4 == 0 &&
+		(st->wYear % 100 != 0 || st->wYear % 400 == 0));
+	for (int m = 1; m < st->wMonth; ++m)
+	{
+		int dim = mdays[m - 1];
+		if (m == 2 && isLeap) dim = 29;
+		days += dim;
+	}
+
+	days += (st->wDay - 1);
+
+	*outDays = days;
+	*outMins = st->wHour * 60 + st->wMinute;
+	*outTicks = st->wSecond * 50 + (st->wMilliseconds / 20);
+}
+
+
 
 
 
@@ -1352,44 +1414,6 @@ void CopyAmi2Win(char* fileName, char* destPath, struct Volume* vol, long fileSi
 
 
 
-
-
-
-
-
-// Helper: convert a LOCAL SYSTEMTIME into Amiga days/mins/ticks
-static void SystemTimeToAmiDate(
-	const SYSTEMTIME* st,
-	LONG* outDays,
-	LONG* outMins,
-	LONG* outTicks
-)
-{
-	// 1 Jan 1978 epoch
-	LONG days = 0;
-	for (int y = 1978; y < st->wYear; ++y)
-	{
-		bool leap = (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0));
-		days += leap ? 366 : 365;
-	}
-
-	static const int mdays[12] =
-	{ 31,28,31,30,31,30,31,31,30,31,30,31 };
-	bool isLeap = (st->wYear % 4 == 0 &&
-		(st->wYear % 100 != 0 || st->wYear % 400 == 0));
-	for (int m = 1; m < st->wMonth; ++m)
-	{
-		int dim = mdays[m - 1];
-		if (m == 2 && isLeap) dim = 29;
-		days += dim;
-	}
-
-	days += (st->wDay - 1);
-
-	*outDays = days;
-	*outMins = st->wHour * 60 + st->wMinute;
-	*outTicks = st->wSecond * 50 + (st->wMilliseconds / 20);
-}
 
 
 
