@@ -1191,7 +1191,7 @@ void ChildUpdate(HWND win)
 				uli.QuadPart += (ULONGLONG)ticks_ * TICK_100NS;
 
 				// back into FILETIME → local SYSTEMTIME
-				FILETIME    ftTarget, ftLocal;
+				FILETIME    ftTarget; // , ftLocal; // Unused? 
 				SYSTEMTIME  stTarget = { 0 };
 
 				ftTarget.dwLowDateTime = uli.LowPart;

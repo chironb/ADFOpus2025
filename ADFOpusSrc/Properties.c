@@ -143,7 +143,7 @@ LRESULT CALLBACK PropertiesProcWin(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
 
 			// Convert to a friendly string: "1.2 MB", "512 bytes", etc.
 			TCHAR sizeBuf[64];
-			StrFormatByteSize(fileSize, sizeBuf, ARRAYSIZE(sizeBuf));
+			StrFormatByteSize(fileSize, sizeBuf, ARRAYSIZE(sizeBuf)); // TODO: ABOUT THAT WARNING *** 'function': conversion from 'ULONGLONG' to 'DWORD', possible loss of data
 
 			// And dump into your static control
 			SetDlgItemText(dlg, IDC_PROPERTIES_SIZE_WIN, sizeBuf);
@@ -311,7 +311,7 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 	SYSTEMTIME   st;
 
 	//// back into FILETIME → local SYSTEMTIME
-	FILETIME    ftTarget, ftLocal;
+	//FILETIME    ftTarget; // , ftLocal; // No longer used? 
 	SYSTEMTIME  stTarget = { 0 };
 
 	// Chiron 2025: This is ugly. Come clean this up!
@@ -343,8 +343,8 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 		uli.QuadPart += (ULONGLONG)ticks_ * TICK_100NS;
 
 		// back into FILETIME → local SYSTEMTIME
-		FILETIME    ftTarget, ftLocal;
-		SYSTEMTIME  stTarget = { 0 };
+		FILETIME    ftTarget; //  , ftLocal;  // No longer used? 
+ 		SYSTEMTIME  stTarget = { 0 };
 
 		ftTarget.dwLowDateTime = uli.LowPart;
 		ftTarget.dwHighDateTime = uli.HighPart;

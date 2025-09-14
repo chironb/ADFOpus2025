@@ -34,7 +34,7 @@
  */
 
 
- /* Chiron 2025: TODO: Remove duplicates. I mean... it's fine... but it's messy! */
+/* Chiron 2025: TODO: Remove duplicates. I mean... it's fine... but it's messy! */
 #define OEMRESOURCE
 #include "Pch.h"
 #include "ADFOpus.h"
@@ -77,7 +77,7 @@
 #include <windows.h>
 #include "resource.h"     // IDR_LISTERMENU, ID_FIL_*, IDI_*, etc.
 #include "MenuIcons.h"    // InitMenuIcons, CleanupMenuIcons, OnMeasureItem, OnDrawItem
-
+//#include "adf_utils.h" // this doesn't exit - this is where adfDays2Date lives!
 
 
 
@@ -91,6 +91,7 @@ extern char* adfGetVersionNumber(); /* this shouldn't be here */
 extern BOOL isCurrentlyOpen(const char* gstrFileName);
 extern BOOL BringAmigaListerToFront(const char* gstrFileName);
 extern void adfCloseFileNoDate(struct File* file);
+extern adfDays2Date(long days, int* yy, int* mm, int* dd);
 
 extern RETCODE adfSetEntryDate(
 	struct Volume* vol,
@@ -117,7 +118,8 @@ BOOL CopyAmiDir2Win(char *, char *, struct Volume *);
 void CopyWin2Ami(char *, char *, struct Volume *, long);
 BOOL CopyWinDir2Ami(char *, char *, struct Volume *);
 void CopyWin2Win(char *, char *);
-BOOL CopyWinDir2Win(char *, char *, char *);
+//BOOL CopyWinDir2Win(char *, char *, char *);
+BOOL CopyWinDir2Win(const char* srcPath, const char* destPath, const char* dirName);
 void CopyAmi2Ami(char *, struct Volume *, struct Volume *, long);
 BOOL CopyAmiDir2Ami(char *, struct Volume *, struct Volume *);
 void GetTooltipText(char *, int);
@@ -1247,6 +1249,132 @@ void MainWinOnDrop()
 
 
 
+void GetTooltipText(char* buf, int cmd)
+{
+	switch (cmd) {
+	case ID_FIL_NEW:
+		strcpy(buf, "New");
+		break;
+	case ID_FIL_OPEN:
+		strcpy(buf, "Open");
+		break;
+	case ID_FIL_CLOSE:
+		strcpy(buf, "Close");
+		break;
+	case ID_FIL_INFORMATION:
+		strcpy(buf, "Information");
+		break;
+	case ID_ACTION_RENAME:
+		strcpy(buf, "Rename");
+		break;
+	case ID_ACTION_DELETE:
+		strcpy(buf, "Delete");
+		break;
+	case ID_ACTION_NEWDIRECTORY:
+		strcpy(buf, "New Directory");
+		break;
+	case ID_ACTION_PROPERTIES:
+		strcpy(buf, "Properties");
+		break;
+	case ID_VIEW_NEWWINDOWSLISTER:
+		strcpy(buf, "New Windows Lister");
+		break;
+	case ID_ACTION_UPONELEVEL:
+		strcpy(buf, "Up One Level");
+		break;
+	case ID_VIEW_SHOWUNDELETABLEFILES:
+		strcpy(buf, "Show Undeletable Files");
+		break;
+	case ID_ACTION_UNDELETE:
+		strcpy(buf, "Undelete");
+		break;
+	case ID_TOOLS_TEXT_VIEWER:
+		strcpy(buf, "Text Viewer");
+		break;
+	case ID_TOOLS_HEX_VIEWER:
+		strcpy(buf, "Hex Viewer");
+		break;
+	case ID_TOOLS_BATCHCONVERTER:
+		strcpy(buf, "Batch Converter");
+		break;
+	case ID_TOOLS_GREASEWEAZLE:
+		strcpy(buf, "Greaseweazle Read Floppy");
+		break;
+	case ID_TOOLS_GREASEWEAZLEWRITE:
+		strcpy(buf, "Greaseweazle Write Floppy");
+		break;
+	case ID_TOOLS_INSTALL:
+		strcpy(buf, "Install Bootblock");
+		break;
+	case ID_TOOLS_WRITE_RAW_BOOTBLOCK:
+		strcpy(buf, "Raw Write Bootblock");
+		break;
+	case ID_TOOLS_DISPLAYBOOTBLOCK:
+		strcpy(buf, "View Bootblock");
+		break;
+	case ID_TOOLS_OPTIONS:
+		strcpy(buf, "Preferences");
+		break;
+
+	}
+}
+
+
+
+
+
+LRESULT CALLBACK copyProgressProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
+{
+	static char cs[20];
+
+	switch (msg) {
+	case WM_INITDIALOG:
+		Timer = SetTimer(dlg, 1, 100, NULL);
+		return TRUE;
+	case WM_COMMAND:
+		switch (wp) {
+		case IDCANCEL:
+			Done = TRUE;
+			return TRUE;
+		}
+	case WM_TIMER:
+		if (Done) {
+			KillTimer(dlg, Timer);
+			EndDialog(dlg, TRUE);
+		}
+		SendMessage(GetDlgItem(dlg, IDC_CURFILEPROGRESS), PBM_SETPOS, Percent, 0l);
+		itoa(CurrentSect, cs, 10);
+		SetDlgItemText(dlg, IDC_CURRENTSECTOR, cs);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
+
+
+
+long AOGetFileSize(CHILDINFO* ci, char* fn)
+{
+	DIRENTRY* ce = ci->content;
+
+	while (strcmp(ce->name, fn) != 0)
+		ce = ce->next;
+
+	return ce->size;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// START COPY ROUTINES ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+
+
 void doCopy(void *arse)
 {
 	char curFile[256];
@@ -1773,159 +1901,87 @@ void CopyAmi2Ami(char *fileName, struct Volume *srcVol,	struct Volume *destVol, 
 
 
 
-void GetTooltipText(char *buf, int cmd)
+
+
+
+BOOL CopyAmiDir2Win(
+	char* srcDir,     // name of the Amiga dir (relative to vol->curDirPtr)
+	char* destPath,   // full path to where the new Windows folder lives
+	struct Volume* vol
+)
 {
-	switch(cmd) {
-	case ID_FIL_NEW:
-		strcpy(buf, "New");
-		break;
-	case ID_FIL_OPEN:
-		strcpy(buf, "Open");
-		break;
-	case ID_FIL_CLOSE:
-		strcpy(buf, "Close");
-		break;
-	case ID_FIL_INFORMATION:
-		strcpy(buf, "Information");
-		break;
-	case ID_ACTION_RENAME:
-		strcpy(buf, "Rename");
-		break;
-	case ID_ACTION_DELETE:
-		strcpy(buf, "Delete");
-		break;
-	case ID_ACTION_NEWDIRECTORY:
-		strcpy(buf, "New Directory");
-		break;
-	case ID_ACTION_PROPERTIES:
-		strcpy(buf, "Properties");
-		break;
-	case ID_VIEW_NEWWINDOWSLISTER:
-		strcpy(buf, "New Windows Lister");
-		break;
-	case ID_ACTION_UPONELEVEL:
-		strcpy(buf, "Up One Level");
-		break;
-	case ID_VIEW_SHOWUNDELETABLEFILES:
-		strcpy(buf, "Show Undeletable Files");
-		break;
-	case ID_ACTION_UNDELETE:
-		strcpy(buf, "Undelete");
-		break;
-	case ID_TOOLS_TEXT_VIEWER:
-		strcpy(buf, "Text Viewer");
-		break;
-	case ID_TOOLS_HEX_VIEWER:
-		strcpy(buf, "Hex Viewer");
-		break;
-	case ID_TOOLS_BATCHCONVERTER:
-		strcpy(buf, "Batch Converter");
-		break;
-	case ID_TOOLS_GREASEWEAZLE:
-		strcpy(buf, "Greaseweazle Read Floppy");
-		break;
-	case ID_TOOLS_GREASEWEAZLEWRITE:
-		strcpy(buf, "Greaseweazle Write Floppy");
-		break;
-	case ID_TOOLS_INSTALL:
-		strcpy(buf, "Install Bootblock");
-		break;
-	case ID_TOOLS_WRITE_RAW_BOOTBLOCK:
-		strcpy(buf, "Raw Write Bootblock");
-		break;
-	case ID_TOOLS_DISPLAYBOOTBLOCK:
-		strcpy(buf, "View Bootblock");
-		break;
-	case ID_TOOLS_OPTIONS:
-		strcpy(buf, "Preferences");
-		break;
+	char         tp[4096];
+	struct List* list;
+	struct Entry* ent;
+	LONG         days = 0, mins = 0, ticks = 0;
+	struct File* amiDirHdr;
 
-	}
-}
-	
-
-
-
-
-LRESULT CALLBACK copyProgressProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp)
-{
-	static char cs[20];
-
-	switch (msg) {
-	case WM_INITDIALOG:
-		Timer = SetTimer(dlg, 1, 100, NULL);
-		return TRUE;
-	case WM_COMMAND:
-		switch (wp) {
-		case IDCANCEL:
-			Done = TRUE;
-			return TRUE;
-		}
-	case WM_TIMER:
-		if (Done) {
-			KillTimer(dlg, Timer);
-			EndDialog(dlg, TRUE);
-		}
-		SendMessage(GetDlgItem(dlg, IDC_CURFILEPROGRESS), PBM_SETPOS, Percent, 0l);
-		itoa(CurrentSect, cs, 10);
-		SetDlgItemText(dlg, IDC_CURRENTSECTOR, cs);
-		return TRUE;
+	// 1) Read the Amiga timestamp for this directory
+	amiDirHdr = adfOpenFile(vol, srcDir, "r");
+	if (amiDirHdr) {
+		days = amiDirHdr->fileHdr->days;
+		mins = amiDirHdr->fileHdr->mins;
+		ticks = amiDirHdr->fileHdr->ticks;
+		adfCloseFile(amiDirHdr);
 	}
 
-	return FALSE;
-}
-
-
-
-
-
-long AOGetFileSize(CHILDINFO *ci, char *fn)
-{
-	DIRENTRY *ce = ci->content;
-
-	while (strcmp(ce->name, fn) != 0)
-		ce = ce->next;
-
-	return ce->size;
-}
-
-
-
-
-
-
-// Chiron 2025: TODO: I could turn this recursive bit into 
-// a way to do an entire amiga disk image export! 
-// Like an Export All or something!
-BOOL CopyAmiDir2Win(char *srcDir, char *destPath, struct Volume *vol)
-{
-	char tp[4096];
-	struct List *list;
-	struct Entry *ent;
-
+	// 2) Create the new Windows folder
 	CreateDirectory(destPath, NULL);
 
+	// 3) Recurse into each entry
 	adfChangeDir(vol, srcDir);
 	list = adfGetDirEnt(vol, vol->curDirPtr);
 
 	while (list) {
-		ent = (struct Entry *)list->content;
+		ent = (struct Entry*)list->content;
+
+		// build full src/dst paths for this entry
 		strcpy(tp, destPath);
 		strcat(tp, "\\");
 		strcat(tp, ent->name);
+
 		if (ent->type == ST_DIR) {
-			/* it's a dir - recurse into it */
+			// subdirectory
 			CopyAmiDir2Win(ent->name, tp, vol);
-		} else {
-			/* it's a file or a link, just copy it */
+		}
+		else {
+			// file or link
 			CopyAmi2Win(ent->name, tp, vol, ent->size);
 		}
+
 		adfFreeEntry(list->content);
 		list = list->next;
 	}
 	freeList(list);
 
+	// step back up in the Amiga volume
 	adfParentDir(vol);
+
+	// 4) Convert the Amiga timestamp → UTC FILETIME → apply to the new folder
+	{
+		SYSTEMTIME stLocal;
+		FILETIME   ftLocal, ftUTC;
+
+		AmiDateToSystemTime(days, mins, ticks, &stLocal);
+
+		SystemTimeToFileTime(&stLocal, &ftLocal);
+		LocalFileTimeToFileTime(&ftLocal, &ftUTC);
+
+		// open the folder handle for timestamping
+		HANDLE hDir = CreateFile(
+			destPath,
+			GENERIC_WRITE,
+			FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+			NULL,
+			OPEN_EXISTING,
+			FILE_FLAG_BACKUP_SEMANTICS,
+			NULL
+		);
+		if (hDir != INVALID_HANDLE_VALUE) {
+			SetFileTime(hDir, &ftUTC, &ftUTC, &ftUTC);
+			CloseHandle(hDir);
+		}
+	}
 
 	return TRUE;
 }
@@ -1934,45 +1990,108 @@ BOOL CopyAmiDir2Win(char *srcDir, char *destPath, struct Volume *vol)
 
 
 
-BOOL CopyWinDir2Ami(char *srcDir, char *srcPath, struct Volume *vol)
+
+BOOL CopyWinDir2Ami(
+	char* srcDir,    // just the folder name, e.g. "MyFolder"
+	char* srcPath,   // full Windows path, e.g. "C:\Data\MyFolder"
+	struct Volume* vol
+)
 {
-	WIN32_FIND_DATA wfd;
-	HANDLE search;
-	char curPath[MAX_PATH * 2];
-	char searchPath[MAX_PATH * 2];
-	char subdir[MAX_PATH * 2];
+	WIN32_FIND_DATAA wfd;
+	HANDLE           search;
+	char             curPath[MAX_PATH * 2];
+	char             searchPath[MAX_PATH * 2];
+	char             childPath[MAX_PATH * 2];
 
-	strcpy(curPath, srcPath);
-	sprintf(searchPath, "%s\\*", curPath);
+	// 1) Fetch the Windows folder’s Creation time and turn it into Amiga days/mins/ticks
+	FILETIME   ftCreate = { 0 }, ftAccess = { 0 }, ftWrite = { 0 };
+	FILETIME   ftLocal = { 0 };
+	SYSTEMTIME stLocal = { 0 };
+	LONG       days = 0, mins = 0, ticks = 0;
 
+	// open the directory to get its timestamps
+	HANDLE hSrcDir = CreateFileA(
+		srcPath,
+		GENERIC_READ,
+		FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+		NULL,
+		OPEN_EXISTING,
+		FILE_FLAG_BACKUP_SEMANTICS,
+		NULL
+	);
+	if (hSrcDir != INVALID_HANDLE_VALUE) {
+		if (GetFileTime(hSrcDir, &ftCreate, &ftAccess, &ftWrite)) {
+			// UTC→local SYSTEMTIME
+			FileTimeToLocalFileTime(&ftCreate, &ftLocal);
+			FileTimeToSystemTime(&ftLocal, &stLocal);
+
+			// local SYSTEMTIME → Amiga fields
+			SystemTimeToAmiDate(&stLocal, &days, &mins, &ticks);
+		}
+		CloseHandle(hSrcDir);
+	}
+
+	// 2) Create the directory in the Amiga volume
 	adfCreateDir(vol, vol->curDirPtr, srcDir);
+
+	// 3) Immediately stamp it with the original Windows folder time
+	adfSetEntryDate(
+		vol,
+		vol->curDirPtr,   // still pointing at the parent dir
+		srcDir,
+		days,
+		mins,
+		ticks
+	);
+
+	// 4) Descend into that new directory
 	adfChangeDir(vol, srcDir);
 
-	search = FindFirstFile(searchPath, &wfd);
-	if (search == INVALID_HANDLE_VALUE)
-		return FALSE;
+	// 5) Recurse all children
+	strcpy(curPath, srcPath);
+	sprintf(searchPath, "%s\\*", curPath);
+	search = FindFirstFileA(searchPath, &wfd);
+	if (search != INVALID_HANDLE_VALUE) {
+		do {
+			// skip "." and ".."
+			if (wfd.cFileName[0] == '.' &&
+				(wfd.cFileName[1] == '\0' ||
+					(wfd.cFileName[1] == '.' && wfd.cFileName[2] == '\0')))
+				continue;
 
-	do {
-		/* if current entry is a dir, and isn't the current or parent dir, then copy it */
-		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-			if ( !((wfd.cFileName[1] == 0) && (wfd.cFileName[0] == '.')) )
-				if ( !((wfd.cFileName[2] == 0) && (wfd.cFileName[1] == '.') && (wfd.cFileName[0] == '.')) ) {
-					sprintf(subdir, "%s\\%s", curPath, wfd.cFileName);
-					CopyWinDir2Ami(wfd.cFileName, subdir, vol);
-					//RemoveDirectoryRecursive(subdir);
-				}
-		} else {
-			/* it's a file so just copy it */
-			sprintf(subdir, "%s\\%s", curPath, wfd.cFileName);
-			CopyWin2Ami(wfd.cFileName, subdir, vol, wfd.nFileSizeLow);
-		}
+			// build the child’s full Windows path
+			sprintf(childPath, "%s\\%s", curPath, wfd.cFileName);
 
-	} while (FindNextFile(search, &wfd));
+			if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+				// subfolder → recurse
+				CopyWinDir2Ami(wfd.cFileName, childPath, vol);
+			}
+			else {
+				// file → use your existing CopyWin2Ami
+				CopyWin2Ami(
+					wfd.cFileName,
+					childPath,
+					vol,
+					wfd.nFileSizeLow
+				);
+			}
+		} while (FindNextFileA(search, &wfd));
+		FindClose(search);
+	}
 
-	FindClose(search);
-
+	// 6) Step back up in the Amiga volume
 	adfParentDir(vol);
 
+	// 7) Re-apply the original folder timestamp one last time
+	adfSetEntryDate(
+		vol,
+		vol->curDirPtr,   // now back at the parent
+		srcDir,
+		days,
+		mins,
+		ticks
+	);
+
 	return TRUE;
 }
 
@@ -1980,47 +2099,86 @@ BOOL CopyWinDir2Ami(char *srcDir, char *srcPath, struct Volume *vol)
 
 
 
-BOOL CopyWinDir2Win(char *srcPath, char *destPath, char *dirName)
+BOOL CopyWinDir2Win(
+	const char* srcPath,
+	const char* destPath,
+	const char* dirName
+)
 {
-	WIN32_FIND_DATA wfd;
-	HANDLE search;
-	char searchPath[MAX_PATH * 2];
-	char subdir[MAX_PATH * 2];
-	char subdir2[MAX_PATH * 2];
+	CHAR srcDir[MAX_PATH];
+	CHAR dstDir[MAX_PATH];
+	HANDLE hFind;
+	WIN32_FIND_DATAA wfd;
+	FILETIME ftCreate = { 0 }, ftAccess = { 0 }, ftWrite = { 0 };
 
-	sprintf(searchPath, "%s\\%s", destPath, dirName);
-	CreateDirectory(searchPath, NULL);
+	// Build full paths
+	snprintf(srcDir, ARRAYSIZE(srcDir), "%s\\%s", srcPath, dirName);
+	snprintf(dstDir, ARRAYSIZE(dstDir), "%s\\%s", destPath, dirName);
 
-	sprintf(searchPath, "%s\\%s\\*", srcPath, dirName);
+	// 1) Grab timestamps from the source directory
+	HANDLE hSrc = CreateFileA(
+		srcDir,
+		GENERIC_READ,
+		FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+		NULL,
+		OPEN_EXISTING,
+		FILE_FLAG_BACKUP_SEMANTICS,
+		NULL
+	);
+	if (hSrc != INVALID_HANDLE_VALUE) {
+		GetFileTime(hSrc, &ftCreate, &ftAccess, &ftWrite);
+		CloseHandle(hSrc);
+	}
 
-	search = FindFirstFile(searchPath, &wfd);
-	if (search == INVALID_HANDLE_VALUE)
-		return FALSE;
+	// 2) Create the destination directory
+	CreateDirectoryA(dstDir, NULL);
 
-	do {
-		/* if current entry is a dir, and isn't the current or parent dir, then copy it */
-		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-			if ( !((wfd.cFileName[1] == 0) && (wfd.cFileName[0] == '.')) )
-				if ( !((wfd.cFileName[2] == 0) && (wfd.cFileName[1] == '.') && (wfd.cFileName[0] == '.')) ) {
-					sprintf(subdir, "%s\\%s", srcPath, dirName);
-					sprintf(subdir2, "%s\\%s", destPath, dirName);
-					CopyWinDir2Win(subdir, subdir2, wfd.cFileName);
-				}
-		} else {
-			/* it's a file so just copy it */
-			sprintf(subdir, "%s\\%s\\%s", srcPath, dirName, wfd.cFileName);
-			sprintf(subdir2, "%s\\%s\\%s", destPath, dirName, wfd.cFileName);
-			CopyWin2Win(subdir, subdir2);
-		}
+	// 3) Recurse / copy files
+	{
+		CHAR pattern[MAX_PATH];
+		snprintf(pattern, ARRAYSIZE(pattern), "%s\\*", srcDir);
+		hFind = FindFirstFileA(pattern, &wfd);
+		if (hFind == INVALID_HANDLE_VALUE)
+			return FALSE;
 
-	} while (FindNextFile(search, &wfd));
+		do {
+			// skip "." and ".."
+			if (wfd.cFileName[0] == '.'
+				&& (wfd.cFileName[1] == 0
+					|| (wfd.cFileName[1] == '.' && wfd.cFileName[2] == 0)))
+				continue;
 
-	FindClose(search);
+			if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+				CopyWinDir2Win(srcDir, dstDir, wfd.cFileName);
+			}
+			else {
+				CHAR srcFile[MAX_PATH], dstFile[MAX_PATH];
+				snprintf(srcFile, ARRAYSIZE(srcFile), "%s\\%s", srcDir, wfd.cFileName);
+				snprintf(dstFile, ARRAYSIZE(dstFile), "%s\\%s", dstDir, wfd.cFileName);
+				CopyWin2Win(srcFile, dstFile);
+			}
+		} while (FindNextFileA(hFind, &wfd));
+
+		FindClose(hFind);
+	}
+
+	// 4) Apply the saved timestamps to the new directory
+	HANDLE hDst = CreateFileA(
+		dstDir,
+		GENERIC_WRITE,
+		FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+		NULL,
+		OPEN_EXISTING,
+		FILE_FLAG_BACKUP_SEMANTICS,
+		NULL
+	);
+	if (hDst != INVALID_HANDLE_VALUE) {
+		SetFileTime(hDst, &ftCreate, &ftAccess, &ftWrite);
+		CloseHandle(hDst);
+	}
 
 	return TRUE;
 }
-
-
 
 
 
@@ -2177,3 +2335,10 @@ BOOL CopyAmiDir2Ami(char* dirName, struct Volume* src, struct Volume* dest)
 	// Thank you for coming to my TEDTalk.
 
 };/*end-function*/
+
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// FINISH COPY ROUTINES ///////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
