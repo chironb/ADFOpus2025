@@ -1617,7 +1617,7 @@ void CopyWin2Ami(
 			// UTC FILETIME -> local FILETIME -> SYSTEMTIME (local)
 			FILETIME   ftLocal;
 			SYSTEMTIME stLocal;
-			FileTimeToLocalFileTime(&ftCreate, &ftLocal);
+			FileTimeToLocalFileTime(&ftWrite, &ftLocal);
 			FileTimeToSystemTime(&ftLocal, &stLocal);
 
 			LONG days, mins, ticks;
@@ -2022,7 +2022,7 @@ BOOL CopyWinDir2Ami(
 	if (hSrcDir != INVALID_HANDLE_VALUE) {
 		if (GetFileTime(hSrcDir, &ftCreate, &ftAccess, &ftWrite)) {
 			// UTC→local SYSTEMTIME
-			FileTimeToLocalFileTime(&ftCreate, &ftLocal);
+			FileTimeToLocalFileTime(&ftWrite, &ftLocal);
 			FileTimeToSystemTime(&ftLocal, &stLocal);
 
 			// local SYSTEMTIME → Amiga fields

@@ -445,29 +445,6 @@ void GetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 
 
 
-void GetPropertiesWin(HWND dlg, DIRENTRY *DirPtr)
-// Get flags from directory entry and set appropriate boxes.
-{
-	int i = 0;
-
-	while(DirPtr->flags[i] != '\0'){
-		if(DirPtr->flags[i] == 'R')
-			SendDlgItemMessage(dlg, IDC_WIN_READONLY, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'A')
-			SendDlgItemMessage(dlg, IDC_WIN_ARCHIVE, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'H')
-			SendDlgItemMessage(dlg, IDC_WIN_HIDDEN, BM_SETCHECK, BST_CHECKED, 0l);
-		else if(DirPtr->flags[i] == 'S')
-			SendDlgItemMessage(dlg, IDC_WIN_SYSTEM, BM_SETCHECK, BST_CHECKED, 0l);
-		i++;
-	}
-}
-
-
-
-
-
-
 void SetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 {
 	long longPropertyFlags = 15;  // Default flags 00001111 - all OFF!
@@ -571,50 +548,251 @@ void SetPropertiesAmi(HWND dlg, DIRENTRY* DirPtr)
 
 
 
-void SetPropertiesWin(HWND dlg, DIRENTRY *DirPtr)
-// Get flags from checkboxes and set appropriate directory entry flags.
+
+//void GetPropertiesWin(HWND dlg, DIRENTRY *DirPtr)
+//// Get flags from directory entry and set appropriate boxes.
+//{
+//	int i = 0;
+//
+//	while(DirPtr->flags[i] != '\0'){
+//		if(DirPtr->flags[i] == 'R')
+//			SendDlgItemMessage(dlg, IDC_WIN_READONLY, BM_SETCHECK, BST_CHECKED, 0l);
+//		else if(DirPtr->flags[i] == 'A')
+//			SendDlgItemMessage(dlg, IDC_WIN_ARCHIVE, BM_SETCHECK, BST_CHECKED, 0l);
+//		else if(DirPtr->flags[i] == 'H')
+//			SendDlgItemMessage(dlg, IDC_WIN_HIDDEN, BM_SETCHECK, BST_CHECKED, 0l);
+//		else if(DirPtr->flags[i] == 'S')
+//			SendDlgItemMessage(dlg, IDC_WIN_SYSTEM, BM_SETCHECK, BST_CHECKED, 0l);
+//		i++;
+//	}
+//}
+//
+
+//------------------------------------------------------------------------------
+// GetPropertiesWin: populate checkboxes and date/time pickers
+//------------------------------------------------------------------------------
+#include <windows.h>
+#include <commctrl.h>    // for DTM_SETSYSTEMTIME
+
+extern CHILDINFO* ci;    // ci->curDir ends with path, ci->content->name is filename
+
+void GetPropertiesWin(HWND dlg, DIRENTRY* DirPtr)
 {
-	char	new_flags[5];
-	int		i = 0;
-	char	lpFileName[MAX_PATH];	// Pointer to filename.
-	DWORD	dwFileAttributes = 0;	// Attributes to set.
-	HWND	win;
+	CHAR                         fullPath[MAX_PATH];
+	WIN32_FILE_ATTRIBUTE_DATA    fad;
+	FILETIME                     ftLocal;
+	SYSTEMTIME                   st;
 
-	// Read the flags and create flag string and attribute dword.
-	if(SendDlgItemMessage(dlg, IDC_WIN_READONLY, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		new_flags[i] = 'R';
-		dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
-		i++;
-	}
-	if(SendDlgItemMessage(dlg, IDC_WIN_HIDDEN, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		new_flags[i] = 'H';
-		dwFileAttributes |= FILE_ATTRIBUTE_HIDDEN;
-		i++;
-	}
-	if(SendDlgItemMessage(dlg, IDC_WIN_SYSTEM, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		dwFileAttributes |= FILE_ATTRIBUTE_SYSTEM;
-		new_flags[i] = 'S';
-		i++;
-	}
-	if(SendDlgItemMessage(dlg, IDC_WIN_ARCHIVE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
-		dwFileAttributes |= FILE_ATTRIBUTE_ARCHIVE;
-		new_flags[i] = 'A';
-		i++;
-	}
-	new_flags[i] = '\0';
+	// 1) Clear all four checkboxes, then set those in DirPtr->flags
+	SendDlgItemMessageA(dlg, IDC_WIN_READONLY, BM_SETCHECK, BST_UNCHECKED, 0);
+	SendDlgItemMessageA(dlg, IDC_WIN_HIDDEN, BM_SETCHECK, BST_UNCHECKED, 0);
+	SendDlgItemMessageA(dlg, IDC_WIN_SYSTEM, BM_SETCHECK, BST_UNCHECKED, 0);
+	SendDlgItemMessageA(dlg, IDC_WIN_ARCHIVE, BM_SETCHECK, BST_UNCHECKED, 0);
 
-	// Update file properties.
-	// Create file path.
-	strcpy(lpFileName, ci->curDir);
-	strcat(lpFileName, DirPtr->name);
-	// Change file attributes.
-	if(!SetFileAttributes(lpFileName, dwFileAttributes))
-		MessageBox(dlg, "Couldn't update file properties.", "ADF Opus error", MB_OK);
-	
-	// Update MDI window childinfo data and listview.	
-	win = GetParent(dlg);
- 	SendMessage(win, WM_COMMAND, ID_VIEW_REFRESH, 0l);
+	for (int i = 0; DirPtr->flags[i] != '\0'; ++i) {
+		switch (DirPtr->flags[i]) {
+		case 'R':
+			SendDlgItemMessageA(dlg, IDC_WIN_READONLY, BM_SETCHECK, BST_CHECKED, 0);
+			break;
+		case 'H':
+			SendDlgItemMessageA(dlg, IDC_WIN_HIDDEN, BM_SETCHECK, BST_CHECKED, 0);
+			break;
+		case 'S':
+			SendDlgItemMessageA(dlg, IDC_WIN_SYSTEM, BM_SETCHECK, BST_CHECKED, 0);
+			break;
+		case 'A':
+			SendDlgItemMessageA(dlg, IDC_WIN_ARCHIVE, BM_SETCHECK, BST_CHECKED, 0);
+			break;
+		}
+	}
+
+	// 2) Build the full path: ci->curDir + DirPtr->name
+	lstrcpyA(fullPath, ci->curDir);
+	lstrcatA(fullPath, DirPtr->name);
+
+	// 3) Grab the file’s timestamps
+	if (GetFileAttributesExA(fullPath, GetFileExInfoStandard, &fad)) {
+		// Creation time → local SYSTEMTIME → pickers
+		FileTimeToLocalFileTime(&fad.ftCreationTime, &ftLocal);
+		FileTimeToSystemTime(&ftLocal, &st);
+		SendDlgItemMessageA(dlg, IDC_PROPERTIES_DATEPICKER_WIN_CREATED,
+			DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&st);
+		SendDlgItemMessageA(dlg, IDC_PROPERTIES_TIMEPICKER_WIN_CREATED,
+			DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&st);
+
+		// Modified time
+		FileTimeToLocalFileTime(&fad.ftLastWriteTime, &ftLocal);
+		FileTimeToSystemTime(&ftLocal, &st);
+		SendDlgItemMessageA(dlg, IDC_PROPERTIES_DATEPICKER_WIN_MODIFIED,
+			DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&st);
+		SendDlgItemMessageA(dlg, IDC_PROPERTIES_TIMEPICKER_WIN_MODIFIED,
+			DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&st);
+
+		// Access time
+		FileTimeToLocalFileTime(&fad.ftLastAccessTime, &ftLocal);
+		FileTimeToSystemTime(&ftLocal, &st);
+		SendDlgItemMessageA(dlg, IDC_PROPERTIES_DATEPICKER_WIN_ACCESSED,
+			DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&st);
+		SendDlgItemMessageA(dlg, IDC_PROPERTIES_TIMEPICKER_WIN_ACCESSED,
+			DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&st);
+	}
 }
+
+
+//void SetPropertiesWin(HWND dlg, DIRENTRY *DirPtr)
+//// Get flags from checkboxes and set appropriate directory entry flags.
+//{
+//	char	new_flags[5];
+//	int		i = 0;
+//	char	lpFileName[MAX_PATH];	// Pointer to filename.
+//	DWORD	dwFileAttributes = 0;	// Attributes to set.
+//	HWND	win;
+//
+//	// Read the flags and create flag string and attribute dword.
+//	if(SendDlgItemMessage(dlg, IDC_WIN_READONLY, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		new_flags[i] = 'R';
+//		dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
+//		i++;
+//	}
+//	if(SendDlgItemMessage(dlg, IDC_WIN_HIDDEN, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		new_flags[i] = 'H';
+//		dwFileAttributes |= FILE_ATTRIBUTE_HIDDEN;
+//		i++;
+//	}
+//	if(SendDlgItemMessage(dlg, IDC_WIN_SYSTEM, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		dwFileAttributes |= FILE_ATTRIBUTE_SYSTEM;
+//		new_flags[i] = 'S';
+//		i++;
+//	}
+//	if(SendDlgItemMessage(dlg, IDC_WIN_ARCHIVE, BM_GETCHECK, 0l, 0l) == BST_CHECKED){
+//		dwFileAttributes |= FILE_ATTRIBUTE_ARCHIVE;
+//		new_flags[i] = 'A';
+//		i++;
+//	}
+//	new_flags[i] = '\0';
+//
+//	// Update file properties.
+//	// Create file path.
+//	strcpy(lpFileName, ci->curDir);
+//	strcat(lpFileName, DirPtr->name);
+//	// Change file attributes.
+//	if(!SetFileAttributes(lpFileName, dwFileAttributes))
+//		MessageBox(dlg, "Couldn't update file properties.", "ADF Opus error", MB_OK);
+//	
+//	// Update MDI window childinfo data and listview.	
+//	win = GetParent(dlg);
+// 	SendMessage(win, WM_COMMAND, ID_VIEW_REFRESH, 0l);
+//}
+
+
+//------------------------------------------------------------------------------
+// SetPropertiesWin: read checkboxes + date/time pickers, apply them,
+//                   update DirPtr->flags, and refresh the UI.
+//------------------------------------------------------------------------------
+#include <windows.h>
+#include <commctrl.h>    // for DTM_GETSYSTEMTIME
+
+extern CHILDINFO* ci;    // same as above
+
+void SetPropertiesWin(HWND dlg, DIRENTRY* DirPtr)
+{
+	CHAR      fullPath[MAX_PATH];
+	DWORD     dwFileAttributes = 0;
+	char      new_flags[5];
+	int       idx = 0;
+
+	// 1) Read checkboxes into new_flags[] and dwFileAttributes mask
+	if (SendDlgItemMessageA(dlg, IDC_WIN_READONLY, BM_GETCHECK, 0, 0) == BST_CHECKED) {
+		new_flags[idx++] = 'R';
+		dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
+	}
+	if (SendDlgItemMessageA(dlg, IDC_WIN_HIDDEN, BM_GETCHECK, 0, 0) == BST_CHECKED) {
+		new_flags[idx++] = 'H';
+		dwFileAttributes |= FILE_ATTRIBUTE_HIDDEN;
+	}
+	if (SendDlgItemMessageA(dlg, IDC_WIN_SYSTEM, BM_GETCHECK, 0, 0) == BST_CHECKED) {
+		new_flags[idx++] = 'S';
+		dwFileAttributes |= FILE_ATTRIBUTE_SYSTEM;
+	}
+	if (SendDlgItemMessageA(dlg, IDC_WIN_ARCHIVE, BM_GETCHECK, 0, 0) == BST_CHECKED) {
+		new_flags[idx++] = 'A';
+		dwFileAttributes |= FILE_ATTRIBUTE_ARCHIVE;
+	}
+	new_flags[idx] = '\0';
+
+	// 2) Build the full path
+	lstrcpyA(fullPath, ci->curDir);
+	lstrcatA(fullPath, DirPtr->name);
+
+	// 3) Apply Windows file attributes
+	SetFileAttributesA(fullPath, dwFileAttributes);
+
+	// 4) Read each date+time picker into a SYSTEMTIME, convert to UTC FILETIME
+	SYSTEMTIME sd = { 0 }, st = { 0 };
+	FILETIME   ftLocal, ftUTC_C, ftUTC_A, ftUTC_M;
+
+	// Creation
+	SendDlgItemMessageA(dlg,
+		IDC_PROPERTIES_DATEPICKER_WIN_CREATED,
+		DTM_GETSYSTEMTIME, 0, (LPARAM)&sd);
+	SendDlgItemMessageA(dlg,
+		IDC_PROPERTIES_TIMEPICKER_WIN_CREATED,
+		DTM_GETSYSTEMTIME, 0, (LPARAM)&st);
+	sd.wHour = st.wHour;
+	sd.wMinute = st.wMinute;
+	sd.wSecond = st.wSecond;
+	sd.wMilliseconds = st.wMilliseconds;
+	SystemTimeToFileTime(&sd, &ftLocal);
+	LocalFileTimeToFileTime(&ftLocal, &ftUTC_C);
+
+	// Access
+	SendDlgItemMessageA(dlg,
+		IDC_PROPERTIES_DATEPICKER_WIN_ACCESSED,
+		DTM_GETSYSTEMTIME, 0, (LPARAM)&sd);
+	SendDlgItemMessageA(dlg,
+		IDC_PROPERTIES_TIMEPICKER_WIN_ACCESSED,
+		DTM_GETSYSTEMTIME, 0, (LPARAM)&st);
+	sd.wHour = st.wHour;
+	sd.wMinute = st.wMinute;
+	sd.wSecond = st.wSecond;
+	sd.wMilliseconds = st.wMilliseconds;
+	SystemTimeToFileTime(&sd, &ftLocal);
+	LocalFileTimeToFileTime(&ftLocal, &ftUTC_A);
+
+	// Modified
+	SendDlgItemMessageA(dlg,
+		IDC_PROPERTIES_DATEPICKER_WIN_MODIFIED,
+		DTM_GETSYSTEMTIME, 0, (LPARAM)&sd);
+	SendDlgItemMessageA(dlg,
+		IDC_PROPERTIES_TIMEPICKER_WIN_MODIFIED,
+		DTM_GETSYSTEMTIME, 0, (LPARAM)&st);
+	sd.wHour = st.wHour;
+	sd.wMinute = st.wMinute;
+	sd.wSecond = st.wSecond;
+	sd.wMilliseconds = st.wMilliseconds;
+	SystemTimeToFileTime(&sd, &ftLocal);
+	LocalFileTimeToFileTime(&ftLocal, &ftUTC_M);
+
+	// 5) Stamp the file (creation, access, modified)
+	HANDLE hFile = CreateFileA(
+		fullPath,
+		FILE_WRITE_ATTRIBUTES,
+		FILE_SHARE_READ | FILE_SHARE_WRITE,
+		NULL,
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL,
+		NULL);
+
+	if (hFile != INVALID_HANDLE_VALUE) {
+		SetFileTime(hFile, &ftUTC_C, &ftUTC_A, &ftUTC_M);
+		CloseHandle(hFile);
+	}
+
+	// 6) Save flags back into your DIRENTRY and refresh the view
+	lstrcpyA(DirPtr->flags, new_flags);
+	SendMessage(GetParent(dlg), WM_COMMAND, ID_VIEW_REFRESH, 0);
+}
+
 
 
 // Chiron 2025: TODO: I'd like to investigate this. It's from the original codeabase.
