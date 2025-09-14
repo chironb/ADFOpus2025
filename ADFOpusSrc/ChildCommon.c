@@ -268,7 +268,21 @@ static LRESULT CALLBACK ListViewClampProc(
 
 
 
-
+// The "title" variable is important! It's *NOT* just the window title!
+// This is what is actually used for filenames with complete paths. 
+// For example the fdi.c Greaseweazle code needs the
+// Amiga windows to have their "title" be their full filesystem path
+// to their disk image file. 
+// The windows local filesystem title isn't used for it's full path.
+// So that's why it can say "Local Filesystem".
+// The code needs to be updated so that there's another way to 
+// track each file lister instance such that it stores things like
+// the full path as well as the filename and path only and whatnot. 
+// Using the title as the path for things was an admittedly 
+// quick and dirty kludge. - Chiron 
+// 
+// Cool. This is why we can't have nice things. 
+// 
 HWND CreateChildWin(HWND client, long type)
 /*! creates and displays a new MDI child window 
 */
