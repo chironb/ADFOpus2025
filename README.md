@@ -22,7 +22,7 @@ New features in the 2025 edition include:
 - Windows Explorer integration for .ADF files. Double-click an .ADF file and it opens in ADF Opus 2025 with the folder that the .ADF came from in the Local File Manager window beside it! This is what originally motivated me to try and revive the original codebase from 2003!
 - New disk-label editing. Now you can relabel a disk after it's been created.
 - Built-in HEX Viewer to compliment the original Text Viewer.
-- The Built-in Bootblock Viewer also allows you to save bootblocks as either hexadecial decoded text or in binary format.
+- The Built-in Bootblock Viewer also allows you to save bootblocks as either hexadecimal decoded text or in binary format.
 - In addition to the original Install Bootblock feature you can also write raw boot blocks onto the disk without re-calculating any checksums. Great for learning and experimentation such as inspecting a game's custom bootblock or getting a peek at classic virus' bootblocks like the famous MegaMighty SCA Virus!
 - Enriches right-click context menus with familiar file-manager commands.
 - Supports OFS and FFS volumes and compressed formats (Gzip or DMS).
