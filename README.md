@@ -1,4 +1,4 @@
-# ADFOpus2025
+# ADF Opus 2025
 
 ![ADF Opus 2025 Logo](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/ADF_Opus_2025_Logo.png?raw=true)
 
