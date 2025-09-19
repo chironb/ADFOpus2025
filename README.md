@@ -5,6 +5,7 @@
 ADF Opus is a free, Open-Source GPL v2 licensed, Windows application that lets you open, browse, and manage Amiga .ADF disk-images natively without an emulator. With Greaseweazle support built-in you can read and write to real floppy disks with the compatible hardware and software. This new 2025 edition by Chiron Bramberger is a refresh and revive of this application for Windows users in 2025!
 
 If you'd like to support development you can check the ADF Opus tip page on my store:
+
 https://www.chiron-studios.com/products/adf-opus-2025
 
 ![ADF Opus 2025 Screenshot 1](https://raw.githubusercontent.com/chironb/ADFOpus2025/refs/heads/main/readme.png?raw=true)
