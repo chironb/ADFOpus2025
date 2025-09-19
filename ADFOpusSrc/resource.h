@@ -265,6 +265,8 @@
 #define IDC_PROPERTIES_TIMEPICKER_WIN_CREATED 1188
 #define IDC_PROPERTIES_DATEPICKER_WIN_CREATED 1189
 #define IDC_PROPERTIES_DATEPICKER_WIN_MODIFIED 1190
+#define IDC_BUTTON3                     1190
+#define IDC_BTN_TIP                     1190
 #define IDC_PROPERTIES_TIMEPICKER_WIN_MODIFIED 1191
 #define IDC_PROPERTIES_DATEPICKER_WIN_ACCESSED 1192
 #define IDC_PROPERTIES_TIMEPICKER_WIN_ACCESSED 1193
@@ -401,8 +403,8 @@
 #define IDI_SELECTNONE                  50032
 #define IDI_INVERTSELECTION             50033
 #define IDI_README                      50034
-#define IDC_OWRITEGWFLOPPY				50035
-#define IDR_NOTIFICATION_WAVE_1         60001            
+#define IDC_OWRITEGWFLOPPY              50035
+#define IDR_NOTIFICATION_WAVE_1         60001
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -411,7 +413,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        250
 #define _APS_NEXT_COMMAND_VALUE         40145
-#define _APS_NEXT_CONTROL_VALUE         1190
+#define _APS_NEXT_CONTROL_VALUE         1191
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

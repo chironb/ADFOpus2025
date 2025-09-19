@@ -164,6 +164,17 @@ LRESULT CALLBACK AboutDlgProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
             );
             return TRUE;
 
+        case IDC_BTN_TIP:
+            ShellExecuteA(
+                dlg,
+                "open",
+                "https://www.chiron-studios.com/products/adf-opus-2025",
+                NULL,
+                NULL,
+                SW_SHOWNORMAL
+            );
+            return TRUE;
+
         case IDC_BTN_OK:
             // Clean up the bitmap and close
             if (hBmp)
